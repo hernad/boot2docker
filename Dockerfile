@@ -189,16 +189,16 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse
 #    make DESTDIR=$ROOTFS install
 
 # Download and compile libdnet as open-vm-tools rely on it.
-ENV LIBDNET libdnet-1.11
+# ENV LIBDNET libdnet-1.11
 
-RUN mkdir -p /vmtoolsd/${LIBDNET} &&\
-    curl -L http://sourceforge.net/projects/libdnet/files/libdnet/${LIBDNET}/${LIBDNET}.tar.gz \
-        | tar -xzC /vmtoolsd/${LIBDNET} --strip-components 1 &&\
-    cd /vmtoolsd/${LIBDNET} && ./configure --build=i486-pc-linux-gnu &&\
-    make CC="gcc $GCC_M" CXX="g++ $GCC_M" &&\
-    make install && make DESTDIR=$ROOTFS install
+#RUN mkdir -p /vmtoolsd/${LIBDNET} &&\
+#    curl -L http://sourceforge.net/projects/libdnet/files/libdnet/${LIBDNET}/${LIBDNET}.tar.gz \
+#        | tar -xzC /vmtoolsd/${LIBDNET} --strip-components 1 &&\
+#    cd /vmtoolsd/${LIBDNET} && ./configure --build=i486-pc-linux-gnu &&\
+#    make CC="gcc $GCC_M" CXX="g++ $GCC_M" &&\
+#    make install && make DESTDIR=$ROOTFS install
 
-RUN cd $ROOTFS && cd usr/local/lib && ln -s libdnet.1 libdumbnet.so.1
+# RUN cd $ROOTFS && cd usr/local/lib && ln -s libdnet.1 libdumbnet.so.1
 
 # Make sure that all the modules we might have added are recognized (especially VBox guest additions)
 # RUN depmod -a -b $ROOTFS $KERNEL_VERSION-tinycore64
