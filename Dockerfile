@@ -18,6 +18,7 @@ RUN apt-get update && apt-get -y install  unzip \
                         pkg-config \
                         p7zip-full
 
+ENV GCC_M -m64
 # https://www.kernel.org/
 ENV KERNEL_VERSION  3.18.11
 # http://sourceforge.net/p/aufs/aufs3-standalone/ref/master/branches/
@@ -52,7 +53,7 @@ RUN jobs=$(nproc); \
 # The post kernel build process
 
 ENV ROOTFS          /rootfs
-ENV TCL_REPO_BASE   http://tinycorelinux.net/5.x/x86
+ENV TCL_REPO_BASE   http://tinycorelinux.net/6.x/x86_64
 ENV TCZ_DEPS        iptables \
                     iproute2 \
                     openssh openssl-1.0.0 \
@@ -93,7 +94,7 @@ RUN cd $ROOTFS/lib/modules && \
 RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.orig.tar.gz | tar -C / -xz && \
     cd /libcap-2.22 && \
     sed -i 's/LIBATTR := yes/LIBATTR := no/' Make.Rules && \
-    sed -i 's/\(^CFLAGS := .*\)/\1 -m32/' Make.Rules && \
+    sed -i 's/\(^CFLAGS := .*\)/\1 '"$GCC_M"'/' Make.Rules && \
     make && \
     mkdir -p output && \
     make prefix=`pwd`/output install && \
@@ -107,7 +108,7 @@ RUN cd /linux-kernel && \
     git clone http://git.code.sf.net/p/aufs/aufs-util && \
     cd /aufs-util && \
     git checkout aufs3.9 && \
-    CPPFLAGS="-m32 -I/tmp/kheaders/include" CLFAGS=$CPPFLAGS LDFLAGS=$CPPFLAGS make && \
+    CPPFLAGS="$GCC_M -I/tmp/kheaders/include" CLFAGS=$CPPFLAGS LDFLAGS=$CPPFLAGS make && \
     DESTDIR=$ROOTFS make install && \
     rm -rf /tmp/kheaders
 
@@ -115,7 +116,7 @@ RUN cd /linux-kernel && \
 RUN cp -v /linux-kernel/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
 
 # Download the rootfs, don't unpack it though:
-RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs.gz
+RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64.gz
 
 # Install the TCZ dependencies
 RUN for dep in $TCZ_DEPS; do \
@@ -170,21 +171,22 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse
                                                                          libglib2.0-dev libdumbnet-dev:i386 \
                                                                          libdumbnet1:i386 libfuse2:i386 libfuse-dev \
                                                                          libglib2.0-0:i386 libtirpc-dev libtirpc1:i386
-
+# hernad: no i386
 # Horrible Hack
-RUN ln -s /lib/i386-linux-gnu/libglib-2.0.so.0.3200.4 /lib/i386-linux-gnu/libglib-2.0.so &&\
-    ln -s /lib/i386-linux-gnu/libtirpc.so.1.0.10 /lib/i386-linux-gnu/libtirpc.so &&\
-    ln -s /usr/lib/i386-linux-gnu/libgthread-2.0.so.0 /usr/lib/i386-linux-gnu/libgthread-2.0.so &&\
-    ln -s /usr/lib/i386-linux-gnu/libgmodule-2.0.so.0 /usr/lib/i386-linux-gnu/libgmodule-2.0.so &&\
-    ln -s /usr/lib/i386-linux-gnu/libgobject-2.0.so.0 /usr/lib/i386-linux-gnu/libgobject-2.0.so &&\
-    ln -s /lib/i386-linux-gnu/libfuse.so.2 /lib/i386-linux-gnu/libfuse.so
+#RUN ln -s /lib/i386-linux-gnu/libglib-2.0.so.0.3200.4 /lib/i386-linux-gnu/libglib-2.0.so &&\
+#    ln -s /lib/i386-linux-gnu/libtirpc.so.1.0.10 /lib/i386-linux-gnu/libtirpc.so &&\
+#    ln -s /usr/lib/i386-linux-gnu/libgthread-2.0.so.0 /usr/lib/i386-linux-gnu/libgthread-2.0.so &&\
+#    ln -s /usr/lib/i386-linux-gnu/libgmodule-2.0.so.0 /usr/lib/i386-linux-gnu/libgmodule-2.0.so &&\
+#    ln -s /usr/lib/i386-linux-gnu/libgobject-2.0.so.0 /usr/lib/i386-linux-gnu/libgobject-2.0.so &&\
+#    ln -s /lib/i386-linux-gnu/libfuse.so.2 /lib/i386-linux-gnu/libfuse.so
 
+# hernad: no vmware
 # Compile open-vm-tools
-RUN cd /vmtoolsd/open-vm-tools && autoreconf -i &&\
-    CC="gcc -m32" CXX="g++ -m32" ./configure --host=i486-pc-linux-gnu --build=i486-pc-linux-gnu \
-                --without-kernel-modules --without-pam --without-procps --without-x --without-icu &&\
-    make CC="gcc -m32" CXX="g++ -m32" LIBS="-ltirpc" CFLAGS="-Wno-implicit-function-declaration" &&\
-    make DESTDIR=$ROOTFS install
+#RUN cd /vmtoolsd/open-vm-tools && autoreconf -i &&\
+#    CC="gcc $GCC_M" CXX="g++ $GCC_M" ./configure --host=i486-pc-linux-gnu --build=i486-pc-linux-gnu \
+#                --without-kernel-modules --without-pam --without-procps --without-x --without-icu &&\
+#    make CC="gcc $GCC_M" CXX="g++ $GCC_M" LIBS="-ltirpc" CFLAGS="-Wno-implicit-function-declaration" &&\
+#    make DESTDIR=$ROOTFS install
 
 # Download and compile libdnet as open-vm-tools rely on it.
 ENV LIBDNET libdnet-1.11
@@ -193,13 +195,13 @@ RUN mkdir -p /vmtoolsd/${LIBDNET} &&\
     curl -L http://sourceforge.net/projects/libdnet/files/libdnet/${LIBDNET}/${LIBDNET}.tar.gz \
         | tar -xzC /vmtoolsd/${LIBDNET} --strip-components 1 &&\
     cd /vmtoolsd/${LIBDNET} && ./configure --build=i486-pc-linux-gnu &&\
-    make CC="gcc -m32" CXX="g++ -m32" &&\
+    make CC="gcc $GCC_M" CXX="g++ $GCC_M" &&\
     make install && make DESTDIR=$ROOTFS install
 
 RUN cd $ROOTFS && cd usr/local/lib && ln -s libdnet.1 libdumbnet.so.1
 
 # Make sure that all the modules we might have added are recognized (especially VBox guest additions)
-RUN depmod -a -b $ROOTFS $KERNEL_VERSION-tinycore64
+# RUN depmod -a -b $ROOTFS $KERNEL_VERSION-tinycore64
 
 COPY VERSION $ROOTFS/etc/version
 RUN cp -v $ROOTFS/etc/version /tmp/iso/version
@@ -224,16 +226,46 @@ RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-file
 # Copy our custom rootfs
 COPY rootfs/rootfs $ROOTFS
 
+# hernad: no hyper-v
 # Build the Hyper-V KVP Daemon
-RUN cd /linux-kernel && \
-    make headers_install INSTALL_HDR_PATH=/usr && \
-    cd /linux-kernel/tools/hv && \
-    sed -i 's/\(^CFLAGS = .*\)/\1 -m32/' Makefile && \
-    make hv_kvp_daemon && \
-    cp hv_kvp_daemon $ROOTFS/usr/sbin
+# RUN cd /linux-kernel && \
+#    make headers_install INSTALL_HDR_PATH=/usr && \
+#    cd /linux-kernel/tools/hv && \
+#    sed -i 's/\(^CFLAGS = .*\)/\1 '"$GCC_M"'/' Makefile && \
+#    make hv_kvp_daemon && \
+#    cp hv_kvp_daemon $ROOTFS/usr/sbin
 
 # These steps can only be run once, so can't be in make_iso.sh (which can be run in chained Dockerfiles)
 # see https://github.com/boot2docker/boot2docker/blob/master/doc/BUILD.md
+
+
+# virtualbox server
+# RUN apt-get install gcc g++ bcc iasl xsltproc uuid-dev zlib1g-dev libidl-dev \
+#                libsdl1.2-dev libxcursor-dev libasound2-dev libstdc++5 \
+#                libhal-dev libpulse-dev libxml2-dev libxslt1-dev \
+#                python-dev libqt4-dev qt4-dev-tools libcap-dev \
+#                libxmu-dev mesa-common-dev libglu1-mesa-dev \
+#                linux-kernel-headers libcurl4-openssl-dev libpam0g-dev \
+#                libxrandr-dev libxinerama-dev libqt4-opengl-dev makeself \
+#                libdevmapper-dev default-jdk python-central \
+#                texlive-latex-base \
+#                texlive-latex-extra texlive-latex-recommended \
+#                texlive-fonts-extra texlive-fonts-recommended
+# On 64-bit Debian-based systems, the following command should install the required additional packages:
+#RUN apt-get install ia32-libs libc6-dev-i386 lib32gcc1 gcc-multilib \
+#    lib32stdc++6 g++-multilib
+
+RUN curl -LO http://dlc-cdn.sun.com/virtualbox/5.0.0_BETA2/VirtualBox-5.0.0_BETA2-99573-Linux_amd64.run
+RUN chmod +x *.run
+RUN mkdir -p /lib
+RUN ln -s $ROOTFS/lib/modules /lib/modules
+RUN ./VirtualBox-5.0.0_BETA2-99573-Linux_amd64.run
+RUN cp -av /opt/VirtualBox $ROOTFS/opt/
+
+
+# Make sure that all the modules we might have added are recognized (especially VBox guest additions)
+RUN depmod -a -b $ROOTFS $KERNEL_VERSION-tinycore64
+
 
 # Make sure init scripts are executable
 RUN find $ROOTFS/etc/rc.d/ $ROOTFS/usr/local/etc/init.d/ -exec chmod +x '{}' ';'
