@@ -42,7 +42,7 @@ cd -
 # Note: only "-isohybrid-mbr /..." is specific to xorriso.
 # It builds an image that can be used as an ISO *and* a disk image.
 xorriso  \
-    -publisher "Docker Inc." \
+    -publisher "hernad" \
     -as mkisofs \
     -l -J -R -V "Boot2Docker-v$(cat $ROOTFS/etc/version)" \
     -no-emul-boot -boot-load-size 4 -boot-info-table \

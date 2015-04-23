@@ -1,5 +1,5 @@
 FROM debian:wheezy
-MAINTAINER Steeve Morin "steeve.morin@gmail.com"
+MAINTAINER Steeve Morin "hernad@bring.out.ba"
 
 RUN apt-get update && apt-get -y install  unzip \
                         xz-utils \
@@ -16,36 +16,39 @@ RUN apt-get update && apt-get -y install  unzip \
                         syslinux \
                         automake \
                         pkg-config \
-                        p7zip-full
+                        p7zip-full \
+                        uuid-dev
 
 ENV GCC_M -m64
 # https://www.kernel.org/
 ENV KERNEL_VERSION  3.18.11
+ENV LINUX_KERNEL /usr/src/linux
 # http://sourceforge.net/p/aufs/aufs3-standalone/ref/master/branches/
 ENV AUFS_BRANCH     aufs3.18.1+
 ENV AUFS_COMMIT     863c3b76303a1ebea5b6a5b1b014715ac416f913
 # we use AUFS_COMMIT to get stronger repeatability guarantees
 
 # Fetch the kernel sources
+RUN mkdir -p /usr/src
 RUN curl --retry 10 https://www.kernel.org/pub/linux/kernel/v3.x/linux-$KERNEL_VERSION.tar.xz | tar -C / -xJ && \
-    mv /linux-$KERNEL_VERSION /linux-kernel
+    mv /linux-$KERNEL_VERSION $LINUX_KERNEL
 
 # Download AUFS and apply patches and files, then remove it
 RUN git clone -b $AUFS_BRANCH http://git.code.sf.net/p/aufs/aufs3-standalone && \
     cd aufs3-standalone && \
     git checkout $AUFS_COMMIT && \
-    cd /linux-kernel && \
-    cp -r /aufs3-standalone/Documentation /linux-kernel && \
-    cp -r /aufs3-standalone/fs /linux-kernel && \
-    cp -r /aufs3-standalone/include/uapi/linux/aufs_type.h /linux-kernel/include/uapi/linux/ &&\
+    cd $LINUX_KERNEL && \
+    cp -r /aufs3-standalone/Documentation $LINUX_KERNEL && \
+    cp -r /aufs3-standalone/fs $LINUX_KERNEL && \
+    cp -r /aufs3-standalone/include/uapi/linux/aufs_type.h $LINUX_KERNEL/include/uapi/linux/ &&\
     for patch in aufs3-kbuild aufs3-base aufs3-mmap aufs3-standalone aufs3-loopback; do \
         patch -p1 < /aufs3-standalone/$patch.patch; \
     done
 
-COPY kernel_config /linux-kernel/.config
+COPY kernel_config $LINUX_KERNEL/.config
 
 RUN jobs=$(nproc); \
-    cd /linux-kernel && \
+    cd $LINUX_KERNEL && \
     make -j ${jobs} oldconfig && \
     make -j ${jobs} bzImage && \
     make -j ${jobs} modules
@@ -64,7 +67,7 @@ ENV TCZ_DEPS        iptables \
                     git expat2 libiconv libidn libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
-                    procps glib2 libtirpc libffi fuse
+                    htop strace procps glib2 libtirpc libffi fuse
 
 # Make the ROOTFS
 RUN mkdir -p $ROOTFS
@@ -73,7 +76,7 @@ RUN mkdir -p $ROOTFS
 RUN mkdir -p /tmp/iso/boot
 
 # Install the kernel modules in $ROOTFS
-RUN cd /linux-kernel && \
+RUN cd $LINUX_KERNEL && \
     make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install
 
 # Remove useless kernel modules, based on unclejack/debian2docker
@@ -102,7 +105,7 @@ RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.or
     cp -av `pwd`/output/lib64/* $ROOTFS/usr/local/lib
 
 # Make sure the kernel headers are installed for aufs-util, and then build it
-RUN cd /linux-kernel && \
+RUN cd $LINUX_KERNEL && \
     make INSTALL_HDR_PATH=/tmp/kheaders headers_install && \
     cd / && \
     git clone http://git.code.sf.net/p/aufs/aufs-util && \
@@ -113,7 +116,7 @@ RUN cd /linux-kernel && \
     rm -rf /tmp/kheaders
 
 # Prepare the ISO directory with the kernel
-RUN cp -v /linux-kernel/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
+RUN cp -v $LINUX_KERNEL/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
 
 # Download the rootfs, don't unpack it though:
 RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64.gz
@@ -146,7 +149,7 @@ RUN mkdir -p /vboxguest && \
     mkdir x86 && tar -C x86 -xjf VBoxGuestAdditions-x86.tar.bz2 && \
     rm VBoxGuestAdditions*.tar.bz2 && \
     \
-    KERN_DIR=/linux-kernel/ make -C amd64/src/vboxguest-${VBOX_VERSION} && \
+    KERN_DIR=$LINUX_KERNEL make -C amd64/src/vboxguest-${VBOX_VERSION} && \
     cp amd64/src/vboxguest-${VBOX_VERSION}/*.ko $ROOTFS/lib/modules/$KERNEL_VERSION-tinycore64/ && \
     \
     mkdir -p $ROOTFS/sbin && \
@@ -156,16 +159,16 @@ RUN mkdir -p /vboxguest && \
 ENV OVT_VERSION 9.4.6-1770165
 
 # Download and prepare ovt source
-RUN mkdir -p /vmtoolsd/open-vm-tools \
-    && curl -L http://downloads.sourceforge.net/open-vm-tools/open-vm-tools-$OVT_VERSION.tar.gz \
-        | tar -xzC /vmtoolsd/open-vm-tools --strip-components 1
+# RUN mkdir -p /vmtoolsd/open-vm-tools \
+#    && curl -L http://downloads.sourceforge.net/open-vm-tools/open-vm-tools-$OVT_VERSION.tar.gz \
+#        | tar -xzC /vmtoolsd/open-vm-tools --strip-components 1
 
 # Apply patches to make open-vm-tools compile with a recent 3.18.x kernel and
 # a network script that knows how to plumb/unplumb nics on a busybox system,
 # this will be removed once a new ovt version is released.
-RUN cd /vmtoolsd && \
-    curl -L -o open-vm-tools-3.x.x-patches.patch https://gist.github.com/frapposelli/5506651fa6f3d25d5760/raw/475f8fb2193549c10a477d506de40639b04fa2a7/open-vm-tools-3.x.x-patches.patch &&\
-    patch -p1 < open-vm-tools-3.x.x-patches.patch && rm open-vm-tools-3.x.x-patches.patch
+#RUN cd /vmtoolsd && \
+#    curl -L -o open-vm-tools-3.x.x-patches.patch https://gist.github.com/frapposelli/5506651fa6f3d25d5760/raw/475f8fb2193549c10a477d506de40639b04fa2a7/open-vm-tools-3.x.x-patches.patch &&\
+#    patch -p1 < open-vm-tools-3.x.x-patches.patch && rm open-vm-tools-3.x.x-patches.patch
 
 RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse2 libtool autoconf \
                                                                          libglib2.0-dev libdumbnet-dev:i386 \
@@ -228,7 +231,7 @@ COPY rootfs/rootfs $ROOTFS
 
 # hernad: no hyper-v
 # Build the Hyper-V KVP Daemon
-# RUN cd /linux-kernel && \
+# RUN cd $LINUX_KERNEL && \
 #    make headers_install INSTALL_HDR_PATH=/usr && \
 #    cd /linux-kernel/tools/hv && \
 #    sed -i 's/\(^CFLAGS = .*\)/\1 '"$GCC_M"'/' Makefile && \
@@ -262,6 +265,27 @@ RUN ln -s $ROOTFS/lib/modules /lib/modules
 RUN ./VirtualBox-5.0.0_BETA2-99573-Linux_amd64.run
 RUN cp -av /opt/VirtualBox $ROOTFS/opt/
 
+# Install the kernel modules in $ROOTFS                                                                                         
+RUN cd $LINUX_KERNEL && \                                                                                                       
+    make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install
+
+RUN mkdir /zfs
+
+ENV ZFS_VER 0.6.4 
+RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz
+#RUN cd $LINUX_KERNEL && make modules
+RUN cd /zfs && tar xvf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER && ./configure && make && make install 
+
+# hernad: zfs build demands librt from debian
+RUN cp /lib/x86_64-linux-gnu/librt-2.13.so $ROOTFS/lib/
+RUN rm $ROOTFS/lib/librt.so.1
+RUN cd $ROOTFS/lib && ln -s librt-2.13.so librt.so.1
+RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/zfs-$ZFS_VER.tar.gz                              
+RUN cd /zfs && tar xvf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER && ./configure && make && make install 
+                                                                                                                                
+# Install the kernel modules in $ROOTFS                                                                                         
+RUN cd $LINUX_KERNEL && \                                                                                                       
+    make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install                                                              
 
 # Make sure that all the modules we might have added are recognized (especially VBox guest additions)
 RUN depmod -a -b $ROOTFS $KERNEL_VERSION-tinycore64
