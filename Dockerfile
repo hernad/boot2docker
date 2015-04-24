@@ -338,6 +338,8 @@ COPY rootfs/crontab $ROOTFS/var/spool/cron/crontabs/root
 COPY rootfs/inittab $ROOTFS/etc/inittab
 COPY rootfs/securetty $ROOTFS/etc/securetty
 
+COPY rootfs/zfs $ROOTFS/etc/rc.d/zfs
+
 # Copy boot params
 COPY rootfs/isolinux /tmp/iso/boot/isolinux
 

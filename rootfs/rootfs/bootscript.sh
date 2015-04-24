@@ -6,8 +6,7 @@
 # Load TCE extensions
 /etc/rc.d/tce-loader
 
-# Automount a hard drive
-/etc/rc.d/automount
+/etc/rc.d/automount_zfs
 
 # Mount cgroups hierarchy
 /etc/rc.d/cgroupfs-mount
@@ -78,10 +77,12 @@ fi
 # disabled - this script was written assuming bash, which we no longer have.
 #/etc/rc.d/automated_script.sh
 
+# hernad: hyper-v client off
 # Run Hyper-V KVP Daemon
-if modprobe hv_utils &> /dev/null; then
-    /usr/sbin/hv_kvp_daemon
-fi
+# if modprobe hv_utils &> /dev/null; then
+#    /usr/sbin/hv_kvp_daemon
+#fi
 
+# hernad: vmware-tools client off
 # Launch vmware-tools
-/etc/rc.d/vmtoolsd
+# /etc/rc.d/vmtoolsd
