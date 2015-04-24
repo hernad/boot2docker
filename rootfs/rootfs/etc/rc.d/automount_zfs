@@ -1,6 +1,7 @@
 #!/bin/sh
 echo "automount zfs ...";
 
+modprobe zfs
 zfs import green
 swapon green/swap
 
