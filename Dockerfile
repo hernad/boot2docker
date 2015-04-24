@@ -67,7 +67,9 @@ ENV TCZ_DEPS        iptables \
                     git expat2 libiconv libidn libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
-                    htop strace procps glib2 libtirpc libffi fuse
+                    strace procps glib2 libtirpc libffi fuse \
+                    python \
+                    Xorg-7.7-bin
 
 # Make the ROOTFS
 RUN mkdir -p $ROOTFS
@@ -265,6 +267,14 @@ RUN ln -s $ROOTFS/lib/modules /lib/modules
 RUN ./VirtualBox-5.0.0_BETA2-99573-Linux_amd64.run
 RUN cp -av /opt/VirtualBox $ROOTFS/opt/
 
+
+RUN chmod o-w $ROOTFS/opt 
+RUN chmod o-w $ROOTFS/opt/VirtualBox
+RUN chown root.root $ROOTFS/opt
+RUN chown root.root $ROOTFS/opt/VirtualBox
+RUN chmod 4755 $ROOTFS/opt/VirtualBox/VBoxHeadless
+
+
 # Install the kernel modules in $ROOTFS                                                                                         
 RUN cd $LINUX_KERNEL && \                                                                                                       
     make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install
@@ -281,7 +291,7 @@ RUN cp /lib/x86_64-linux-gnu/librt-2.13.so $ROOTFS/lib/
 RUN rm $ROOTFS/lib/librt.so.1
 RUN cd $ROOTFS/lib && ln -s librt-2.13.so librt.so.1
 RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/zfs-$ZFS_VER.tar.gz                              
-RUN cd /zfs && tar xvf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER && ./configure && make && make install 
+RUN cd /zfs && tar xvf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER && ./configure && make && DESTDIR=$ROOTFS make install 
                                                                                                                                 
 # Install the kernel modules in $ROOTFS                                                                                         
 RUN cd $LINUX_KERNEL && \                                                                                                       
@@ -293,6 +303,11 @@ RUN depmod -a -b $ROOTFS $KERNEL_VERSION-tinycore64
 
 # Make sure init scripts are executable
 RUN find $ROOTFS/etc/rc.d/ $ROOTFS/usr/local/etc/init.d/ -exec chmod +x '{}' ';'
+
+# debug http://unix.stackexchange.com/questions/76490/no-such-file-or-directory-on-an-executable-yet-file-exists-and-ldd-reports-al
+# /lib64/ld-linux-x86-64.so.2.
+RUN cd $ROOTFS && ln -s lib lib64
+
 
 # Change MOTD
 RUN mv $ROOTFS/usr/local/etc/motd $ROOTFS/etc/motd
