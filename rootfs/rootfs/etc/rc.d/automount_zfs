@@ -2,7 +2,10 @@
 echo "automount zfs ...";
 
 modprobe zfs
+mv /var/lib/docker /var/lib/docker.orig
 zfs import green
-swapon green/swap
+
+swapon /dev/zvol/green/swap 
+swapoff /dev/zram0
 
 echo "automount over."
