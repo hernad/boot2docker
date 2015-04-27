@@ -2,8 +2,10 @@
 echo "automount zfs ...";
 
 modprobe zfs
+umount /var/lib/docker/aufs
+killall docker
 mv /var/lib/docker /var/lib/docker.orig
-zfs import green
+zpool import green
 
 swapon /dev/zvol/green/swap 
 swapoff /dev/zram0
