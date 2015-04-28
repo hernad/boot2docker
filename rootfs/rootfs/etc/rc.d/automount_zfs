@@ -1,13 +1,26 @@
 #!/bin/sh
 echo "automount zfs ...";
 
-modprobe zfs
-umount /var/lib/docker/aufs
-killall docker
+/sbin/modprobe zfs > /tmp/zfs.log  2>&1
+
+for i in 1 2 3 4
+do
+ echo "/dev/zfs try: $i"
+
+ if [ -e /dev/zfs ] ; then
+   break
+ else
+   sleep 1
+ fi
+done
+
 mv /var/lib/docker /var/lib/docker.orig
-zpool import green
+mv /opt /opt.orig
+/usr/local/sbin/zpool import green >> /tmp/zfs.log 2>&1
 
-swapon /dev/zvol/green/swap 
-swapoff /dev/zram0
+/sbin/swapon -a
+#swapoff /dev/zram0
 
-echo "automount over."
+/usr/local/sbin/zpool status -v >> /tmp/zfs.log 2>&1
+/usr/local/sbin/zfs list >> /tmp/zfs.log 2>&1
+echo "automount zfs over."
