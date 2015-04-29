@@ -339,7 +339,6 @@ COPY rootfs/crontab $ROOTFS/var/spool/cron/crontabs/root
 COPY rootfs/inittab $ROOTFS/etc/inittab
 COPY rootfs/securetty $ROOTFS/etc/securetty
 COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
-COPY rootfs/zfs $ROOTFS/etc/rc.d/zfs
 
 RUN  mkdir -p $ROOTFS/usr/local/etc/ssh
 COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
