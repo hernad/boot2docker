@@ -14,8 +14,8 @@ do
  fi
 done
 
-mv /var/lib/docker /var/lib/docker.orig
-mv /opt /opt.orig
+#mv /opt /opt.orig
+
 /usr/local/sbin/zpool import green >> /tmp/zfs.log 2>&1
 
 /sbin/swapon  /dev/zvol/green/swap
@@ -23,8 +23,6 @@ mv /opt /opt.orig
 
 mkdir /var/lib/docker
 /bin/mount /dev/zvol/green/docker_vol /var/lib/docker
-
-#swapoff /dev/zram0
 
 /usr/local/sbin/zpool status -v >> /tmp/zfs.log 2>&1
 /usr/local/sbin/zfs list >> /tmp/zfs.log 2>&1

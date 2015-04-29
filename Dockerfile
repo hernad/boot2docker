@@ -70,7 +70,8 @@ ENV TCZ_DEPS        iptables \
                     curl ntpclient \
                     strace procps glib2 libtirpc libffi fuse \
                     samba python \
-                    Xorg-7.7-bin Xorg-fonts
+                    Xorg-7.7-bin Xorg-fonts  aterm libXext libX11 libxcb libXaw libXmu libXext libX11 libxcb libXt libXpm libXcomposite libXcursor libXrender libXfixes libXdamage libXfont freetype
+
 
 # Make the ROOTFS
 RUN mkdir -p $ROOTFS
