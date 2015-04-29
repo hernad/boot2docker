@@ -17,7 +17,8 @@ RUN apt-get update && apt-get -y install  unzip \
                         automake \
                         pkg-config \
                         p7zip-full \
-                        uuid-dev
+                        uuid-dev \
+                        libncurses-dev
 
 ENV GCC_M -m64
 # https://www.kernel.org/
@@ -60,7 +61,7 @@ ENV TCL_REPO_BASE   http://tinycorelinux.net/6.x/x86_64
 ENV TCZ_DEPS        iptables \
                     iproute2 \
                     openssh openssl-1.0.0 \
-                    tar parted \
+                    tar e2fsprogs \
                     gcc_libs \
                     acpid \
                     xz liblzma \
@@ -68,8 +69,9 @@ ENV TCZ_DEPS        iptables \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
                     strace procps glib2 libtirpc libffi fuse \
-                    nodejs python \
-                    aterm
+                    samba python \
+                    Xorg-7.7-bin Xorg-fonts \
+                    ncurses 
 
 # Make the ROOTFS
 RUN mkdir -p $ROOTFS
@@ -347,6 +349,10 @@ COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
 # Copy boot params
 COPY rootfs/isolinux /tmp/iso/boot/isolinux
 COPY rootfs/make_iso.sh /
+
+RUN git clone https://github.com/hishamhm/htop.git
+RUN ./autogen.sh && ./configure --prefix=$ROOTFS --disable-unicode && make  && make install
+COPY /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
 
 RUN /make_iso.sh
 
