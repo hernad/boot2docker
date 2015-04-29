@@ -352,7 +352,7 @@ COPY rootfs/make_iso.sh /
 
 RUN git clone https://github.com/hishamhm/htop.git
 RUN cd /htop && ./autogen.sh && ./configure --prefix=$ROOTFS --disable-unicode && make  && make install
-COPY /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
+RUN cp /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
 
 RUN /make_iso.sh
 
