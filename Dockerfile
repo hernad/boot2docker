@@ -351,7 +351,7 @@ COPY rootfs/isolinux /tmp/iso/boot/isolinux
 COPY rootfs/make_iso.sh /
 
 RUN git clone https://github.com/hishamhm/htop.git
-RUN ./autogen.sh && ./configure --prefix=$ROOTFS --disable-unicode && make  && make install
+RUN cd /htop && ./autogen.sh && ./configure --prefix=$ROOTFS --disable-unicode && make  && make install
 COPY /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
 
 RUN /make_iso.sh
