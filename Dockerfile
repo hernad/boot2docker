@@ -18,7 +18,7 @@ RUN apt-get update && apt-get -y install  unzip \
                         pkg-config \
                         p7zip-full \
                         uuid-dev \
-                        libncurses-dev
+                        libncursesw5-dev libncurses-dev
 
 ENV GCC_M -m64
 # https://www.kernel.org/
@@ -70,8 +70,7 @@ ENV TCZ_DEPS        iptables \
                     curl ntpclient \
                     strace procps glib2 libtirpc libffi fuse \
                     samba python \
-                    Xorg-7.7-bin Xorg-fonts \
-                    ncurses 
+                    Xorg-7.7-bin Xorg-fonts
 
 # Make the ROOTFS
 RUN mkdir -p $ROOTFS
@@ -351,8 +350,15 @@ COPY rootfs/isolinux /tmp/iso/boot/isolinux
 COPY rootfs/make_iso.sh /
 
 RUN git clone https://github.com/hishamhm/htop.git
-RUN cd /htop && ./autogen.sh && ./configure --prefix=$ROOTFS --disable-unicode && make  && make install
+RUN cd /htop && ./autogen.sh && ./configure --prefix=$ROOTFS --enable-cgroup && make  && make install
 RUN cp /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
+RUN cp /usr/lib/x86_64-linux-gnu/libpanelw.so.5.9 $ROOTFS/usr/local/lib/libpanelw.so.5
+RUN cp /usr/lib/x86_64-linux-gnu/libmenuw.so.5.9 $ROOTFS/usr/local/lib/libmenuw.so.5
+RUN cp /usr/lib/x86_64-linux-gnu/libformw.so.5.9 $ROOTFS/usr/local/lib/libformw.so.5
+RUN cp /lib/x86_64-linux-gnu/libncursesw.so.5.9 $ROOTFS/usr/local/lib/libncursesw.so.5
+RUN cp /lib/x86_64-linux-gnu/libncurses.so.5.9 $ROOTFS/usr/local/lib/libncurses.so.5
+
+
 
 RUN /make_iso.sh
 
