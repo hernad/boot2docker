@@ -60,16 +60,16 @@ ENV TCL_REPO_BASE   http://tinycorelinux.net/6.x/x86_64
 ENV TCZ_DEPS        iptables \
                     iproute2 \
                     openssh openssl-1.0.0 \
-                    tar \
+                    tar parted \
                     gcc_libs \
                     acpid \
                     xz liblzma \
-                    git expat2 libiconv libidn libgpg-error libgcrypt libssh2 \
+                    git patch expat2 libiconv libidn libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
                     strace procps glib2 libtirpc libffi fuse \
-                    python \
-                    Xorg-7.7-bin
+                    nodejs python \
+                    aterm
 
 # Make the ROOTFS
 RUN mkdir -p $ROOTFS
@@ -321,12 +321,13 @@ RUN mv $ROOTFS/boot*.sh $ROOTFS/opt/ && \
 RUN mv $ROOTFS/shutdown.sh $ROOTFS/opt/shutdown.sh && \
 	chmod +x $ROOTFS/opt/shutdown.sh
 
+# hernad: no autologin serial console
 # Add serial console
-RUN echo "#!/bin/sh" > $ROOTFS/usr/local/bin/autologin && \
-	echo "/bin/login -f docker" >> $ROOTFS/usr/local/bin/autologin && \
-	chmod 755 $ROOTFS/usr/local/bin/autologin && \
-	echo 'ttyS0:2345:respawn:/sbin/getty -l /usr/local/bin/autologin 9600 ttyS0 vt100' >> $ROOTFS/etc/inittab && \
-	echo 'ttyS1:2345:respawn:/sbin/getty -l /usr/local/bin/autologin 9600 ttyS1 vt100' >> $ROOTFS/etc/inittab
+# RUN echo "#!/bin/sh" > $ROOTFS/usr/local/bin/autologin && \
+#	echo "/bin/login -f docker" >> $ROOTFS/usr/local/bin/autologin && \
+#	chmod 755 $ROOTFS/usr/local/bin/autologin && \
+#	echo 'ttyS0:2345:respawn:/sbin/getty -l /usr/local/bin/autologin 9600 ttyS0 vt100' >> $ROOTFS/etc/inittab && \
+#	echo 'ttyS1:2345:respawn:/sbin/getty -l /usr/local/bin/autologin 9600 ttyS1 vt100' >> $ROOTFS/etc/inittab
 
 # fix "su -"
 RUN echo root > $ROOTFS/etc/sysconfig/superuser
@@ -337,12 +338,14 @@ COPY rootfs/crontab $ROOTFS/var/spool/cron/crontabs/root
 # set ttyS0 115200
 COPY rootfs/inittab $ROOTFS/etc/inittab
 COPY rootfs/securetty $ROOTFS/etc/securetty
-
+COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
 COPY rootfs/zfs $ROOTFS/etc/rc.d/zfs
+
+RUN  mkdir -p $ROOTFS/usr/local/etc/ssh
+COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
 
 # Copy boot params
 COPY rootfs/isolinux /tmp/iso/boot/isolinux
-
 COPY rootfs/make_iso.sh /
 
 RUN /make_iso.sh

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Loading virtualbox server kernel driver"
+
+modprobe vboxdrv

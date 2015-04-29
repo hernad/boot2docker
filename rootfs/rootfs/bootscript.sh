@@ -1,5 +1,7 @@
 #!/bin/sh
 
+BOOT_DIR=/var/lib/boot2docker
+
 # Configure sysctl
 /etc/rc.d/sysctl
 
@@ -12,10 +14,10 @@
 /etc/rc.d/cgroupfs-mount
 # see https://github.com/tianon/cgroupfs-mount
 
-mkdir -p /var/lib/boot2docker/log
+mkdir -p $BOOT_DIR/log
 
 #import settings from profile (or unset them)
-test -f "/var/lib/boot2docker/profile" && . "/var/lib/boot2docker/profile"
+test -f "$BOOT_DIR/profile" && . "$BOOT_DIR/profile"
 
 # set the hostname
 /etc/rc.d/hostname
@@ -34,8 +36,8 @@ if grep -q '^docker:' /etc/passwd; then
     /bin/addgroup docker docker
 
     #preload data from boot2docker-cli
-    if [ -e "/var/lib/boot2docker/userdata.tar" ]; then
-        tar xf /var/lib/boot2docker/userdata.tar -C /home/docker/ > /var/log/userdata.log 2>&1
+    if [ -e "$BOOT_DIR/userdata.tar" ]; then
+        tar xf $BOOT_DIR/userdata.tar -C /home/docker/ > /var/log/userdata.log 2>&1
         rm -f 'boot2docker, please format-me'
         chown -R docker:staff /home/docker
     fi
@@ -59,18 +61,20 @@ ip a
 echo "-------------------"
 
 # Allow local bootsync.sh customisation
-if [ -e /var/lib/boot2docker/bootsync.sh ]; then
-    /var/lib/boot2docker/bootsync.sh
-    echo "------------------- ran /var/lib/boot2docker/bootsync.sh"
+if [ -e $BOOT_DIR/bootsync.sh ]; then
+    $BOOT_DIR/bootsync.sh
+    echo "------------------- ran $BOOT_DIR/bootsync.sh"
 fi
 
 # Launch Docker
 /etc/rc.d/docker
 
+/etc/rc.d/virtualbox
+
 # Allow local HD customisation
-if [ -e /var/lib/boot2docker/bootlocal.sh ]; then
-    /var/lib/boot2docker/bootlocal.sh > /var/log/bootlocal.log 2>&1 &
-    echo "------------------- ran /var/lib/boot2docker/bootlocal.sh"
+if [ -e $BOOT_DIR/bootlocal.sh ]; then
+    $BOOT_DIR/bootlocal.sh > /var/log/bootlocal.log 2>&1 &
+    echo "------------------- ran $BOOT_DIR/bootlocal.sh"
 fi
 
 # Execute automated_script
