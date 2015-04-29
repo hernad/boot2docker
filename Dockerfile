@@ -275,6 +275,7 @@ RUN chown root.root $ROOTFS/opt
 RUN chown root.root $ROOTFS/opt/VirtualBox
 RUN chmod 4755 $ROOTFS/opt/VirtualBox/VBoxHeadless
 
+RUN cd /opt/VirtualBox/src/vboxhost && make && make install
 
 # Install the kernel modules in $ROOTFS                                                                                         
 RUN cd $LINUX_KERNEL && \                                                                                                       
