@@ -4,5 +4,5 @@ echo "Loading virtualbox server kernel driver"
 
 modprobe vboxdrv
 modprobe vboxnetadp
-modprobe vobxnetflt
+modprobe vboxnetflt
 modprobe vboxpci
