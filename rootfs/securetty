@@ -4,7 +4,7 @@ console
 
 # For people with serial port consoles
 ttyS0
-ttyS1
+#ttyS1
 
 # Standard consoles
 tty1
