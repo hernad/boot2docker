@@ -335,6 +335,8 @@ RUN mv $ROOTFS/shutdown.sh $ROOTFS/opt/shutdown.sh && \
 # fix "su -"
 RUN echo root > $ROOTFS/etc/sysconfig/superuser
 
+RUN rm -r -f $ROOTFS/opt/VirtualBox
+
 # crontab
 COPY rootfs/crontab $ROOTFS/var/spool/cron/crontabs/root
 
