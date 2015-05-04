@@ -1,5 +1,7 @@
 #!/bin/sh
 
+BOOT_DIR=/opt/boot
+
 : ${NTP_SERVER:=pool.ntp.org}
 if [ -n "$NTP_SERVER" ]; then
 	# Wait on the network
@@ -12,7 +14,7 @@ if [ -n "$NTP_SERVER" ]; then
 		fi
 	done
 	
-	ntpd -d -n -p $NTP_SERVER > /var/lib/boot2docker/log/ntpd.log 2>&1 &
+	ntpd -d -n -p $NTP_SERVER > $BOOT_DIR/log/ntpd.log 2>&1 &
 else
-	echo 'NTP_SERVER not set; skipping starting ntpd' > /var/lib/boot2docker/log/ntpd.log
+	echo 'NTP_SERVER not set; skipping starting ntpd' > $BOOT_DIR/log/ntpd.log
 fi

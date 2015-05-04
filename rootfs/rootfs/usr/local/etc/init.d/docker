@@ -2,17 +2,19 @@
 # docker daemon start script
 [ $(id -u) = 0 ] || { echo 'must be root' ; exit 1; }
 
+BOOT_DIR=/opt/boot
+
 #import settings from profile (e.g. HTTP_PROXY, HTTPS_PROXY)
-test -f '/var/lib/boot2docker/profile' && . '/var/lib/boot2docker/profile'
+test -f '$BOOT_DIR/profile' && . '$BOOT_DIR/profile'
 
 : ${DOCKER_HOST:='-H tcp://0.0.0.0:2375'}
 : ${DOCKER_TLS:=auto}
 : ${DOCKER_STORAGE:=auto}
 : ${DOCKER_DIR:=/var/lib/docker}
 : ${DOCKER_ULIMITS:=1048576}
-: ${DOCKER_LOGFILE:=/var/lib/boot2docker/docker.log}
+: ${DOCKER_LOGFILE:=$BOOT_DIR/docker.log}
 
-: ${CERTDIR:=/var/lib/boot2docker/tls/}
+: ${CERTDIR:=$BOOT_DIR/tls/}
 : ${CERT_INTERFACES:='eth0 eth1'}
 : ${CACERT:="${CERTDIR}ca.pem"}
 : ${CAKEY:="${CERTDIR}cakey.pem"}
