@@ -618,6 +618,7 @@ fi
 
 if ! grep -q "^green/docker_home" /proc/mounts; then
 	mount -t green/docker_home /home/docker
+        chown docker:docker /home/docker
 	echo "${GREEN}Docker home mounted.${NORMAL}"
 fi
 
