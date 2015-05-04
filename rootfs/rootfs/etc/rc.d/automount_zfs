@@ -14,8 +14,8 @@ do
  fi
 done
 
-#mv /opt /opt.orig
-
+mkdir -p /home
+mkdir -p /opt
 /usr/local/sbin/zpool import green >> /tmp/zfs.log 2>&1
 
 /sbin/swapon  /dev/zvol/green/swap

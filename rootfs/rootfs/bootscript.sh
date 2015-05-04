@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BOOT_DIR=/var/lib/boot2docker
+BOOT_DIR=/opt/boot
 
 # Configure sysctl
 /etc/rc.d/sysctl
