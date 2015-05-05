@@ -295,7 +295,8 @@ RUN chown root.root $ROOTFS/opt
 RUN chown root.root $ROOTFS/opt/VirtualBox
 RUN chmod 4755 $ROOTFS/opt/VirtualBox/VBoxHeadless
 
-RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL make && KERN_DIR=$LINUX_KERNEL make install
+RUN ln -s /lib/modules/$KERNEL_VERSION-$LINUX_BRAND /lib/modules/$(uname -r)
+RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL make install
 
 # Install the kernel modules in $ROOTFS                                                                                         
 RUN cd $LINUX_KERNEL && \                                                                                                       
@@ -318,8 +319,6 @@ RUN cd /zfs && tar xvf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER && ./configure --w
 # Install the kernel modules in $ROOTFS                                                                                         
 RUN cd $LINUX_KERNEL && \                                                                                                       
     make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install                                                              
-
-RUN mkdir -p $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND
 
 # Make sure that all the modules we might have added are recognized (especially VBox guest additions)
 RUN depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
