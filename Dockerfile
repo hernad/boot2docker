@@ -26,7 +26,7 @@ ENV GCC_M -m64
 ENV KERNEL_VERSION  3.19.6
 
 ENV LINUX_KERNEL /usr/src/linux
-
+ENV LINUX_BRAND  greenbox
 
 ENV AUFS_VER        aufs3
 #ENV AUFS_BRANCH     aufs3.18.1+
@@ -172,7 +172,7 @@ RUN curl -L -o $ROOTFS/usr/local/bin/generate_cert https://github.com/SvenDowide
 #    rm VBoxGuestAdditions*.tar.bz2 && \
 #    \
 #    KERN_DIR=$LINUX_KERNEL make -C amd64/src/vboxguest-${VBOX_VERSION} && \
-#    cp amd64/src/vboxguest-${VBOX_VERSION}/*.ko $ROOTFS/lib/modules/$KERNEL_VERSION-tinycore64/ && \
+#    cp amd64/src/vboxguest-${VBOX_VERSION}/*.ko $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/ && \
 #    \
 #    mkdir -p $ROOTFS/sbin && \
 #    cp x86/lib/VBoxGuestAdditions/mount.vboxsf $ROOTFS/sbin/
@@ -226,7 +226,7 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse
 # RUN cd $ROOTFS && cd usr/local/lib && ln -s libdnet.1 libdumbnet.so.1
 
 # Make sure that all the modules we might have added are recognized (especially VBox guest additions)
-# RUN depmod -a -b $ROOTFS $KERNEL_VERSION-tinycore64
+# RUN depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
 
 COPY VERSION $ROOTFS/etc/version
 RUN cp -v $ROOTFS/etc/version /tmp/iso/version
@@ -319,7 +319,7 @@ RUN cd $LINUX_KERNEL && \
     make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install                                                              
 
 # Make sure that all the modules we might have added are recognized (especially VBox guest additions)
-RUN depmod -a -b $ROOTFS $KERNEL_VERSION-tinycore64
+RUN depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
 
 
 # Make sure init scripts are executable
