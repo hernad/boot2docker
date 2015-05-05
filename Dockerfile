@@ -64,6 +64,8 @@ RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
 
 COPY kernel_config $LINUX_KERNEL/.config
 
+RUN  sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL/.config
+
 RUN jobs=$(nproc); \
     cd $LINUX_KERNEL && \
     make -j ${jobs} oldconfig && \
