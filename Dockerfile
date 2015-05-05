@@ -26,29 +26,25 @@ ENV GCC_M -m64
 ENV KERNEL_VERSION  3.19.6
 
 ENV LINUX_KERNEL /usr/src/linux
-# http://sourceforge.net/p/aufs/aufs3-standalone/ref/master/branches/
+
 
 ENV AUFS_VER        aufs3
 #ENV AUFS_BRANCH     aufs3.18.1+
 #ENV AUFS_COMMIT     863c3b76303a1ebea5b6a5b1b014715ac416f913
 ENV AUFS_BRANCH     aufs3.19
 ENV AUFS_COMMIT     cb95a08bdd37434ca8ba3a92679a5f33c48d7524
-
+# http://sourceforge.net/p/aufs/aufs3-standalone/ref/master/branches/
 ENV AUFS_GIT        http://git.code.sf.net/p/aufs/aufs3-standalone
 
 ENV AUFS_UTIL_BRANCH aufs3.9 
 ENV AUFS_UTIL_GIT    http://git.code.sf.net/p/aufs/aufs-util
  
-
 # v4 kernel
 # ENV AUFS_VER     aufs4
 # ENV AUFS_GIT https://github.com/sfjro/aufs4-standalone
 # ENV AUFS_BRANCH  aufs4.0
 # ENV AUFS_COMMIT  170c7ace871c84ba70646f642003edf2d9162144
 
-
-
-# we use AUFS_COMMIT to get stronger repeatability guarantees
 
 # Fetch the kernel sources
 RUN mkdir -p /usr/src
