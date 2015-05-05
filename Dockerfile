@@ -22,11 +22,32 @@ RUN apt-get update && apt-get -y install  unzip \
 
 ENV GCC_M -m64
 # https://www.kernel.org/
-ENV KERNEL_VERSION  3.18.11
+# ENV KERNEL_VERSION  3.18.12
+ENV KERNEL_VERSION  3.19.6
+
 ENV LINUX_KERNEL /usr/src/linux
 # http://sourceforge.net/p/aufs/aufs3-standalone/ref/master/branches/
-ENV AUFS_BRANCH     aufs3.18.1+
-ENV AUFS_COMMIT     863c3b76303a1ebea5b6a5b1b014715ac416f913
+
+ENV AUFS_VER        aufs3
+#ENV AUFS_BRANCH     aufs3.18.1+
+#ENV AUFS_COMMIT     863c3b76303a1ebea5b6a5b1b014715ac416f913
+ENV AUFS_BRANCH     aufs3.19
+ENV AUFS_COMMIT     cb95a08bdd37434ca8ba3a92679a5f33c48d7524
+
+ENV AUFS_GIT        http://git.code.sf.net/p/aufs/aufs3-standalone
+
+ENV AUFS_UTIL_BRANCH aufs3.9 
+ENV AUFS_UTIL_GIT    http://git.code.sf.net/p/aufs/aufs-util
+ 
+
+# v4 kernel
+# ENV AUFS_VER     aufs4
+# ENV AUFS_GIT https://github.com/sfjro/aufs4-standalone
+# ENV AUFS_BRANCH  aufs4.0
+# ENV AUFS_COMMIT  170c7ace871c84ba70646f642003edf2d9162144
+
+
+
 # we use AUFS_COMMIT to get stronger repeatability guarantees
 
 # Fetch the kernel sources
@@ -35,15 +56,15 @@ RUN curl --retry 10 https://www.kernel.org/pub/linux/kernel/v3.x/linux-$KERNEL_V
     mv /linux-$KERNEL_VERSION $LINUX_KERNEL
 
 # Download AUFS and apply patches and files, then remove it
-RUN git clone -b $AUFS_BRANCH http://git.code.sf.net/p/aufs/aufs3-standalone && \
-    cd aufs3-standalone && \
+RUN git clone -b $AUFS_BRANCH $AUFS_GIT/$AUFS_VER-standalone && \
+    cd $AUFS_VER-standalone && \
     git checkout $AUFS_COMMIT && \
     cd $LINUX_KERNEL && \
-    cp -r /aufs3-standalone/Documentation $LINUX_KERNEL && \
-    cp -r /aufs3-standalone/fs $LINUX_KERNEL && \
-    cp -r /aufs3-standalone/include/uapi/linux/aufs_type.h $LINUX_KERNEL/include/uapi/linux/ &&\
-    for patch in aufs3-kbuild aufs3-base aufs3-mmap aufs3-standalone aufs3-loopback; do \
-        patch -p1 < /aufs3-standalone/$patch.patch; \
+    cp -r /$AUFS_VER-standalone/Documentation $LINUX_KERNEL && \
+    cp -r /$AUFS_VER-standalone/fs $LINUX_KERNEL && \
+    cp -r /$AUFS_VER-standalone/include/uapi/linux/aufs_type.h $LINUX_KERNEL/include/uapi/linux/ &&\
+    for patch in $AUFS_VER-kbuild $AUFS_VER-base $AUFS_VER-mmap $AUFS_VER-standalone $AUFS_VER-loopback; do \
+        patch -p1 < /$AUFS_VER-standalone/$patch.patch; \
     done
 
 COPY kernel_config $LINUX_KERNEL/.config
@@ -112,9 +133,9 @@ RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.or
 RUN cd $LINUX_KERNEL && \
     make INSTALL_HDR_PATH=/tmp/kheaders headers_install && \
     cd / && \
-    git clone http://git.code.sf.net/p/aufs/aufs-util && \
+    git clone $AUFS_UTIL_GIT aufs-util && \
     cd /aufs-util && \
-    git checkout aufs3.9 && \
+    git checkout $AUFS_UTIL_BRANCH && \
     CPPFLAGS="$GCC_M -I/tmp/kheaders/include" CLFAGS=$CPPFLAGS LDFLAGS=$CPPFLAGS make && \
     DESTDIR=$ROOTFS make install && \
     rm -rf /tmp/kheaders
