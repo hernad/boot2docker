@@ -25,7 +25,7 @@ ENV GCC_M -m64
 # ENV KERNEL_VERSION  3.18.12
 ENV KERNEL_VERSION  3.19.6
 
-ENV LINUX_KERNEL /usr/src/linux
+ENV LINUX_KERNEL_SOURCE /usr/src/linux
 ENV LINUX_BRAND  greenbox
 
 ENV AUFS_VER        aufs3
@@ -48,26 +48,26 @@ ENV AUFS_UTIL_GIT    http://git.code.sf.net/p/aufs/aufs-util
 # Fetch the kernel sources
 RUN mkdir -p /usr/src
 RUN curl --retry 10 https://www.kernel.org/pub/linux/kernel/v3.x/linux-$KERNEL_VERSION.tar.xz | tar -C / -xJ && \
-    mv /linux-$KERNEL_VERSION $LINUX_KERNEL
+    mv /linux-$KERNEL_VERSION $LINUX_KERNEL_SOURCE
 
 # Download AUFS and apply patches and files, then remove it
 RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
     cd $AUFS_VER-standalone && \
     git checkout $AUFS_COMMIT && \
-    cd $LINUX_KERNEL && \
-    cp -r /$AUFS_VER-standalone/Documentation $LINUX_KERNEL && \
-    cp -r /$AUFS_VER-standalone/fs $LINUX_KERNEL && \
-    cp -r /$AUFS_VER-standalone/include/uapi/linux/aufs_type.h $LINUX_KERNEL/include/uapi/linux/ &&\
+    cd $LINUX_KERNEL_SOURCE && \
+    cp -r /$AUFS_VER-standalone/Documentation $LINUX_KERNEL_SOURCE && \
+    cp -r /$AUFS_VER-standalone/fs $LINUX_KERNEL_SOURCE && \
+    cp -r /$AUFS_VER-standalone/include/uapi/linux/aufs_type.h $LINUX_KERNEL_SOURCE/include/uapi/linux/ &&\
     for patch in $AUFS_VER-kbuild $AUFS_VER-base $AUFS_VER-mmap $AUFS_VER-standalone $AUFS_VER-loopback; do \
         patch -p1 < /$AUFS_VER-standalone/$patch.patch; \
     done
 
-COPY kernel_config $LINUX_KERNEL/.config
+COPY kernel_config $LINUX_KERNEL_SOURCE/.config
 
-RUN  sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL/.config
+RUN  sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.config
 
 RUN jobs=$(nproc); \
-    cd $LINUX_KERNEL && \
+    cd $LINUX_KERNEL_SOURCE && \
     make -j ${jobs} oldconfig && \
     make -j ${jobs} bzImage && \
     make -j ${jobs} modules
@@ -98,7 +98,7 @@ RUN mkdir -p $ROOTFS
 RUN mkdir -p /tmp/iso/boot
 
 # Install the kernel modules in $ROOTFS
-RUN cd $LINUX_KERNEL && \
+RUN cd $LINUX_KERNEL_SOURCE && \
     make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install
 
 # Remove useless kernel modules, based on unclejack/debian2docker
@@ -127,7 +127,7 @@ RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.or
     cp -av `pwd`/output/lib64/* $ROOTFS/usr/local/lib
 
 # Make sure the kernel headers are installed for aufs-util, and then build it
-RUN cd $LINUX_KERNEL && \
+RUN cd $LINUX_KERNEL_SOURCE && \
     make INSTALL_HDR_PATH=/tmp/kheaders headers_install && \
     cd / && \
     git clone $AUFS_UTIL_GIT aufs-util && \
@@ -138,7 +138,7 @@ RUN cd $LINUX_KERNEL && \
     rm -rf /tmp/kheaders
 
 # Prepare the ISO directory with the kernel
-RUN cp -v $LINUX_KERNEL/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
+RUN cp -v $LINUX_KERNEL_SOURCE/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
 
 # Download the rootfs, don't unpack it though:
 RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64.gz
@@ -172,7 +172,7 @@ RUN curl -L -o $ROOTFS/usr/local/bin/generate_cert https://github.com/SvenDowide
 #    mkdir x86 && tar -C x86 -xjf VBoxGuestAdditions-x86.tar.bz2 && \
 #    rm VBoxGuestAdditions*.tar.bz2 && \
 #    \
-#    KERN_DIR=$LINUX_KERNEL make -C amd64/src/vboxguest-${VBOX_VERSION} && \
+#    KERN_DIR=$LINUX_KERNEL_SOURCE make -C amd64/src/vboxguest-${VBOX_VERSION} && \
 #    cp amd64/src/vboxguest-${VBOX_VERSION}/*.ko $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/ && \
 #    \
 #    mkdir -p $ROOTFS/sbin && \
@@ -254,7 +254,7 @@ COPY rootfs/rootfs $ROOTFS
 
 # hernad: no hyper-v
 # Build the Hyper-V KVP Daemon
-# RUN cd $LINUX_KERNEL && \
+# RUN cd $LINUX_KERNEL_SOURCE && \
 #    make headers_install INSTALL_HDR_PATH=/usr && \
 #    cd /linux-kernel/tools/hv && \
 #    sed -i 's/\(^CFLAGS = .*\)/\1 '"$GCC_M"'/' Makefile && \
@@ -295,32 +295,27 @@ RUN chown root.root $ROOTFS/opt
 RUN chown root.root $ROOTFS/opt/VirtualBox
 RUN chmod 4755 $ROOTFS/opt/VirtualBox/VBoxHeadless
 
-RUN ln -s /lib/modules/$KERNEL_VERSION-$LINUX_BRAND /lib/modules/$(uname -r)
-RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL make install
-
-# Install the kernel modules in $ROOTFS                                                                                         
-RUN cd $LINUX_KERNEL && \                                                                                                       
-    make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install
+RUN echo ignoring depmod -a errors
+RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install || true
 
 RUN mkdir /zfs
 
 ENV ZFS_VER 0.6.4 
 RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz
-#RUN cd $LINUX_KERNEL && make modules
-RUN cd /zfs && tar xvf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER && ./configure --with-linux=$LINUX_KERNEL && make && make install 
+#RUN cd $LINUX_KERNEL_SOURCE && make modules
+RUN cd /zfs && tar xvf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
 
 # hernad: zfs build demands librt from debian
 RUN cp /lib/x86_64-linux-gnu/librt-2.13.so $ROOTFS/lib/
 RUN rm $ROOTFS/lib/librt.so.1
 RUN cd $ROOTFS/lib && ln -s librt-2.13.so librt.so.1
 RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/zfs-$ZFS_VER.tar.gz                              
-RUN cd /zfs && tar xvf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER && ./configure --with-linux=$LINUX_KERNEL && make && DESTDIR=$ROOTFS make install 
+RUN cd /zfs && tar xvf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && DESTDIR=$ROOTFS make install 
                                                                                                                                 
 # Install the kernel modules in $ROOTFS                                                                                         
-RUN cd $LINUX_KERNEL && \                                                                                                       
+RUN cd $LINUX_KERNEL_SOURCE && \                                                                                                       
     make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install                                                              
 
-# Make sure that all the modules we might have added are recognized (especially VBox guest additions)
 RUN depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
 
 
