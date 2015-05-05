@@ -32,7 +32,7 @@ ENV AUFS_VER        aufs3
 #ENV AUFS_BRANCH     aufs3.18.1+
 #ENV AUFS_COMMIT     863c3b76303a1ebea5b6a5b1b014715ac416f913
 ENV AUFS_BRANCH     aufs3.19
-ENV AUFS_COMMIT     cb95a08bdd37434ca8ba3a92679a5f33c48d7524
+ENV AUFS_COMMIT     cb95a0
 # http://sourceforge.net/p/aufs/aufs3-standalone/ref/master/branches/
 ENV AUFS_GIT        http://git.code.sf.net/p/aufs/aufs3-standalone
 
