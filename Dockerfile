@@ -34,8 +34,7 @@ ENV AUFS_VER        aufs3
 ENV AUFS_BRANCH     aufs3.19
 ENV AUFS_COMMIT     cb95a0
 # http://sourceforge.net/p/aufs/aufs3-standalone/ref/master/branches/
-ENV AUFS_GIT        http://git.code.sf.net/p/aufs/aufs3-standalone
-
+ENV AUFS_GIT        git://git.code.sf.net/p/aufs/aufs3-standalone
 ENV AUFS_UTIL_BRANCH aufs3.9 
 ENV AUFS_UTIL_GIT    http://git.code.sf.net/p/aufs/aufs-util
  
@@ -52,7 +51,7 @@ RUN curl --retry 10 https://www.kernel.org/pub/linux/kernel/v3.x/linux-$KERNEL_V
     mv /linux-$KERNEL_VERSION $LINUX_KERNEL
 
 # Download AUFS and apply patches and files, then remove it
-RUN git clone -b $AUFS_BRANCH $AUFS_GIT/$AUFS_VER-standalone && \
+RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
     cd $AUFS_VER-standalone && \
     git checkout $AUFS_COMMIT && \
     cd $LINUX_KERNEL && \
