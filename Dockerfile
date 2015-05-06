@@ -316,6 +316,7 @@ RUN cp /lib/x86_64-linux-gnu/libncurses.so.5.9 $ROOTFS/usr/local/lib/libncurses.
 
 RUN echo "--------- tmux & libevent install ------------"
 RUN curl -L -O  https://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-2.0.22-stable.tar.gz
+RUN tar xvf libevent-2.0.22-stable.tar.gz
 RUN cd /libevent-2.0.22-stable && sh autogen.sh && ./configure && make install && cp .libs/*so* $ROOTFS/usr/local/lib/
 
 RUN git clone git://git.code.sf.net/p/tmux/tmux-code tmux
