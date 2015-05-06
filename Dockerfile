@@ -87,8 +87,19 @@ ENV TCZ_DEPS        iptables \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
                     strace procps glib2 libtirpc libffi fuse \
-                    samba python \
-                    Xorg-7.7-bin Xorg-fonts  aterm libXext libX11 libxcb libXaw libXmu libXext libX11 libxcb libXt libXpm libXcomposite libXcursor libXrender libXfixes libXdamage libXfont freetype
+                    python \
+                    libXaw libXmu libXext libX11 libxcb libXt libXpm
+
+#                    Xorg-7.7-bin Xorg-fonts  aterm libXext libX11 libxcb libXaw libXmu libXext libX11 libxcb libXt libXpm libXcomposite libXcursor libXrender libXfixes libXdamage libXfont freetype
+
+tce-load -wi libXaw
+libXaw.tcz.dep OK
+libXmu.tcz.dep OK
+libXext.tcz.dep OK
+libX11.tcz.dep OK
+libxcb.tcz.dep OK
+libXt.tcz.dep OK
+libXpm.tcz.dep OK
 
 
 # Make the ROOTFS
