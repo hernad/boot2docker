@@ -137,10 +137,10 @@ ENV TCZ_DEPS_0      iptables \
                     gcc_libs \
                     acpid \
                     xz liblzma \
-                    git patch expat2 pcre libiconv libidn libgpg-error libgcrypt libssh2 \
+                    git patch expat2 pcre libidn libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
-                    strace procps glib2 libtirpc 
+                    strace glib2 libtirpc 
 
 # Install the base tiny linux dependencies
 RUN for dep in $TCZ_DEPS_0 ; do \
