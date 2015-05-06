@@ -77,18 +77,6 @@ RUN jobs=$(nproc); \
 ENV ROOTFS          /rootfs
 ENV TCL_REPO_BASE   http://tinycorelinux.net/6.x/x86_64
 
-ENV TCZ_DEPS_0      iptables \
-                    iproute2 \
-                    openssh openssl-1.0.0 \
-                    tar e2fsprogs \
-                    gcc_libs \
-                    acpid \
-                    xz liblzma \
-                    git patch expat2 pcre libiconv libidn libgpg-error libgcrypt libssh2 \
-                    nfs-utils tcp_wrappers portmap rpcbind libtirpc \
-                    curl ntpclient \
-                    strace procps glib2 libtirpc 
-
 # Make the ROOTFS
 RUN mkdir -p $ROOTFS
 
@@ -141,6 +129,19 @@ RUN cp -v $LINUX_KERNEL_SOURCE/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
 # Download the rootfs, don't unpack it though:
 RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64.gz
 
+
+ENV TCZ_DEPS_0      iptables \
+                    iproute2 \
+                    openssh openssl-1.0.0 \
+                    tar e2fsprogs \
+                    gcc_libs \
+                    acpid \
+                    xz liblzma \
+                    git patch expat2 pcre libiconv libidn libgpg-error libgcrypt libssh2 \
+                    nfs-utils tcp_wrappers portmap rpcbind libtirpc \
+                    curl ntpclient \
+                    strace procps glib2 libtirpc 
+
 # Install the base tiny linux dependencies
 RUN for dep in $TCZ_DEPS_0 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
@@ -149,8 +150,9 @@ RUN for dep in $TCZ_DEPS_0 ; do \
           echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
           exit 1 ;\
         else \
-          unsquashfs -f -d $ROOTFS /tmp/$dep.tcz && \
+          unsquashfs -i -f -d $ROOTFS /tmp/$dep.tcz && \
           rm -f /tmp/$dep.tcz ;\
+          if [ "$?" != "0" ] ; then exit 1 ; fi ;\
         fi ;\
     done
 
@@ -158,79 +160,10 @@ RUN for dep in $TCZ_DEPS_0 ; do \
 RUN curl -L -o $ROOTFS/usr/local/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/0.1/generate_cert-0.1-linux-386/ && \
     chmod +x $ROOTFS/usr/local/bin/generate_cert
 
-# hernad: no vbox guest additions
-# Build VBox guest additions
-# For future reference, we have to use x86 versions of several of these bits because TCL doesn't support ELFCLASS64
-# (... and we can't use VBoxControl or VBoxService at all because of this)
-#ENV VBOX_VERSION 4.3.26
-#RUN mkdir -p /vboxguest && \
-#    cd /vboxguest && \
-#    \
-#    curl -L -o vboxguest.iso http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VBoxGuestAdditions_${VBOX_VERSION}.iso && \
-#    7z x vboxguest.iso -ir'!VBoxLinuxAdditions.run' && \
-#    rm vboxguest.iso && \
-#    \
-#    sh VBoxLinuxAdditions.run --noexec --target . && \
-#    mkdir amd64 && tar -C amd64 -xjf VBoxGuestAdditions-amd64.tar.bz2 && \
-#    mkdir x86 && tar -C x86 -xjf VBoxGuestAdditions-x86.tar.bz2 && \
-#    rm VBoxGuestAdditions*.tar.bz2 && \
-#    \
-#    KERN_DIR=$LINUX_KERNEL_SOURCE make -C amd64/src/vboxguest-${VBOX_VERSION} && \
-#    cp amd64/src/vboxguest-${VBOX_VERSION}/*.ko $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/ && \
-#    \
-#    mkdir -p $ROOTFS/sbin && \
-#    cp x86/lib/VBoxGuestAdditions/mount.vboxsf $ROOTFS/sbin/
-
-# Build VMware Tools
-# ENV OVT_VERSION 9.4.6-1770165
-
-# Download and prepare ovt source
-# RUN mkdir -p /vmtoolsd/open-vm-tools \
-#    && curl -L http://downloads.sourceforge.net/open-vm-tools/open-vm-tools-$OVT_VERSION.tar.gz \
-#        | tar -xzC /vmtoolsd/open-vm-tools --strip-components 1
-
-# Apply patches to make open-vm-tools compile with a recent 3.18.x kernel and
-# a network script that knows how to plumb/unplumb nics on a busybox system,
-# this will be removed once a new ovt version is released.
-#RUN cd /vmtoolsd && \
-#    curl -L -o open-vm-tools-3.x.x-patches.patch https://gist.github.com/frapposelli/5506651fa6f3d25d5760/raw/475f8fb2193549c10a477d506de40639b04fa2a7/open-vm-tools-3.x.x-patches.patch &&\
-#    patch -p1 < open-vm-tools-3.x.x-patches.patch && rm open-vm-tools-3.x.x-patches.patch
-
 RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse2 libtool autoconf \
                                                                          libglib2.0-dev libdumbnet-dev:i386 \
                                                                          libdumbnet1:i386 libfuse2:i386 libfuse-dev \
                                                                          libglib2.0-0:i386 libtirpc-dev libtirpc1:i386
-# hernad: no i386
-# Horrible Hack
-#RUN ln -s /lib/i386-linux-gnu/libglib-2.0.so.0.3200.4 /lib/i386-linux-gnu/libglib-2.0.so &&\
-#    ln -s /lib/i386-linux-gnu/libtirpc.so.1.0.10 /lib/i386-linux-gnu/libtirpc.so &&\
-#    ln -s /usr/lib/i386-linux-gnu/libgthread-2.0.so.0 /usr/lib/i386-linux-gnu/libgthread-2.0.so &&\
-#    ln -s /usr/lib/i386-linux-gnu/libgmodule-2.0.so.0 /usr/lib/i386-linux-gnu/libgmodule-2.0.so &&\
-#    ln -s /usr/lib/i386-linux-gnu/libgobject-2.0.so.0 /usr/lib/i386-linux-gnu/libgobject-2.0.so &&\
-#    ln -s /lib/i386-linux-gnu/libfuse.so.2 /lib/i386-linux-gnu/libfuse.so
-
-# hernad: no vmware
-# Compile open-vm-tools
-#RUN cd /vmtoolsd/open-vm-tools && autoreconf -i &&\
-#    CC="gcc $GCC_M" CXX="g++ $GCC_M" ./configure --host=i486-pc-linux-gnu --build=i486-pc-linux-gnu \
-#                --without-kernel-modules --without-pam --without-procps --without-x --without-icu &&\
-#    make CC="gcc $GCC_M" CXX="g++ $GCC_M" LIBS="-ltirpc" CFLAGS="-Wno-implicit-function-declaration" &&\
-#    make DESTDIR=$ROOTFS install
-
-# Download and compile libdnet as open-vm-tools rely on it.
-# ENV LIBDNET libdnet-1.11
-
-#RUN mkdir -p /vmtoolsd/${LIBDNET} &&\
-#    curl -L http://sourceforge.net/projects/libdnet/files/libdnet/${LIBDNET}/${LIBDNET}.tar.gz \
-#        | tar -xzC /vmtoolsd/${LIBDNET} --strip-components 1 &&\
-#    cd /vmtoolsd/${LIBDNET} && ./configure --build=i486-pc-linux-gnu &&\
-#    make CC="gcc $GCC_M" CXX="g++ $GCC_M" &&\
-#    make install && make DESTDIR=$ROOTFS install
-
-# RUN cd $ROOTFS && cd usr/local/lib && ln -s libdnet.1 libdumbnet.so.1
-
-# Make sure that all the modules we might have added are recognized (especially VBox guest additions)
-# RUN depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
 
 COPY VERSION $ROOTFS/etc/version
 RUN cp -v $ROOTFS/etc/version /tmp/iso/version
@@ -390,9 +323,9 @@ RUN for dep in $TCZ_DEPS_X ; do \
           echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
           exit 1 ;\
         else \
-          unsquashfs -f -d $ROOTFS /tmp/$dep.tcz && \
+          unsquashfs -i -f -d $ROOTFS /tmp/$dep.tcz && \
           rm -f /tmp/$dep.tcz ;\
-          if [ $? == 1 ] ; then exit 1 ; fi ;\
+          if [ "$?" != "0" ] ; then exit 1 ; fi ;\
         fi ;\
     done
 
@@ -405,8 +338,9 @@ RUN for dep in $TCZ_DEPS_1 ; do \
           echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
           exit 1 ;\
         else \
-          unsquashfs -f -d $ROOTFS /tmp/$dep.tcz && \
+          unsquashfs -i -f -d $ROOTFS /tmp/$dep.tcz && \
           rm -f /tmp/$dep.tcz ;\
+          if [ "$?" != "0" ] ; then exit 1 ; fi ;\
         fi ;\
     done
 
