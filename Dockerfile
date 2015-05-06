@@ -76,21 +76,18 @@ RUN jobs=$(nproc); \
 
 ENV ROOTFS          /rootfs
 ENV TCL_REPO_BASE   http://tinycorelinux.net/6.x/x86_64
-ENV TCZ_DEPS        iptables \
+
+ENV TCZ_DEPS_0      iptables \
                     iproute2 \
                     openssh openssl-1.0.0 \
                     tar e2fsprogs \
                     gcc_libs \
                     acpid \
                     xz liblzma \
-                    git patch expat2 libiconv libidn libgpg-error libgcrypt libssh2 \
+                    git patch expat2 pcre libiconv libidn libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
-                    strace procps glib2 libtirpc libffi fuse \
-                    python \
-                    Xorg-7.7-bin libpng libXau libXext libxcb libXdmcp libX11 libICE libXt libSM libXmu aterm
-
-#                    Xorg-7.7-bin Xorg-fonts  aterm libXext libX11 libxcb libXaw libXmu libXext libX11 libxcb libXt libXpm libXcomposite libXcursor libXrender libXfixes libXdamage libXfont freetype
+                    strace procps glib2 libtirpc 
 
 # Make the ROOTFS
 RUN mkdir -p $ROOTFS
@@ -144,8 +141,8 @@ RUN cp -v $LINUX_KERNEL_SOURCE/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
 # Download the rootfs, don't unpack it though:
 RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64.gz
 
-# Install the TCZ dependencies
-RUN for dep in $TCZ_DEPS ; do \
+# Install the base tiny linux dependencies
+RUN for dep in $TCZ_DEPS_0 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
         curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
         if [ ! -s /tmp/$dep.tcz ] ; then \
@@ -381,6 +378,35 @@ RUN cp /usr/lib/x86_64-linux-gnu/libformw.so.5.9 $ROOTFS/usr/local/lib/libformw.
 RUN cp /lib/x86_64-linux-gnu/libncursesw.so.5.9 $ROOTFS/usr/local/lib/libncursesw.so.5
 RUN cp /lib/x86_64-linux-gnu/libncurses.so.5.9 $ROOTFS/usr/local/lib/libncurses.so.5
 
+
+ENV TCZ_DEPS_X      Xorg-7.7-bin libpng libXau libXext libxcb libXdmcp libX11 libICE libXt libSM libXmu aterm \
+                    libXcursor libXrender libXinerama libGL libXdamage libXfixes libXxf86vm libdrm \
+                    libXfont freetype harfbuzz fontconfig Xorg-fonts
+RUN for dep in $TCZ_DEPS_X ; do \
+        echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
+        curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
+        if [ ! -s /tmp/$dep.tcz ] ; then \
+          echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
+          exit 1 ;\
+        else \
+          unsquashfs -f -d $ROOTFS /tmp/$dep.tcz && \
+          rm -f /tmp/$dep.tcz ;\
+        fi ;\
+    done
+
+
+ENV TCZ_DEPS_1      python fuse libffi  samba samba-libs
+RUN for dep in $TCZ_DEPS_1 ; do \
+        echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
+        curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
+        if [ ! -s /tmp/$dep.tcz ] ; then \
+          echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
+          exit 1 ;\
+        else \
+          unsquashfs -f -d $ROOTFS /tmp/$dep.tcz && \
+          rm -f /tmp/$dep.tcz ;\
+        fi ;\
+    done
 
 
 RUN /make_iso.sh
