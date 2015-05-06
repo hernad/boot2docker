@@ -88,7 +88,7 @@ ENV TCZ_DEPS        iptables \
                     curl ntpclient \
                     strace procps glib2 libtirpc libffi fuse \
                     python \
-                    libXaw libXmu libXext libX11 libxcb libXt libXpm
+                    Xorg-7.7-bin libpng libXau
 
 #                    Xorg-7.7-bin Xorg-fonts  aterm libXext libX11 libxcb libXaw libXmu libXext libX11 libxcb libXt libXpm libXcomposite libXcursor libXrender libXfixes libXdamage libXfont freetype
 
@@ -145,11 +145,17 @@ RUN cp -v $LINUX_KERNEL_SOURCE/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
 RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64.gz
 
 # Install the TCZ dependencies
-RUN for dep in $TCZ_DEPS; do \
-    echo "Download $TCL_REPO_BASE/tcz/$dep.tcz" &&\
+RUN for dep in $TCZ_DEPS \
+    do \
+        echo "Download $TCL_REPO_BASE/tcz/$dep.tcz" && \
         curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
-        unsquashfs -f -d $ROOTFS /tmp/$dep.tcz && \
-        rm -f /tmp/$dep.tcz ;\
+        if ! -s /tmp/$dep.tcz \
+          unsquashfs -f -d $ROOTFS /tmp/$dep.tcz && \
+          rm -f /tmp/$dep.tcz \
+        else \
+          echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" \
+          exit 1 \
+        fi \
     done
 
 # get generate_cert
