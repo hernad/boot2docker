@@ -137,7 +137,7 @@ ENV TCZ_DEPS_0      iptables \
                     gcc_libs \
                     acpid \
                     xz liblzma \
-                    git patch expat2 pcre libidn libgpg-error libgcrypt libssh2 \
+                    git patch expat2 pcre libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
                     strace glib2 libtirpc 
@@ -313,7 +313,7 @@ RUN cp /lib/x86_64-linux-gnu/libncurses.so.5.9 $ROOTFS/usr/local/lib/libncurses.
 
 
 ENV TCZ_DEPS_X    Xorg-7.7-bin libpng libXau libXext libxcb libXdmcp libX11 libICE libXt libSM libXmu aterm \
-                  libXcursor libXrender libXinerama libGL libXdamage libXfixes libXxf86vm libdrm \
+                  libXcursor libXrender libXinerama libGL libXdamage libXfixes libXxf86vm libxshmfence libdrm \
                   libXfont freetype harfbuzz fontconfig Xorg-fonts
 
 RUN for dep in $TCZ_DEPS_X ; do \
