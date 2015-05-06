@@ -312,6 +312,16 @@ RUN cp /lib/x86_64-linux-gnu/libncursesw.so.5.9 $ROOTFS/usr/local/lib/libncurses
 RUN cp /lib/x86_64-linux-gnu/libncurses.so.5.9 $ROOTFS/usr/local/lib/libncurses.so.5
 
 
+#RUN cp /lib/x86_64-linux-gnu/libpthread-2.13.so $ROOTFS/lib/libpthread.so.0
+
+RUN echo "--------- tmux & libevent install ------------"
+RUN curl -L -O  https://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-2.0.22-stable.tar.gz
+RUN cd /libevent-2.0.22-stable && sh autogen.sh && ./configure && make install && cp .libs/*so* $ROOTFS/usr/local/lib/
+
+RUN git clone git://git.code.sf.net/p/tmux/tmux-code tmux
+RUN cd tmux && sh autogen.sh && ./configure && make && cp tmux $ROOTFS/usr/local/bin/tmux && chmod +x $ROOTFS/usr/local/bin/tmux
+
+
 ENV TCZ_DEPS_X    Xorg-7.7-bin libpng libXau libXext libxcb libXdmcp libX11 libICE libXt libSM libXmu aterm \
                   libXcursor libXrender libXinerama libGL libXdamage libXfixes libXxf86vm libxshmfence libdrm \
                   libXfont freetype harfbuzz fontconfig Xorg-fonts
