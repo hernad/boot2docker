@@ -16,7 +16,7 @@ RUN apt-get update && apt-get -y install  unzip \
                         syslinux \
                         automake \
                         pkg-config \
-                        uuid-dev bash \
+                        uuid-dev \
                         libncursesw5-dev libncurses-dev
 
 ENV GCC_M -m64
@@ -139,6 +139,7 @@ ENV TCZ_DEPS_0      iptables \
                     git patch expat2 pcre libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
+                    bash readline ncurses \
                     strace glib2 libtirpc 
 
 # Install the base tiny linux dependencies
