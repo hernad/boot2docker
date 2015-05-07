@@ -340,8 +340,7 @@ RUN for dep in $TCZ_DEPS_X ; do \
     done
 
 
-ENV TCZ_DEPS_1      python fuse libffi  samba samba-libs \
-                    p7zip-full
+ENV TCZ_DEPS_1      python fuse libffi  samba samba-libs
 
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
