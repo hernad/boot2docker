@@ -5,7 +5,7 @@
 BOOT_DIR=/opt/boot
 
 #import settings from profile (e.g. HTTP_PROXY, HTTPS_PROXY)
-test -f '$BOOT_DIR/profile' && . '$BOOT_DIR/profile'
+test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
 : ${DOCKER_HOST:='-H tcp://0.0.0.0:2375'}
 : ${DOCKER_TLS:=auto}

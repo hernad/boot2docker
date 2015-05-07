@@ -17,7 +17,7 @@ BOOT_DIR=/opt/boot
 mkdir -p $BOOT_DIR/log
 
 #import settings from profile (or unset them)
-test -f "$BOOT_DIR/profile" && . "$BOOT_DIR/profile"
+test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
 # set the hostname
 /etc/rc.d/hostname
