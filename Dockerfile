@@ -16,8 +16,7 @@ RUN apt-get update && apt-get -y install  unzip \
                         syslinux \
                         automake \
                         pkg-config \
-                        p7zip-full \
-                        uuid-dev \
+                        uuid-dev bash \
                         libncursesw5-dev libncurses-dev
 
 ENV GCC_M -m64
@@ -341,7 +340,9 @@ RUN for dep in $TCZ_DEPS_X ; do \
     done
 
 
-ENV TCZ_DEPS_1      python fuse libffi  samba samba-libs
+ENV TCZ_DEPS_1      python fuse libffi  samba samba-libs \
+                    p7zip-full
+
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
         curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
