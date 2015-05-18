@@ -340,8 +340,7 @@ RUN for dep in $TCZ_DEPS_X ; do \
     done
 
 
-ENV TCZ_DEPS_1      python fuse libffi  samba samba-libs \
-                    p7zip-full
+ENV TCZ_DEPS_1      python fuse libffi  samba samba-libs
 
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
@@ -356,6 +355,14 @@ RUN for dep in $TCZ_DEPS_1 ; do \
         fi ;\
     done
 
+RUN curl -LO https://download.samba.org/pub/rsync/src/rsync-3.1.1.tar.gz                
+RUN tar xvf rsync-3.1.1.tar.gz 
+RUN cd /rsync-3.1.1 && ./configure && /usr/bin/install -c  -m 755 rsync $ROOTFS/usr/local/bin
+                                                                                      
+
+RUN curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz
+RUN tar xvf qperf-0.4.9.tar.gz
+RUN cd /qperf-0.4.9 && sh autogen.sh && ./configure && make && /usr/bin/install -c qperf $ROOTFS/usr/local/bin
 
 RUN /make_iso.sh
 
