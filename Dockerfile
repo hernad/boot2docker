@@ -217,11 +217,11 @@ COPY rootfs/rootfs $ROOTFS
 #RUN apt-get install ia32-libs libc6-dev-i386 lib32gcc1 gcc-multilib \
 #    lib32stdc++6 g++-multilib
 
-RUN curl -LO http://dlc-cdn.sun.com/virtualbox/5.0.0_BETA2/VirtualBox-5.0.0_BETA2-99573-Linux_amd64.run
+RUN curl -LO http://dlc-cdn.sun.com/virtualbox/5.0.0_BETA3/VirtualBox-5.0.0_BETA3-100143-Linux_amd64.run
 RUN chmod +x *.run
 RUN mkdir -p /lib
 RUN ln -s $ROOTFS/lib/modules /lib/modules
-RUN ./VirtualBox-5.0.0_BETA2-99573-Linux_amd64.run
+RUN ./VirtualBox-5.0.0_BETA3-100143-Linux_amd64.run
 RUN cp -av /opt/VirtualBox $ROOTFS/opt/
 
 
