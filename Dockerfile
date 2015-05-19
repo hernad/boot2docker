@@ -21,8 +21,7 @@ RUN apt-get update && apt-get -y install  unzip \
 
 ENV GCC_M -m64
 # https://www.kernel.org/
-# ENV KERNEL_VERSION  3.18.12
-ENV KERNEL_VERSION  3.19.6
+ENV KERNEL_VERSION  3.19.8
 
 ENV LINUX_KERNEL_SOURCE /usr/src/linux
 ENV LINUX_BRAND  greenbox
