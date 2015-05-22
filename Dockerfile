@@ -1,5 +1,5 @@
 FROM debian:wheezy
-MAINTAINER Steeve Morin "hernad@bring.out.ba"
+MAINTAINER Ernad Husremovic "hernad@bring.out.ba"
 
 RUN apt-get update && apt-get -y install  unzip \
                         xz-utils \
@@ -138,7 +138,7 @@ ENV TCZ_DEPS_0      iptables \
                     git patch expat2 pcre libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
-                    bash readline ncurses \
+                    bash readline ncurses ncurses-utils ncurses-terminfo \
                     strace glib2 libtirpc 
 
 # Install the base tiny linux dependencies
@@ -216,13 +216,14 @@ COPY rootfs/rootfs $ROOTFS
 #RUN apt-get install ia32-libs libc6-dev-i386 lib32gcc1 gcc-multilib \
 #    lib32stdc++6 g++-multilib
 
-RUN curl -LO http://dlc-cdn.sun.com/virtualbox/5.0.0_BETA3/VirtualBox-5.0.0_BETA3-100143-Linux_amd64.run
+ENV VBOX_VER 5.0.0_BETA4
+ENV VBOX_BUILD 100374 
+RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
 RUN chmod +x *.run
 RUN mkdir -p /lib
 RUN ln -s $ROOTFS/lib/modules /lib/modules
-RUN ./VirtualBox-5.0.0_BETA3-100143-Linux_amd64.run
+RUN ./VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
 RUN cp -av /opt/VirtualBox $ROOTFS/opt/
-
 
 RUN chmod o-w $ROOTFS/opt 
 RUN chmod o-w $ROOTFS/opt/VirtualBox
@@ -304,11 +305,11 @@ COPY rootfs/make_iso.sh /
 RUN git clone https://github.com/hishamhm/htop.git
 RUN cd /htop && ./autogen.sh && ./configure --prefix=$ROOTFS --enable-cgroup && make  && make install
 RUN cp /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
-RUN cp /usr/lib/x86_64-linux-gnu/libpanelw.so.5.9 $ROOTFS/usr/local/lib/libpanelw.so.5
-RUN cp /usr/lib/x86_64-linux-gnu/libmenuw.so.5.9 $ROOTFS/usr/local/lib/libmenuw.so.5
-RUN cp /usr/lib/x86_64-linux-gnu/libformw.so.5.9 $ROOTFS/usr/local/lib/libformw.so.5
-RUN cp /lib/x86_64-linux-gnu/libncursesw.so.5.9 $ROOTFS/usr/local/lib/libncursesw.so.5
-RUN cp /lib/x86_64-linux-gnu/libncurses.so.5.9 $ROOTFS/usr/local/lib/libncurses.so.5
+#RUN cp /usr/lib/x86_64-linux-gnu/libpanelw.so.5.9 $ROOTFS/usr/local/lib/libpanelw.so.5
+#RUN cp /usr/lib/x86_64-linux-gnu/libmenuw.so.5.9 $ROOTFS/usr/local/lib/libmenuw.so.5
+#RUN cp /usr/lib/x86_64-linux-gnu/libformw.so.5.9 $ROOTFS/usr/local/lib/libformw.so.5
+#RUN cp /lib/x86_64-linux-gnu/libncursesw.so.5.9 $ROOTFS/usr/local/lib/libncursesw.so.5
+#RUN cp /lib/x86_64-linux-gnu/libncurses.so.5.9 $ROOTFS/usr/local/lib/libncurses.so.5
 
 
 #RUN cp /lib/x86_64-linux-gnu/libpthread-2.13.so $ROOTFS/lib/libpthread.so.0
@@ -363,6 +364,11 @@ RUN cd /rsync-3.1.1 && ./configure && make && /usr/bin/install -c  -m 755 rsync 
 RUN curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz
 RUN tar xvf qperf-0.4.9.tar.gz
 RUN cd /qperf-0.4.9 && sh autogen.sh && ./configure && make && /usr/bin/install -c src/qperf $ROOTFS/usr/local/bin
+
+
+RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip
+RUN unzip master.zip
+RUN cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh $ROOTFS/usr/local/sbin/zfs-auto-snapshot
 
 RUN /make_iso.sh
 
