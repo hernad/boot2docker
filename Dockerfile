@@ -319,7 +319,7 @@ RUN curl -L -O  https://sourceforge.net/projects/levent/files/libevent/libevent-
 RUN tar xvf libevent-2.0.22-stable.tar.gz
 RUN cd /libevent-2.0.22-stable && sh autogen.sh && ./configure && make install && cp .libs/*so* $ROOTFS/usr/local/lib/
 
-RUN git clone git://git.code.sf.net/p/tmux/tmux-code tmux
+RUN git clone https://github.com/ThomasAdam/tmux.git tmux
 RUN cd tmux && sh autogen.sh && ./configure && make && cp tmux $ROOTFS/usr/local/bin/tmux && chmod +x $ROOTFS/usr/local/bin/tmux
 
 
@@ -369,6 +369,10 @@ RUN cd /qperf-0.4.9 && sh autogen.sh && ./configure && make && /usr/bin/install 
 RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip
 RUN unzip master.zip
 RUN cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh $ROOTFS/usr/local/sbin/zfs-auto-snapshot
+
+ENV VAGRANT_VER 1.7.2
+RUN curl -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VER}_x86_64.deb
+RUN dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
 
 RUN /make_iso.sh
 
