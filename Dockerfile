@@ -216,8 +216,8 @@ COPY rootfs/rootfs $ROOTFS
 #RUN apt-get install ia32-libs libc6-dev-i386 lib32gcc1 gcc-multilib \
 #    lib32stdc++6 g++-multilib
 
-ENV VBOX_VER 5.0.0_BETA4
-ENV VBOX_BUILD 100374 
+ENV VBOX_VER 5.0.0_RC1
+ENV VBOX_BUILD 100731
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
 RUN chmod +x *.run
 RUN mkdir -p /lib
