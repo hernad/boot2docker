@@ -87,7 +87,7 @@ start() {
     fi
     if [ "$DOCKER_STORAGE" != 'auto' ]; then
         # in the general case, let's trust Docker to "do the right thing"
-        EXTRA_ARGS="$EXTRA_ARGS --storage-opt=$DOCKER_STORAGE"
+        EXTRA_ARGS="$EXTRA_ARGS --storage-driver=$DOCKER_STORAGE"
     fi
 
     # Increasing the number of open files and processes by docker

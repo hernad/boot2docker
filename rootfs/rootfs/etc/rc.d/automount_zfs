@@ -21,8 +21,9 @@ mkdir -p /opt
 /sbin/swapon  /dev/zvol/green/swap
 /sbin/swapon -a
 
-mkdir /var/lib/docker
-/bin/mount /dev/zvol/green/docker_vol /var/lib/docker
+# from docker 1.7 we use zfs storage 
+# mkdir /var/lib/docker
+# /bin/mount /dev/zvol/green/docker_vol /var/lib/docker
 
 /usr/local/sbin/zpool status -v >> /tmp/zfs.log 2>&1
 /usr/local/sbin/zfs list >> /tmp/zfs.log 2>&1
