@@ -21,32 +21,29 @@ RUN apt-get update && apt-get -y install  unzip \
 
 ENV GCC_M -m64
 # https://www.kernel.org/
-ENV KERNEL_VERSION  3.19.8
+
+ENV KERNEL_MAJOR    4
+ENV KERNEL_VERSION_DOWNLOAD  4.1
+ENV KERNEL_VERSION  4.1.0
 
 ENV LINUX_KERNEL_SOURCE /usr/src/linux
 ENV LINUX_BRAND  greenbox
 
-ENV AUFS_VER        aufs3
-#ENV AUFS_BRANCH     aufs3.18.1+
-#ENV AUFS_COMMIT     863c3b76303a1ebea5b6a5b1b014715ac416f913
-ENV AUFS_BRANCH     aufs3.19
-ENV AUFS_COMMIT     cb95a0
-# http://sourceforge.net/p/aufs/aufs3-standalone/ref/master/branches/
-ENV AUFS_GIT        git://git.code.sf.net/p/aufs/aufs3-standalone
-ENV AUFS_UTIL_BRANCH aufs3.9 
-ENV AUFS_UTIL_GIT    http://git.code.sf.net/p/aufs/aufs-util
- 
-# v4 kernel
-# ENV AUFS_VER     aufs4
-# ENV AUFS_GIT https://github.com/sfjro/aufs4-standalone
-# ENV AUFS_BRANCH  aufs4.0
-# ENV AUFS_COMMIT  170c7ace871c84ba70646f642003edf2d9162144
-
-
 # Fetch the kernel sources
 RUN mkdir -p /usr/src
-RUN curl --retry 10 https://www.kernel.org/pub/linux/kernel/v3.x/linux-$KERNEL_VERSION.tar.xz | tar -C / -xJ && \
-    mv /linux-$KERNEL_VERSION $LINUX_KERNEL_SOURCE
+RUN curl --retry 10 https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
+    mv /linux-$KERNEL_VERSION_DOWNLOAD $LINUX_KERNEL_SOURCE
+
+
+ENV AUFS_UTIL_GIT    http://git.code.sf.net/p/aufs/aufs-util         
+                                                                     
+# v4 kernel                                                          
+ENV AUFS_VER     aufs4                                               
+ENV AUFS_GIT https://github.com/sfjro/aufs4-standalone               
+#ENV AUFS_BRANCH  aufs4.0                                            
+ENV AUFS_BRANCH  aufs4.x-rcN                                         
+ENV AUFS_COMMIT 24c9bc07e475feb2ba10e0471a8ae8f4cf427884          
+
 
 # Download AUFS and apply patches and files, then remove it
 RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
@@ -110,6 +107,8 @@ RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.or
     mkdir -p $ROOTFS/usr/local/lib && \
     cp -av `pwd`/output/lib64/* $ROOTFS/usr/local/lib
 
+ENV AUFS_UTIL_BRANCH aufs4.x-rcN
+
 # Make sure the kernel headers are installed for aufs-util, and then build it
 RUN cd $LINUX_KERNEL_SOURCE && \
     make INSTALL_HDR_PATH=/tmp/kheaders headers_install && \
@@ -138,7 +137,7 @@ ENV TCZ_DEPS_0      iptables \
                     git patch expat2 pcre libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl ntpclient \
-                    bash readline ncurses ncurses-utils ncurses-terminfo \
+                    bash readline htop ncurses ncurses-utils ncurses-terminfo \
                     strace glib2 libtirpc 
 
 # Install the base tiny linux dependencies
@@ -164,7 +163,7 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse
                                                                          libdumbnet1:i386 libfuse2:i386 libfuse-dev \
                                                                          libglib2.0-0:i386 libtirpc-dev libtirpc1:i386
 
-COPY VERSION $ROOTFS/etc/version
+COPY DOCKER_VERSION $ROOTFS/etc/version
 RUN cp -v $ROOTFS/etc/version /tmp/iso/version
 
 # Get the Docker version that matches our boot2docker version
@@ -236,17 +235,20 @@ RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE
 
 RUN mkdir /zfs
 
-ENV ZFS_VER 0.6.4 
+ENV ZFS_VER 0.6.4.1 
 RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz
-#RUN cd $LINUX_KERNEL_SOURCE && make modules
 RUN cd /zfs && tar xvf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
 
 # hernad: zfs build demands librt from debian
 RUN cp /lib/x86_64-linux-gnu/librt-2.13.so $ROOTFS/lib/
 RUN rm $ROOTFS/lib/librt.so.1
 RUN cd $ROOTFS/lib && ln -s librt-2.13.so librt.so.1
-RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/zfs-$ZFS_VER.tar.gz                              
-RUN cd /zfs && tar xvf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && DESTDIR=$ROOTFS make install 
+
+ENV ZFS_GIT_BRANCH zfs-0.6.4-release
+RUN cd /zfs && git clone https://github.com/zfsonlinux/zfs.git zfs-git && cd /zfs/zfs-git && git checkout $ZFS_GIT_BRANCH 
+#RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/zfs-$ZFS_VER.tar.gz                              
+# RUN cd /zfs && tar xvf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && DESTDIR=$ROOTFS make install 
+RUN cd /zfs/zfs-git && sh autogen.sh && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && DESTDIR=$ROOTFS make install 
                                                                                                                                 
 # Install the kernel modules in $ROOTFS                                                                                         
 RUN cd $LINUX_KERNEL_SOURCE && \                                                                                                       
@@ -302,9 +304,10 @@ COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
 COPY rootfs/isolinux /tmp/iso/boot/isolinux
 COPY rootfs/make_iso.sh /
 
-RUN git clone https://github.com/hishamhm/htop.git
-RUN cd /htop && ./autogen.sh && ./configure --prefix=$ROOTFS --enable-cgroup && make  && make install
-RUN cp /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
+#RUN git clone https://github.com/hishamhm/htop.git
+#RUN cd /htop && ./autogen.sh && ./configure --prefix=$ROOTFS --enable-cgroup && make  && make install
+#RUN cp /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
+
 #RUN cp /usr/lib/x86_64-linux-gnu/libpanelw.so.5.9 $ROOTFS/usr/local/lib/libpanelw.so.5
 #RUN cp /usr/lib/x86_64-linux-gnu/libmenuw.so.5.9 $ROOTFS/usr/local/lib/libmenuw.so.5
 #RUN cp /usr/lib/x86_64-linux-gnu/libformw.so.5.9 $ROOTFS/usr/local/lib/libformw.so.5
@@ -371,7 +374,7 @@ RUN unzip master.zip
 RUN cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh $ROOTFS/usr/local/sbin/zfs-auto-snapshot
 
 ENV VAGRANT_VER 1.7.2
-RUN curl -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VER}_x86_64.deb
+RUN curl -k -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VER}_x86_64.deb
 RUN dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
 
 RUN /make_iso.sh

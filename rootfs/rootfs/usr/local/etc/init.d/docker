@@ -9,7 +9,7 @@ test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
 : ${DOCKER_HOST:='-H tcp://0.0.0.0:2375'}
 : ${DOCKER_TLS:=auto}
-: ${DOCKER_STORAGE:=auto}
+: ${DOCKER_STORAGE:=zfs}
 : ${DOCKER_DIR:=/var/lib/docker}
 : ${DOCKER_ULIMITS:=1048576}
 : ${DOCKER_LOGFILE:=$BOOT_DIR/docker.log}
@@ -87,7 +87,7 @@ start() {
     fi
     if [ "$DOCKER_STORAGE" != 'auto' ]; then
         # in the general case, let's trust Docker to "do the right thing"
-        EXTRA_ARGS="$EXTRA_ARGS -s $DOCKER_STORAGE"
+        EXTRA_ARGS="$EXTRA_ARGS --storage-opt=$DOCKER_STORAGE"
     fi
 
     # Increasing the number of open files and processes by docker

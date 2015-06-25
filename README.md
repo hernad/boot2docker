@@ -6,76 +6,8 @@ small ~24MB download and boots in ~5s (YMMV).
 
 ## Features
 
-* Kernel 3.18.11 with AUFS, Docker v1.6.0 - using libcontainer
-* Container persistence via disk automount on `/var/lib/docker`
-* SSH keys persistence via disk automount
-
 > **Note:** Boot2Docker uses port **2376**, the [registered IANA Docker SSL
 > port](http://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml?search=docker)
-
-## Caveat Emptor
-
-Boot2Docker is currently designed and tuned for development.  Using it for
-any kind of production workloads at this time is highly discouraged.
-
-## Installation
-
-Installation instructions for [OS X](https://docs.docker.com/installation/mac/)
-and [Windows](https://docs.docker.com/installation/windows/) are available on
-the Docker documentation site.
-
-The [ISO can be downloaded
-here](https://github.com/boot2docker/boot2docker/releases).
-
-### All in one Installers for OS X and Windows
-
-We have built installers for [OS
-X](https://github.com/boot2docker/osx-installer/releases) and
-[Windows](https://github.com/boot2docker/windows-installer/releases) which will
-install the `boot2docker` management tool, VirtualBox, and any tools needed to
-run Boot2Docker.
-
-### Installation using the `boot2docker` management tool
-
-If you have the prerequisites, or want to help develop Boot2Docker, you can also
-download the appropriate [boot2docker management
-release](https://github.com/boot2docker/boot2docker-cli/releases) and use it to
-download
-[`boot2docker.iso`](https://github.com/boot2docker/boot2docker/releases).
-
-## How to use
-
-The `boot2docker` management tool leverages VirtualBox's `VBoxManage` to
-initialise, start, stop and delete the VM right from the command line.
-
-#### Initialize
-
-```console
-$ boot2docker init
-```
-
-#### Start VM
-
-```console
-$ boot2docker up
-```
-
-#### Upgrade the Boot2docker VM image
-
-```console
-$ boot2docker stop
-$ boot2docker download
-$ boot2docker up
-```
-
-If your Boot2Docker virtual machine was created prior to 0.11.1-pre1, it's best
-to delete -  `boot2docker delete` and then `boot2docker init` to create a new
-VM.
-
-The main changes are to add a `/var/lib/boot2docker/userdata.tar` file that is
-un-tarred into the `/home/docker` directory on boot. This file contains a
-`.ssh/authorized_keys` and `.ssh/authorized_keys2` files containing a public
-SSH key.
 
 ## Docker Hub
 
