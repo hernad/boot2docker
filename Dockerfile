@@ -23,8 +23,8 @@ ENV GCC_M -m64
 # https://www.kernel.org/
 
 ENV KERNEL_MAJOR    4
-ENV KERNEL_VERSION_DOWNLOAD  4.1
-ENV KERNEL_VERSION  4.1.0
+ENV KERNEL_VERSION_DOWNLOAD  4.0.6
+ENV KERNEL_VERSION  4.0.6
 
 ENV LINUX_KERNEL_SOURCE /usr/src/linux
 ENV LINUX_BRAND  greenbox
@@ -40,15 +40,17 @@ ENV AUFS_UTIL_GIT    http://git.code.sf.net/p/aufs/aufs-util
 # v4 kernel                                                          
 ENV AUFS_VER     aufs4                                               
 ENV AUFS_GIT https://github.com/sfjro/aufs4-standalone               
-#ENV AUFS_BRANCH  aufs4.0                                            
-ENV AUFS_BRANCH  aufs4.x-rcN                                         
-ENV AUFS_COMMIT 24c9bc07e475feb2ba10e0471a8ae8f4cf427884          
+ENV AUFS_BRANCH  aufs4.0                                            
+ENV AUFS_UTIL_BRANCH aufs4.0
+
+#ENV AUFS_BRANCH  aufs4.x-rcN                                         
+#ENV AUFS_COMMIT 24c9bc07e475feb2ba10e0471a8ae8f4cf427884          
+#ENV AUFS_UTIL_BRANCH aufs4.x-rcN
 
 
 # Download AUFS and apply patches and files, then remove it
 RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
     cd $AUFS_VER-standalone && \
-    git checkout $AUFS_COMMIT && \
     cd $LINUX_KERNEL_SOURCE && \
     cp -r /$AUFS_VER-standalone/Documentation $LINUX_KERNEL_SOURCE && \
     cp -r /$AUFS_VER-standalone/fs $LINUX_KERNEL_SOURCE && \
@@ -56,6 +58,8 @@ RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
     for patch in $AUFS_VER-kbuild $AUFS_VER-base $AUFS_VER-mmap $AUFS_VER-standalone $AUFS_VER-loopback; do \
         patch -p1 < /$AUFS_VER-standalone/$patch.patch; \
     done
+
+#    git checkout $AUFS_COMMIT && \
 
 COPY kernel_config $LINUX_KERNEL_SOURCE/.config
 
@@ -107,7 +111,6 @@ RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.or
     mkdir -p $ROOTFS/usr/local/lib && \
     cp -av `pwd`/output/lib64/* $ROOTFS/usr/local/lib
 
-ENV AUFS_UTIL_BRANCH aufs4.x-rcN
 
 # Make sure the kernel headers are installed for aufs-util, and then build it
 RUN cd $LINUX_KERNEL_SOURCE && \
@@ -215,8 +218,8 @@ COPY rootfs/rootfs $ROOTFS
 #RUN apt-get install ia32-libs libc6-dev-i386 lib32gcc1 gcc-multilib \
 #    lib32stdc++6 g++-multilib
 
-ENV VBOX_VER 5.0.0_RC1
-ENV VBOX_BUILD 100731
+ENV VBOX_VER 5.0.0_RC2
+ENV VBOX_BUILD 101271
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
 RUN chmod +x *.run
 RUN mkdir -p /lib
