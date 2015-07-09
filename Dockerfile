@@ -49,17 +49,16 @@ ENV AUFS_UTIL_BRANCH aufs4.0
 
 
 # Download AUFS and apply patches and files, then remove it
-RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
-    cd $AUFS_VER-standalone && \
-    cd $LINUX_KERNEL_SOURCE && \
-    cp -r /$AUFS_VER-standalone/Documentation $LINUX_KERNEL_SOURCE && \
-    cp -r /$AUFS_VER-standalone/fs $LINUX_KERNEL_SOURCE && \
-    cp -r /$AUFS_VER-standalone/include/uapi/linux/aufs_type.h $LINUX_KERNEL_SOURCE/include/uapi/linux/ &&\
-    for patch in $AUFS_VER-kbuild $AUFS_VER-base $AUFS_VER-mmap $AUFS_VER-standalone $AUFS_VER-loopback; do \
-        patch -p1 < /$AUFS_VER-standalone/$patch.patch; \
-    done
+# RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
+#    cd $AUFS_VER-standalone && \
+#    cd $LINUX_KERNEL_SOURCE && \
+#    cp -r /$AUFS_VER-standalone/Documentation $LINUX_KERNEL_SOURCE && \
+#    cp -r /$AUFS_VER-standalone/fs $LINUX_KERNEL_SOURCE && \
+#    cp -r /$AUFS_VER-standalone/include/uapi/linux/aufs_type.h $LINUX_KERNEL_SOURCE/include/uapi/linux/ &&\
+#    for patch in $AUFS_VER-kbuild $AUFS_VER-base $AUFS_VER-mmap $AUFS_VER-standalone $AUFS_VER-loopback; do \
+#        patch -p1 < /$AUFS_VER-standalone/$patch.patch; \
+#    done
 
-#    git checkout $AUFS_COMMIT && \
 
 COPY kernel_config $LINUX_KERNEL_SOURCE/.config
 
@@ -113,15 +112,15 @@ RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.or
 
 
 # Make sure the kernel headers are installed for aufs-util, and then build it
-RUN cd $LINUX_KERNEL_SOURCE && \
-    make INSTALL_HDR_PATH=/tmp/kheaders headers_install && \
-    cd / && \
-    git clone $AUFS_UTIL_GIT aufs-util && \
-    cd /aufs-util && \
-    git checkout $AUFS_UTIL_BRANCH && \
-    CPPFLAGS="$GCC_M -I/tmp/kheaders/include" CLFAGS=$CPPFLAGS LDFLAGS=$CPPFLAGS make && \
-    DESTDIR=$ROOTFS make install && \
-    rm -rf /tmp/kheaders
+# RUN cd $LINUX_KERNEL_SOURCE && \
+#    make INSTALL_HDR_PATH=/tmp/kheaders headers_install && \
+#    cd / && \
+#    git clone $AUFS_UTIL_GIT aufs-util && \
+#    cd /aufs-util && \
+#    git checkout $AUFS_UTIL_BRANCH && \
+#    CPPFLAGS="$GCC_M -I/tmp/kheaders/include" CLFAGS=$CPPFLAGS LDFLAGS=$CPPFLAGS make && \
+#    DESTDIR=$ROOTFS make install && \
+#    rm -rf /tmp/kheaders
 
 # Prepare the ISO directory with the kernel
 RUN cp -v $LINUX_KERNEL_SOURCE/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
