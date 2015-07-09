@@ -23,8 +23,8 @@ ENV GCC_M -m64
 # https://www.kernel.org/
 
 ENV KERNEL_MAJOR    4
-ENV KERNEL_VERSION_DOWNLOAD  4.0.6
-ENV KERNEL_VERSION  4.0.6
+ENV KERNEL_VERSION_DOWNLOAD  4.0.7
+ENV KERNEL_VERSION  4.0.7
 
 ENV LINUX_KERNEL_SOURCE /usr/src/linux
 ENV LINUX_BRAND  greenbox
@@ -378,6 +378,20 @@ RUN cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh $RO
 ENV VAGRANT_VER 1.7.2
 RUN curl -k -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VER}_x86_64.deb
 RUN dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
+
+
+RUN apt-get -y install libncurses5-dev python-dev ruby-dev mercurial
+RUN cd / && hg clone https://code.google.com/p/vim/
+RUN cd /vim && ./configure --with-features=huge \
+            --enable-multibyte \
+            --enable-rubyinterp \
+            --enable-pythoninterp \
+            --with-python-config-dir=/usr/lib/python2.7/config \
+            --enable-perlinterp \
+            --enable-luainterp \
+            --enable-cscope --prefix=/opt/apps/vim
+RUN cd /vim && make VIMRUNTIMEDIR=/opt/apps/vim/share && make install
+
 
 RUN /make_iso.sh
 
