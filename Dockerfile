@@ -393,14 +393,11 @@ RUN dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
 
 RUN apt-get -y install libncurses5-dev python-dev ruby-dev mercurial
 RUN cd / && hg clone https://code.google.com/p/vim/
-RUN cd /vim && ./configure --with-features=huge \
-            --enable-multibyte \
-            --enable-rubyinterp \
-            --enable-pythoninterp \
-            --with-python-config-dir=/usr/lib/python2.7/config \
-            --enable-perlinterp \
-            --enable-luainterp \
-            --enable-cscope --prefix=/opt/apps/vim
+RUN cd /vim && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \
+               --with-x=no  --disable-gui  --disable-netbeans  \
+               --disable-pythoninterp  --disable-python3interp \
+               --disable-rubyinterp  --disable-luainterp
+
 RUN cd /vim && make VIMRUNTIMEDIR=/opt/apps/vim/share && make install
 
 
