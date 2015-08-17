@@ -26,8 +26,8 @@ ENV KERNEL_MAJOR    4
 #ENV KERNEL_VERSION_DOWNLOAD  4.0.7
 #ENV KERNEL_VERSION  4.0.7
 
-ENV KERNEL_VERSION_DOWNLOAD  4.1.1
-ENV KERNEL_VERSION  4.1.1
+ENV KERNEL_VERSION_DOWNLOAD  4.1.6
+ENV KERNEL_VERSION  4.1.6
 
 ENV LINUX_KERNEL_SOURCE /usr/src/linux
 ENV LINUX_BRAND  greenbox
@@ -223,8 +223,8 @@ COPY rootfs/rootfs $ROOTFS
 #RUN apt-get install ia32-libs libc6-dev-i386 lib32gcc1 gcc-multilib \
 #    lib32stdc++6 g++-multilib
 
-ENV VBOX_VER 5.0.0
-ENV VBOX_BUILD 101573
+ENV VBOX_VER 5.0.2
+ENV VBOX_BUILD 102096
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
 RUN chmod +x *.run
 RUN mkdir -p /lib
@@ -386,7 +386,7 @@ RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip
 RUN unzip master.zip
 RUN cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh $ROOTFS/usr/local/sbin/zfs-auto-snapshot
 
-ENV VAGRANT_VER 1.7.2
+ENV VAGRANT_VER 1.7.4
 RUN curl -k -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VER}_x86_64.deb
 RUN dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
 
