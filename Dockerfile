@@ -245,7 +245,7 @@ RUN mkdir /zfs
 
 ENV ZFS_VER 0.6.4.2 
 RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz
-RUN cd /zfs && tar xvf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
+RUN cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
 
 # hernad: zfs build demands librt from debian
@@ -259,14 +259,14 @@ RUN cd $ROOTFS/lib && ln -s librt-2.13.so librt.so.1
 # RUN cd /zfs/zfs-git && sh autogen.sh && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && DESTDIR=$ROOTFS make install 
 
 # build zfs from tar
-RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/zfs-$ZFS_VER.tar.gz                              
-RUN cd /zfs && tar xvf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER &&\
+RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/zfs-$ZFS_VER.tar.gz
+RUN cd /zfs && tar xf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make &&\
     DESTDIR=$ROOTFS make install
                                                                                                                                 
 # Install the kernel modules in $ROOTFS                                                                                         
 RUN cd $LINUX_KERNEL_SOURCE && \                                                                                                       
-    make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install                                                              
+    make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install
 
 RUN depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
 
