@@ -135,7 +135,7 @@ RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64
 
 ENV TCZ_DEPS_0      iptables \
                     iproute2 \
-                    openssh openssl-1.0.0 \
+                    openssh openssl \
                     tar e2fsprogs \
                     gcc_libs \
                     acpid \
@@ -355,7 +355,7 @@ RUN for dep in $TCZ_DEPS_X ; do \
     done
 
 
-ENV TCZ_DEPS_1      python fuse libffi  samba samba-libs bind-utilities openssl-1.0.0 libxml2
+ENV TCZ_DEPS_1      python fuse libffi  samba samba-libs bind-utilities libxml2
 
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
