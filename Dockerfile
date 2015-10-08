@@ -24,8 +24,8 @@ ENV GCC_M -m64
 
 ENV KERNEL_MAJOR    4
 
-ENV KERNEL_VERSION_DOWNLOAD  4.1.7
-ENV KERNEL_VERSION  4.1.7
+ENV KERNEL_VERSION_DOWNLOAD  4.1.10
+ENV KERNEL_VERSION  4.1.10
 
 ENV LINUX_KERNEL_SOURCE /usr/src/linux
 ENV LINUX_BRAND  greenbox
@@ -241,7 +241,7 @@ RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE
 
 RUN mkdir /zfs
 
-ENV ZFS_VER 0.6.5
+ENV ZFS_VER 0.6.5.2
 RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz
 RUN cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
