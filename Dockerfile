@@ -24,8 +24,8 @@ ENV GCC_M -m64
 
 ENV KERNEL_MAJOR    4
 
-ENV KERNEL_VERSION_DOWNLOAD  4.1.10
-ENV KERNEL_VERSION  4.1.10
+ENV KERNEL_VERSION_DOWNLOAD  4.2.3
+ENV KERNEL_VERSION  4.2.3
 
 ENV LINUX_KERNEL_SOURCE /usr/src/linux
 ENV LINUX_BRAND  greenbox
@@ -49,15 +49,15 @@ ENV AUFS_BRANCH  aufs4.1
 ENV AUFS_UTIL_BRANCH aufs4.0
 
 # Download AUFS and apply patches and files, then remove it
-RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
-    cd $AUFS_VER-standalone && \
-    cd $LINUX_KERNEL_SOURCE && \
-    cp -r /$AUFS_VER-standalone/Documentation $LINUX_KERNEL_SOURCE && \
-    cp -r /$AUFS_VER-standalone/fs $LINUX_KERNEL_SOURCE && \
-    cp -r /$AUFS_VER-standalone/include/uapi/linux/aufs_type.h $LINUX_KERNEL_SOURCE/include/uapi/linux/ &&\
-    for patch in $AUFS_VER-kbuild $AUFS_VER-base $AUFS_VER-mmap $AUFS_VER-standalone $AUFS_VER-loopback; do \
-        patch -p1 < /$AUFS_VER-standalone/$patch.patch; \
-    done
+#RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
+#    cd $AUFS_VER-standalone && \
+#    cd $LINUX_KERNEL_SOURCE && \
+#    cp -r /$AUFS_VER-standalone/Documentation $LINUX_KERNEL_SOURCE && \
+#    cp -r /$AUFS_VER-standalone/fs $LINUX_KERNEL_SOURCE && \
+#    cp -r /$AUFS_VER-standalone/include/uapi/linux/aufs_type.h $LINUX_KERNEL_SOURCE/include/uapi/linux/ &&\
+#    for patch in $AUFS_VER-kbuild $AUFS_VER-base $AUFS_VER-mmap $AUFS_VER-standalone $AUFS_VER-loopback; do \
+#        patch -p1 < /$AUFS_VER-standalone/$patch.patch; \
+#    done
 
 
 COPY kernel_config $LINUX_KERNEL_SOURCE/.config
@@ -117,14 +117,15 @@ RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.or
 
 # Make sure the kernel headers are installed for aufs-util, and then build it
 RUN cd $LINUX_KERNEL_SOURCE && \
-    make INSTALL_HDR_PATH=/tmp/kheaders headers_install && \
-    cd / && \
-    git clone $AUFS_UTIL_GIT aufs-util && \
-    cd /aufs-util && \
-    git checkout $AUFS_UTIL_BRANCH && \
-    CPPFLAGS="$GCC_M -I/tmp/kheaders/include" CLFAGS=$CPPFLAGS LDFLAGS=$CPPFLAGS make && \
-    DESTDIR=$ROOTFS make install && \
-    rm -rf /tmp/kheaders
+    make INSTALL_HDR_PATH=/tmp/kheaders headers_install 
+
+#RUN cd / && \
+#    git clone $AUFS_UTIL_GIT aufs-util && \
+#    cd /aufs-util && \
+#    git checkout $AUFS_UTIL_BRANCH && \
+#    CPPFLAGS="$GCC_M -I/tmp/kheaders/include" CLFAGS=$CPPFLAGS LDFLAGS=$CPPFLAGS make && \
+#    DESTDIR=$ROOTFS make install && \
+#    rm -rf /tmp/kheaders
 
 # Prepare the ISO directory with the kernel
 RUN cp -v $LINUX_KERNEL_SOURCE/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
@@ -221,8 +222,8 @@ COPY rootfs/rootfs $ROOTFS
 #RUN apt-get install ia32-libs libc6-dev-i386 lib32gcc1 gcc-multilib \
 #    lib32stdc++6 g++-multilib
 
-ENV VBOX_VER 5.0.2
-ENV VBOX_BUILD 102096
+ENV VBOX_VER 5.0.6
+ENV VBOX_BUILD 103037
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
 RUN chmod +x *.run
 RUN mkdir -p /lib
@@ -241,7 +242,7 @@ RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE
 
 RUN mkdir /zfs
 
-ENV ZFS_VER 0.6.5.2
+ENV ZFS_VER 0.6.5.3
 RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz
 RUN cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
