@@ -377,7 +377,7 @@ RUN cd /rsync-3.1.1 && ./configure && make && /usr/bin/install -c  -m 755 rsync 
 
 RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz
 RUN tar xvf pv-1.6.0.tar.gz
-RUN cd /pv-1.6.0 && sh autogen.sh && ./configure && make && /usr/bin/install -c pv $ROOTFS/usr/local/bin
+RUN cd /pv-1.6.0 && ./configure && make && /usr/bin/install -c pv $ROOTFS/usr/local/bin
 
 RUN curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz
 RUN tar xvf qperf-0.4.9.tar.gz
