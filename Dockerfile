@@ -222,8 +222,8 @@ COPY rootfs/rootfs $ROOTFS
 #RUN apt-get install ia32-libs libc6-dev-i386 lib32gcc1 gcc-multilib \
 #    lib32stdc++6 g++-multilib
 
-ENV VBOX_VER 5.0.6
-ENV VBOX_BUILD 103037
+ENV VBOX_VER 5.0.8
+ENV VBOX_BUILD 103449
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
 RUN chmod +x *.run
 RUN mkdir -p /lib
@@ -374,7 +374,10 @@ RUN for dep in $TCZ_DEPS_1 ; do \
 RUN curl -LO https://download.samba.org/pub/rsync/src/rsync-3.1.1.tar.gz                
 RUN tar xvf rsync-3.1.1.tar.gz 
 RUN cd /rsync-3.1.1 && ./configure && make && /usr/bin/install -c  -m 755 rsync $ROOTFS/usr/local/bin
-                                                                                      
+
+RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz
+RUN tar xvf pv-1.6.0.tar.gz
+RUN cd /pv-1.6.0 && sh autogen.sh && ./configure && make && /usr/bin/install -c pv $ROOTFS/usr/local/bin
 
 RUN curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz
 RUN tar xvf qperf-0.4.9.tar.gz
