@@ -9,7 +9,13 @@ test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
 : ${DOCKER_HOST:='-H tcp://0.0.0.0:2375'}
 : ${DOCKER_TLS:=auto}
+
+if [ -e /dev/zvol/green/docker_vol ] ; then
+: ${DOCKER_STORAGE:=overlay}
+else
 : ${DOCKER_STORAGE:=zfs}
+fi
+
 : ${DOCKER_DIR:=/var/lib/docker}
 : ${DOCKER_ULIMITS:=1048576}
 : ${DOCKER_LOGFILE:=$BOOT_DIR/docker.log}
