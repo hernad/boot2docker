@@ -179,14 +179,6 @@ RUN curl -L -o $ROOTFS/usr/local/bin/docker https://get.docker.io/builds/Linux/x
     chmod +x $ROOTFS/usr/local/bin/docker && \
     { $ROOTFS/usr/local/bin/docker version || true; }
 
-# Get the git versioning info
-COPY .git /git/.git
-RUN cd /git && \
-    GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && \
-    GITSHA1=$(git rev-parse --short HEAD) && \
-    DATE=$(date) && \
-    echo "${GIT_BRANCH} : ${GITSHA1} - ${DATE}" > $ROOTFS/etc/boot2docker
-
 # Install Tiny Core Linux rootfs
 RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
 
@@ -317,18 +309,6 @@ COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
 COPY rootfs/isolinux /tmp/iso/boot/isolinux
 COPY rootfs/make_iso.sh /
 
-#RUN git clone https://github.com/hishamhm/htop.git
-#RUN cd /htop && ./autogen.sh && ./configure --prefix=$ROOTFS --enable-cgroup && make  && make install
-
-#RUN cp /usr/lib/x86_64-linux-gnu/libpanelw.so.5.9 $ROOTFS/usr/local/lib/libpanelw.so.5
-#RUN cp /usr/lib/x86_64-linux-gnu/libmenuw.so.5.9 $ROOTFS/usr/local/lib/libmenuw.so.5
-#RUN cp /usr/lib/x86_64-linux-gnu/libformw.so.5.9 $ROOTFS/usr/local/lib/libformw.so.5
-#RUN cp /lib/x86_64-linux-gnu/libncursesw.so.5.9 $ROOTFS/usr/local/lib/libncursesw.so.5
-#RUN cp /lib/x86_64-linux-gnu/libncurses.so.5.9 $ROOTFS/usr/local/lib/libncurses.so.5
-
-
-#RUN cp /lib/x86_64-linux-gnu/libpthread-2.13.so $ROOTFS/lib/libpthread.so.0
-
 RUN echo "--------- tmux & libevent install ------------"
 RUN curl -L -O  https://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-2.0.22-stable.tar.gz
 RUN tar xvf libevent-2.0.22-stable.tar.gz
@@ -383,7 +363,6 @@ RUN curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz
 RUN tar xvf qperf-0.4.9.tar.gz
 RUN cd /qperf-0.4.9 && sh autogen.sh && ./configure && make && /usr/bin/install -c src/qperf $ROOTFS/usr/local/bin
 
-
 RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip
 RUN unzip master.zip
 RUN cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh $ROOTFS/usr/local/sbin/zfs-auto-snapshot
@@ -393,8 +372,8 @@ RUN curl -k -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VER}_
 RUN dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
 
 
-RUN apt-get -y install libncurses5-dev python-dev ruby-dev mercurial
-RUN cd / && hg clone https://code.google.com/p/vim/
+RUN apt-get -y install libncurses5-dev python-dev ruby-dev 
+RUN cd / && git clone https://github.com/vim/vim.git
 RUN cd /vim && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \
                --with-x=no  --disable-gui  --disable-netbeans  \
                --disable-pythoninterp  --disable-python3interp \
@@ -402,6 +381,14 @@ RUN cd /vim && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \
 
 RUN cd /vim && make VIMRUNTIMEDIR=/opt/apps/vim/share && make install
 
+# Get the git versioning info
+COPY .git /git/.git  
+RUN cd /git && \
+    GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && \
+    GITSHA1=$(git rev-parse --short HEAD) && \
+    DATE=$(date) && \
+    echo "${GIT_BRANCH} : ${GITSHA1} - ${DATE}" > $ROOTFS/etc/boot2docker
+  
 
 RUN /make_iso.sh
 
