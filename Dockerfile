@@ -182,9 +182,6 @@ RUN curl -L -o $ROOTFS/usr/local/bin/docker https://get.docker.io/builds/Linux/x
 # Install Tiny Core Linux rootfs
 RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
 
-# Copy our custom rootfs
-COPY rootfs/rootfs $ROOTFS
-
 # hernad: no hyper-v
 # Build the Hyper-V KVP Daemon
 # RUN cd $LINUX_KERNEL_SOURCE && \
@@ -262,24 +259,10 @@ RUN cd $LINUX_KERNEL_SOURCE && \
 RUN depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
 
 
-# Make sure init scripts are executable
-RUN find $ROOTFS/etc/rc.d/ $ROOTFS/usr/local/etc/init.d/ -exec chmod +x '{}' ';'
-
 # debug http://unix.stackexchange.com/questions/76490/no-such-file-or-directory-on-an-executable-yet-file-exists-and-ldd-reports-al
 # /lib64/ld-linux-x86-64.so.2.
 RUN cd $ROOTFS && ln -s lib lib64
 
-
-# Change MOTD
-RUN mv $ROOTFS/usr/local/etc/motd $ROOTFS/etc/motd
-
-# Make sure we have the correct bootsync
-RUN mv $ROOTFS/boot*.sh $ROOTFS/opt/ && \
-	chmod +x $ROOTFS/opt/*.sh
-
-# Make sure we have the correct shutdown
-RUN mv $ROOTFS/shutdown.sh $ROOTFS/opt/shutdown.sh && \
-	chmod +x $ROOTFS/opt/shutdown.sh
 
 # hernad: no autologin serial console
 # Add serial console
@@ -293,21 +276,6 @@ RUN mv $ROOTFS/shutdown.sh $ROOTFS/opt/shutdown.sh && \
 RUN echo root > $ROOTFS/etc/sysconfig/superuser
 
 RUN rm -r -f $ROOTFS/opt/VirtualBox
-
-# crontab
-COPY rootfs/crontab $ROOTFS/var/spool/cron/crontabs/root
-
-# set ttyS0 115200
-COPY rootfs/inittab $ROOTFS/etc/inittab
-COPY rootfs/securetty $ROOTFS/etc/securetty
-COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
-
-RUN  mkdir -p $ROOTFS/usr/local/etc/ssh
-COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
-
-# Copy boot params
-COPY rootfs/isolinux /tmp/iso/boot/isolinux
-COPY rootfs/make_iso.sh /
 
 RUN echo "--------- tmux & libevent install ------------"
 RUN curl -L -O  https://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-2.0.22-stable.tar.gz
@@ -381,6 +349,26 @@ RUN cd /vim && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \
 
 RUN cd /vim && make VIMRUNTIMEDIR=/opt/apps/vim/share && make install
 
+COPY rootfs/rootfs $ROOTFS
+
+# crontab                             
+COPY rootfs/crontab $ROOTFS/var/spool/cron/crontabs/root                                                                   
+                                                                                                                                
+# set ttyS0 115200                                                              
+COPY rootfs/inittab $ROOTFS/etc/inittab             
+COPY rootfs/securetty $ROOTFS/etc/securetty                                                                  
+COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config                                                             
+                                                                  
+RUN  mkdir -p $ROOTFS/usr/local/etc/ssh                      
+COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config                                           
+                                                                                                        
+# Copy boot params                                                                                      
+COPY rootfs/isolinux /tmp/iso/boot/isolinux                                                             
+COPY rootfs/make_iso.sh /
+
+# Make sure init scripts are executable
+RUN find $ROOTFS/etc/rc.d/ $ROOTFS/usr/local/etc/init.d/ -exec chmod +x '{}' ';'
+
 # Get the git versioning info
 COPY .git /git/.git  
 RUN cd /git && \
@@ -389,6 +377,17 @@ RUN cd /git && \
     DATE=$(date) && \
     echo "${GIT_BRANCH} : ${GITSHA1} - ${DATE}" > $ROOTFS/etc/boot2docker
   
+
+# Change MOTD                                                                                                                   
+RUN mv $ROOTFS/usr/local/etc/motd $ROOTFS/etc/motd                                                                              
+                                                                                                                                
+# Make sure we have the correct bootsync                                                                                        
+RUN mv $ROOTFS/boot*.sh $ROOTFS/opt/ && \                                                                                       
+        chmod +x $ROOTFS/opt/*.sh                                                                                               
+                                                                                                                                
+# Make sure we have the correct shutdown                                                                                        
+RUN mv $ROOTFS/shutdown.sh $ROOTFS/opt/shutdown.sh && \                                                                         
+        chmod +x $ROOTFS/opt/shutdown.sh  
 
 RUN /make_iso.sh
 
