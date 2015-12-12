@@ -20,12 +20,12 @@ RUN apt-get update && apt-get -y install  unzip \
                         libncursesw5-dev libncurses-dev
 
 ENV GCC_M -m64
-# https://www.kernel.org/
+# https://www.kernel.org/pub/linux/kernel/v4.x/
 
 ENV KERNEL_MAJOR    4
 
-ENV KERNEL_VERSION_DOWNLOAD  4.2.5
-ENV KERNEL_VERSION  4.2.5
+ENV KERNEL_VERSION_DOWNLOAD  4.3.2
+ENV KERNEL_VERSION  4.3.2
 
 ENV LINUX_KERNEL_SOURCE /usr/src/linux
 ENV LINUX_BRAND  greenbox
@@ -170,6 +170,8 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse
                                                                          libdumbnet1:i386 libfuse2:i386 libfuse-dev \
                                                                          libglib2.0-0:i386 libtirpc-dev libtirpc1:i386
 
+# https://github.com/docker/docker/releases
+
 COPY DOCKER_VERSION $ROOTFS/etc/version
 RUN cp -v $ROOTFS/etc/version /tmp/iso/version
 
@@ -211,8 +213,10 @@ RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-file
 #RUN apt-get install ia32-libs libc6-dev-i386 lib32gcc1 gcc-multilib \
 #    lib32stdc++6 g++-multilib
 
-ENV VBOX_VER 5.0.8
-ENV VBOX_BUILD 103449
+# http://download.virtualbox.org/virtualbox/5.0.10/
+
+ENV VBOX_VER 5.0.10
+ENV VBOX_BUILD 104061
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
 RUN chmod +x *.run
 RUN mkdir -p /lib
@@ -230,6 +234,8 @@ RUN echo ignoring depmod -a errors
 RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install || true
 
 RUN mkdir /zfs
+
+# http://zfsonlinux.org/
 
 ENV ZFS_VER 0.6.5.3
 RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz
@@ -304,7 +310,7 @@ RUN for dep in $TCZ_DEPS_X ; do \
     done
 
 
-ENV TCZ_DEPS_1      python fuse libffi  samba samba-libs bind-utilities libxml2
+ENV TCZ_DEPS_1  python cifs-utils fuse libffi  samba samba-libs bind-utilities libxml2
 
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
@@ -335,6 +341,7 @@ RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip
 RUN unzip master.zip
 RUN cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh $ROOTFS/usr/local/sbin/zfs-auto-snapshot
 
+# https://www.vagrantup.com/downloads.html
 ENV VAGRANT_VER 1.7.4
 RUN curl -k -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VER}_x86_64.deb
 RUN dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
