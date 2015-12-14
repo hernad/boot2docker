@@ -77,16 +77,47 @@ if [ -e $BOOT_DIR/bootlocal.sh ]; then
     echo "------------------- ran $BOOT_DIR/bootlocal.sh"
 fi
 
-# Execute automated_script
-# disabled - this script was written assuming bash, which we no longer have.
-#/etc/rc.d/automated_script.sh
 
-# hernad: hyper-v client off
-# Run Hyper-V KVP Daemon
-# if modprobe hv_utils &> /dev/null; then
-#    /usr/sbin/hv_kvp_daemon
-#fi
+mount_opt() {
+if [ -d /opt/apps/$1 ] ; then
+  if grep -q \/opt\/$1 /proc/mounts ; then
+     echo "/opt/$1 already mounted !"
+  else
+    mkdir -p /opt/$1
+    mount --bind /opt/apps/$1 /opt/$1
+    echo "/opt/$1 mounted"
+  fi
+fi
+}
 
-# hernad: vmware-tools client off
-# Launch vmware-tools
-# /etc/rc.d/vmtoolsd
+GREEN_BINTRAY=${GREEN_BINTRAY:-https://bintray.com/hernad/greenbox}
+GREEN_APPS=${GREEN_APPS:-VirtualBox_5.0.10 vagrant_1.7.4 vim_7.4.972}
+
+for app_ver in GREEN_APPS; do
+
+   # VirtualBox_5.0.10
+   app=$( echo $app_ver | cut -d"_" -f1 )
+   ver=$( echo $app_ver | cut -d"_" -f2 )
+
+   if grep -q \/opt\/apps /proc/mounts ; then
+      cd /tmp && curl -LO $GREEN_BINTRAY/$app_$ver.tar.gz &&\
+      cd /opt/apps/ && tar xvf /tmp/$app_$ver.tar.gz &&\
+      rm /tmp/$app_$ver.tar.gz
+   fi
+
+   if [ -d /opt/apps/$app ] ; then
+       mount_opt $app
+       if [ -d /opt/$app/bin ] ; then
+           # e.g. /opt/vim/bin
+           export PATH=/opt/$app/bin:$PATH
+       else
+           # e.g. /opt/VirtualBox        
+           export PATH=/opt/$app:$PATH
+       fi
+
+       if [ "$app" == "VirtualBox" ]; then
+           # VirtualBox execs has to be root
+           chown root:root -R /opt/$app
+       fi 
+   fi
+done

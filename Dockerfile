@@ -184,19 +184,6 @@ RUN curl -L -o $ROOTFS/usr/local/bin/docker https://get.docker.io/builds/Linux/x
 # Install Tiny Core Linux rootfs
 RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
 
-# hernad: no hyper-v
-# Build the Hyper-V KVP Daemon
-# RUN cd $LINUX_KERNEL_SOURCE && \
-#    make headers_install INSTALL_HDR_PATH=/usr && \
-#    cd /linux-kernel/tools/hv && \
-#    sed -i 's/\(^CFLAGS = .*\)/\1 '"$GCC_M"'/' Makefile && \
-#    make hv_kvp_daemon && \
-#    cp hv_kvp_daemon $ROOTFS/usr/sbin
-
-# These steps can only be run once, so can't be in make_iso.sh (which can be run in chained Dockerfiles)
-# see https://github.com/boot2docker/boot2docker/blob/master/doc/BUILD.md
-
-
 # virtualbox server
 # RUN apt-get install gcc g++ bcc iasl xsltproc uuid-dev zlib1g-dev libidl-dev \
 #                libsdl1.2-dev libxcursor-dev libasound2-dev libstdc++5 \
@@ -310,7 +297,7 @@ RUN for dep in $TCZ_DEPS_X ; do \
     done
 
 
-ENV TCZ_DEPS_1  python cifs-utils fuse libffi  samba samba-libs bind-utilities libxml2
+ENV TCZ_DEPS_1  cifs-utils fuse libffi bind-utilities
 
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
