@@ -99,10 +99,10 @@ for appver in GREEN_APPS; do
    app=$( echo $appver | cut -d"_" -f1 )
    ver=$( echo $appver | cut -d"_" -f2 )
 
-   if grep -q \/opt\/apps /proc/mounts ; then
-      cd /tmp && curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz &&\
-      cd /opt/apps/ && tar xvf /tmp/${app}_${ver}.tar.gz &&\
-      rm /tmp/${app}_${ver}.tar.gz
+   if $(grep -q \/opt\/apps /proc/mounts) && [ ! -d /opt/apps/${app} ] ; then
+         cd /tmp && curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz &&\
+         cd /opt/apps/ && tar xvf /tmp/${app}_${ver}.tar.gz &&\
+         rm /tmp/${app}_${ver}.tar.gz
    fi
 
    if [ -d /opt/apps/${app} ] ; then
