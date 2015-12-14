@@ -341,9 +341,10 @@ RUN cd / && git clone https://github.com/vim/vim.git
 RUN cd /vim && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \
                --with-x=no  --disable-gui  --disable-netbeans  \
                --disable-pythoninterp  --disable-python3interp \
-               --disable-rubyinterp  --disable-luainterp
-
-RUN cd /vim && make VIMRUNTIMEDIR=/opt/apps/vim/share && make install
+               --disable-rubyinterp  --disable-luainterp \ 
+               --prefix=/opt/apps/vim &&\
+     make VIMRUNTIMEDIR=/opt/apps/vim/share &&\
+     make install
 
 COPY rootfs/rootfs $ROOTFS
 
@@ -386,5 +387,17 @@ RUN mv $ROOTFS/shutdown.sh $ROOTFS/opt/shutdown.sh && \
         chmod +x $ROOTFS/opt/shutdown.sh  
 
 RUN /make_iso.sh
+
+
+
+RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev &&\
+     cd / ; git clone https://github.com/ggreer/the_silver_searcher.git &&\
+     cd the_silver_searcher && ./build.sh --prefix=/opt/apps/ag &&\
+     make install
+
+
+RUN  apt-get install -y libtool libtool-bin autoconf automake cmake g++ pkg-config unzip &&\
+    cd / && git clone https://github.com/neovim/neovim.git &&\
+    make --prefix=/opt/apps/neovim && make install
 
 CMD ["cat", "boot2docker.iso"]
