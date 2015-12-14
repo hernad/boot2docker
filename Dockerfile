@@ -336,16 +336,6 @@ RUN curl -k -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VER}_
 RUN dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
 
 
-RUN apt-get -y install libncurses5-dev python-dev ruby-dev 
-RUN cd / && git clone https://github.com/vim/vim.git
-RUN cd /vim && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \
-               --with-x=no  --disable-gui  --disable-netbeans  \
-               --disable-pythoninterp  --disable-python3interp \
-               --disable-rubyinterp  --disable-luainterp \ 
-               --prefix=/opt/apps/vim &&\
-     make VIMRUNTIMEDIR=/opt/apps/vim/share &&\
-     make install
-
 COPY rootfs/rootfs $ROOTFS
 
 # crontab                             
@@ -389,6 +379,15 @@ RUN mv $ROOTFS/shutdown.sh $ROOTFS/opt/shutdown.sh && \
 RUN /make_iso.sh
 
 
+RUN apt-get -y install libncurses5-dev python-dev ruby-dev                                                           
+RUN cd / && git clone https://github.com/vim/vim.git                                                     
+RUN cd /vim && export LDFLAGS="-static" && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \
+               --with-x=no  --disable-gui  --disable-netbeans  \                                         
+               --disable-pythoninterp  --disable-python3interp \                                         
+               --disable-rubyinterp  --disable-luainterp \                                               
+               --prefix=/opt/apps/vim &&\                                                                
+     make VIMRUNTIMEDIR=/opt/apps/vim/share &&\                                                          
+     make install  
 
 RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev &&\
      cd / ; git clone https://github.com/ggreer/the_silver_searcher.git &&\
@@ -396,8 +395,11 @@ RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev 
      make install
 
 
-RUN  apt-get install -y libtool libtool-bin autoconf automake cmake g++ pkg-config unzip &&\
-    cd / && git clone https://github.com/neovim/neovim.git &&\
-    make --prefix=/opt/apps/neovim && make install
+RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\
+    cd / && git clone https://github.com/neovim/neovim.git
 
+RUN  mkdir -p /opt/apps/neovim ; cd /neovim && cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/apps/nvim &&\
+     make all install 
+
+WORKDIR /
 CMD ["cat", "boot2docker.iso"]
