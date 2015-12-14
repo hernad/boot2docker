@@ -18,7 +18,7 @@ fi
 
 : ${DOCKER_DIR:=/var/lib/docker}
 : ${DOCKER_ULIMITS:=1048576}
-: ${DOCKER_LOGFILE:=$BOOT_DIR/docker.log}
+: ${DOCKER_LOGFILE:=$BOOT_DIR/log/docker.log}
 
 : ${CERTDIR:=$BOOT_DIR/tls/}
 : ${CERT_INTERFACES:='eth0 eth1'}
