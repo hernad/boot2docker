@@ -91,7 +91,7 @@ fi
 }
 
 GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
-GREEN_APPS=${GREEN_APPS:-VirtualBox_5.0.10 vagrant_1.7.4 vim_7.4.972}
+GREEN_APPS=${GREEN_APPS:-VirtualBox_5.0.10 vagrant_1.7.4 nvim_0.1.1-79 vim_7.4.972}
 
 for appver in GREEN_APPS; do
 
