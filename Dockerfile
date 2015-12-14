@@ -398,8 +398,9 @@ RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev 
 RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\
     cd / && git clone https://github.com/neovim/neovim.git
 
-RUN  mkdir -p /opt/apps/neovim ; cd /neovim && cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/apps/nvim &&\
-     make all install 
+RUN  mkdir -p /opt/apps/neovim ; cd /neovim &&\
+     make || make || make ; cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/apps/nvim &&\
+     make all install
 
 WORKDIR /
 CMD ["cat", "boot2docker.iso"]
