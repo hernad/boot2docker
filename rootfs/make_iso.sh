@@ -15,7 +15,7 @@ test -x \"/opt/shutdown.sh\" && /opt/shutdown.sh\n
 grep -q "/opt/shutdown.sh" $ROOTFS/etc/init.d/rc.shutdown || ( echo "Error: failed to insert shutdown script into /etc/init.d/rc.shutdown"; exit 1 )
 
 # Make some handy symlinks (so these things are easier to find)
-ln -fs $BOOT_DIR/docker.log $ROOTFS/var/log/
+ln -fs $BOOT_DIR/log/docker.log $ROOTFS/var/log/
 ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/
 
 # Setup /etc/os-release with some nice contents
