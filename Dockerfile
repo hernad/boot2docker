@@ -333,13 +333,15 @@ RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz
 RUN tar xvf pv-1.6.0.tar.gz
 RUN cd /pv-1.6.0 && ./configure && make && /usr/bin/install -c pv $ROOTFS/usr/local/bin
 
-RUN curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz
-RUN tar xvf qperf-0.4.9.tar.gz
-RUN cd /qperf-0.4.9 && sh autogen.sh && ./configure && make && /usr/bin/install -c src/qperf $ROOTFS/usr/local/bin
+RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz &&\
+    tar xvf qperf-0.4.9.tar.gz &&\
+    cd /tmp/qperf-0.4.9 && sh autogen.sh && \
+    ./configure && make && /usr/bin/install -c src/qperf $ROOTFS/usr/local/bin &&\
+    cd /tmp && rm qperf-0.4.9.tar.gz && rm -r -f qperf-0.4.9
 
-RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip
-RUN unzip master.zip
-RUN cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh $ROOTFS/usr/local/sbin/zfs-auto-snapshot
+RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip &&\
+    unzip master.zip &&\
+    cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh $ROOTFS/usr/local/sbin/zfs-auto-snapshot
 
 # https://www.vagrantup.com/downloads.html
 ENV VAGRANT_VER 1.7.4
