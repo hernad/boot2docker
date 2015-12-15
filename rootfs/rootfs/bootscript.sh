@@ -90,34 +90,30 @@ if [ -d /opt/apps/$1 ] ; then
 fi
 }
 
-GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
-GREEN_APPS=${GREEN_APPS:-VirtualBox_5.0.10 vagrant_1.7.4 nvim_0.1.1-79 vim_7.4.972}
+export GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
+export GREEN_APPS=${GREEN_APPS:-VirtualBox_5.0.10 vagrant_1.7.4 nvim_0.1.1-79 vim_7.4.972}
 
-for appver in GREEN_APPS; do
+for appver in $GREEN_APPS; do
 
    # VirtualBox_5.0.10
    app=$( echo $appver | cut -d"_" -f1 )
    ver=$( echo $appver | cut -d"_" -f2 )
 
    if $(grep -q \/opt\/apps /proc/mounts) && [ ! -d /opt/apps/${app} ] ; then
-         cd /tmp && curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz &&\
+         cd /tmp 
+         ( curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz || \
+          ( echo "curl $GREEN_BINTRAY/${app}_${ver}.tar.gz ERROR" >> /opt/boot/log/download_apps.log && false ) \
+         ) &&\
          cd /opt/apps/ && tar xvf /tmp/${app}_${ver}.tar.gz &&\
          rm /tmp/${app}_${ver}.tar.gz
    fi
 
    if [ -d /opt/apps/${app} ] ; then
        mount_opt ${app}
-       if [ -d /opt/${app}/bin ] ; then
-           # e.g. /opt/vim/bin
-           export PATH=/opt/${app}/bin:$PATH
-       else
-           # e.g. /opt/VirtualBox        
-           export PATH=/opt/${app}:$PATH
-       fi
 
        if [ "$app" == "VirtualBox" ]; then
            # VirtualBox execs has to be root
-           chown root:root -R /opt/${app}
+           chown root:root -R /opt/apps/${app}
        fi 
    fi
 done
