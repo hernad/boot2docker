@@ -11,14 +11,15 @@ BINTRAY_PACKAGE_VER=$2
 [ -z "$BINTRAY_PACKAGE" ] && echo package name mora biti navedeno && exit 1
 [ -z "$BINTRAY_PACKAGE_VER" ] && echo package version mora biti navedeno && exit 1
 
-docker rm -f greenbox
-docker run --name greenbox greenbox:$DOCKER_VERSION /bin/false
-docker cp greenbox:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} 
-
 FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.tar.gz
 
-tar cvfz $FILE ${BINTRAY_PACKAGE}
-rm -r -f ${BINTRAY_PACKAGE}
+if [ ! -f $FILE ] ; then
+   docker rm -f greenbox
+   docker run --name greenbox greenbox:$DOCKER_VERSION /bin/false
+   docker cp greenbox:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} 
+   tar cvfz $FILE ${BINTRAY_PACKAGE}
+   rm -r -f ${BINTRAY_PACKAGE}
+fi
 
 ls -lh $FILE
 
@@ -26,6 +27,7 @@ echo uploading to bintray ...
 
 curl -T $FILE \
       -u hernad:$BINTRAY_API_KEY \
+      --header "X-Bintray-Override: 1" \
      https://api.bintray.com/content/hernad/greenbox/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$FILE
 
 curl -u hernad:$BINTRAY_API_KEY \

@@ -20,7 +20,7 @@ ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/
 
 # Setup /etc/os-release with some nice contents
 b2dVersion="$(cat $ROOTFS/etc/version)" # something like "1.1.0"
-b2dDetail="$(cat $ROOTFS/etc/boot2docker)" # something like "master : 740106c - Tue Jul 29 03:29:25 UTC 2014"
+b2dDetail="$(cat $ROOTFS/etc/greenbox)" # something like "master : 740106c - Tue Jul 29 03:29:25 UTC 2014"
 tclVersion="$(cat $ROOTFS/usr/share/doc/tc/release.txt)" # something like "5.3"
 cat > $ROOTFS/etc/os-release <<-EOOS
 NAME=greenbox
