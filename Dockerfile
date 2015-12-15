@@ -345,7 +345,7 @@ RUN cd /vim && export LDFLAGS="-static" && ./configure --with-compiledby='Ernad 
                --prefix=/opt/apps/vim &&\                                                                                                  
      make &&\                                                                                                                              
      make install &&\
-     cd /opt/apps/vim/share/vim && mv vim74/* && rmdir vim74                                                                                                                         
+     cd /opt/apps/vim/share/vim && mv vim74/* . && rmdir vim74                                                                                                                         
                                                                                                                                            
 RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev &&\                                                        
      cd / ; git clone https://github.com/ggreer/the_silver_searcher.git &&\                                                                
@@ -380,6 +380,7 @@ ENV PYTHON_VERSION 2.7.11
 ENV PYTHON_PIP_VERSION 7.1.2
 
 ENV PATH  /opt/apps/python2/bin:$PATH
+
 RUN set -x \
 	&& mkdir -p /usr/src/python \
 	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
@@ -390,9 +391,10 @@ RUN set -x \
 	&& cd /usr/src/python \
 	&& ./configure --prefix=/opt/apps/python2 --enable-shared --enable-unicode=ucs4 \
 	&& make -j$(nproc) \
-	&& make install \
-	&& ldconfig \
-	&& curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
+	&& make install
+
+ENV LD_LIBRARY_PATH /opt/apps/python2/lib
+RUN     curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
 	&& pip install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
 	&& find /usr/local \
 		\( -type d -a -name test -o -name tests \) \

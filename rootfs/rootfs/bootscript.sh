@@ -91,7 +91,7 @@ fi
 }
 
 export GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
-export GREEN_APPS=${GREEN_APPS:-VirtualBox_5.0.10 vagrant_1.7.4 nvim_0.1.1-79 vim_7.4.972 ag_0.31.0 node_5.2.0}
+export GREEN_APPS=${GREEN_APPS:-VirtualBox_5.0.10 vagrant_1.7.4 python2_2.7.11 nvim_0.1.1-79 ag_0.31.0 node_5.2.0}
 
 for appver in $GREEN_APPS; do
 
