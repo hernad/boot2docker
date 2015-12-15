@@ -20,7 +20,7 @@ done
 export PATH
 export LD_LIBRARY_PATH
 
-echo "greenbox version $(cat /etc/version), build $(cat /etc/boot2docker)"
+echo "greenbox version $(cat /etc/version), build $(cat /etc/greenbox)"
 docker -v # e.g. Docker version 1.3.0-dev, build ba14ddf-dirty
 echo "PATH: $PATH"
-echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH:
+echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"

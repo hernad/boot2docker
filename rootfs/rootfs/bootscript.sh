@@ -35,10 +35,10 @@ if grep -q '^docker:' /etc/passwd; then
     # ... and add our docker user to it!
     /bin/addgroup docker docker
 
-    #preload data from boot2docker-cli
+    #preload data from grenbox-cli
     if [ -e "$BOOT_DIR/userdata.tar" ]; then
         tar xf $BOOT_DIR/userdata.tar -C /home/docker/ > /var/log/userdata.log 2>&1
-        rm -f 'boot2docker, please format-me'
+        rm -f 'greenbox, please format-me'
         chown -R docker:staff /home/docker
     fi
 fi

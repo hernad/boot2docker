@@ -1,10 +1,10 @@
 #!/bin/sh
 . /etc/init.d/tc-functions
 
-echo "${YELLOW}Running boot2docker init script...${NORMAL}"
+echo "${YELLOW}Running greenbox init script...${NORMAL}"
 
 # This log is started before the persistence partition is mounted
-/opt/bootscript.sh 2>&1 | tee -a /var/log/boot2docker.log
+/opt/bootscript.sh 2>&1 | tee -a /var/log/greenbox.log
 
 
-echo "${YELLOW}Finished boot2docker init script...${NORMAL}"
+echo "${YELLOW}Finished greenbox init script...${NORMAL}"
