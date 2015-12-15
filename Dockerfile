@@ -24,8 +24,8 @@ ENV GCC_M -m64
 
 ENV KERNEL_MAJOR    4
 
-ENV KERNEL_VERSION_DOWNLOAD  4.3.2
-ENV KERNEL_VERSION  4.3.2
+ENV KERNEL_VERSION_DOWNLOAD  4.3.3
+ENV KERNEL_VERSION  4.3.3
 
 ENV LINUX_KERNEL_SOURCE /usr/src/linux
 ENV LINUX_BRAND  greenbox
@@ -175,7 +175,7 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse
 COPY DOCKER_VERSION $ROOTFS/etc/version
 RUN cp -v $ROOTFS/etc/version /tmp/iso/version
 
-# Get the Docker version that matches our boot2docker version
+# Get the Docker version that matches our greenbox version
 # Note: `docker version` returns non-true when there is no server to ask
 RUN curl -L -o $ROOTFS/usr/local/bin/docker https://get.docker.io/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/version) && \
     chmod +x $ROOTFS/usr/local/bin/docker && \
@@ -336,6 +336,75 @@ RUN curl -k -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VER}_
 RUN dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
 
 
+RUN apt-get -y install libncurses5-dev python-dev ruby-dev                                                                                 
+RUN cd / && git clone https://github.com/vim/vim.git                                                                                       
+RUN cd /vim && export LDFLAGS="-static" && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \                                  
+               --with-x=no  --disable-gui  --disable-netbeans  \                                                                           
+               --disable-pythoninterp  --disable-python3interp \                                                                           
+               --disable-rubyinterp  --disable-luainterp \                                                                                 
+               --prefix=/opt/apps/vim &&\                                                                                                  
+     make &&\                                                                                                                              
+     make install &&\
+     cd /opt/apps/vim/share/vim && mv vim74/* && rmdir vim74                                                                                                                         
+                                                                                                                                           
+RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev &&\                                                        
+     cd / ; git clone https://github.com/ggreer/the_silver_searcher.git &&\                                                                
+     cd the_silver_searcher && ./build.sh --prefix=/opt/apps/ag &&\                                                                        
+     make install                                                                                                                          
+                                                                                                                                           
+                                                                                                                                           
+RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\                                                 
+    cd / && git clone https://github.com/neovim/neovim.git                                                                                 
+                                                                                                                                           
+RUN  mkdir -p /opt/apps/neovim ; cd /neovim &&\                                                                                            
+     make || make || make ; cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/apps/nvim &&\                                                           
+     make all install                                                                                                                      
+  
+
+# https://github.com/docker-library/python/blob/master/2.7/wheezy/Dockerfile
+
+
+# remove several traces of debian python
+RUN apt-get purge -y python.*
+
+# http://bugs.python.org/issue19846
+# > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
+ENV LANG C.UTF-8
+
+# gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
+
+ENV PYTHON_VERSION 2.7.11
+
+# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
+ENV PYTHON_PIP_VERSION 7.1.2
+
+ENV PATH  /opt/apps/python2/bin:$PATH
+RUN set -x \
+	&& mkdir -p /usr/src/python \
+	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
+	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
+	&& gpg --verify python.tar.xz.asc \
+	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
+	&& rm python.tar.xz* \
+	&& cd /usr/src/python \
+	&& ./configure --prefix=/opt/apps/python2 --enable-shared --enable-unicode=ucs4 \
+	&& make -j$(nproc) \
+	&& make install \
+	&& ldconfig \
+	&& curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
+	&& pip install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
+	&& find /usr/local \
+		\( -type d -a -name test -o -name tests \) \
+		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+		-exec rm -rf '{}' + \
+	&& rm -rf /usr/src/python
+
+# install "virtualenv", since the vast majority of users of this image will want it
+RUN pip install --no-cache-dir virtualenv
+
+# =============================================================================================
+
 COPY rootfs/rootfs $ROOTFS
 
 # crontab                             
@@ -376,31 +445,8 @@ RUN mv $ROOTFS/boot*.sh $ROOTFS/opt/ && \
 RUN mv $ROOTFS/shutdown.sh $ROOTFS/opt/shutdown.sh && \                                                                         
         chmod +x $ROOTFS/opt/shutdown.sh  
 
-RUN /make_iso.sh
-
-
-RUN apt-get -y install libncurses5-dev python-dev ruby-dev                                                           
-RUN cd / && git clone https://github.com/vim/vim.git                                                     
-RUN cd /vim && export LDFLAGS="-static" && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \
-               --with-x=no  --disable-gui  --disable-netbeans  \                                         
-               --disable-pythoninterp  --disable-python3interp \                                         
-               --disable-rubyinterp  --disable-luainterp \                                               
-               --prefix=/opt/apps/vim &&\                                                                
-     make VIMRUNTIMEDIR=/opt/apps/vim/share &&\                                                          
-     make install  
-
-RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev &&\
-     cd / ; git clone https://github.com/ggreer/the_silver_searcher.git &&\
-     cd the_silver_searcher && ./build.sh --prefix=/opt/apps/ag &&\
-     make install
-
-
-RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\
-    cd / && git clone https://github.com/neovim/neovim.git
-
-RUN  mkdir -p /opt/apps/neovim ; cd /neovim &&\
-     make || make || make ; cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/apps/nvim &&\
-     make all install
 
 WORKDIR /
-CMD ["cat", "boot2docker.iso"]
+RUN /make_iso.sh
+
+CMD ["cat", "greenbox.iso"]

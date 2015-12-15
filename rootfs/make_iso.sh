@@ -8,7 +8,7 @@ BOOT_DIR=/opt/boot
 #  2) insert run op after those three lines
 sed -i "1,/^useBusybox/ { /^useBusybox/ { N;N; /^useBusybox\n\nclear/ a\
 \\\n\
-# Run boot2docker shutdown script\n\
+# Run greenbox shutdown script\n\
 test -x \"/opt/shutdown.sh\" && /opt/shutdown.sh\n
 } }" $ROOTFS/etc/init.d/rc.shutdown
 # Verify sed worked
@@ -25,14 +25,14 @@ tclVersion="$(cat $ROOTFS/usr/share/doc/tc/release.txt)" # something like "5.3"
 cat > $ROOTFS/etc/os-release <<-EOOS
 NAME=greenbox
 VERSION=$b2dVersion
-ID=boot2docker
+ID=greenbox
 ID_LIKE=tcl
 VERSION_ID=$b2dVersion
 PRETTY_NAME="greenbox $b2dVersion (TCL $tclVersion); $b2dDetail"
 ANSI_COLOR="1;34"
-HOME_URL="http://boot2docker.io"
-SUPPORT_URL="https://github.com/hernad/boot2docker"
-BUG_REPORT_URL="https://github.com/hernad/boot2docker/issues"
+HOME_URL="https://github.com/hernad"
+SUPPORT_URL="https://github.com/hernad/greenbox"
+BUG_REPORT_URL="https://github.com/hernad/greenbox/issues"
 EOOS
 
 # Pack the rootfs
@@ -50,4 +50,4 @@ xorriso  \
     -no-emul-boot -boot-load-size 4 -boot-info-table \
     -b boot/isolinux/isolinux.bin -c boot/isolinux/boot.cat \
     -isohybrid-mbr /usr/lib/syslinux/isohdpfx.bin \
-    -o /boot2docker.iso /tmp/iso
+    -o /greenbox.iso /tmp/iso
