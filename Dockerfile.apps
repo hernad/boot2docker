@@ -17,15 +17,9 @@ RUN apt-get -y install libncurses5-dev python-dev ruby-dev &&\
                --prefix=/opt/apps/vim &&\                                                                                                  
      make &&\                                                                                                                              
      make install &&\
-     cd /opt/apps/vim/share/vim && mv vim74/* . && rmdir vim74                                                                                                                         
-       
-# ==== ag - the silver searchher ==========                                                                                                                                    
-RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev &&\                                                        
-     cd / ; git clone https://github.com/ggreer/the_silver_searcher.git &&\                                                                
-     cd the_silver_searcher && export LDFLAGS="-static" && ./build.sh --prefix=/opt/apps/ag &&\                                                                        
-     make install                                                                                                                          
-                                                                                                                                           
-                                           
+     cd /opt/apps/vim/share/vim && mv vim74/* . && rmdir vim74
+
+
 # ===== neovim ==============                                                                                                
 RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\ 
      cd / && git clone https://github.com/neovim/neovim.git                                                                                 
@@ -67,3 +61,46 @@ RUN     curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
 		-exec rm -rf '{}' + \
 	&& rm -rf /usr/src/python \
         && pip install --no-cache-dir virtualenv
+
+
+# ================= /opt/apps/green =========================================================
+
+RUN mkdir -p /opt/apps/green/bin &&\
+    cd / && curl -LO https://download.samba.org/pub/rsync/src/rsync-3.1.1.tar.gz &&\
+    tar xvf rsync-3.1.1.tar.gz &&\
+    cd /rsync-3.1.1 && ./configure && make && /usr/bin/install -c  -m 755 rsync /opt/apps/green/bin
+                             
+RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
+    tar xvf pv-1.6.0.tar.gz  &&\
+    cd /pv-1.6.0 && ./configure && make && /usr/bin/install -c pv /opt/apps/green/bin
+                              
+RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz &&\
+    tar xvf qperf-0.4.9.tar.gz &&\   
+    cd /tmp/qperf-0.4.9 && sh autogen.sh && \
+    ./configure && make && /usr/bin/install -c src/qperf /opt/apps/green/bin &&\
+    cd /tmp && rm qperf-0.4.9.tar.gz && rm -r -f qperf-0.4.9
+                                    
+RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip &&\
+    unzip master.zip &&\                               
+    cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh /opt/apps/green/bin/zfs-auto-snapshot
+ 
+
+# --------- tmux & libevent install ------------
+RUN curl -L -O  https://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-2.0.22-stable.tar.gz &&\
+    tar xvf libevent-2.0.22-stable.tar.gz &&\
+    cd /libevent-2.0.22-stable && sh autogen.sh && ./configure && make install &&\
+    ( [  -d /opt/apps/green/lib ] || mkdir -p /opt/apps/green/lib ) &&\
+    cp .libs/*so* /opt/apps/green/lib
+                                               
+RUN git clone https://github.com/ThomasAdam/tmux.git tmux &&\
+    cd tmux && sh autogen.sh && export LD_LIBRARY_PATH=/opt/apps/green/lib && ./configure && make &&\
+    ( [  -d /opt/apps/green/bin ] || mkdir -p /opt/apps/green/bin ) &&\
+    cp tmux /opt/apps/green/bin/tmux && chmod +x /opt/apps/green/bin/tmux &&\
+    cp /usr/lib/x86_64-linux-gnu/libtinfo.so /opt/apps/green/lib/libtinfo.so.5
+
+RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev &&\
+     cd / ; git clone https://github.com/ggreer/the_silver_searcher.git &&\
+     cd the_silver_searcher && export LDFLAGS="-static" && ./build.sh --prefix=/opt/apps/green &&\
+     make install                                                                                                                          
+                                                                                                                                           
+ 

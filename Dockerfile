@@ -242,15 +242,6 @@ RUN echo root > $ROOTFS/etc/sysconfig/superuser
 
 RUN rm -r -f $ROOTFS/opt/VirtualBox
 
-RUN echo "--------- tmux & libevent install ------------"
-RUN curl -L -O  https://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-2.0.22-stable.tar.gz &&\
-    tar xvf libevent-2.0.22-stable.tar.gz &&\
-    cd /libevent-2.0.22-stable && sh autogen.sh && ./configure && make install && cp .libs/*so* $ROOTFS/usr/local/lib/
-
-RUN git clone https://github.com/ThomasAdam/tmux.git tmux &&\
-    cd tmux && sh autogen.sh && ./configure && make && cp tmux $ROOTFS/usr/local/bin/tmux && chmod +x $ROOTFS/usr/local/bin/tmux &&\
-    cp /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
-
 ENV TCZ_DEPS_X    Xorg-7.7-bin libpng libXau libXext libxcb libXdmcp libX11 libICE libXt libSM libXmu aterm \
                   libXcursor libXrender libXinerama libGL libXdamage libXfixes libXxf86vm libxshmfence libdrm \
                   libXfont freetype harfbuzz fontconfig Xorg-fonts
@@ -283,24 +274,6 @@ RUN for dep in $TCZ_DEPS_1 ; do \
           if [ "$?" != "0" ] ; then exit 1 ; fi ;\
         fi ;\
     done
-
-RUN curl -LO https://download.samba.org/pub/rsync/src/rsync-3.1.1.tar.gz &&\                
-    tar xvf rsync-3.1.1.tar.gz &&\
-    cd /rsync-3.1.1 && ./configure && make && /usr/bin/install -c  -m 755 rsync $ROOTFS/usr/local/bin
-
-RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
-    tar xvf pv-1.6.0.tar.gz  &&\
-    cd /pv-1.6.0 && ./configure && make && /usr/bin/install -c pv $ROOTFS/usr/local/bin
-
-RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz &&\
-    tar xvf qperf-0.4.9.tar.gz &&\
-    cd /tmp/qperf-0.4.9 && sh autogen.sh && \
-    ./configure && make && /usr/bin/install -c src/qperf $ROOTFS/usr/local/bin &&\
-    cd /tmp && rm qperf-0.4.9.tar.gz && rm -r -f qperf-0.4.9
-
-RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip &&\
-    unzip master.zip &&\
-    cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh $ROOTFS/usr/local/sbin/zfs-auto-snapshot
 
 # =============================================================================================
 
@@ -346,6 +319,14 @@ RUN mv $ROOTFS/shutdown.sh $ROOTFS/opt/shutdown.sh && \
 
 
 WORKDIR /
+
+# remove git-cvsserver, gitk
+# move zfs utilites zdb, zed, ztest to /opt/apps/green
+
+RUN cd $ROOTFS/usr/local/bin && rm git-cvsserver gitk &&\
+    ( [ -d /opt/apps/green/sbin ] || mkdir -p /opt/apps/green/sbin ) &&\
+    cd $ROOTFS/usr/local/sbin && mv zdb zed ztest /opt/apps/green/sbin
+
 RUN /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]

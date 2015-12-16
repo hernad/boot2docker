@@ -14,7 +14,8 @@ BOOT_DIR=/opt/boot
 /etc/rc.d/cgroupfs-mount
 # see https://github.com/tianon/cgroupfs-mount
 
-mkdir -p $BOOT_DIR/log
+[ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
+[ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
 
 #import settings from profile (or unset them)
 test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
@@ -27,6 +28,7 @@ test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
 # start cron
 /etc/rc.d/crond
+
 
 # TODO: move this (and the docker user creation&pwd out to its own over-rideable?))
 if grep -q '^docker:' /etc/passwd; then
@@ -91,7 +93,7 @@ fi
 }
 
 export GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
-export GREEN_APPS=${GREEN_APPS:-VirtualBox_5.0.10 vagrant_1.7.4 python2_2.7.11 nvim_0.1.1-79 ag_0.31.0 node_5.2.0}
+export GREEN_APPS=${GREEN_APPS:-green_1.0.0 VirtualBox_5.0.10 vagrant_1.7.4 python2_2.7.11 nvim_0.1.1-79 vim_7.4.972 node_5.2.0}
 
 for appver in $GREEN_APPS; do
 
@@ -109,8 +111,6 @@ for appver in $GREEN_APPS; do
    fi
 
    if [ -d /opt/apps/${app} ] ; then
-       mount_opt ${app}
-
        if [ "$app" == "VirtualBox" ]; then
            # VirtualBox execs has to be root
            chown root:root -R /opt/apps/${app}

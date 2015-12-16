@@ -16,19 +16,23 @@ grep -q "/opt/shutdown.sh" $ROOTFS/etc/init.d/rc.shutdown || ( echo "Error: fail
 
 # Make some handy symlinks (so these things are easier to find)
 ln -fs $BOOT_DIR/log/docker.log $ROOTFS/var/log/
+ln -fs $BOOT_DIR/log/udhcp.log $ROOTFS/var/log/
+ln -fs $BOOT_DIR/log/greenbox.log $ROOTFS/var/log/
+
+ln -fs $BOOT_DIR/etc/dnsmasq.conf $ROOTFS/etc/
 ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/
 
 # Setup /etc/os-release with some nice contents
-b2dVersion="$(cat $ROOTFS/etc/version)" # something like "1.1.0"
-b2dDetail="$(cat $ROOTFS/etc/greenbox)" # something like "master : 740106c - Tue Jul 29 03:29:25 UTC 2014"
+greenVersion="$(cat $ROOTFS/etc/version)" # something like "1.1.0"
+greenDetail="$(cat $ROOTFS/etc/greenbox)" # something like "master : 740106c - Tue Jul 29 03:29:25 UTC 2014"
 tclVersion="$(cat $ROOTFS/usr/share/doc/tc/release.txt)" # something like "5.3"
 cat > $ROOTFS/etc/os-release <<-EOOS
 NAME=greenbox
-VERSION=$b2dVersion
+VERSION=$greenVersion
 ID=greenbox
 ID_LIKE=tcl
-VERSION_ID=$b2dVersion
-PRETTY_NAME="greenbox $b2dVersion (TCL $tclVersion); $b2dDetail"
+VERSION_ID=$greenVersion
+PRETTY_NAME="greenbox $greenVersion (TCL $tclVersion); $greenDetail"
 ANSI_COLOR="1;34"
 HOME_URL="https://github.com/hernad"
 SUPPORT_URL="https://github.com/hernad/greenbox"

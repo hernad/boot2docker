@@ -6,6 +6,7 @@
 useBusybox
 
 USER="tc"
+USER_PASSWORD="docker"
 TCEDIR="/tmp/tce"
 TCEOPT="/tmp/tce/optional"
 TCLOOP="/tmp/tcloop"
@@ -17,7 +18,7 @@ KERNEL="$(uname -r)"
 addUser(){
 	echo "${GREEN}Adding user ${YELLOW}$USER ${NORMAL}"
 	/bin/adduser -s /bin/sh -G staff -D "$USER"
-	echo "$USER":docker | /usr/sbin/chpasswd -m
+	echo $USER:$USER_PASSWORD | /usr/sbin/chpasswd -m
 	echo -e "$USER\tALL=NOPASSWD: ALL" >> /etc/sudoers
 }
 
