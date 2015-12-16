@@ -16,7 +16,15 @@ FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.tar.gz
 if [ ! -f $FILE ] ; then
    docker rm -f greenbox_apps
    docker run --name greenbox_apps greenbox_apps:$DOCKER_VERSION /bin/false
-   docker cp greenbox_apps:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} 
+
+   case ${BINTRAY_PACKAGE} in
+      VirtualBox|vagrant)
+           docker cp greenbox_apps:/opt/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE}
+           ;;
+      *) 
+           docker cp greenbox_apps:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE}
+           ;;
+   esac 
    tar cvfz $FILE ${BINTRAY_PACKAGE}
    rm -r -f ${BINTRAY_PACKAGE}
 fi

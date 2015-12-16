@@ -22,31 +22,24 @@ RUN apt-get update && apt-get -y install  unzip \
 ENV GCC_M -m64
 # https://www.kernel.org/pub/linux/kernel/v4.x/
 
-ENV KERNEL_MAJOR    4
+ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.3.3  KERNEL_VERSION=4.3.3
 
-ENV KERNEL_VERSION_DOWNLOAD  4.3.3
-ENV KERNEL_VERSION  4.3.3
+ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
 
-ENV LINUX_KERNEL_SOURCE /usr/src/linux
-ENV LINUX_BRAND  greenbox
 
 # Fetch the kernel sources
-RUN mkdir -p /usr/src
-RUN curl --retry 10 https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
+RUN mkdir -p /usr/src && \
+    curl --retry 10 https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
     mv /linux-$KERNEL_VERSION_DOWNLOAD $LINUX_KERNEL_SOURCE
 
-
-ENV AUFS_UTIL_GIT    http://git.code.sf.net/p/aufs/aufs-util         
+#ENV AUFS_UTIL_GIT    http://git.code.sf.net/p/aufs/aufs-util         
                                                                      
 # v4 kernel                                                          
-ENV AUFS_VER     aufs4                                               
-ENV AUFS_GIT https://github.com/sfjro/aufs4-standalone               
+#ENV AUFS_VER aufs4                                               
+#ENV AUFS_GIT https://github.com/sfjro/aufs4-standalone               
 
-#ENV AUFS_BRANCH  aufs4.0                                            
+#ENV AUFS_BRANCH  aufs4.1
 #ENV AUFS_UTIL_BRANCH aufs4.0
-
-ENV AUFS_BRANCH  aufs4.1
-ENV AUFS_UTIL_BRANCH aufs4.0
 
 # Download AUFS and apply patches and files, then remove it
 #RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
@@ -72,14 +65,13 @@ RUN jobs=$(nproc); \
 
 # The post kernel build process
 
-ENV ROOTFS          /rootfs
-ENV TCL_REPO_BASE   http://tinycorelinux.net/6.x/x86_64
+ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/6.x/x86_64
 
 # Make the ROOTFS
-RUN mkdir -p $ROOTFS
-
 # Prepare the build directory (/tmp/iso)
-RUN mkdir -p /tmp/iso/boot
+
+RUN mkdir -p $ROOTFS &&\ 
+    mkdir -p /tmp/iso/boot
 
 # Install the kernel modules in $ROOTFS
 RUN cd $LINUX_KERNEL_SOURCE && \
@@ -110,10 +102,6 @@ RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.or
     mkdir -p $ROOTFS/usr/local/lib && \
     cp -av `pwd`/output/lib64/* $ROOTFS/usr/local/lib
 
-
-#ovo ne pije vode ?!
-#RUN cd $LINUX_KERNEL_SOURCE && \
-#   make INSTALL_HDR_PATH=/usr ARCH=x86_64 headers_install
 
 # Make sure the kernel headers are installed for aufs-util, and then build it
 RUN cd $LINUX_KERNEL_SOURCE && \
@@ -184,40 +172,25 @@ RUN curl -L -o $ROOTFS/usr/local/bin/docker https://get.docker.io/builds/Linux/x
 # Install Tiny Core Linux rootfs
 RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
 
-# virtualbox server
-# RUN apt-get install gcc g++ bcc iasl xsltproc uuid-dev zlib1g-dev libidl-dev \
-#                libsdl1.2-dev libxcursor-dev libasound2-dev libstdc++5 \
-#                libhal-dev libpulse-dev libxml2-dev libxslt1-dev \
-#                python-dev libqt4-dev qt4-dev-tools libcap-dev \
-#                libxmu-dev mesa-common-dev libglu1-mesa-dev \
-#                linux-kernel-headers libcurl4-openssl-dev libpam0g-dev \
-#                libxrandr-dev libxinerama-dev libqt4-opengl-dev makeself \
-#                libdevmapper-dev default-jdk python-central \
-#                texlive-latex-base \
-#                texlive-latex-extra texlive-latex-recommended \
-#                texlive-fonts-extra texlive-fonts-recommended
-# On 64-bit Debian-based systems, the following command should install the required additional packages:
-#RUN apt-get install ia32-libs libc6-dev-i386 lib32gcc1 gcc-multilib \
-#    lib32stdc++6 g++-multilib
 
 # http://download.virtualbox.org/virtualbox/5.0.10/
 
-ENV VBOX_VER 5.0.10
-ENV VBOX_BUILD 104061
-RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
-RUN chmod +x *.run
-RUN mkdir -p /lib
-RUN ln -s $ROOTFS/lib/modules /lib/modules
-RUN ./VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
-RUN cp -av /opt/VirtualBox $ROOTFS/opt/
+ENV VBOX_VER=5.0.10 VBOX_BUILD=104061
 
-RUN chmod o-w $ROOTFS/opt 
-RUN chmod o-w $ROOTFS/opt/VirtualBox
-RUN chown root.root $ROOTFS/opt
-RUN chown root.root $ROOTFS/opt/VirtualBox
-RUN chmod 4755 $ROOTFS/opt/VirtualBox/VBoxHeadless
+RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
+    chmod +x *.run ;\
+    mkdir -p /lib ;\
+    ln -s $ROOTFS/lib/modules /lib/modules ;\
+    ./VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run ;\
+    cp -av /opt/VirtualBox $ROOTFS/opt/
 
-RUN echo ignoring depmod -a errors
+RUN chmod o-w $ROOTFS/opt ;\ 
+    chmod o-w $ROOTFS/opt/VirtualBox ;\
+    chown root.root $ROOTFS/opt ;\
+    chown root.root $ROOTFS/opt/VirtualBox ;\
+    chmod 4755 $ROOTFS/opt/VirtualBox/VBoxHeadless
+
+#RUN echo ignoring depmod -a errors
 RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install || true
 
 RUN mkdir /zfs
@@ -225,14 +198,14 @@ RUN mkdir /zfs
 # http://zfsonlinux.org/
 
 ENV ZFS_VER 0.6.5.3
-RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz
-RUN cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
+RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz &&\
+    cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
 
 # hernad: zfs build demands librt from debian
-RUN cp /lib/x86_64-linux-gnu/librt-2.13.so $ROOTFS/lib/
-RUN rm $ROOTFS/lib/librt.so.1
-RUN cd $ROOTFS/lib && ln -s librt-2.13.so librt.so.1
+RUN cp /lib/x86_64-linux-gnu/librt-2.13.so $ROOTFS/lib/ &&\
+    rm $ROOTFS/lib/librt.so.1 &&\
+    cd $ROOTFS/lib && ln -s librt-2.13.so librt.so.1
 
 # build zfs from git
 # ENV ZFS_GIT_BRANCH zfs-0.6.4-release
@@ -240,8 +213,8 @@ RUN cd $ROOTFS/lib && ln -s librt-2.13.so librt.so.1
 # RUN cd /zfs/zfs-git && sh autogen.sh && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && DESTDIR=$ROOTFS make install 
 
 # build zfs from tar
-RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/zfs-$ZFS_VER.tar.gz
-RUN cd /zfs && tar xf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER &&\
+RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/zfs-$ZFS_VER.tar.gz &&\
+    cd /zfs && tar xf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make &&\
     DESTDIR=$ROOTFS make install
                                                                                                                                 
@@ -255,7 +228,6 @@ RUN depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
 # debug http://unix.stackexchange.com/questions/76490/no-such-file-or-directory-on-an-executable-yet-file-exists-and-ldd-reports-al
 # /lib64/ld-linux-x86-64.so.2.
 RUN cd $ROOTFS && ln -s lib lib64
-
 
 # hernad: no autologin serial console
 # Add serial console
@@ -271,13 +243,13 @@ RUN echo root > $ROOTFS/etc/sysconfig/superuser
 RUN rm -r -f $ROOTFS/opt/VirtualBox
 
 RUN echo "--------- tmux & libevent install ------------"
-RUN curl -L -O  https://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-2.0.22-stable.tar.gz
-RUN tar xvf libevent-2.0.22-stable.tar.gz
-RUN cd /libevent-2.0.22-stable && sh autogen.sh && ./configure && make install && cp .libs/*so* $ROOTFS/usr/local/lib/
+RUN curl -L -O  https://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-2.0.22-stable.tar.gz &&\
+    tar xvf libevent-2.0.22-stable.tar.gz &&\
+    cd /libevent-2.0.22-stable && sh autogen.sh && ./configure && make install && cp .libs/*so* $ROOTFS/usr/local/lib/
 
-RUN git clone https://github.com/ThomasAdam/tmux.git tmux
-RUN cd tmux && sh autogen.sh && ./configure && make && cp tmux $ROOTFS/usr/local/bin/tmux && chmod +x $ROOTFS/usr/local/bin/tmux
-RUN cp /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
+RUN git clone https://github.com/ThomasAdam/tmux.git tmux &&\
+    cd tmux && sh autogen.sh && ./configure && make && cp tmux $ROOTFS/usr/local/bin/tmux && chmod +x $ROOTFS/usr/local/bin/tmux &&\
+    cp /usr/lib/x86_64-linux-gnu/libtinfo.so $ROOTFS/usr/local/lib/libtinfo.so.5
 
 ENV TCZ_DEPS_X    Xorg-7.7-bin libpng libXau libXext libxcb libXdmcp libX11 libICE libXt libSM libXmu aterm \
                   libXcursor libXrender libXinerama libGL libXdamage libXfixes libXxf86vm libxshmfence libdrm \
@@ -312,13 +284,13 @@ RUN for dep in $TCZ_DEPS_1 ; do \
         fi ;\
     done
 
-RUN curl -LO https://download.samba.org/pub/rsync/src/rsync-3.1.1.tar.gz                
-RUN tar xvf rsync-3.1.1.tar.gz 
-RUN cd /rsync-3.1.1 && ./configure && make && /usr/bin/install -c  -m 755 rsync $ROOTFS/usr/local/bin
+RUN curl -LO https://download.samba.org/pub/rsync/src/rsync-3.1.1.tar.gz &&\                
+    tar xvf rsync-3.1.1.tar.gz &&\
+    cd /rsync-3.1.1 && ./configure && make && /usr/bin/install -c  -m 755 rsync $ROOTFS/usr/local/bin
 
-RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz
-RUN tar xvf pv-1.6.0.tar.gz
-RUN cd /pv-1.6.0 && ./configure && make && /usr/bin/install -c pv $ROOTFS/usr/local/bin
+RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
+    tar xvf pv-1.6.0.tar.gz  &&\
+    cd /pv-1.6.0 && ./configure && make && /usr/bin/install -c pv $ROOTFS/usr/local/bin
 
 RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz &&\
     tar xvf qperf-0.4.9.tar.gz &&\
