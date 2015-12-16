@@ -1,24 +1,5 @@
 #!/bin/sh
 
-mount_opt() {
-
-if [ -d /opt/apps/$1 ] ; then
-  if ! $(grep -q \/opt\/$1 /proc/mounts) ; then
-    echo mkdir, mount /opt/apps/$1 ...
-    sudo mkdir -p /opt/$1
-    sudo mount --bind /opt/apps/$1 /opt/$1
-    echo "/opt/$1 mounted"
-  fi
-fi
-}
-
-for app in `ls -1 /opt/apps`
-do
-   if [ -d /opt/apps/${app} ] ; then
-       mount_opt ${app}
-   fi
-done
-
 for appdir in `ls -1 /opt`
 do
    if [ -d /opt/$appdir/lib ] ; then

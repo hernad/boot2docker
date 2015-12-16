@@ -1,6 +1,7 @@
 #!/bin/sh
 
 BOOT_DIR=/opt/boot
+LOG_FILE=/var/log/bootscript.log
 
 # Configure sysctl
 /etc/rc.d/sysctl
@@ -81,15 +82,16 @@ fi
 
 
 mount_opt() {
+
 if [ -d /opt/apps/$1 ] ; then
-  if grep -q \/opt\/$1 /proc/mounts ; then
-     echo "/opt/$1 already mounted !"
-  else
-    mkdir -p /opt/$1
-    mount --bind /opt/apps/$1 /opt/$1
-    echo "/opt/$1 mounted"
+  if ! $(grep -q \/opt\/$1 /proc/mounts) ; then
+    echo mkdir, mount /opt/apps/$1 ...
+    sudo mkdir -p /opt/$1
+    sudo mount --bind /opt/apps/$1 /opt/$1 >> $LOG_FILE
+    echo "/opt/$1 mounted" >> $LOG_FILE
   fi
 fi
+
 }
 
 export GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
@@ -117,3 +119,12 @@ for appver in $GREEN_APPS; do
        fi 
    fi
 done
+
+for app in `ls -1 /opt/apps`
+do
+   if [ -d /opt/apps/${app} ] ; then
+       mount_opt ${app}
+   fi
+done
+
+
