@@ -1,5 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
+LOG_FILE=/opt/boot/log/greenbox_apps.log
+
+[ `whoami` != root ] && echo "you have to be root user !" && exit 1
+
+LOG_FILE=/var/log/downloads.log
 GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
 GREEN_APPS=${GREEN_APPS:-green_1.0.0 VirtualBox_5.0.10 vagrant_1.7.4 python2_2.7.11 nvim_0.1.1-79 vim_7.4.972 node_5.2.0}
 
@@ -28,12 +33,20 @@ for appver in $GREEN_APPS; do
    ver=$( echo $appver | cut -d"_" -f2 )
 
    if $(grep -q \/opt\/apps /proc/mounts) && [ ! -d /opt/apps/${app} ] ; then
-         cd /tmp 
-         ( curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz || \
-          ( echo "curl $GREEN_BINTRAY/${app}_${ver}.tar.gz ERROR" >> /opt/boot/log/download_apps.log && false ) \
-         ) &&\
-         cd /opt/apps/ && tar xvf /tmp/${app}_${ver}.tar.gz &&\
-         rm /tmp/${app}_${ver}.tar.gz
+         cd /tmp
+	 echo "downloading: $GREEN_BINTRAY/${app}_${ver}.tar.gz ..." 
+         echo "START: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz" >> $LOG_FILE
+         curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz
+	 if [ $? -ne 0 ] ; then
+           echo "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz" >> $LOG_FILE
+         else
+           cd /opt/apps/
+	   tar xvf /tmp/${app}_${ver}.tar.gz
+	   if [ $? -ne 0 ] ; then
+              echo "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz, /tmp/${app}_${ver}.tar.gz not tar archive, or damaged" >> $LOG_FILE
+	   fi
+           rm /tmp/${app}_${ver}.tar.gz
+         fi
    fi
 
    if [ -d /opt/apps/${app} ] ; then
@@ -44,7 +57,6 @@ for appver in $GREEN_APPS; do
    fi
 done
 
-[ `whoami` == root ] && echo "mount_opt has to be root user !" && exit 1
 
 for app in `ls -1 /opt/apps`
 do
@@ -52,5 +64,3 @@ do
        mount_opt ${app}
    fi
 done
-
-
