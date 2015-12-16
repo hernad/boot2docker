@@ -81,50 +81,5 @@ if [ -e $BOOT_DIR/bootlocal.sh ]; then
 fi
 
 
-mount_opt() {
-
-if [ -d /opt/apps/$1 ] ; then
-  if ! $(grep -q \/opt\/$1 /proc/mounts) ; then
-    echo mkdir, mount /opt/apps/$1 ...
-    sudo mkdir -p /opt/$1
-    sudo mount --bind /opt/apps/$1 /opt/$1 >> $LOG_FILE
-    echo "/opt/$1 mounted" >> $LOG_FILE
-  fi
-fi
-
-}
-
-export GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
-export GREEN_APPS=${GREEN_APPS:-green_1.0.0 VirtualBox_5.0.10 vagrant_1.7.4 python2_2.7.11 nvim_0.1.1-79 vim_7.4.972 node_5.2.0}
-
-for appver in $GREEN_APPS; do
-
-   # VirtualBox_5.0.10
-   app=$( echo $appver | cut -d"_" -f1 )
-   ver=$( echo $appver | cut -d"_" -f2 )
-
-   if $(grep -q \/opt\/apps /proc/mounts) && [ ! -d /opt/apps/${app} ] ; then
-         cd /tmp 
-         ( curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz || \
-          ( echo "curl $GREEN_BINTRAY/${app}_${ver}.tar.gz ERROR" >> /opt/boot/log/download_apps.log && false ) \
-         ) &&\
-         cd /opt/apps/ && tar xvf /tmp/${app}_${ver}.tar.gz &&\
-         rm /tmp/${app}_${ver}.tar.gz
-   fi
-
-   if [ -d /opt/apps/${app} ] ; then
-       if [ "$app" == "VirtualBox" ]; then
-           # VirtualBox execs has to be root
-           chown root:root -R /opt/apps/${app}
-       fi 
-   fi
-done
-
-for app in `ls -1 /opt/apps`
-do
-   if [ -d /opt/apps/${app} ] ; then
-       mount_opt ${app}
-   fi
-done
-
+/usr/local/bin/download_green_apps
 
