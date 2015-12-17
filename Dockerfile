@@ -354,6 +354,9 @@ RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
          /opt/apps/x11/lib
 
 
+COPY rootfs/sudo_x /usr/local/bin
+
+RUN cp 
 RUN /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]
