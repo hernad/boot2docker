@@ -11,13 +11,6 @@ else # if it exists, remove the ramdisk's ssh config, so that the hard drive's i
 fi
 ln -s $BOOT_DIR/ssh /usr/local/etc/ssh
 
-if [ ! -f /usr/local/etc/ssh/ssh_config ]; then
-    mv /usr/local/etc/ssh/ssh_config.example /usr/local/etc/ssh/ssh_config
-fi
-if [ ! -f /usr/local/etc/ssh/sshd_config ]; then
-    mv /usr/local/etc/ssh/sshd_config.example /usr/local/etc/ssh/sshd_config
-fi
-
 if ! grep -q "^UseDNS no" /usr/local/etc/ssh/sshd_config; then
     # speed up login
     echo "UseDNS no" >> /usr/local/etc/ssh/sshd_config

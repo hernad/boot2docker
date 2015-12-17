@@ -288,8 +288,11 @@ COPY rootfs/securetty $ROOTFS/etc/securetty
 COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config                                                             
                                                                   
 RUN  mkdir -p $ROOTFS/usr/local/etc/ssh                      
-COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config                                           
-                                                                                                        
+COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
+
+COPY rootfs/sshd_environment $ROOTFS/root/.ssh/environment
+COPY rootfs/sshd_environment $ROOTFS/docker/.ssh/environment
+
 # Copy boot params                                                                                      
 COPY rootfs/isolinux /tmp/iso/boot/isolinux                                                             
 COPY rootfs/make_iso.sh /
@@ -324,8 +327,32 @@ WORKDIR /
 # move zfs utilites zdb, zed, ztest to /opt/apps/green
 
 RUN cd $ROOTFS/usr/local/bin && rm git-cvsserver gitk &&\
+    cd $ROOTFS/usr/local/share &&\
+    rm -r -f git-gui gitk gitweb &&\
+    rm -r -f applications pixmaps &&\
+    rm -r -f $ROOTFS/usr/local/tce-installed &&\
+    rm -r -f $ROOTFS/usr/local/sbin/tce* &&\
     ( [ -d /opt/apps/green/sbin ] || mkdir -p /opt/apps/green/sbin ) &&\
     cd $ROOTFS/usr/local/sbin && mv zdb zed ztest /opt/apps/green/sbin
+
+
+#RUN cd $ROOTFS/usr/local
+#ENV TCZ_DEPS_X    Xorg-7.7-bin libpng libXau libXext libxcb libXdmcp libX11 libICE libXt libSM libXmu aterm \
+#                  libXcursor libXrender libXinerama libGL libXdamage libXfixes libXxf86vm libxshmfence libdrm \
+#                  libXfont freetype harfbuzz fontconfig Xorg-fonts
+
+
+RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
+   ( [ -d /opt/apps/x11/bin ] || mkdir -p /opt/apps/x11/bin ) &&\
+   ( [ -d /opt/apps/x11/lib ] || mkdir -p /opt/apps/x11/lib ) &&\
+   while read FILE ; do case $FILE in \
+                          *\/bin\/*) mv $ROOTFS/$FILE /opt/apps/x11/bin ;; \
+                          *\/lib\/*) mv $ROOTFS/$FILE /opt/apps/x11/lib ;; \
+		   esac ; done < Xorg-7.7-bin.tcz.list &&\
+   cd $ROOTFS/usr/local/lib && \
+   mv libpng* libXau* libxcb* libXdmcp* libX11* libICE* libXt* libSM* libXmu* libXcursor* libdrm* libXfont* \
+         /opt/apps/x11/lib
+
 
 RUN /make_iso.sh
 

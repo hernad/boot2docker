@@ -1,2 +1,4 @@
 UseDNS no
+PermitUserEnvironment yes
 X11Forwarding yes
+XAuthLocation /opt/x11/bin/xauth
