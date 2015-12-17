@@ -290,8 +290,8 @@ COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
 RUN  mkdir -p $ROOTFS/usr/local/etc/ssh                      
 COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
 
-COPY rootfs/sshd_environment $ROOTFS/root/.ssh/environment
-COPY rootfs/sshd_environment $ROOTFS/docker/.ssh/environment
+COPY rootfs/environment $ROOTFS/etc/environment
+#COPY etc_environment $ROOTFS/root/.ssh/environment
 
 # Copy boot params                                                                                      
 COPY rootfs/isolinux /tmp/iso/boot/isolinux                                                             
