@@ -1,0 +1,23 @@
+#!/bin/sh
+
+[ -d $HOME/.ssh ] || mkdir -p $HOME/.ssh
+[ -e $HOME/.ssh/environment ] || ln -s /etc/environment $HOME/.ssh/environment
+
+
+source $HOME/.ssh/environment
+                                                                                                                                         
+if type -p xauth >/dev/null && read proto cookie && [[ "$DISPLAY" ]]; then
+        if [[ "${DISPLAY:0:10}" = 'localhost:' ]] ; then
+                # X11UseLocalhost=yes
+                echo add unix:"${DISPLAY:10}" $proto $cookie
+        else                                      
+                # X11UseLocalhost=no
+                echo add "$DISPLAY" $proto $cookie
+        fi | xauth -q -
+fi
+                                                                            
+# make ssh agent accessible through predictable socket path
+# (required to reconnect to screen sessions and keeping ssh agent working)
+if [[ "$SSH_AUTH_SOCK" && "$SSH_AUTH_SOCK" != ~/.ssh/ssh_auth_sock ]] ; then
+        ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
+fi
