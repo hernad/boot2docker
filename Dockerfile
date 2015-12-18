@@ -289,7 +289,7 @@ COPY rootfs/crontab $ROOTFS/var/spool/cron/crontabs/root
 # set ttyS0 115200                                                              
 COPY rootfs/inittab $ROOTFS/etc/inittab             
 COPY rootfs/securetty $ROOTFS/etc/securetty                                                                  
-#COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config                                                             
+COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config                                                             
 COPY rootfs/ld.so.conf $ROOTFS/etc/ld.so.conf
 
 # tinycore openssh uses /usr/local/etc/ssh

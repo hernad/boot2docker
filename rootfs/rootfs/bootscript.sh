@@ -1,37 +1,40 @@
 #!/bin/sh
 
 BOOT_DIR=/opt/boot
-LOG_FILE=/var/log/bootscript.log
-
-# Configure sysctl
-/etc/rc.d/sysctl
-
-# Load TCE extensions
-/etc/rc.d/tce-loader
-
-/etc/rc.d/automount_zfs
-
-# Mount cgroups hierarchy
-/etc/rc.d/cgroupfs-mount
-# see https://github.com/tianon/cgroupfs-mount
+LOG_FILE=/var/log/greenbox.log
 
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
 [ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
 
-#import settings from profile (or unset them)
+echo "== bootscript.sh: $(date) ====" >> $LOG_FILE
+echo "configure sysctl" >> $LOG_FILE
+/etc/rc.d/sysctl
+
+log_msg () {
+  echo "bootscript.sh: $1" >> $LOG_FILE
+}
+
+log_msg "automount_zfs"
+/etc/rc.d/automount_zfs
+
+log_msg "mount cgroups hierarchy"
+/etc/rc.d/cgroupfs-mount
+# see https://github.com/tianon/cgroupfs-mount
+
+log_msg "import settings from profile (or unset them)"
 test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
-# set the hostname
+log_msg "set the hostname"
 /etc/rc.d/hostname
 
-# sync the clock
+log_msg "sync the clock"
 /etc/rc.d/ntpd &
 
-# start cron
+log_msg "start cron"
 /etc/rc.d/crond
 
+log_msg "add docker:docker user"
 
-# TODO: move this (and the docker user creation&pwd out to its own over-rideable?))
 if grep -q '^docker:' /etc/passwd; then
     # if we have the docker user, let's create the docker group
     /bin/addgroup -S docker
@@ -40,19 +43,19 @@ if grep -q '^docker:' /etc/passwd; then
 
     #preload data from grenbox-cli
     if [ -e "$BOOT_DIR/userdata.tar" ]; then
-        tar xf $BOOT_DIR/userdata.tar -C /home/docker/ > /var/log/userdata.log 2>&1
+        tar xf $BOOT_DIR/userdata.tar -C /home/docker/ >> $LOG_FILE  2>&1
         rm -f 'greenbox, please format-me'
         chown -R docker:staff /home/docker
     fi
 fi
 
-# Automount Shared Folders (VirtualBox, etc.)
+log_msg "automount shared folders (VirtualBox, etc.)"
 /etc/rc.d/automount-shares
 
-# Configure SSHD
+log_msg "configure SSHD"
 /etc/rc.d/sshd
 
-# Launch ACPId
+log_msg "launch ACPID"
 /etc/rc.d/acpid
 
 echo "-------------------"
@@ -66,20 +69,21 @@ echo "-------------------"
 # Allow local bootsync.sh customisation
 if [ -e $BOOT_DIR/bootsync.sh ]; then
     $BOOT_DIR/bootsync.sh
-    echo "------------------- ran $BOOT_DIR/bootsync.sh"
+    log_msg "after $BOOT_DIR/bootsync.sh"
 fi
 
-# Launch Docker
+log_msg "Launch Docker"
 /etc/rc.d/docker
 
+log_msg "virtualbox"
 /etc/rc.d/virtualbox
 
-# Allow local HD customisation
+log_msg "bootlocal.sh - allow local HD customisation"
 if [ -e $BOOT_DIR/bootlocal.sh ]; then
     $BOOT_DIR/bootlocal.sh > /var/log/bootlocal.log 2>&1 &
-    echo "------------------- ran $BOOT_DIR/bootlocal.sh"
+    log_msg "after $BOOT_DIR/bootlocal.sh"
 fi
 
-
+log_msg "before: download_green_apps"
 /usr/local/bin/download_green_apps
 
