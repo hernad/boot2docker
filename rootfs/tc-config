@@ -124,9 +124,7 @@ fi
 
 log_msg "Start Udev to populate /dev and handle hotplug events"
 echo -n "${BLUE}Starting udev daemon for hotplug support...${NORMAL}"
-#/sbin/udevd --daemon 2>/dev/null >/dev/null
 /sbin/udevd --daemon 2>&1 >/dev/null
-#/sbin/udevadm trigger --action=add 2>/dev/null >/dev/null &
 /sbin/udevadm trigger --action=add 2>&1 >/dev/null &
 rotdash $!
 echo "${GREEN} Done.${NORMAL}"
@@ -591,7 +589,6 @@ fi
 [ -n "$XVESA" ]  && sed -i 's/1024x768x32/'"$XVESA"'/' /home/"$USER"/.xsession 2>/dev/null
 
 log_msg "If desktop: $DESKTOP is specified use that"
-
 if [ -n "$DESKTOP" ]; then
 	echo "$DESKTOP" > /etc/sysconfig/desktop
 else
