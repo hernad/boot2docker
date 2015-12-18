@@ -1,15 +1,21 @@
 #!/bin/busybox ash
+
 # RC Script for Tiny Core Linux
 # (c) Robert Shingledecker 2004-2012
 # Several modifications for speed by Curaga
 
-LOG_FILE=/var/log/greenbox.log
+if [ -d /opt/boot/log ]
+then
+  LOG_FILE=/var/log/greenbox.log
+else
+  LOG_FILE=/var/log/greenbox_start.log
+fi
 
 log_msg() {
   echo "tc-config: $1" >> $LOG_FILE
 }
 
-log_msg "start $(date)"
+log_msg "start $(date), called in /etc/init.d/rcS"
 
 . /etc/init.d/tc-functions
 useBusybox
@@ -38,6 +44,8 @@ addUser(){
 clear                               
 echo "${GREEN}Booting green-box ${YELLOW}Core $VERSION ${NORMAL}"
 echo "${GREEN}Running Linux Kernel ${YELLOW}$KERNEL${GREEN}.${NORMAL}"
+
+log_msg "set PATH /usr/local/sbin,bin"
 export PATH=/usr/local/sbin:/usr/local/bin:"$PATH"
 
 log_msg "Here we check all the boot parameters using the fastest way known to men, case & loop"
@@ -103,6 +111,8 @@ for i in `cat /proc/cmdline`; do
 done
 echo "${GREEN} Done.${NORMAL}"
 
+log_msg "blacklist: $BLACKLIST"
+
 if [ -n "$BLACKLIST" ]; then
 	mkdir -p /etc/modprobe.d
 	for i in $BLACKLIST; do
@@ -138,7 +148,6 @@ echo "${GREEN} Done.${NORMAL}"
 )
 
 modprobe loop 2>/dev/null
-#modprobe ohci_hcd
 
 if [ -n "$NOZSWAP" ]; then
 	echo "${BLUE}Skipping compressed swap in ram as requested from the boot command line.${NORMAL}"
@@ -170,6 +179,7 @@ if [ -n "$SYSLOG" ]; then
 fi
 
 [ -n "$LANGUAGE" ] || LANGUAGE="C"
+log_msg "Setting Language to $LANGUAGE"
 echo -n "${GREEN}Setting Language to ${MAGENTA}$LANGUAGE"
 echo "LANG=$LANGUAGE" > /etc/sysconfig/language
 export LANG=$LANGUAGE
@@ -344,7 +354,8 @@ if [ -n "$PRETCE" ]; then
 	[ -x /tmp/onpre.sh ] && /tmp/onpre.sh
 fi
 
-# First process tftp and http entries
+log_msg "squashfs: First process tftp and http entries"
+
 modprobe -q squashfs 2>/dev/null
 [ -n "$TFTPLIST" ] && get_app "TFTP" $TFTPLIST
 [ -n "$HTTPLIST" ] && get_app "HTTP" $HTTPLIST
@@ -579,21 +590,22 @@ fi
 
 [ -n "$XVESA" ]  && sed -i 's/1024x768x32/'"$XVESA"'/' /home/"$USER"/.xsession 2>/dev/null
 
-# If desktop is specified use that
+log_msg "If desktop: $DESKTOP is specified use that"
+
 if [ -n "$DESKTOP" ]; then
 	echo "$DESKTOP" > /etc/sysconfig/desktop
 else
 	[ -s /etc/sysconfig/desktop ] && DESKTOP=`cat /etc/sysconfig/desktop`
 fi
 
-# If ntpserver is specified use that
+log_msg "If ntpserver: $NTPSERVER is specified use that"
 if [ -n "$NTPSERVER" ]; then
 	echo "$NTPSERVER" > /etc/sysconfig/ntpserver
 else
 	[ -s /etc/sysconfig/ntpserver ] && NTPSERVER=`cat /etc/sysconfig/ntpserver`
 fi
 
-# If restore then also pass TCE directory for quick look of mydata.tgz backupfile
+log_msg "If restore then also pass TCE directory: $MYDATA for quick look of mydata.tgz backupfile"
 if [ -n "$MYDATA" ]; then
 	echo "$MYDATA" > /etc/sysconfig/mydata
 else
