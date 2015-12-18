@@ -1,10 +1,9 @@
 #!/bin/bash
 
-LOG_FILE=/opt/boot/log/greenbox_apps.log
+LOG_FILE=/opt/boot/log/greenbox.log
 
 [ `whoami` != root ] && echo "you have to be root user !" && exit 1
 
-LOG_FILE=/var/log/downloads.log
 GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
 GREEN_APPS=${GREEN_APPS:-green_1.0.0 x11_1.0.0 VirtualBox_5.0.10 vagrant_1.7.4 python2_2.7.11 nvim_0.1.1-79 vim_7.4.972 node_5.2.0}
 
@@ -12,6 +11,10 @@ echo "environment vars:"
 echo "-------------------------------------------------------------"
 echo "GREEN_BINTRAY: $GREEN_BINTRAY"
 echo "   GREEN_APPS: $GREEN_APPS"
+
+echo ===== $(date) ====== >> $LOG_FILE
+
+[ -d /opt/apps ] && ( echo "/opt/apps doesn't exists" >> $LOG_FILE" && exit 1 )
 
 mount_opt() {
 

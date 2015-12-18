@@ -1,9 +1,9 @@
 #!/bin/sh
 echo "automount ...";
-LABEL=greenbox-data
+LABEL=GREEN_HDD
 MAGIC="greenbox, please format-me"
 
-# If there is a partition with `greenbox-data` as its label, use it and be
+# If there is a partition with `GREEN_HDD` as its label, use it and be
 # very happy. Thus, you can come along if you feel like a room without a roof.
 GREENBOX_DATA=`blkid -o device -l -t LABEL=$LABEL`
 echo $GREENBOX_DATA

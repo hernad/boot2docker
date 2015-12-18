@@ -182,13 +182,17 @@ RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$V
     mkdir -p /lib ;\
     ln -s $ROOTFS/lib/modules /lib/modules ;\
     ./VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run ;\
-    cp -av /opt/VirtualBox $ROOTFS/opt/
+    cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
+    cd / && curl -LO http://download.virtualbox.org/virtualbox/$VBOX_VER/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack &&\
+    /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack  
 
+# chmod 4755 - VirtualBox, VBoxHeadless suid
 RUN chmod o-w $ROOTFS/opt ;\ 
     chmod o-w $ROOTFS/opt/VirtualBox ;\
     chown root.root $ROOTFS/opt ;\
-    chown root.root $ROOTFS/opt/VirtualBox ;\
-    chmod 4755 $ROOTFS/opt/VirtualBox/VBoxHeadless
+    cd $ROOTFS/opt/VirtualBox && chown root.root VirtualBox &&\
+    chmod 4755 VirtualBox VBoxHeadless && cd /
+    
 
 #RUN echo ignoring depmod -a errors
 RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install || true
@@ -285,8 +289,10 @@ COPY rootfs/crontab $ROOTFS/var/spool/cron/crontabs/root
 # set ttyS0 115200                                                              
 COPY rootfs/inittab $ROOTFS/etc/inittab             
 COPY rootfs/securetty $ROOTFS/etc/securetty                                                                  
-COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config                                                             
-                                                                  
+#COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config                                                             
+COPY rootfs/ld.so.conf $ROOTFS/etc/ld.so.conf
+
+# tinycore openssh uses /usr/local/etc/ssh
 RUN  mkdir -p $ROOTFS/usr/local/etc/ssh                      
 COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
 COPY rootfs/environment $ROOTFS/etc/environment
