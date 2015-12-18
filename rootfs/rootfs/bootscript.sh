@@ -80,7 +80,7 @@ log_msg "virtualbox"
 
 log_msg "bootlocal.sh - allow local HD customisation"
 if [ -e $BOOT_DIR/bootlocal.sh ]; then
-    $BOOT_DIR/bootlocal.sh > /var/log/bootlocal.log 2>&1 &
+    $BOOT_DIR/bootlocal.sh >> $LOG_FILE 2>&1 &
     log_msg "after $BOOT_DIR/bootlocal.sh"
 fi
 
