@@ -2,6 +2,15 @@
 # RC Script for Tiny Core Linux
 # (c) Robert Shingledecker 2004-2012
 # Several modifications for speed by Curaga
+
+LOG_FILE=/var/log/greenbox.log
+
+log_msg() {
+  echo "tc-config: $1" >> $LOG_FILE
+}
+
+log_msg "start $(date)"
+
 . /etc/init.d/tc-functions
 useBusybox
 
@@ -31,7 +40,7 @@ echo "${GREEN}Booting green-box ${YELLOW}Core $VERSION ${NORMAL}"
 echo "${GREEN}Running Linux Kernel ${YELLOW}$KERNEL${GREEN}.${NORMAL}"
 export PATH=/usr/local/sbin:/usr/local/bin:"$PATH"
 
-# Here we check all the boot parameters using the fastest way known to men, case & loop
+log_msg "Here we check all the boot parameters using the fastest way known to men, case & loop"
 echo -n "${BLUE}Checking boot options...${NORMAL}"
 for i in `cat /proc/cmdline`; do
 	case $i in
@@ -103,7 +112,7 @@ if [ -n "$BLACKLIST" ]; then
 	done
 fi
 
-# Start Udev to populate /dev and handle hotplug events
+log_msg "Start Udev to populate /dev and handle hotplug events"
 echo -n "${BLUE}Starting udev daemon for hotplug support...${NORMAL}"
 #/sbin/udevd --daemon 2>/dev/null >/dev/null
 /sbin/udevd --daemon 2>&1 >/dev/null
@@ -189,6 +198,7 @@ else
 	/bin/hostname -F /etc/hostname
 fi
 
+log_msg "config 127.0.0.1"
 /sbin/ifconfig lo 127.0.0.1 up
 /sbin/route add 127.0.0.1 lo &
 
@@ -223,7 +233,7 @@ if [ -n "$AOE" ]; then
 	echo "${NORMAL}"
 fi
 
-# dhcp.sh runs udhcpc async, so it exits before network is up
+log_msg "dhcp.sh runs udhcpc async, so it exits before network is up"
 wait4Server() {
 	/etc/init.d/dhcp.sh
 	SERVER=$1 ; NOPING=$2 ; CNT=0
@@ -255,7 +265,7 @@ if [ -n "$SUPERUSER" ]; then
 	touch /etc/sysconfig/superuser
 fi
 
-# Setup base directories for TCE Applicatons 
+log_msg "Setup base directories for TCE Applicatons"
 [ -d "$TCEINSTALLED" ] || mkdir "$TCEINSTALLED"
 [ -d "$TCEDIR" ] || mkdir "$TCEDIR"
 [ -d "$TCEOPT" ] || mkdir "$TCEOPT"
@@ -299,7 +309,7 @@ get_app() {
 	)
 }
 
-# Preload drivers needed for tce/opt/home on lvm/RAID etc
+log_msg "Preload drivers needed for tce/opt/home on lvm/RAID etc"
 if [ -n "$PRETCE" ]; then
 	PKG=optional ; LOADER="tce-load -i" ; LIST=onboot.lst
 	RAM=/tmp/tce
@@ -377,12 +387,13 @@ if grep -q "^/dev/root" /proc/mounts; then
 	echo "${RED}Detected Traditional Hard drive installation.${NORMAL}"
 fi
 
+log_msg "ldconfig"
 /sbin/ldconfig 2>/dev/null
 
 [ -n "$TEXT" ] && touch /etc/sysconfig/text
 [ -n "$XONLY" ] && touch /etc/sysconfig/xonly
 
-#Check for Virtual Hard Drive
+log_msg "Check for Virtual Hard Drive"
 if [ -n "$TCVD" ]; then
 	wait $fstab_pid
 	TCVD="${TCVD#/}"
@@ -622,5 +633,3 @@ if ! grep -q "^green/docker_home" /proc/mounts; then
         chown docker:docker /home/docker
 	echo "${GREEN}Docker home mounted.${NORMAL}"
 fi
-
-
