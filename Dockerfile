@@ -233,14 +233,6 @@ RUN depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
 # /lib64/ld-linux-x86-64.so.2.
 RUN cd $ROOTFS && ln -s lib lib64
 
-# hernad: no autologin serial console
-# Add serial console
-# RUN echo "#!/bin/sh" > $ROOTFS/usr/local/bin/autologin && \
-#	echo "/bin/login -f docker" >> $ROOTFS/usr/local/bin/autologin && \
-#	chmod 755 $ROOTFS/usr/local/bin/autologin && \
-#	echo 'ttyS0:2345:respawn:/sbin/getty -l /usr/local/bin/autologin 9600 ttyS0 vt100' >> $ROOTFS/etc/inittab && \
-#	echo 'ttyS1:2345:respawn:/sbin/getty -l /usr/local/bin/autologin 9600 ttyS1 vt100' >> $ROOTFS/etc/inittab
-
 # fix "su -"
 RUN echo root > $ROOTFS/etc/sysconfig/superuser
 
@@ -341,12 +333,6 @@ RUN cd $ROOTFS/usr/local/bin && rm git-cvsserver gitk &&\
     cd $ROOTFS/usr/local/sbin && mv zdb zed ztest /opt/apps/green/sbin
 
 
-#RUN cd $ROOTFS/usr/local
-#ENV TCZ_DEPS_X    Xorg-7.7-bin libpng libXau libXext libxcb libXdmcp libX11 libICE libXt libSM libXmu aterm \
-#                  libXcursor libXrender libXinerama libGL libXdamage libXfixes libXxf86vm libxshmfence libdrm \
-#                  libXfont freetype harfbuzz fontconfig Xorg-fonts
-
-
 RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
    ( [ -d /opt/apps/x11/bin ] || mkdir -p /opt/apps/x11/bin ) &&\
    ( [ -d /opt/apps/x11/lib ] || mkdir -p /opt/apps/x11/lib ) &&\
@@ -360,6 +346,7 @@ RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
 
 
 COPY rootfs/sudo_x /usr/local/bin
+COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
 
 RUN /make_iso.sh
 
