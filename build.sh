@@ -11,10 +11,17 @@ shift
 
 DOCKER_VERSION=`cat DOCKER_VERSION`
 
+sed -e "s/XBuildX/$(date +'%Y%M%d-%T %z')/g" motd.template |\
+  sed -e "s/XDockerX/$DOCKER_VERSION/g" \
+  > ./rootfs/rootfs/usr/local/etc/motd
+
+cat ./rootfs/rootfs/usr/local/etc/motd 
+
+exit 0
+
 while [ "$arg" ]
 do
  
-
   case $arg in
       greenbox)
          docker rmi -f greenbox:$DOCKER_VERSION
