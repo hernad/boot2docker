@@ -85,5 +85,5 @@ if [ -e $BOOT_DIR/bootlocal.sh ]; then
 fi
 
 log_msg "before: download_green_apps"
-/usr/local/bin/download_green_apps
+. /usr/local/bin/download_green_apps
 

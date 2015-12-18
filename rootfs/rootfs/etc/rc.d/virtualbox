@@ -1,6 +1,8 @@
 #!/bin/sh
 
-echo "Loading virtualbox server kernel driver"
+LOG_FILE=/var/log/greenbox.log
+
+echo "Loading virtualbox server kernel drivers" >> $LOG_FILE
 
 modprobe vboxdrv
 modprobe vboxnetadp
