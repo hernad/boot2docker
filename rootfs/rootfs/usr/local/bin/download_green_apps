@@ -12,7 +12,7 @@ echo "-------------------------------------------------------------"
 echo "GREEN_BINTRAY: $GREEN_BINTRAY"
 echo "   GREEN_APPS: $GREEN_APPS"
 
-echo ===== $(date) ====== >> $LOG_FILE
+echo ===== download_green_apps start: $(date) ====== >> $LOG_FILE
 
 if [ ! -d /opt/apps ] ; then
   echo "/opt/apps doesn't exists" >> $LOG_FILE
