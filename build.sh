@@ -17,8 +17,6 @@ sed -e "s/XBuildX/$(date +'%Y%M%d-%T %z')/g" motd.template |\
 
 cat ./rootfs/rootfs/usr/local/etc/motd 
 
-exit 0
-
 while [ "$arg" ]
 do
  
