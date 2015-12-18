@@ -14,7 +14,10 @@ echo "   GREEN_APPS: $GREEN_APPS"
 
 echo ===== $(date) ====== >> $LOG_FILE
 
-[ -d /opt/apps ] && ( echo "/opt/apps doesn't exists" >> $LOG_FILE" && exit 1 )
+if [ ! -d /opt/apps ] ; then
+  echo "/opt/apps doesn't exists" >> $LOG_FILE
+  exit 1
+fi
 
 mount_opt() {
 
