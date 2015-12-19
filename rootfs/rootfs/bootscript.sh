@@ -12,13 +12,24 @@ log_msg "configure sysctl"
 log_msg "automount_zfs"
 /etc/rc.d/automount_zfs
 
-log_msg "automount GREEN_HDD"
-/etc/rc.d/automount
+#log_msg "automount GREEN_HDD"
+#/etc/rc.d/automount
 
 zfs_up && ( ! mounted opt_boot ) && ( mkdir -p $BOOT_DIR ; rm -r -f $BOOT_DIR/* ;  mount -o mountpoint=/opt/boot green/opt_boot )
 
+log_msg "ldconfg after mounts"
+/sbin/ldconfig >> $LOG_FILE 2>&1
+
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
 [ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
+
+[ -d $BOOT_DIR/certs ] || mkdir -p $BOOT_DIR/certs
+if [ -d /usr/local/etc/ssl/certs ]
+then
+  mv /usr/local/etc/ssl/certs/* $BOOT_DIR/certs/
+  rm -r -f /usr/local/etc/ssl/certs
+  ln -s $BOOT_DIR/certs /usr/local/etc/ssl/certs
+fi
 
 log_msg "mount cgroups hierarchy"
 /etc/rc.d/cgroupfs-mount
@@ -51,9 +62,8 @@ if grep -q '^docker:' /etc/passwd; then
     #fi
 fi
 
-log_msg "init tiny.core applications (/usr/local/tce.installed)
+log_msg "init tiny.core applications (/usr/local/tce.installed)"
 /etc/rc.d/tce-loader
-
 
 log_msg "launch ACPID"
 /etc/rc.d/acpid

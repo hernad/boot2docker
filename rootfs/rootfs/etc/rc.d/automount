@@ -2,8 +2,9 @@
 
 . /etc/rc.d/green_common
 
-log_msg "automount GREEN_HDD"
+log_msg "automount GREEN_HDD OFF"
 
+exit 0
 LABEL=GREEN_HDD
 MAGIC="greenbox, please format-me"
 
@@ -26,7 +27,7 @@ if [ ! -n "$GREENBOX_DATA" ]; then
             dd if=$UNPARTITIONED_HD of=/userdata.tar bs=1 count=4096 2>/dev/null
             # Create the partition, format it and then mount it
             echo "NEW greenbox managed disk image ($UNPARTITIONED_HD): formatting it for use"
-            echo "NEW greenbox managed disk image ($UNPARTITIONED_HD): formatting it for use" > /home/docker/log.log
+            log_msg "NEW greenbox managed disk image ($UNPARTITIONED_HD): formatting it for use"
 
             # Add a swap partition (so Docker doesn't complain about it missing)
             (echo n; echo p; echo 2; echo ; echo +1000M ; echo w) | fdisk $UNPARTITIONED_HD
@@ -51,7 +52,7 @@ if [ ! -n "$GREENBOX_DATA" ]; then
                 if [ $NON_NUL == 0 ]; then                    
                     # Create the partition, format it and then mount it
                     echo "NEW VMware greenbox managed disk image ($UNPARTITIONED_HD): formatting it for use"
-                    echo "NEW VMware greenbox managed disk image ($UNPARTITIONED_HD): formatting it for use" > /home/docker/log.log
+                    log_msg "NEW VMware greenbox managed disk image ($UNPARTITIONED_HD): formatting it for use"
 
                     # Add a swap partition (so Docker doesn't complain about it missing)
                     (echo n; echo p; echo 2; echo ; echo +1000M ; echo w) | fdisk $UNPARTITIONED_HD

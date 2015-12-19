@@ -288,10 +288,8 @@ RUN cd $ROOTFS/usr/local/bin && rm git-cvsserver gitk &&\
     rm -r -f git-gui gitk gitweb &&\
     rm -r -f applications pixmaps &&\
     ( [ -d /opt/apps/green/sbin ] || mkdir -p /opt/apps/green/sbin ) &&\
-    cd $ROOTFS/usr/local/sbin && mv zdb zed ztest /opt/apps/green/sbin
-
-
-rm -r -f $ROOTFS/usr/local/sbin/tce*
+    cd $ROOTFS/usr/local/sbin && mv zdb zed ztest /opt/apps/green/sbin &&\
+    rm -r -f $ROOTFS/usr/local/sbin/tce*
 
 RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
    ( [ -d /opt/apps/x11/bin ] || mkdir -p /opt/apps/x11/bin ) &&\
@@ -321,5 +319,15 @@ RUN export SYSLINUX_VER=6.03 && export SYSLINUX_PRE=pre20 &&\
    curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
    tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install &&\  
    /make_iso.sh
+
+RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
+    rm -rf ./kernel/fs/reiserfs &&\
+    rm -rf ./kernel/fs/btrfs &&\
+    rm -rf ./kernel/lib/raid6 &&\
+    rm -rf ./kernel/fs/hfsplus &&\
+    rm -rf ./kernel/drivers/firewire &&\
+    rm -rf ./kernel/drivers/xen &&\
+    rm -rf ./kernel/drivers/input/joystick
+
 
 CMD ["cat", "greenbox.iso"]

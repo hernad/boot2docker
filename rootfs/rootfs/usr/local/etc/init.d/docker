@@ -3,9 +3,14 @@
 [ $(id -u) = 0 ] || { echo 'must be root' ; exit 1; }
 
 BOOT_DIR=/opt/boot
+DOCKER_PID=/var/run/docker.pid
 
-#import settings from profile (e.g. HTTP_PROXY, HTTPS_PROXY)
-test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
+if [ ! -e $BOOT_DIR/etc/profile ]
+then
+  echo "# put docker settings here e.g. HTTP_PROXY, HTTPS_PROXY, DOCKER_STORAGE, DOCKER_LOGFILE, CERT_INTERFACES, CERT_DIR" > $BOOT_DIR/etc/profile
+fi
+
+. $BOOT_DIR/etc/profile
 
 : ${DOCKER_HOST:='-H tcp://0.0.0.0:2375'}
 : ${DOCKER_TLS:=auto}
@@ -20,14 +25,14 @@ fi
 : ${DOCKER_ULIMITS:=1048576}
 : ${DOCKER_LOGFILE:=$BOOT_DIR/log/docker.log}
 
-: ${CERTDIR:=$BOOT_DIR/tls/}
+: ${CERT_DIR:=$BOOT_DIR/tls/}
 : ${CERT_INTERFACES:='eth0 eth1'}
-: ${CACERT:="${CERTDIR}ca.pem"}
-: ${CAKEY:="${CERTDIR}cakey.pem"}
-: ${SERVERCERT:="${CERTDIR}server.pem"}
-: ${SERVERKEY:="${CERTDIR}serverkey.pem"}
-: ${CERT:="${CERTDIR}cert.pem"}
-: ${KEY:="${CERTDIR}key.pem"}
+: ${CA_CERT:="${CERT_DIR}ca.pem"}
+: ${CA_KEY:="${CERT_DIR}cakey.pem"}
+: ${SERVER_CERT:="${CERT_DIR}server.pem"}
+: ${SERVER_KEY:="${CERT_DIR}serverkey.pem"}
+: ${CERT:="${CERT_DIR}cert.pem"}
+: ${KEY:="${CERT_DIR}key.pem"}
 
 start() {
     # Not enabling Docker daemon TLS by default.
@@ -42,39 +47,39 @@ start() {
         echo "Need TLS certs for $CERTHOSTNAMES"
         echo "-------------------"
 
-        mkdir -p "$CERTDIR"
-        chmod 700 "$CERTDIR"
-        if [ ! -f "$CACERT" ] || [ ! -f "$CAKEY" ]; then
+        mkdir -p "$CERT_DIR"
+        chmod 700 "$CERT_DIR"
+        if [ ! -f "$CA_CERT" ] || [ ! -f "$CA_KEY" ]; then
             echo "Generating CA cert"
-            /usr/local/bin/generate_cert --cert="$CACERT" --key="$CAKEY"
-            rm "$SERVERCERT" "$SERVERKEY" "$CERT" "$KEY" "$CERTDIR/hostnames"
+            /usr/local/bin/generate_cert --cert="$CA_CERT" --key="$CA_KEY"
+            rm "$SERVER_CERT" "$SERVER_KEY" "$CERT" "$KEY" "$CERT_DIR/hostnames"
         fi
 
-        CERTSEXISTFOR=$(cat "$CERTDIR/hostnames" 2>/dev/null)
+        CERTSEXISTFOR=$(cat "$CERT_DIR/hostnames" 2>/dev/null)
         if [ "$CERTHOSTNAMES" != "$CERTSEXISTFOR" ]; then
             echo "Generate server cert"
-            echo /usr/local/bin/generate_cert --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
-            /usr/local/bin/generate_cert --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
-            echo "$CERTHOSTNAMES" > "$CERTDIR/hostnames"
+            echo /usr/local/bin/generate_cert --host="$CERTHOSTNAMES" --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$SERVER_CERT" --key="$SERVER_KEY"
+            /usr/local/bin/generate_cert --host="$CERTHOSTNAMES" --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$SERVER_CERT" --key="$SERVER_KEY"
+            echo "$CERTHOSTNAMES" > "$CERT_DIR/hostnames"
         fi
 
         if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then
             echo "Generating client cert"
-            /usr/local/bin/generate_cert --ca="$CACERT" --ca-key="$CAKEY" --cert="$CERT" --key="$KEY"
+            /usr/local/bin/generate_cert --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$CERT" --key="$KEY"
         fi
 
         if [ "$DOCKER_TLS" == "auto" ]; then
             DOCKER_HOST='-H tcp://0.0.0.0:2376'
-            EXTRA_ARGS="$EXTRA_ARGS --tlsverify --tlscacert=$CACERT --tlscert=$SERVERCERT --tlskey=$SERVERKEY"
+            EXTRA_ARGS="$EXTRA_ARGS --tlsverify --tlscacert=$CA_CERT --tlscert=$SERVER_CERT --tlskey=$SERVER_KEY"
         elif [ "$DOCKER_TLS" != "no" ]; then
-            EXTRA_ARGS="$EXTRA_ARGS $DOCKER_TLS --tlscacert=$CACERT --tlscert=$SERVERCERT --tlskey=$SERVERKEY"
+            EXTRA_ARGS="$EXTRA_ARGS $DOCKER_TLS --tlscacert=$CA_CERT --tlscert=$SERVER_CERT --tlskey=$SERVER_KEY"
         fi
 
         # now make the client certificates available to the docker user
         USERCFG="/home/docker/.docker"
         mkdir -p "$USERCFG"
         chmod 700 "$USERCFG"
-        cp "$CACERT" "$USERCFG"
+        cp "$CA_CERT" "$USERCFG"
         cp "$CERT" "$USERCFG"
         cp "$KEY" "$USERCFG"
         chown -R docker:staff "$USERCFG"
@@ -100,13 +105,12 @@ start() {
     ulimit -n $DOCKER_ULIMITS
     ulimit -p $DOCKER_ULIMITS
 
-    echo "------------------------" >> "$DOCKER_LOGFILE"
-    echo "/usr/local/bin/docker -d -D -g \"$DOCKER_DIR\" -H unix:// $DOCKER_HOST $EXTRA_ARGS >> \"$DOCKER_LOGFILE\"" >> "$DOCKER_LOGFILE"
-    /usr/local/bin/docker -d -D -g "$DOCKER_DIR" -H unix:// $DOCKER_HOST $EXTRA_ARGS >> "$DOCKER_LOGFILE" 2>&1 &
+    echo "/usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $EXTRA_ARGS  >> $DOCKER_LOGFILE
+    /usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $EXTRA_ARGS >> $DOCKER_LOGFILE 2>&1 &
 }
 
 stop() {
-    kill $(cat /var/run/docker.pid)
+    kill $(cat $DOCKER_PID)
 }
 
 restart() {
@@ -118,7 +122,7 @@ restart() {
 }
 
 check() {
-    [ -f /var/run/docker.pid ] && ps $(cat /var/run/docker.pid) > /dev/null 2>&1
+    [ -f $DOCKER_PID ] && ps $(cat $DOCKER_PID) > /dev/null 2>&1
 }
 
 status() {
