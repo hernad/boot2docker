@@ -18,7 +18,7 @@ log_msg "automount_zfs"
 zfs_up && ( ! mounted opt_boot ) && ( mkdir -p $BOOT_DIR ; rm -r -f $BOOT_DIR/* ;  mount -o mountpoint=/opt/boot green/opt_boot )
 
 log_msg "ldconfg after mounts"
-/sbin/ldconfig >> $LOG_FILE 2>&1
+/sbin/ldconfig -v >> $LOG_FILE 2>&1
 
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
 [ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
@@ -28,8 +28,8 @@ if [ -d /usr/local/etc/ssl/certs ]
 then
   mv /usr/local/etc/ssl/certs/* $BOOT_DIR/certs/
   rm -r -f /usr/local/etc/ssl/certs
-  ln -s $BOOT_DIR/certs /usr/local/etc/ssl/certs
 fi
+ln -s $BOOT_DIR/certs /usr/local/etc/ssl/certs
 
 log_msg "mount cgroups hierarchy"
 /etc/rc.d/cgroupfs-mount

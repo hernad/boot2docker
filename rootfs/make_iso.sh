@@ -24,6 +24,7 @@ ln -fs $BOOT_DIR/log/wtmp $ROOTFS/var/log/
 # /bin/bash
 ln -fs /usr/local/bin/bash $ROOTFS/bin/
 
+ln -fs $BOOT_DIR/etc/ld.so.cache $ROOTFS/etc/
 ln -fs $BOOT_DIR/etc/dnsmasq.conf $ROOTFS/etc/
 ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/
 
