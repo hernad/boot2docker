@@ -1,4 +1,5 @@
 #!/bin/sh
+
 set -e
 
 BOOT_DIR=/opt/boot
@@ -19,6 +20,9 @@ ln -fs $BOOT_DIR/log/docker.log $ROOTFS/var/log/
 ln -fs $BOOT_DIR/log/udhcp.log $ROOTFS/var/log/
 ln -fs $BOOT_DIR/log/greenbox.log $ROOTFS/var/log/
 ln -fs $BOOT_DIR/log/wtmp $ROOTFS/var/log/
+
+# /bin/bash
+ln -fs /usr/local/bin/bash $ROOTFS/bin/
 
 ln -fs $BOOT_DIR/etc/dnsmasq.conf $ROOTFS/etc/
 ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/
@@ -54,5 +58,5 @@ xorriso  \
     -l -J -R -V "$NAME-v$(cat $ROOTFS/etc/version)" \
     -no-emul-boot -boot-load-size 4 -boot-info-table \
     -b boot/isolinux/isolinux.bin -c boot/isolinux/boot.cat \
-    -isohybrid-mbr /usr/lib/syslinux/isohdpfx.bin \
+    -isohybrid-mbr /usr/share/syslinux/isohdpfx.bin \
     -o /greenbox.iso /tmp/iso

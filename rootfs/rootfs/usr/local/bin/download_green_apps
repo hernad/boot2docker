@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 LOG_FILE=/opt/boot/log/greenbox.log
 
@@ -57,9 +57,10 @@ for appver in $GREEN_APPS; do
 
    if [ -d /opt/apps/${app} ] ; then
        if [ "$app" == "VirtualBox" ]; then
-           # VirtualBox execs has to be root
-           chown root:root -R /opt/apps/${app}
-       fi 
+            # VirtualBox execs has to be root
+            # chown root:root -R /opt/apps/${app}
+            chmod 4755 /opt/apps/VirtualBox/VirtualBox /opt/apps/VirtualBox/VBoxHeadless
+       fi
    fi
 done
 

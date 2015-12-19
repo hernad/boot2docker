@@ -397,7 +397,7 @@ if grep -q "^/dev/root" /proc/mounts; then
 fi
 
 log_msg "ldconfig"
-/sbin/ldconfig 2>/dev/null
+/sbin/ldconfig >> $LOG_FILE 2>&1
 
 [ -n "$TEXT" ] && touch /etc/sysconfig/text
 [ -n "$XONLY" ] && touch /etc/sysconfig/xonly
@@ -627,6 +627,7 @@ fi
 
 /sbin/loadcpufreq 2>/dev/null &
 
+log_msg "before /opt/bootsync.sh"
 /opt/bootsync.sh
 
 [ -n "$NOAUTOLOGIN" ] && echo "booting" > /etc/sysconfig/noautologin
@@ -636,7 +637,7 @@ if [ -n "$PAUSE" ]; then
 	read junk
 fi
 
-
+log_msg "mount zfs /home/docker"
 if ! grep -q "^green/docker_home" /proc/mounts; then
 	mount -t zfs green/docker_home /home/docker
         chown docker:docker /home/docker

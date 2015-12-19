@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DOCKER_CACHE=${DOCKER_CACHE:-}
+
 if [ $# -lt 1 ] ; then
    echo "usage: $0 greenbox apps"
    echo "       $0 greenbox"
@@ -24,11 +26,11 @@ do
   case $arg in
       greenbox)
          docker rmi -f greenbox:$DOCKER_VERSION
-         docker build -t greenbox:$DOCKER_VERSION .
+         docker build $DOCKER_CACHE -t greenbox:$DOCKER_VERSION .
          ;;
      apps)
          docker rmi -f greenbox_apps:$DOCKER_VERSION
-         docker build -t greenbox_apps:$DOCKER_VERSION -f Dockerfile.apps .
+         docker build $DOCKER_CACHE -t greenbox_apps:$DOCKER_VERSION -f Dockerfile.apps .
          ;;
   esac
 

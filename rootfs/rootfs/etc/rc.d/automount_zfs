@@ -1,7 +1,13 @@
 #!/bin/sh
-echo "automount zfs ...";
 
-/sbin/modprobe zfs > /tmp/zfs.log  2>&1
+LOG_FILE=/var/log/greenbox_start.log
+
+log_msg () {
+  echo "automunt_zfs: $1"
+}
+
+log_msg "start $(date)"
+/sbin/modprobe zfs >> $LOG_FILE 2>&1
 
 for i in 1 2 3 4
 do
@@ -16,14 +22,14 @@ done
 
 mkdir -p /home
 mkdir -p /opt
-/usr/local/sbin/zpool import green >> /tmp/zfs.log 2>&1
+/usr/local/sbin/zpool import green >> $LOG_FILE 2>&1
 
-/sbin/swapon  /dev/zvol/green/swap
-/sbin/swapon -a
+/sbin/swapon  /dev/zvol/green/swap >> $LOG_FILE
+/sbin/swapon -a >> $LOG_FILE
 
 mkdir -p /var/lib/docker
 [ -e /dev/zvol/green/docker_vol ] && /bin/mount /dev/zvol/green/docker_vol /var/lib/docker
 
-/usr/local/sbin/zpool status -v >> /tmp/zfs.log 2>&1
-/usr/local/sbin/zfs list >> /tmp/zfs.log 2>&1
-echo "automount zfs over."
+/usr/local/sbin/zpool status -v >> $LOG_FILE 2>&1
+/usr/local/sbin/zfs list >> $LOG_FILE 2>&1
+log_msg "automount zfs over."

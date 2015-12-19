@@ -1,4 +1,4 @@
-FROM debian:wheezy
+FROM debian:jessie
 MAINTAINER Ernad Husremovic "hernad@bring.out.ba"
 
 RUN apt-get update && apt-get -y install  unzip \
@@ -13,7 +13,6 @@ RUN apt-get update && apt-get -y install  unzip \
                         squashfs-tools \
                         genisoimage \
                         xorriso \
-                        syslinux \
                         automake \
                         pkg-config \
                         uuid-dev \
@@ -185,14 +184,7 @@ RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$V
     cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
     cd / && curl -LO http://download.virtualbox.org/virtualbox/$VBOX_VER/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack &&\
     /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack  
-
-# chmod 4755 - VirtualBox, VBoxHeadless suid
-RUN chmod o-w $ROOTFS/opt ;\ 
-    chmod o-w $ROOTFS/opt/VirtualBox ;\
-    chown root.root $ROOTFS/opt ;\
-    cd $ROOTFS/opt/VirtualBox && chown root.root VirtualBox &&\
-    chmod 4755 VirtualBox VBoxHeadless && cd /
-    
+   
 
 #RUN echo ignoring depmod -a errors
 RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install || true
@@ -207,9 +199,9 @@ RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/s
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
 
 # hernad: zfs build demands librt from debian
-RUN cp /lib/x86_64-linux-gnu/librt-2.13.so $ROOTFS/lib/ &&\
+RUN cd /lib/x86_64-linux-gnu && ls librt-2*.so && cp librt-2.19.so $ROOTFS/lib/ &&\
     rm $ROOTFS/lib/librt.so.1 &&\
-    cd $ROOTFS/lib && ln -s librt-2.13.so librt.so.1
+    cd $ROOTFS/lib && ln -s librt-2.19.so librt.so.1
 
 # build zfs from git
 # ENV ZFS_GIT_BRANCH zfs-0.6.4-release
@@ -327,11 +319,12 @@ RUN cd $ROOTFS/usr/local/bin && rm git-cvsserver gitk &&\
     cd $ROOTFS/usr/local/share &&\
     rm -r -f git-gui gitk gitweb &&\
     rm -r -f applications pixmaps &&\
-    rm -r -f $ROOTFS/usr/local/tce-installed &&\
-    rm -r -f $ROOTFS/usr/local/sbin/tce* &&\
     ( [ -d /opt/apps/green/sbin ] || mkdir -p /opt/apps/green/sbin ) &&\
     cd $ROOTFS/usr/local/sbin && mv zdb zed ztest /opt/apps/green/sbin
 
+# tce back 
+#    rm -r -f $ROOTFS/usr/local/tce-installed &&\
+#    rm -r -f $ROOTFS/usr/local/sbin/tce* &&\
 
 RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
    ( [ -d /opt/apps/x11/bin ] || mkdir -p /opt/apps/x11/bin ) &&\
@@ -345,9 +338,25 @@ RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
          /opt/apps/x11/lib
 
 
+# cleanup virtualbox
+# chmod 4755 - VirtualBox, VBoxHeadless suid
+RUN  cd /opt/VirtualBox && rm -rf ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack/win* &&\
+     find -name "*.o" -exec rm {} \; &&\
+     find -name "*.c" -exec rm {} \; &&\
+     rm *.pdf &&\
+     chown root:root -R . &&\
+     chmod 4755 VirtualBox VBoxHeadless &&\
+     ls -l VirtualBox VBoxHeadless && cd /
+ 
 COPY rootfs/sudo_x /usr/local/bin
 COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
 
-RUN /make_iso.sh
+
+# debian jessie no /usr/lib/syslinux/isohdpfx.bin
+# get syslinux 6.03 from source
+RUN export SYSLINUX_VER=6.03 && export SYSLINUX_PRE=pre20 &&\
+   curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
+   tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install &&\  
+   /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]

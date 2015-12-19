@@ -75,7 +75,7 @@ fi
 log_msg "Launch Docker"
 /etc/rc.d/docker
 
-log_msg "virtualbox"
+log_msg "virtualbox drivers"
 /etc/rc.d/virtualbox
 
 log_msg "bootlocal.sh - allow local HD customisation"
