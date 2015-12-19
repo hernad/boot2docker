@@ -231,8 +231,7 @@ RUN for dep in $TCZ_DEPS_1 ; do \
 # get syslinux 6.03 from source
 RUN export SYSLINUX_VER=6.03 && export SYSLINUX_PRE=pre20 &&\
    curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
-   tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install &&\  
-   /make_iso.sh
+   tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install
 
 
 # =============================================================================================
@@ -330,5 +329,6 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/drivers/xen &&\
     rm -rf ./kernel/drivers/input/joystick
 
+RUN /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]
