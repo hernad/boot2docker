@@ -1,3 +1,4 @@
 *.iso__BROKEN
 *.iso
+*.tar.gz
 persist.raw
