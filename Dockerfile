@@ -227,6 +227,14 @@ RUN for dep in $TCZ_DEPS_1 ; do \
         fi ;\
     done
 
+# debian jessie no /usr/lib/syslinux/isohdpfx.bin
+# get syslinux 6.03 from source
+RUN export SYSLINUX_VER=6.03 && export SYSLINUX_PRE=pre20 &&\
+   curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
+   tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install &&\  
+   /make_iso.sh
+
+
 # =============================================================================================
 
 COPY rootfs/rootfs $ROOTFS
@@ -312,13 +320,6 @@ RUN  cd /opt/VirtualBox && rm -rf ExtensionPacks/Oracle_VM_VirtualBox_Extension_
      chown root:root -R . &&\
      chmod 4755 VirtualBox VBoxHeadless &&\
      ls -l VirtualBox VBoxHeadless && cd /
-
-# debian jessie no /usr/lib/syslinux/isohdpfx.bin
-# get syslinux 6.03 from source
-RUN export SYSLINUX_VER=6.03 && export SYSLINUX_PRE=pre20 &&\
-   curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
-   tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install &&\  
-   /make_iso.sh
 
 RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/fs/reiserfs &&\
