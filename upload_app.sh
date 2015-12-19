@@ -17,13 +17,13 @@ if [ ! -f $FILE ] ; then
    case ${BINTRAY_PACKAGE} in
       VirtualBox|vagrant)
            docker rm -f greenbox
-           docker run --name greenbox greenbox:$DOCKER_VERSION /bin/false
-           docker cp greenbox:/opt/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE}
+           docker run --name greenbox greenbox:$DOCKER_VERSION ls /opt/apps
+           docker cp greenbox:/opt/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
            ;;
       *) 
            docker rm -f greenbox_apps
-           docker run --name greenbox_apps greenbox_apps:$DOCKER_VERSION /bin/false
-           docker cp greenbox:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE}
+           docker run --name greenbox_apps greenbox_apps:$DOCKER_VERSION ls /opt/apps
+           docker cp greenbox_apps:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
            ;;
    esac 
    tar cvfz $FILE ${BINTRAY_PACKAGE}

@@ -16,11 +16,12 @@ sleep 3
 date
 ip a >> $LOG_FILE
 
-while ( ! mounted green )
-do
-   log_msg "waiting for mount zfs /green"
-   sleep 2
-done
+#while ( ! mounted green )
+#do
+#   log_msg "waiting for mount zfs /green"
+#   sleep 2
+#done
+sleep 5
 
 log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
