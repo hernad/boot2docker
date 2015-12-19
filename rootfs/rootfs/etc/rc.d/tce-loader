@@ -1,2 +1,12 @@
 #!/bin/sh
-find /usr/local/tce.installed/ -type f -exec sh -c {} \;
+
+. /etc/rc.d/green_common
+
+log_msg start
+
+for prog in $(find /usr/local/tce.installed/ -type f)
+do
+  log_msg "running: $prog"
+  echo $prog
+  sh -c $prog
+done

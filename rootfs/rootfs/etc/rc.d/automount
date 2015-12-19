@@ -1,5 +1,9 @@
 #!/bin/sh
-echo "automount ...";
+
+. /etc/rc.d/green_common
+
+log_msg "automount GREEN_HDD"
+
 LABEL=GREEN_HDD
 MAGIC="greenbox, please format-me"
 

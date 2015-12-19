@@ -12,6 +12,9 @@ log_msg "configure sysctl"
 log_msg "automount_zfs"
 /etc/rc.d/automount_zfs
 
+log_msg "automount GREEN_HDD"
+/etc/rc.d/automount
+
 zfs_up && ( ! mounted opt_boot ) && ( mkdir -p $BOOT_DIR ; rm -r -f $BOOT_DIR/* ;  mount -o mountpoint=/opt/boot green/opt_boot )
 
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
@@ -41,12 +44,16 @@ if grep -q '^docker:' /etc/passwd; then
     /bin/addgroup docker docker
 
     #preload data from grenbox-cli
-    if [ -e "$BOOT_DIR/userdata.tar" ]; then
-        tar xf $BOOT_DIR/userdata.tar -C /home/docker/ >> $LOG_FILE  2>&1
-        rm -f 'greenbox, please format-me'
-        chown -R docker:staff /home/docker
-    fi
+    #if [ -e "$BOOT_DIR/userdata.tar" ]; then
+    #    tar xf $BOOT_DIR/userdata.tar -C /home/docker/ >> $LOG_FILE  2>&1
+    #    rm -f 'greenbox, please format-me'
+    #    chown -R docker:staff /home/docker
+    #fi
 fi
+
+log_msg "init tiny.core applications (/usr/local/tce.installed)
+/etc/rc.d/tce-loader
+
 
 log_msg "launch ACPID"
 /etc/rc.d/acpid
@@ -61,7 +68,6 @@ echo "-------------------"
 
 log_msg "start openssh server"
 /etc/rc.d/sshd
-
 
 log_msg "Allow local bootsync.sh customisation"
 if [ -e $BOOT_DIR/bootsync.sh ]; then
