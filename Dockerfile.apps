@@ -8,7 +8,7 @@ RUN curl -k -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VER}_
 RUN apt-get update -y
 
 # ==== vim ====
-RUN apt-get -y install libncurses5-dev python-dev ruby-dev &&\
+RUN apt-get -y install libssl-dev libncurses5-dev python-dev ruby-dev &&\
     cd / && git clone https://github.com/vim/vim.git &&\                                                                                       
     cd /vim && export LDFLAGS="-static" && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \                                  
                --with-x=no  --disable-gui  --disable-netbeans  \                                                                           
@@ -20,7 +20,7 @@ RUN apt-get -y install libncurses5-dev python-dev ruby-dev &&\
      cd /opt/apps/vim/share/vim && mv vim74/* . && rmdir vim74
 
 # ===== neovim ==============                                                                                                
-#RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\ 
+# RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\ 
 #     mkdir -p /opt/apps/neovim ; cd /neovim &&\
 #     make || make || make ; cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/apps/nvim &&\
 #     make all install                                                                                 
@@ -49,7 +49,7 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E35
 	&& make -j$(nproc) \
 	&& make install
 
-ENV LD_LIBRARY_PATH /opt/apps/python2/lib
+ENV  LD_LIBRARY_PATH=/opt/apps/python2/lib
 RUN     curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
 	&& pip install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
 	&& find /usr/local \

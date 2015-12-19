@@ -12,7 +12,17 @@ log_msg "configure sysctl"
 log_msg "automount_zfs"
 /etc/rc.d/automount_zfs
 
-log_msg "automount GREEN_ volumes"
+sleep 3
+date
+ip a >> $LOG_FILE
+
+while ( ! mounted green )
+do
+   log_msg "waiting for mount zfs /green"
+   sleep 2
+done
+
+log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
 
 zfs_up && ( ! mounted opt_boot ) && ( mkdir -p $BOOT_DIR ; rm -r -f $BOOT_DIR/* ;  mount -o mountpoint=/opt/boot green/opt_boot )
@@ -67,14 +77,6 @@ log_msg "init tiny.core applications (/usr/local/tce.installed)"
 
 log_msg "launch ACPID"
 /etc/rc.d/acpid
-
-echo "-------------------"
-date
-#maybe the links will be up by now - trouble is, on some setups, they may never happen, so we can't just wait until they are
-sleep 5
-date
-ip a >> $LOG_FILE
-echo "-------------------"
 
 log_msg "start openssh server"
 /etc/rc.d/sshd
