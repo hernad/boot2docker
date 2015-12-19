@@ -31,27 +31,6 @@ RUN mkdir -p /usr/src && \
     curl --retry 10 https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
     mv /linux-$KERNEL_VERSION_DOWNLOAD $LINUX_KERNEL_SOURCE
 
-#ENV AUFS_UTIL_GIT    http://git.code.sf.net/p/aufs/aufs-util         
-                                                                     
-# v4 kernel                                                          
-#ENV AUFS_VER aufs4                                               
-#ENV AUFS_GIT https://github.com/sfjro/aufs4-standalone               
-
-#ENV AUFS_BRANCH  aufs4.1
-#ENV AUFS_UTIL_BRANCH aufs4.0
-
-# Download AUFS and apply patches and files, then remove it
-#RUN git clone -b $AUFS_BRANCH $AUFS_GIT && \
-#    cd $AUFS_VER-standalone && \
-#    cd $LINUX_KERNEL_SOURCE && \
-#    cp -r /$AUFS_VER-standalone/Documentation $LINUX_KERNEL_SOURCE && \
-#    cp -r /$AUFS_VER-standalone/fs $LINUX_KERNEL_SOURCE && \
-#    cp -r /$AUFS_VER-standalone/include/uapi/linux/aufs_type.h $LINUX_KERNEL_SOURCE/include/uapi/linux/ &&\
-#    for patch in $AUFS_VER-kbuild $AUFS_VER-base $AUFS_VER-mmap $AUFS_VER-standalone $AUFS_VER-loopback; do \
-#        patch -p1 < /$AUFS_VER-standalone/$patch.patch; \
-#    done
-
-
 COPY kernel_config $LINUX_KERNEL_SOURCE/.config
 
 RUN  sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.config
@@ -63,12 +42,10 @@ RUN jobs=$(nproc); \
     make -j ${jobs} modules
 
 # The post kernel build process
-
 ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/6.x/x86_64
 
 # Make the ROOTFS
 # Prepare the build directory (/tmp/iso)
-
 RUN mkdir -p $ROOTFS &&\ 
     mkdir -p /tmp/iso/boot
 
@@ -106,20 +83,11 @@ RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.or
 RUN cd $LINUX_KERNEL_SOURCE && \
     make INSTALL_HDR_PATH=/tmp/kheaders headers_install 
 
-#RUN cd / && \
-#    git clone $AUFS_UTIL_GIT aufs-util && \
-#    cd /aufs-util && \
-#    git checkout $AUFS_UTIL_BRANCH && \
-#    CPPFLAGS="$GCC_M -I/tmp/kheaders/include" CLFAGS=$CPPFLAGS LDFLAGS=$CPPFLAGS make && \
-#    DESTDIR=$ROOTFS make install && \
-#    rm -rf /tmp/kheaders
-
 # Prepare the ISO directory with the kernel
 RUN cp -v $LINUX_KERNEL_SOURCE/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
 
 # Download the rootfs, don't unpack it though:
 RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64.gz
-
 
 ENV TCZ_DEPS_0      iptables \
                     iproute2 \
@@ -173,7 +141,6 @@ RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-file
 
 
 # http://download.virtualbox.org/virtualbox/5.0.10/
-
 ENV VBOX_VER=5.0.10 VBOX_BUILD=104061
 
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
@@ -189,12 +156,10 @@ RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$V
 #RUN echo ignoring depmod -a errors
 RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install || true
 
-RUN mkdir /zfs
-
 # http://zfsonlinux.org/
 
 ENV ZFS_VER 0.6.5.3
-RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz &&\
+RUN mkdir /zfs && cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz &&\
     cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
 
@@ -215,10 +180,9 @@ RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/z
     DESTDIR=$ROOTFS make install
                                                                                                                                 
 # Install the kernel modules in $ROOTFS                                                                                         
-RUN cd $LINUX_KERNEL_SOURCE && \                                                                                                       
-    make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install
-
-RUN depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
+RUN cd $LINUX_KERNEL_SOURCE &&\
+    make INSTALL_MOD_PATH=$ROOTFS modules_install firmware_install &&\
+    depmod -a -b $ROOTFS $KERNEL_VERSION-$LINUX_BRAND
 
 
 # debug http://unix.stackexchange.com/questions/76490/no-such-file-or-directory-on-an-executable-yet-file-exists-and-ldd-reports-al
@@ -279,9 +243,11 @@ COPY rootfs/ld.so.conf $ROOTFS/etc/ld.so.conf
 RUN  mkdir -p $ROOTFS/usr/local/etc/ssh                      
 COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
 COPY rootfs/openssh $ROOTFS/usr/local/etc/init.d/openssh
+COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
 COPY rootfs/environment $ROOTFS/etc/environment
 COPY rootfs/sshrc $ROOTFS/usr/local/etc/ssh/sshrc
-
+COPY rootfs/green_common $ROOTFS/etc/rc.d/green_common
+COPY rootfs/sudo_x /usr/local/bin
 
 # Copy boot params                                                                                      
 COPY rootfs/isolinux /tmp/iso/boot/isolinux                                                             
@@ -302,7 +268,8 @@ RUN cd /git && \
 # Change MOTD                                                                                                                   
 RUN mv $ROOTFS/usr/local/etc/motd $ROOTFS/etc/motd                                                                              
                                                                                                                                 
-# Make sure we have the correct bootsync                                                                                        
+# Make sure we have the correct boot shell scripts
+# /opt/boot*.sh
 RUN mv $ROOTFS/boot*.sh $ROOTFS/opt/ && \                                                                                       
         chmod +x $ROOTFS/opt/*.sh                                                                                               
                                                                                                                                 
@@ -323,9 +290,8 @@ RUN cd $ROOTFS/usr/local/bin && rm git-cvsserver gitk &&\
     ( [ -d /opt/apps/green/sbin ] || mkdir -p /opt/apps/green/sbin ) &&\
     cd $ROOTFS/usr/local/sbin && mv zdb zed ztest /opt/apps/green/sbin
 
-# tce back 
-#    rm -r -f $ROOTFS/usr/local/tce-installed &&\
-#    rm -r -f $ROOTFS/usr/local/sbin/tce* &&\
+
+rm -r -f $ROOTFS/usr/local/sbin/tce*
 
 RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
    ( [ -d /opt/apps/x11/bin ] || mkdir -p /opt/apps/x11/bin ) &&\
@@ -348,11 +314,6 @@ RUN  cd /opt/VirtualBox && rm -rf ExtensionPacks/Oracle_VM_VirtualBox_Extension_
      chown root:root -R . &&\
      chmod 4755 VirtualBox VBoxHeadless &&\
      ls -l VirtualBox VBoxHeadless && cd /
- 
-COPY rootfs/sudo_x /usr/local/bin
-COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
-COPY rootfs/green_common $ROOTFS/etc/rc.d/green_common
-
 
 # debian jessie no /usr/lib/syslinux/isohdpfx.bin
 # get syslinux 6.03 from source
