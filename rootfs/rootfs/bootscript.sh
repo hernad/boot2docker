@@ -12,8 +12,8 @@ log_msg "configure sysctl"
 log_msg "automount_zfs"
 /etc/rc.d/automount_zfs
 
-#log_msg "automount GREEN_HDD"
-#/etc/rc.d/automount
+log_msg "automount GREEN_ volumes"
+/etc/rc.d/automount
 
 zfs_up && ( ! mounted opt_boot ) && ( mkdir -p $BOOT_DIR ; rm -r -f $BOOT_DIR/* ;  mount -o mountpoint=/opt/boot green/opt_boot )
 

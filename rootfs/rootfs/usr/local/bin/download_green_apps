@@ -32,6 +32,39 @@ fi
 
 }
 
+
+download_app() {
+
+  app=$1
+  ver=$2
+
+   cd /tmp
+
+   LOCAL_MEDIA=/media/GREEN_INIT/apps/${app}_${ver}.tar.gz
+   if [ -f $LOCAL_MEDIA ]  ; then
+      log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.gz ..." 
+      cp $LOCAL_MEDIA /tmp/
+   else 
+   
+      echo "downloading: $GREEN_BINTRAY/${app}_${ver}.tar.gz ..." 
+      log_msg "START: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
+      curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz
+   fi
+
+   if [ $? -ne 0 ] ; then
+           log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
+   else
+           cd /opt/apps/
+	   tar xvf /tmp/${app}_${ver}.tar.gz
+	   if [ $? -ne 0 ] ; then
+              log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz, /tmp/${app}_${ver}.tar.gz not tar archive, or damaged"
+	   fi
+           rm /tmp/${app}_${ver}.tar.gz
+    fi
+
+}
+
+
 for appver in $GREEN_APPS; do
 
    # VirtualBox_5.0.10
@@ -39,20 +72,8 @@ for appver in $GREEN_APPS; do
    ver=$( echo $appver | cut -d"_" -f2 )
 
    if $(grep -q \/opt\/apps /proc/mounts) && [ ! -d /opt/apps/${app} ] ; then
-         cd /tmp
-	 echo "downloading: $GREEN_BINTRAY/${app}_${ver}.tar.gz ..." 
-         log_msg "START: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
-         curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz
-	 if [ $? -ne 0 ] ; then
-           log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
-         else
-           cd /opt/apps/
-	   tar xvf /tmp/${app}_${ver}.tar.gz
-	   if [ $? -ne 0 ] ; then
-              log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz, /tmp/${app}_${ver}.tar.gz not tar archive, or damaged"
-	   fi
-           rm /tmp/${app}_${ver}.tar.gz
-         fi
+         download_app ${app} ${ver}
+
    fi
 
    if [ -d /opt/apps/${app} ] ; then

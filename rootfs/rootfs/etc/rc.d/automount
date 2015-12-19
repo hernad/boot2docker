@@ -2,9 +2,17 @@
 
 . /etc/rc.d/green_common
 
-log_msg "automount GREEN_HDD OFF"
+log_msg "automount start"
+
+if [ -e /dev/disk/by-label/GREEN_INIT ]
+then
+  log_msg "automount GREEN_INIT"
+  mkdir /media/GREEN_INIT
+  mount /dev/disk/by-label/GREEN_INIT /media/GREEN_INIT
+fi
 
 exit 0
+
 LABEL=GREEN_HDD
 MAGIC="greenbox, please format-me"
 
