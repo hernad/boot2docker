@@ -28,11 +28,6 @@ done
 log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
 
-( mounted opt_apps ) || sleep 5 
-
-log_msg "ldconfg after mounts"
-/sbin/ldconfig -v >> $LOG_FILE 2>&1
-
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
 [ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
 
@@ -104,4 +99,8 @@ fi
 
 log_msg "before: download_green_apps"
 . /usr/local/bin/download_green_apps
+
+log_msg "ldconfg after mounting apps"
+/sbin/ldconfig -v >> $LOG_FILE 2>&1
+
 
