@@ -1,5 +1,0 @@
-#!/bin/sh
-set -e
-
-echo "green-box is server, no VBox guest extensions"
-

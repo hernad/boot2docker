@@ -278,6 +278,7 @@ COPY rootfs/ld.so.conf $ROOTFS/etc/ld.so.conf
 # tinycore openssh uses /usr/local/etc/ssh
 RUN  mkdir -p $ROOTFS/usr/local/etc/ssh                      
 COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
+COPY rootfs/openssh $ROOTFS/usr/local/etc/init.d/openssh
 COPY rootfs/environment $ROOTFS/etc/environment
 COPY rootfs/sshrc $ROOTFS/usr/local/etc/ssh/sshrc
 
@@ -350,6 +351,7 @@ RUN  cd /opt/VirtualBox && rm -rf ExtensionPacks/Oracle_VM_VirtualBox_Extension_
  
 COPY rootfs/sudo_x /usr/local/bin
 COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
+COPY rootfs/green_common $ROOTFS/etc/rc.d/green_common
 
 
 # debian jessie no /usr/lib/syslinux/isohdpfx.bin

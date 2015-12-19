@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LOG_FILE=/opt/boot/log/greenbox.log
+. /etc/rc.d/green_common
 
 [ `whoami` != root ] && echo "you have to be root user !" && exit 1
 
@@ -15,7 +15,7 @@ echo "   GREEN_APPS: $GREEN_APPS"
 echo ===== download_green_apps start: $(date) ====== >> $LOG_FILE
 
 if [ ! -d /opt/apps ] ; then
-  echo "/opt/apps doesn't exists" >> $LOG_FILE
+  log_msg "/opt/apps doesn't exists"
   exit 1
 fi
 
@@ -41,15 +41,15 @@ for appver in $GREEN_APPS; do
    if $(grep -q \/opt\/apps /proc/mounts) && [ ! -d /opt/apps/${app} ] ; then
          cd /tmp
 	 echo "downloading: $GREEN_BINTRAY/${app}_${ver}.tar.gz ..." 
-         echo "START: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz" >> $LOG_FILE
+         log_msg "START: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
          curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz
 	 if [ $? -ne 0 ] ; then
-           echo "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz" >> $LOG_FILE
+           log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
          else
            cd /opt/apps/
 	   tar xvf /tmp/${app}_${ver}.tar.gz
 	   if [ $? -ne 0 ] ; then
-              echo "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz, /tmp/${app}_${ver}.tar.gz not tar archive, or damaged" >> $LOG_FILE
+              log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz, /tmp/${app}_${ver}.tar.gz not tar archive, or damaged"
 	   fi
            rm /tmp/${app}_${ver}.tar.gz
          fi

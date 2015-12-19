@@ -1,27 +1,27 @@
 #!/bin/sh
 
+. /etc/rc.d/green_common
+
 BOOT_DIR=/opt/boot
-LOG_FILE=/var/log/greenbox.log
 
-[ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
-[ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
+log_msg "== bootscript.sh: $(date) ===="
 
-echo "== bootscript.sh: $(date) ====" >> $LOG_FILE
-echo "configure sysctl" >> $LOG_FILE
+log_msg "configure sysctl"
 /etc/rc.d/sysctl
-
-log_msg () {
-  echo "bootscript.sh: $1" >> $LOG_FILE
-}
 
 log_msg "automount_zfs"
 /etc/rc.d/automount_zfs
+
+zfs_up && ( ! mounted opt_boot ) && ( mkdir -p $BOOT_DIR ; rm -r -f $BOOT_DIR/* ;  mount -o mountpoint=/opt/boot green/opt_boot )
+
+[ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
+[ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
 
 log_msg "mount cgroups hierarchy"
 /etc/rc.d/cgroupfs-mount
 # see https://github.com/tianon/cgroupfs-mount
 
-log_msg "import settings from profile (or unset them)"
+log_msg "import settings from profile (or unset them) $BOOT_DIR/profile"
 test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
 log_msg "set the hostname"
@@ -34,7 +34,6 @@ log_msg "start cron"
 /etc/rc.d/crond
 
 log_msg "add docker:docker user"
-
 if grep -q '^docker:' /etc/passwd; then
     # if we have the docker user, let's create the docker group
     /bin/addgroup -S docker
@@ -49,12 +48,6 @@ if grep -q '^docker:' /etc/passwd; then
     fi
 fi
 
-log_msg "automount shared folders (VirtualBox, etc.)"
-/etc/rc.d/automount-shares
-
-log_msg "configure SSHD"
-/etc/rc.d/sshd
-
 log_msg "launch ACPID"
 /etc/rc.d/acpid
 
@@ -63,10 +56,14 @@ date
 #maybe the links will be up by now - trouble is, on some setups, they may never happen, so we can't just wait until they are
 sleep 5
 date
-ip a
+ip a >> $LOG_FILE
 echo "-------------------"
 
-# Allow local bootsync.sh customisation
+log_msg "start openssh server"
+/etc/rc.d/sshd
+
+
+log_msg "Allow local bootsync.sh customisation"
 if [ -e $BOOT_DIR/bootsync.sh ]; then
     $BOOT_DIR/bootsync.sh
     log_msg "after $BOOT_DIR/bootsync.sh"

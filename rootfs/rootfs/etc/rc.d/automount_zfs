@@ -1,10 +1,6 @@
 #!/bin/sh
 
-LOG_FILE=/var/log/greenbox_start.log
-
-log_msg () {
-  echo "automunt_zfs: $1"
-}
+. /etc/rc.d/green_common
 
 log_msg "start $(date)"
 /sbin/modprobe zfs >> $LOG_FILE 2>&1

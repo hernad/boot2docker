@@ -4,16 +4,7 @@
 # (c) Robert Shingledecker 2004-2012
 # Several modifications for speed by Curaga
 
-if [ -d /opt/boot/log ]
-then
-  LOG_FILE=/var/log/greenbox.log
-else
-  LOG_FILE=/var/log/greenbox_start.log
-fi
-
-log_msg() {
-  echo "tc-config: $1" >> $LOG_FILE
-}
+. /etc/rc.d/green_common
 
 log_msg "start $(date), called in /etc/init.d/rcS"
 
