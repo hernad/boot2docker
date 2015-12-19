@@ -16,17 +16,19 @@ sleep 3
 date
 ip a >> $LOG_FILE
 
-#while ( ! mounted green )
-#do
-#   log_msg "waiting for mount zfs /green"
-#   sleep 2
-#done
-sleep 5
+let count=0
+while ( ! mounted opt_boot ) && [ $count -lt 10 ]
+do
+   zfs_up && ( ! mounted opt_boot ) && ( mkdir -p $BOOT_DIR ; rm -r -f $BOOT_DIR/* ;  mount -o mountpoint=/opt/boot green/opt_boot )
+   log_msg "waiting for mount zfs /opt/boot"
+   sleep 1
+   let count=count+1
+done
 
 log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
 
-zfs_up && ( ! mounted opt_boot ) && ( mkdir -p $BOOT_DIR ; rm -r -f $BOOT_DIR/* ;  mount -o mountpoint=/opt/boot green/opt_boot )
+( mounted opt_apps ) || sleep 5 
 
 log_msg "ldconfg after mounts"
 /sbin/ldconfig -v >> $LOG_FILE 2>&1

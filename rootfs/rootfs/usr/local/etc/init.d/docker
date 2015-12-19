@@ -105,7 +105,7 @@ start() {
     ulimit -n $DOCKER_ULIMITS
     ulimit -p $DOCKER_ULIMITS
 
-    echo "/usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $EXTRA_ARGS  >> $DOCKER_LOGFILE
+    echo /usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $EXTRA_ARGS  >> $DOCKER_LOGFILE
     /usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $EXTRA_ARGS >> $DOCKER_LOGFILE 2>&1 &
 }
 
