@@ -247,9 +247,15 @@ COPY rootfs/securetty $ROOTFS/etc/securetty
 COPY rootfs/ld.so.conf $ROOTFS/etc/ld.so.conf
 
 # tinycore openssh uses /usr/local/etc/ssh
-RUN  mkdir -p $ROOTFS/usr/local/etc/ssh                      
+RUN  mkdir -p $ROOTFS/usr/local/etc/ssh   &&\                   
+     mkdir -p $ROOTFS/etc/init.d/services
+
 COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
+
 COPY rootfs/openssh $ROOTFS/usr/local/etc/init.d/openssh
+COPY rootfs/dhcp.sh $ROOTFS/usr/local/etc/init.d/dhcp.sh
+COPY rootfs/services/* $ROOTFS/etc/init.d/services/
+
 COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
 COPY rootfs/environment $ROOTFS/etc/environment
 COPY rootfs/sshrc $ROOTFS/usr/local/etc/ssh/sshrc
@@ -320,14 +326,14 @@ RUN  cd /opt/VirtualBox && rm -rf ExtensionPacks/Oracle_VM_VirtualBox_Extension_
      chmod 4755 VirtualBox VBoxHeadless &&\
      ls -l VirtualBox VBoxHeadless && cd /
 
-RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
-    rm -rf ./kernel/fs/reiserfs &&\
-    rm -rf ./kernel/fs/btrfs &&\
-    rm -rf ./kernel/lib/raid6 &&\
-    rm -rf ./kernel/fs/hfsplus &&\
-    rm -rf ./kernel/drivers/firewire &&\
-    rm -rf ./kernel/drivers/xen &&\
-    rm -rf ./kernel/drivers/input/joystick
+#RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
+#    rm -rf ./kernel/fs/reiserfs &&\
+#    rm -rf ./kernel/fs/btrfs &&\
+#    rm -rf ./kernel/lib/raid6 &&\
+#    rm -rf ./kernel/fs/hfsplus &&\
+#    rm -rf ./kernel/drivers/firewire &&\
+#    rm -rf ./kernel/drivers/xen &&\
+#    rm -rf ./kernel/drivers/input/joystick
 
 RUN /make_iso.sh
 

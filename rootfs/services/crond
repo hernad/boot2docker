@@ -1,0 +1,24 @@
+#!/bin/sh
+
+. /etc/rc.d/green_common
+
+log_msg "crond service $1"
+
+
+case "${1}" in
+	start)
+		crond
+		;;
+
+	stop)
+		pkill crond
+		;;
+
+	status)
+		pidof -o %PPID crond
+		;;
+
+	*)
+		exit 1
+		;;
+esac

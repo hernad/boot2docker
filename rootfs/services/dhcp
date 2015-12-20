@@ -1,0 +1,23 @@
+#!/bin/sh
+
+. /etc/rc.d/green_common
+
+log_msg "dhcp service $1"
+
+case "${1}" in
+	start)
+		/etc/init.d/dhcp.sh
+		;;
+
+	stop)
+		pkill udhcpc
+		;;
+
+	status)
+		pidof udhcpc
+		;;
+
+	*)
+		exit 1
+		;;
+esac

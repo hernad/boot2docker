@@ -67,7 +67,7 @@ download_app() {
 
 for appver in $GREEN_APPS; do
 
-   # VirtualBox_5.0.10
+   # e.g. VirtualBox_5.0.10
    app=$( echo $appver | cut -d"_" -f1 )
    ver=$( echo $appver | cut -d"_" -f2 )
 
@@ -79,8 +79,10 @@ for appver in $GREEN_APPS; do
    if [ -d /opt/apps/${app} ] ; then
        if [ "$app" == "VirtualBox" ]; then
             # VirtualBox execs has to be root
-            # chown root:root -R /opt/apps/${app}
+            chown root:root -R /opt/apps/VirtualBox
             chmod 4755 /opt/apps/VirtualBox/VirtualBox /opt/apps/VirtualBox/VBoxHeadless
+	    chmod g-w /opt
+	    chmod g-w /opt/VirtualBox
        fi
    fi
 done

@@ -6,7 +6,7 @@
 
 . /etc/rc.d/green_common
 
-log_msg "start $(date), called in /etc/init.d/rcS"
+log_msg "start $(date), called by /etc/init.d/rcS"
 
 . /etc/init.d/tc-functions
 useBusybox
@@ -137,6 +137,7 @@ echo "${GREEN} Done.${NORMAL}"
 )
 
 modprobe loop 2>/dev/null
+modprobe ohci_hcd
 
 if [ -n "$NOZSWAP" ]; then
 	echo "${BLUE}Skipping compressed swap in ram as requested from the boot command line.${NORMAL}"
@@ -232,8 +233,8 @@ if [ -n "$AOE" ]; then
 	echo "${NORMAL}"
 fi
 
-log_msg "dhcp.sh runs udhcpc async, so it exits before network is up"
 wait4Server() {
+        log_msg "dhcp.sh runs udhcpc async, so it exits before network is up"
 	/etc/init.d/dhcp.sh
 	SERVER=$1 ; NOPING=$2 ; CNT=0
 	if [ "$NOPING" == "1" ] ; then
@@ -277,6 +278,7 @@ chmod g+w "$TCEDIR" "$TCEOPT" "$TCEINSTALLED" "$TCLOOP"
 chmod u+s /bin/busybox.suid /usr/bin/sudo
 
 get_app() {
+        log_msg "get_app $1 $2"
 	LOADER="tce-load -i" ; PKG=optional
 	PROTO=$1
 	HOST=${2%%/*}
@@ -628,8 +630,8 @@ if [ -n "$PAUSE" ]; then
 	read junk
 fi
 
-log_msg "mount zfs /home/docker"
-if ! grep -q "^green/docker_home" /proc/mounts; then
+if ( ! mounted docker_home ); then
+        log_msg "mount zfs /home/docker"
 	mount -t zfs green/docker_home /home/docker
         chown docker:docker /home/docker
 	echo "${GREEN}Docker home mounted.${NORMAL}"
