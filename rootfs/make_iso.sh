@@ -29,11 +29,12 @@ ln -fs $BOOT_DIR/etc/dnsmasq.conf $ROOTFS/etc/
 ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/
 
 # Setup /etc/os-release with some nice contents
+NAME=greenbox
 greenVersion="$(cat $ROOTFS/etc/version)" # something like "1.1.0"
 greenDetail="$(cat $ROOTFS/etc/greenbox)" # something like "master : 740106c - Tue Jul 29 03:29:25 UTC 2014"
 tclVersion="$(cat $ROOTFS/usr/share/doc/tc/release.txt)" # something like "5.3"
 cat > $ROOTFS/etc/os-release <<-EOOS
-NAME=greenbox
+NAME=$NAME
 VERSION=$greenVersion
 ID=greenbox
 ID_LIKE=tcl
@@ -49,6 +50,7 @@ EOOS
 cd $ROOTFS
 find | ( set -x; cpio -o -H newc | xz -9 --format=lzma --verbose --verbose ) > /tmp/iso/boot/initrd.img
 cd -
+
 
 # Make the ISO
 # Note: only "-isohybrid-mbr /..." is specific to xorriso.

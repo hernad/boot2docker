@@ -326,14 +326,14 @@ RUN  cd /opt/VirtualBox && rm -rf ExtensionPacks/Oracle_VM_VirtualBox_Extension_
      chmod 4755 VirtualBox VBoxHeadless &&\
      ls -l VirtualBox VBoxHeadless && cd /
 
-#RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
-#    rm -rf ./kernel/fs/reiserfs &&\
+RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
+    rm -rf ./kernel/fs/reiserfs &&\
+    rm -rf ./kernel/lib/raid6 &&\
+    rm -rf ./kernel/fs/hfsplus &&\
+    rm -rf ./kernel/drivers/firewire &&\
+    rm -rf ./kernel/drivers/xen &&\
+    rm -rf ./kernel/drivers/input/joystick
 #    rm -rf ./kernel/fs/btrfs &&\
-#    rm -rf ./kernel/lib/raid6 &&\
-#    rm -rf ./kernel/fs/hfsplus &&\
-#    rm -rf ./kernel/drivers/firewire &&\
-#    rm -rf ./kernel/drivers/xen &&\
-#    rm -rf ./kernel/drivers/input/joystick
 
 RUN /make_iso.sh
 
