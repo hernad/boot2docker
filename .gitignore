@@ -1,3 +1,6 @@
+*.tar.gz
+rootfs/isolinux/boot.msg
+rootfs/rootfs/usr/local/etc/motd
 bintray_api_key
 .DS_Store
 Thumbs.db

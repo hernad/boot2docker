@@ -1,0 +1,25 @@
+
+# /etc/rc.d/green_common
+
+DATE=`date +'%Y%M%d %T'`
+
+if [ -d /opt/boot/log ]
+then
+  LOG_FILE=/var/log/greenbox.log
+else
+  LOG_FILE=/var/log/greenbox_0.log
+fi
+
+export LOG_FILE
+
+log_msg() {
+  echo "$0 $DATE: $1" >> $LOG_FILE
+}
+
+mounted() {
+  (cat /proc/mounts | grep -q "^green/$1")
+}
+
+zfs_up() {
+  (zfs list | grep -q green)
+}

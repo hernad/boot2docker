@@ -1,0 +1,55 @@
+#!/bin/sh
+# openssh sshd start script
+
+. /etc/rc.d/green_common
+
+[ $(id -u) = 0 ] || { log_msg "ssh daemon - must be root" ; exit 1; }
+
+log_msg "ssh daemon: $1"
+
+SSH_CONFIG_DIR=/usr/local/etc/ssh
+
+start(){
+   [ -f $SSH_CONFIG_DIR/sshd_config ] || { log_msg "Config file $SSH_CONFIG_DIR/sshdd_config not found"; exit 1; }
+
+   if [ ! -e $SSH_CONFIG_DIR/ssh_host_rsa_key ]
+   then
+      log_msg "no ssh kes - ssh-keygen !" 
+      keygen
+   fi
+   
+   /usr/local/sbin/sshd
+}
+
+stop(){
+   killall sshd
+}
+
+restart(){
+   stop ; start
+}
+
+keygen(){
+   ssh-keygen -t rsa -N "" -f $SSH_CONFIG_DIR/ssh_host_rsa_key
+   ssh-keygen -t dsa -N "" -f $SSH_CONFIG_DIR/ssh_host_dsa_key
+   ssh-keygen -t ecdsa -N "" -f $SSH_CONFIG_DIR/ssh_host_ecdsa_key
+}
+
+status(){
+  if [ -f /var/run/sshd.pid ]; then
+    echo "OpenSSH daemon is running"
+    exit 0
+  else
+    echo "OpenSSH daemon is not running"
+    exit 1
+  fi
+}
+
+case $1 in
+   start) start;;
+   stop) stop;;
+   restart) restart;;
+   keygen) keygen;;
+   status) status;;
+   *) echo "Usage $0 {start|stop|restart|keygen|status}"; exit 1
+esac
