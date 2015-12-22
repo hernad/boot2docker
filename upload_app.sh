@@ -17,8 +17,15 @@ if [ ! -f $FILE ] ; then
    case ${BINTRAY_PACKAGE} in
       VirtualBox|vagrant)
            docker rm -f greenbox
-           docker run --name greenbox greenbox:$DOCKER_VERSION ls /opt/apps
+           docker run --name greenbox greenbox:$DOCKER_VERSION ls /opt/apps && rm -rf VirtualBox
            docker cp greenbox:/opt/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
+           chmod +s VirtualBox/VirtualBox VirtualBox/VBoxHeadless &&\
+           find VirtualBox/src -type f -exec rm  {} \; &&\
+           find VirtualBox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack -type f -exec rm {} \; &&\
+           find VirtualBox -name "*.dll" -exec rm {} \; &&\
+           find VirtualBox -name "*.pdf" -exec rm {} \; &&\
+           find VirtualBox -name "*.o" -exec rm {} \; &&\
+           find VirtualBox -name "*.c" -exec rm {} \; || exit 1
            ;;
       *) 
            docker rm -f greenbox_apps
