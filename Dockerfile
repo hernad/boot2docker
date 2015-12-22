@@ -141,7 +141,7 @@ RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-file
 
 
 # http://download.virtualbox.org/virtualbox/5.0.10/
-ENV VBOX_VER=5.0.10 VBOX_BUILD=104061
+ENV VBOX_VER=5.0.12 VBOX_BUILD=104815
 
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
     chmod +x *.run ;\
