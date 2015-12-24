@@ -143,10 +143,6 @@ RUN  export PCIUTILS_VER=3.4.0 && cd / && curl -LO ftp://atrey.karlin.mff.cuni.c
 
 #http://libguestfs.org/download/1.31-development/libguestfs-1.31.30.tar.gz
 
-#RUN curl -LO http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-1.0.9/libusb-1.0.9.tar.bz2 &&\
-#    tar xvf libusb-1.0.9.tar.bz2 && cd libusb-1.0.9 && ./configure --prefix=/opt/apps/lib &&\
-#    make install
-
 RUN     apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev1 libudev-dev &&\
         git clone https://github.com/gregkh/usbutils.git &&\
         cp /usr/lib/x86_64-linux-gnu/libusb*.so /opt/apps/green/lib &&\
@@ -154,8 +150,4 @@ RUN     apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev1 libudev-dev &&
 	cd usbutils && git submodule init && git submodule update &&\
 	./autogen.sh --prefix=/opt/apps/green &&\
 	make && make install
-
-       #export CPPFLAGS="-I/opt/apps/green/include -L/opt/apps/green/lib" &&\
-       # export CFLAGS="$CPPFLAGS" &&\
-       # export LDFLAGS="-static -L/opt/apps/green/lib" &&\
 
