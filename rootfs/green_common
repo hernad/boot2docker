@@ -21,5 +21,11 @@ mounted() {
 }
 
 zfs_up() {
-  (zfs list | grep -q green)
+  zfs list | grep -q green
 }
+
+is_vbox () {
+  lshw | grep -q "product: VirtualBox"
+}
+
+

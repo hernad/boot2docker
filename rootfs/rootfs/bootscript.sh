@@ -17,6 +17,18 @@ date
 ip a >> $LOG_FILE
 
 let count=0
+while ( ! zfs_up ) && [ $count -lt 10 ]
+do
+  log_msg "cekam zfs_up"
+  sleep 1
+  let count=count+1
+done
+
+log_msg "if VirtualBox create green pool"
+. /usr/local/bin/vbox_create_pool.sh
+
+. /usr/local/bin/
+let count=0
 while ( ! mounted opt_boot ) && [ $count -lt 10 ]
 do
    zfs_up && ( ! mounted opt_boot ) && ( mkdir -p $BOOT_DIR ; rm -r -f $BOOT_DIR/* ;  mount -o mountpoint=/opt/boot green/opt_boot )
@@ -24,6 +36,7 @@ do
    sleep 1
    let count=count+1
 done
+
 
 log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
