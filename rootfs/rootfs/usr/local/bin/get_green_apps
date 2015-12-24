@@ -32,6 +32,17 @@ fi
 
 }
 
+umount_opt() {
+
+if [ -d /opt/apps/$1 ] ; then
+  if  $(grep -q \/opt\/$1 /proc/mounts) ; then
+    sudo umount -f -l /opt/$1 >> $LOG_FILE
+  fi
+fi
+
+}
+
+
 
 download_app() {
 
@@ -73,10 +84,20 @@ for appver in $GREEN_APPS; do
 
    if $(grep -q \/opt\/apps /proc/mounts) && [ ! -d /opt/apps/${app} ] ; then
          download_app ${app} ${ver}
-
+         echo ${ver} > /opt/apps/${app}/VERSION
    fi
 
    if [ -d /opt/apps/${app} ] ; then
+
+       installed_ver=`cat /opt/apps/${app}/VERSION`
+
+       if [ "$installed_ver" != "${ver}" ] ; then
+           log_msg "${app} installed version is ${installed_ver}, going to download and  install ${ver} !"
+           umount_opt ${app}
+           download_app ${app} ${ver}
+       fi
+
+
        if [ "$app" == "VirtualBox" ]; then
             # VirtualBox execs has to be root
             chown root:root -R /opt/apps/VirtualBox
