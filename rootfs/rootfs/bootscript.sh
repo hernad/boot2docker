@@ -97,8 +97,7 @@ if [ -e $BOOT_DIR/bootlocal.sh ]; then
     log_msg "after $BOOT_DIR/bootlocal.sh"
 fi
 
-log_msg "before: download_green_apps"
-. /usr/local/bin/download_green_apps
+. /usr/local/bin/install_green_apps
 
 log_msg "ldconfg after mounting apps"
 /sbin/ldconfig -v >> $LOG_FILE 2>&1

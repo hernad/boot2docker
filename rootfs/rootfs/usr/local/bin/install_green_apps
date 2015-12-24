@@ -73,6 +73,7 @@ download_app() {
            rm /tmp/${app}_${ver}.tar.gz
     fi
 
+    echo ${ver} > /opt/apps/${app}/VERSION
 }
 
 
@@ -84,7 +85,6 @@ for appver in $GREEN_APPS; do
 
    if $(grep -q \/opt\/apps /proc/mounts) && [ ! -d /opt/apps/${app} ] ; then
          download_app ${app} ${ver}
-         echo ${ver} > /opt/apps/${app}/VERSION
    fi
 
    if [ -d /opt/apps/${app} ] ; then
