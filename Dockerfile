@@ -233,6 +233,8 @@ RUN export SYSLINUX_VER=6.03 && export SYSLINUX_PRE=pre20 &&\
    curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
    tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install
 
+RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
+     make && make DESTDIR=$ROOTFS install
 
 # =============================================================================================
 
@@ -334,9 +336,6 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/drivers/xen &&\
     rm -rf ./kernel/drivers/input/joystick &&\
     rm -rf ./kernel/fs/btrfs
-
-RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
-     make && make DESTDIR=$ROOTFS install
 
 RUN /make_iso.sh
 
