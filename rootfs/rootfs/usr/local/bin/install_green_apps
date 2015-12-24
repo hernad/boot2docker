@@ -5,7 +5,7 @@
 [ `whoami` != root ] && echo "you have to be root user !" && exit 1
 
 GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
-GREEN_APPS=${GREEN_APPS:-green_1.1.0 x11_1.0.0 VirtualBox_5.0.12 vagrant_1.7.4 python2_2.7.11 vim_7.4.972}
+GREEN_APPS=${GREEN_APPS:-green_1.2.0 x11_1.0.0 VirtualBox_5.0.12 vagrant_1.7.4 python2_2.7.11 vim_7.4.972}
 
 echo "environment vars:"
 echo "-------------------------------------------------------------"

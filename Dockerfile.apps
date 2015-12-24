@@ -115,3 +115,24 @@ RUN git clone git://git.kernel.dk/fio.git &&\
     cd fio && ./configure --prefix=/opt/apps/green &&\
     make install
 
+#Version 20151002 md5=b2d20c4d880518c5fb8f8db734962f45 
+# http://www.maier-komor.de/software/mbuffer/mbuffer-20151002.tgz
+RUN export MBUFFER_VER="20151002" && echo "mbuffer ver: $MBUFFER_VER" && curl -LO http://www.maier-komor.de/software/mbuffer/mbuffer-${MBUFFER_VER}.tgz &&\
+    cd / && tar xvf mbuffer-${MBUFFER_VER}.tgz && cd mbuffer-${MBUFFER_VER} && ./configure --prefix=/opt/apps/green &&\
+    make install
+
+RUN  export LZO_VER=2.09 && curl -LO http://www.oberhumer.com/opensource/lzo/download/lzo-${LZO_VER}.tar.gz &&\
+     tar xvf lzo-${LZO_VER}.tar.gz && cd lzo-${LZO_VER} && ./configure --prefix=/opt/apps/green &&\
+     make install && ls -lr /opt/apps/green
+
+RUN  export LD_LIBRARY_PATH=/opt/apps/green/lib &&\
+     export CPPFLAGS="-I/opt/apps/green/include -L/opt/apps/green/lib" &&\
+     export LDFLAGS="-L/opt/apps/green/lib" &&\
+     export LZOP_VER=1.03 && cd / && curl -LO http://www.lzop.org/download/lzop-${LZOP_VER}.tar.gz &&\
+     tar xvf lzop-${LZOP_VER}.tar.gz && cd lzop-${LZOP_VER} &&\
+     ./configure --prefix=/opt/apps/green && make install
+
+RUN export PERL5_VER=5.22.1 && cd / && curl -LO http://www.cpan.org/src/5.0/perl-${PERL5_VER}.tar.gz &&\
+    tar xvf perl-${PERL5_VER}.tar.gz &&  cd perl-${PERL5_VER} &&\
+    ./Configure -des -Dprefix=/opt/apps/perl5 && make install
+
