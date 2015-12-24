@@ -44,14 +44,14 @@ log_msg "zfs build"
 if ( ! zfs list $POOL/docker_vol )
 then
    log_msg "zfs docker_vol /dev/zvol, ext4"
-   zfs create -V DOCKER_VOL_SIZE -s -o sync=disabled $POOL/docker_vol
+   zfs create -V $DOCKER_VOL_SIZE -s -o sync=disabled $POOL/docker_vol
    mkfs.ext4 /dev/zvol/$POOL/docker_vol
 fi
 
 if ( ! zfs list $POOL/swap )
 then
    log_msg "zfs swap /dev/zvol"
-   zfs create  -V SWAP_VOL_SIZE -s $POOL/swap
+   zfs create  -V $SWAP_VOL_SIZE -s $POOL/swap
    mkswap  /dev/zvol/$POOL/swap
    swapon /dev/zvol/$POOL/swap
 fi
