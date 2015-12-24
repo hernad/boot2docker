@@ -332,8 +332,11 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/fs/hfsplus &&\
     rm -rf ./kernel/drivers/firewire &&\
     rm -rf ./kernel/drivers/xen &&\
-    rm -rf ./kernel/drivers/input/joystick
-#    rm -rf ./kernel/fs/btrfs &&\
+    rm -rf ./kernel/drivers/input/joystick &&\
+    rm -rf ./kernel/fs/btrfs
+
+RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
+     make && make DESTDIR=$ROOTFS install
 
 RUN /make_iso.sh
 

@@ -151,3 +151,4 @@ RUN     apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev1 libudev-dev &&
 	./autogen.sh --prefix=/opt/apps/green &&\
 	make && make install
 
+
