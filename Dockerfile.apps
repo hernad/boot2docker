@@ -83,7 +83,7 @@ RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip 
  
 
 # --------- tmux & libevent install ------------
-RUN curl -L -O  https://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-2.0.22-stable.tar.gz &&\
+RUN curl -LO  https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz &&\
     tar xvf libevent-2.0.22-stable.tar.gz &&\
     cd /libevent-2.0.22-stable && sh autogen.sh && ./configure && make install &&\
     ( [  -d /opt/apps/green/lib ] || mkdir -p /opt/apps/green/lib ) &&\
@@ -109,4 +109,9 @@ RUN apt-get install -y bison flex &&\
     ./configure --prefix=/opt/apps/tcpdump --libdir=/opt/apps/tcpdump/lib &&\
     make install &&\
     cd /opt/apps/tcpdump && mv sbin/* bin/
+
+# ---------- fio http://jrs-s.net/2015/11/23/fio-cheat-sheet/ ------------
+RUN git clone git://git.kernel.dk/fio.git &&\
+    cd fio && ./configure --prefix=/opt/apps/green &&\
+    make install
 

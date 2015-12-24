@@ -21,7 +21,9 @@ if [ ! -f $FILE ] ; then
            docker cp greenbox:/opt/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
            chmod +s VirtualBox/VirtualBox VirtualBox/VBoxHeadless &&\
            find VirtualBox/src -type f -exec rm  {} \; &&\
-           find VirtualBox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack -type f -exec rm {} \; &&\
+           find VirtualBox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack/solaris.amd64 -type f -exec rm {} \; &&\
+           find VirtualBox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack/darwin.amd64 -type f -exec rm {} \; &&\
+           find VirtualBox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack/linux.x86 -type f -exec rm {} \; &&\
            find VirtualBox -name "*.dll" -exec rm {} \; &&\
            find VirtualBox -name "*.pdf" -exec rm {} \; &&\
            find VirtualBox -name "*.o" -exec rm {} \; &&\
