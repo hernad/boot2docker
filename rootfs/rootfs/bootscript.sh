@@ -27,7 +27,8 @@ done
 log_msg "if VirtualBox create green pool"
 . /usr/local/bin/vbox_create_pool.sh
 
-. /usr/local/bin/
+. /usr/local/bin/green_create_zfs.sh
+
 let count=0
 while ( ! mounted opt_boot ) && [ $count -lt 10 ]
 do
