@@ -21,12 +21,16 @@ ln -fs $BOOT_DIR/log/udhcp.log $ROOTFS/var/log/
 ln -fs $BOOT_DIR/log/greenbox.log $ROOTFS/var/log/
 ln -fs $BOOT_DIR/log/wtmp $ROOTFS/var/log/
 
-# /bin/bash
-ln -fs /usr/local/bin/bash $ROOTFS/bin/
-
 ln -fs $BOOT_DIR/etc/ld.so.cache $ROOTFS/etc/
 ln -fs $BOOT_DIR/etc/dnsmasq.conf $ROOTFS/etc/
 ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/
+
+# /bin/bash
+ln -fs /usr/local/bin/bash $ROOTFS/bin/
+
+# /usr/bin/python, /usr/bin/perl
+ln -fs /opt/python2/bin/python $ROOTFS/usr/bin/
+ln -fs /opt/perl5/bin/perl $ROOTFS/usr/bin/
 
 # Setup /etc/os-release with some nice contents
 NAME=greenbox

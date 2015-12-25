@@ -18,7 +18,12 @@ done
 export PATH
 export LD_LIBRARY_PATH
 
+export TERM=linux
+
+[ -e /usr/bin/python ] && echo "python: `/usr/bin/python --version`"
+[ -e /usr/bin/perl ] && echo "perl: `/usr/bin/perl --version`"
+
 echo "greenbox version $(cat /etc/version), build $(cat /etc/greenbox)"
-docker -v # e.g. Docker version 1.3.0-dev, build ba14ddf-dirty
+echo "docker: `docker -v`"
 echo "PATH: $PATH"
 echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
