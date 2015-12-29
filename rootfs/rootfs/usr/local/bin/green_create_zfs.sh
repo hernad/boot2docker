@@ -55,3 +55,6 @@ then
    mkswap  /dev/zvol/$POOL/swap
    swapon /dev/zvol/$POOL/swap
 fi
+
+[ -d /opt/boot/etc ] || mkdir -p /opt/boot/etc
+[ -d /opt/boot/log ] || mkdir -p /opt/boot/log
