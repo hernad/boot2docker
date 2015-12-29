@@ -179,6 +179,6 @@ RUN  export FLOCKER_VER=1.8.0 && cd /opt && /opt/python2/bin/virtualenv --python
 
      
 # --- pipework in green
-RUN  cd /opt/apps/greenbox/bin &&  curl -LO https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework &&\
+RUN  cd /opt/apps/green/bin &&  curl -LO https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework &&\
      chmod +x pipework
 
