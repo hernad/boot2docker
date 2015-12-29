@@ -182,3 +182,6 @@ RUN  export FLOCKER_VER=1.8.0 && cd /opt && /opt/python2/bin/virtualenv --python
 RUN  cd /opt/apps/green/bin &&  curl -LO https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework &&\
      chmod +x pipework
 
+RUN  apt-get install -y bridge-utils &&\
+     cp /sbin/brctl /opt/apps/green/bin/
+
