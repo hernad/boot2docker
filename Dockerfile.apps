@@ -151,4 +151,34 @@ RUN     apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev1 libudev-dev &&
 	./autogen.sh --prefix=/opt/apps/green &&\
 	make && make install
 
+# ------- docker-compose
+RUN export DOCKER_COMPOSE_VER=1.5.2 && \
+    curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VER}/docker-compose-Linux-x86_64 > /opt/apps/green/bin/docker-compose &&\
+    chmod +x /opt/apps/green/bin/docker-compose
+
+
+
+# ----- flocker 1.8.0
+
+RUN  apt-get update -y &&\
+     apt-get -y install gcc libffi-dev libssl-dev python2.7 python2.7-dev  &&\
+     ln -s /opt/apps/python2 /opt/python2
+
+RUN  export FLOCKER_VER=1.8.0 && cd /opt && /opt/python2/bin/virtualenv --python=/opt/python2/bin/python flocker &&\
+     cd /opt/flocker  &&\
+     . bin/activate && /opt/python2/bin/pip install --upgrade pip &&\
+     cd / && curl -LO https://github.com/twisted/twisted/archive/twisted-15.5.0.tar.gz &&\
+     tar xvf twisted-15.5.0.tar.gz &&\
+     cd /twisted-twisted-15.5.0 && python setup.py install &&\
+     cd / && curl -LO https://github.com/ClusterHQ/flocker/archive/${FLOCKER_VER}.tar.gz &&\
+     tar xvf ${FLOCKER_VER}.tar.gz && cd flocker-${FLOCKER_VER} && \
+     sed -i -e 's/Twisted==15.*$/Twisted==15\.5\.0/g' requirements.txt &&\
+     pip install . &&\
+     cp /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /opt/flocker/lib/ &&\
+     cp /usr/lib/x86_64-linux-gnu/libssl.so.1.0.0 /opt/flocker/lib/
+
+     
+# --- pipework in green
+RUN  cd /opt/apps/greenbox/bin &&  curl -LO https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework &&\
+     chmod +x pipework
 

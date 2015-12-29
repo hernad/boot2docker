@@ -29,6 +29,11 @@ if [ ! -f $FILE ] ; then
            find VirtualBox -name "*.o" -exec rm {} \; &&\
            find VirtualBox -name "*.c" -exec rm {} \; || exit 1
            ;;
+      flocker)
+           docker rm -f greenbox_apps
+           docker run --name greenbox_apps greenbox_apps:$DOCKER_VERSION ls /opt/flocker
+           docker cp greenbox_apps:/opt/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
+           ;; 
       *) 
            docker rm -f greenbox_apps
            docker run --name greenbox_apps greenbox_apps:$DOCKER_VERSION ls /opt/apps
