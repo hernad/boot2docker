@@ -37,6 +37,7 @@ ENV PATH  /opt/apps/python2/bin:$PATH
 # gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF &&\
     apt-get purge -y python.* &&\
+    apt-get install -y bzip2 libbz2-dev &&\
     set -x \
 	&& mkdir -p /usr/src/python \
 	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
@@ -164,24 +165,41 @@ RUN  apt-get update -y &&\
      apt-get -y install gcc libffi-dev libssl-dev python2.7 python2.7-dev  &&\
      ln -s /opt/apps/python2 /opt/python2
 
-RUN  export FLOCKER_VER=1.8.0 && cd /opt && /opt/python2/bin/virtualenv --python=/opt/python2/bin/python flocker &&\
-     cd /opt/flocker  &&\
-     . bin/activate && /opt/python2/bin/pip install --upgrade pip &&\
-     cd / && curl -LO https://github.com/twisted/twisted/archive/twisted-15.5.0.tar.gz &&\
-     tar xvf twisted-15.5.0.tar.gz &&\
-     cd /twisted-twisted-15.5.0 && python setup.py install &&\
-     cd / && curl -LO https://github.com/ClusterHQ/flocker/archive/${FLOCKER_VER}.tar.gz &&\
-     tar xvf ${FLOCKER_VER}.tar.gz && cd flocker-${FLOCKER_VER} && \
-     sed -i -e 's/Twisted==15.*$/Twisted==15\.5\.0/g' requirements.txt &&\
-     pip install . &&\
-     cp /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /opt/flocker/lib/ &&\
-     cp /usr/lib/x86_64-linux-gnu/libssl.so.1.0.0 /opt/flocker/lib/
+#RUN  export FLOCKER_VER=1.8.0 && cd /opt && /opt/python2/bin/virtualenv --python=/opt/python2/bin/python flocker &&\
+#     cd /opt/flocker  &&\
+#     . bin/activate && /opt/python2/bin/pip install --upgrade pip &&\
+#     cd / && curl -LO https://github.com/twisted/twisted/archive/twisted-15.5.0.tar.gz &&\
+#     tar xvf twisted-15.5.0.tar.gz &&\
+#     cd /twisted-twisted-15.5.0 && python setup.py install &&\
+#     cd / && curl -LO https://github.com/ClusterHQ/flocker/archive/${FLOCKER_VER}.tar.gz &&\
+#     tar xvf ${FLOCKER_VER}.tar.gz && cd flocker-${FLOCKER_VER} && \
+#     sed -i -e 's/Twisted==15.*$/Twisted==15\.5\.0/g' requirements.txt &&\
+#     pip install . &&\
+
+RUN ln -s /opt/apps/python2 /opt/python2 &&\
+    cd /opt && /opt/python2/bin/virtualenv --python=/opt/python2/bin/python flocker &&\
+    cd /opt/flocker &&\
+    . bin/activate && pip install --upgrade pip &&\
+    cd / &&  git clone https://github.com/ClusterHQ/flocker.git
+
+RUN cd /opt/flocker &&\
+    . bin/activate &&\ 
+    cd /flocker &&\
+    pip install --upgrade setuptools &&\
+    pip install pbr &&\
+    pip install pycparser &&\
+    pip install twisted --verbose &&\
+    pip install . &&\
+    cp /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /opt/flocker/lib/ &&\
+    cp /usr/lib/x86_64-linux-gnu/libssl.so.1.0.0 /opt/flocker/lib/
 
      
 # --- pipework in green
 RUN  cd /opt/apps/green/bin &&  curl -LO https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework &&\
      chmod +x pipework
 
-RUN  apt-get install -y bridge-utils &&\
-     cp /sbin/brctl /opt/apps/green/bin/
+RUN  apt-get update -y && apt-get install -y bridge-utils openvswitch-switch &&\
+     cp /sbin/brctl /opt/apps/green/bin/ &&\
+     cp `which ovs-vsctl` /opt/apps/green/bin/ &&\
+     cp `which truncate` /opt/apps/green/bin/
 
