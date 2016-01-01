@@ -2,3 +2,4 @@
 *.iso
 *.tar.gz
 persist.raw
+bins

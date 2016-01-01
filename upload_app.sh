@@ -39,6 +39,11 @@ if [ ! -f $FILE ] ; then
            docker run --name greenbox_apps greenbox_apps:$DOCKER_VERSION ls /opt/apps
            docker cp greenbox_apps:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
            [ ! -d ${BINTRAY_PACKAGE}/sbin ] ||  mv ${BINTRAY_PACKAGE}/sbin/*  ${BINTRAY_PACKAGE}/bin/ 
+
+           if  [ -d bins/${BINTRAY_PACKAGE} ]
+           then
+             cp bins/${BINTRAY_PACKAGE}/* ${BINTRAY_PACKGAGE}/bin/  
+           fi
            ;;
    esac 
    tar cvfz $FILE ${BINTRAY_PACKAGE}
