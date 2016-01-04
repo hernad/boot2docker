@@ -69,11 +69,13 @@ download_app() {
 	   tar xvf /tmp/${app}_${ver}.tar.gz
 	   if [ $? -ne 0 ] ; then
               log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz, /tmp/${app}_${ver}.tar.gz not tar archive, or damaged"
-	   fi
-           rm /tmp/${app}_${ver}.tar.gz
-    fi
+	   else
+              log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
+              rm /tmp/${app}_${ver}.tar.gz
+              echo ${ver} > /opt/apps/${app}/VERSION
+           endif
+   fi
 
-    echo ${ver} > /opt/apps/${app}/VERSION
 }
 
 
