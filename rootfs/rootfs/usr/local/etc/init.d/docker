@@ -7,7 +7,7 @@ DOCKER_PID=/var/run/docker.pid
 
 if [ ! -e $BOOT_DIR/etc/profile ]
 then
-  echo "# put docker settings here e.g. HTTP_PROXY, HTTPS_PROXY, DOCKER_STORAGE, DOCKER_LOGFILE, CERT_INTERFACES, CERT_DIR" > $BOOT_DIR/etc/profile
+  echo "# put docker settings here e.g. HTTP_PROXY, HTTPS_PROXY, DOCKER_OPTS, DOCKER_STORAGE, DOCKER_LOGFILE, CERT_INTERFACES, CERT_DIR" > $BOOT_DIR/etc/profile
 fi
 
 . $BOOT_DIR/etc/profile
@@ -70,9 +70,9 @@ start() {
 
         if [ "$DOCKER_TLS" == "auto" ]; then
             DOCKER_HOST='-H tcp://0.0.0.0:2376'
-            EXTRA_ARGS="$EXTRA_ARGS --tlsverify --tlscacert=$CA_CERT --tlscert=$SERVER_CERT --tlskey=$SERVER_KEY"
+            DOCKER_OPTS="$DOCKER_OPTS --tlsverify --tlscacert=$CA_CERT --tlscert=$SERVER_CERT --tlskey=$SERVER_KEY"
         elif [ "$DOCKER_TLS" != "no" ]; then
-            EXTRA_ARGS="$EXTRA_ARGS $DOCKER_TLS --tlscacert=$CA_CERT --tlscert=$SERVER_CERT --tlskey=$SERVER_KEY"
+            DOCKER_OPTS="$DOCKER_OPTS $DOCKER_TLS --tlscacert=$CA_CERT --tlscert=$SERVER_CERT --tlskey=$SERVER_KEY"
         fi
 
         # now make the client certificates available to the docker user
@@ -98,15 +98,15 @@ start() {
     fi
     if [ "$DOCKER_STORAGE" != 'auto' ]; then
         # in the general case, let's trust Docker to "do the right thing"
-        EXTRA_ARGS="$EXTRA_ARGS --storage-driver=$DOCKER_STORAGE"
+        DOCKER_OPTS="$DOCKER_OPTS --storage-driver=$DOCKER_STORAGE"
     fi
 
     # Increasing the number of open files and processes by docker
     ulimit -n $DOCKER_ULIMITS
     ulimit -p $DOCKER_ULIMITS
 
-    echo /usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $EXTRA_ARGS  >> $DOCKER_LOGFILE
-    /usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $EXTRA_ARGS >> $DOCKER_LOGFILE 2>&1 &
+    echo /usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
+    /usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
 }
 
 stop() {
