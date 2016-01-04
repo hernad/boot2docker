@@ -73,7 +73,7 @@ download_app() {
               log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
               rm /tmp/${app}_${ver}.tar.gz
               echo ${ver} > /opt/apps/${app}/VERSION
-           endif
+           fi
    fi
 
 }
