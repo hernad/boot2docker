@@ -46,6 +46,7 @@ VBoxManage storageattach $vmName --storagectl "IDE Controller" --port 0 --device
 
 VBoxManage storagectl $vmName --name "SATA Controller" --add sata --controller IntelAHCI
 VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium $vmName.vdi
+VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 0 --device 0 --type dvddrive --medium GREEN_INIT.vmdk
 
  
 }
