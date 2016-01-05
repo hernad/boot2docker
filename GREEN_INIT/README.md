@@ -10,3 +10,8 @@ Prerequisites
     vagrant up
     ./create_vdi.sh
     
+
+Notes
+----------------
+
+   docker files don't work !
