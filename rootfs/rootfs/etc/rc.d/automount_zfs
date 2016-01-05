@@ -3,18 +3,23 @@
 . /etc/rc.d/green_common
 
 log_msg "start $(date)"
-/sbin/modprobe zfs >> $LOG_FILE 2>&1
 
-for i in 1 2 3 4
-do
- echo "/dev/zfs try: $i"
+if ! ( /sbin/lsmod | grep -q nfs )
+then
 
- if [ -e /dev/zfs ] ; then
-   break
- else
-   sleep 1
- fi
-done
+   /sbin/modprobe zfs >> $LOG_FILE 2>&1
+   
+   for i in 1 2 3 4
+   do
+     echo "/dev/zfs try: $i"
+     if [ -e /dev/zfs ] ; then
+        break
+     else
+        sleep 1
+     fi
+   done
+
+fi
 
 mkdir -p /home
 mkdir -p /opt

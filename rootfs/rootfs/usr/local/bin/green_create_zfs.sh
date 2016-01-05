@@ -45,10 +45,15 @@ log_msg "zfs build"
 
 if ( ! zfs list $POOL/docker_vol )
 then
-   log_msg "zfs docker_vol /dev/zvol, ext4"
+   log_msg "zfs docker_vol /dev/zvol"
    zfs create -V $DOCKER_VOL_SIZE -s -o sync=disabled $POOL/docker_vol
    wait_zvol_up $POOL docker_vol
+   log_msg "docker_vol mkfs.ext4"
    mkfs.ext4 -F /dev/zvol/$POOL/docker_vol
+  
+   log_msg "mount docker_vol /var/lib/docker"
+   mkdir -p /var/lib/docker
+   mount /dev/zvol/$POOL/docker_vol /var/lib/docker
 fi
 
 if ( ! zfs list $POOL/swap )
@@ -62,3 +67,5 @@ fi
 
 [ -d /opt/boot/etc ] || mkdir -p /opt/boot/etc
 [ -d /opt/boot/log ] || mkdir -p /opt/boot/log
+
+
