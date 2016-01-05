@@ -45,6 +45,12 @@ if ( ! zfs list $POOL/docker_vol )
 then
    log_msg "zfs docker_vol /dev/zvol, ext4"
    zfs create -V $DOCKER_VOL_SIZE -s -o sync=disabled $POOL/docker_vol
+   retry=0
+   while [ ! -e /dev/zvol/$POOL/docker_vol ] &&  [ retry -lt 10 ]
+   do
+      sleep 1
+      let retry=retry+1
+   done
    mkfs.ext4 -F /dev/zvol/$POOL/docker_vol
 fi
 
