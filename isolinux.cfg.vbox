@@ -1,12 +1,12 @@
 serial 0 115200
 display boot.msg
-default 0
-label 0
+default vbox
+label rack
         menu label green-box
 	kernel /boot/vmlinuz64 console=ttyS0,115200n8
 	initrd /boot/initrd.img console=ttyS0,115200n8 
 	append loglevel=3 user=docker nozswap nofstab tz=CET-1CEST,M3.5.0,M10.5.0/3 console=ttyS0,115200n8 noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD
-label 1
+label vbox
         menu label green-box vga
 	kernel /boot/vmlinuz64
 	initrd /boot/initrd.img

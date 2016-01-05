@@ -20,6 +20,10 @@ sed -e "s/XBuildX/$(date +'%Y%M%d-%T %z')/g" motd.template |\
 cat ./rootfs/rootfs/usr/local/etc/motd && \
 cp  ./rootfs/rootfs/usr/local/etc/motd  ./rootfs/isolinux/boot.msg || ( echo error && exit 1)
 
+GREEN_PRODUCTION=${GREEN_PRODUCTION:-rack}
+
+cp isolinux.cfg.$GREEN_PRODUCTION ./rootfs/isolinux/isolinux.cfg
+
 while [ "$arg" ]
 do
  

@@ -1,0 +1,28 @@
+serial 0 115200
+display boot.msg
+default rack
+label rack
+        menu label green-box
+	kernel /boot/vmlinuz64 console=ttyS0,115200n8
+	initrd /boot/initrd.img console=ttyS0,115200n8 
+	append loglevel=3 user=docker nozswap nofstab tz=CET-1CEST,M3.5.0,M10.5.0/3 console=ttyS0,115200n8 noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD
+label vbox
+        menu label green-box vga
+	kernel /boot/vmlinuz64
+	initrd /boot/initrd.img
+	append loglevel=3 user=docker nozswap nofstab tz=CET-1CEST,M3.5.0,M10.5.0/3 console=tty0 noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD
+
+# If flag_val is 0, do not load a kernel image unless it has been explicitly named in a LABEL statement. The default is 1.
+# implicit 0
+
+# If flag_val is 0, display the boot: prompt only if the Shift or Alt key is pressed, or Caps Lock or Scroll lock is set (this is the default). If flag_val is 1, always display the boot: prompt.
+prompt 1
+
+timeout 50
+TOTALTIMEOUT 3000
+
+# Displays the indicated file on the screen when a function key is pressed at the boot: prompt. This can be used to implement pre-boot online help (presumably for the kernel command line options).
+F1 boot.msg
+F2 f2
+F3 f3
+F4 f4
