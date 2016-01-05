@@ -30,9 +30,13 @@ fi
 
 VBoxManage createvm --name $vmName --register
 VBoxManage modifyvm $vmName --ostype Linux_64  --memory 768
-VBoxManage modifyvm $vmName --nic1 intnet --intnet1 greennet --nicpromisc1 allow-all
+
+VBoxManage modifyvm $vmName --nic1 nat
+VBoxManage modifyvm $vmName --nictype1 virtio
+
+VBoxManage modifyvm $vmName --nic2 intnet --intnet2 greennet --nicpromisc1 allow-all
 #VBoxManage modifyvm $vmName --nictype1 82540EM --macaddress1 auto
-VBoxManage modifyvm $vmName --nictype1 virtio --macaddress1 auto
+VBoxManage modifyvm $vmName --nictype2 virtio --macaddress1 auto
 
 VBoxManage createhd --filename $vmName --size $vmDiskSize
 #VBoxManage modifyvm $vmName --ostype Ubuntu --boot1 net --memory 768;

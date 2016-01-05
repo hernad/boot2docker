@@ -1,0 +1,12 @@
+#FROM centos:6
+FROM fedora
+
+#RUN yum install -y http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+RUN dnf install -y libguestfs-tools
+
+#RUN appliance-creator -c container-65.ks -d -v -t /tmp \
+#    -o /tmp/myimage --name "centos65" --release "6.5" \
+#    --format=qcow2;
+
+CMD virt-make-fs /data/green_init.tar.gz --type=ext2 --partition=mbr --size=16G --label=GREEN_INIT --format=qcow2 /data/GREEN_INIT.qcow2
+
