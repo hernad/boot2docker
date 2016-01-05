@@ -3,7 +3,8 @@
 build image
 -----------
 
-     ./build.sh
+     export GREEN_PRODUCTION=vbox # or rack
+     ./build.sh greenbox
 
      => greenbox:1.9.1 docker image
 
