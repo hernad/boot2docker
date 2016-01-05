@@ -2,13 +2,15 @@
 
 . /etc/rc.d/green_common
 
-if is_vbox
+if ( is_vbox )
 then
+ log_msg "vbox"
  HOME_QUOTA=50G
  BUILD_QUOTA=30G
  DOCKER_VOL_SIZE=30G
  SWAP_VOL_SIZE=4G
 else
+ log_msg "not vbox"
  HOME_QUOTA=300G
  BUILD_QUOTA=200G
  DOCKER_VOL_SIZE=120G
@@ -45,12 +47,7 @@ if ( ! zfs list $POOL/docker_vol )
 then
    log_msg "zfs docker_vol /dev/zvol, ext4"
    zfs create -V $DOCKER_VOL_SIZE -s -o sync=disabled $POOL/docker_vol
-   retry=0
-   while [ ! -e /dev/zvol/$POOL/docker_vol ] &&  [ retry -lt 10 ]
-   do
-      sleep 1
-      let retry=retry+1
-   done
+   wait_zvol_up $POOL docker_vol
    mkfs.ext4 -F /dev/zvol/$POOL/docker_vol
 fi
 
@@ -58,6 +55,7 @@ if ( ! zfs list $POOL/swap )
 then
    log_msg "zfs swap /dev/zvol"
    zfs create  -V $SWAP_VOL_SIZE -s $POOL/swap
+   wait_zvol_up $POOL swap
    mkswap  /dev/zvol/$POOL/swap
    swapon /dev/zvol/$POOL/swap
 fi

@@ -29,3 +29,14 @@ is_vbox () {
 }
 
 
+wait_zvol_up () {
+
+retry=0
+while [ ! -e /dev/zvol/$1/$2 ] &&  [ retry -lt 12 ]
+do
+   echo waiting zvol $1 $2 up
+      sleep 1
+      let retry=retry+1
+done
+
+}
