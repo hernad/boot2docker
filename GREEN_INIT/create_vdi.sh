@@ -5,3 +5,5 @@
 rm GREEN_INIT.vdi
 
 VBoxManage clonehd GREEN_INIT.vmdk  GREEN_INIT.vdi
+
+VBoxManage closemedium GREEN_INIT.vdi
