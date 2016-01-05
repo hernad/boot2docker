@@ -1,0 +1,39 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+
+   config.vm.synced_folder ".", "/vagrant", type: "rsync",  rsync__exclude: "data/"
+
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+  config.vm.box = "fedora/23-cloud-base"
+
+  config.vm.provider "virtualbox" do |vb|
+  #   vb.gui = true
+     vb.memory = "1024"
+  end
+  
+  config.vm.provision "shell", inline: <<-SHELL
+     dnf install -y libguestfs-tools
+     dnf install -y xorg-x11-server-Xvfb
+     /usr/bin/Xvfb :1 -screen 0 1024x768x24 &
+     export DISPLAY=:1 
+
+     cd /vagrant
+     export LIBGUESTFS_BACKEND=direct
+     export LIBGUESTFS_BACKEND_SETTINGS=force_tcg
+     export LIBGUESTFS_DEBUG=1
+     virt-make-fs /vagrant/green_init.tar.gz --type=ext2 --partition=mbr --size=1G --label=GREEN_INIT  /vagrant/GREEN_INIT.img
+     qemu-img convert -O vmdk GREEN_INIT.img GREEN_INIT.vmdk
+     ls -1 -l 
+  SHELL
+end
