@@ -7,7 +7,7 @@
 # you're doing.
 Vagrant.configure(2) do |config|
 
-   config.vm.synced_folder ".", "/vagrant", type: "rsync",  rsync__exclude: "data/"
+   config.vm.synced_folder ".", "/vagrant", type: "rsync",  rsync__exclude: [ "data/", "GREEN_INIT.vdi" ]
 
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -31,7 +31,7 @@ Vagrant.configure(2) do |config|
      cd /vagrant
      export LIBGUESTFS_BACKEND=direct
      export LIBGUESTFS_BACKEND_SETTINGS=force_tcg
-     export LIBGUESTFS_DEBUG=1
+     export LIBGUESTFS_DEBUG=0
      virt-make-fs /vagrant/green_init.tar.gz --type=ext2 --partition=mbr --size=1G --label=GREEN_INIT  /vagrant/GREEN_INIT.img
      qemu-img convert -O vmdk GREEN_INIT.img GREEN_INIT.vmdk
      ls -1 -l 
