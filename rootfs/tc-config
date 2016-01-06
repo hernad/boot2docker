@@ -634,5 +634,9 @@ if ( ! mounted docker_home ); then
         log_msg "mount zfs /home/docker"
 	mount -t zfs green/docker_home /home/docker
         chown docker:docker /home/docker
-	echo "${GREEN}Docker home mounted.${NORMAL}"
+        if ( mounted docker_home ) ; then
+	   echo "${GREEN}Docker zfs home mount SUCCESS.${NORMAL}"
+        else
+	   echo "${RED}Docker zfs home mount ERROR!${NORMAL}"
+        fi
 fi
