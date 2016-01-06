@@ -3,3 +3,5 @@
 *.tar.gz
 persist.raw
 bins
+vbox
+GREEN_INIT

@@ -99,9 +99,6 @@ if [ -e $BOOT_DIR/bootsync.sh ]; then
     log_msg "after $BOOT_DIR/bootsync.sh"
 fi
 
-log_msg "Launch Docker"
-/etc/rc.d/docker
-
 log_msg "virtualbox drivers"
 /etc/rc.d/virtualbox
 
@@ -115,5 +112,8 @@ fi
 
 log_msg "ldconfg after mounting apps"
 /sbin/ldconfig -v >> $LOG_FILE 2>&1
+
+log_msg "launch Docker"
+/etc/rc.d/docker
 
 

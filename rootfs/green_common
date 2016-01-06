@@ -39,3 +39,5 @@ do
 done
 
 }
+
+GREEN_DEBUG=${GREEN_DEBUG:-1}
