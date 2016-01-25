@@ -21,7 +21,7 @@ RUN apt-get update && apt-get -y install  unzip \
 ENV GCC_M -m64
 # https://www.kernel.org/pub/linux/kernel/v4.x/
 
-ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.3.3  KERNEL_VERSION=4.3.3
+ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.4  KERNEL_VERSION=4.4.0
 
 ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
 
@@ -140,8 +140,8 @@ RUN curl -L -o $ROOTFS/usr/local/bin/docker https://get.docker.io/builds/Linux/x
 RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
 
 
-# http://download.virtualbox.org/virtualbox/5.0.10/
-ENV VBOX_VER=5.0.12 VBOX_BUILD=104815
+# http://download.virtualbox.org/virtualbox/5.0.14/
+ENV VBOX_VER=5.0.14 VBOX_BUILD=105127
 
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
     chmod +x *.run ;\
@@ -158,7 +158,7 @@ RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE
 
 # http://zfsonlinux.org/
 
-ENV ZFS_VER 0.6.5.3
+ENV ZFS_VER 0.6.5.4
 RUN mkdir /zfs && cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz &&\
     cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
