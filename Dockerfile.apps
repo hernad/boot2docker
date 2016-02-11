@@ -153,7 +153,8 @@ RUN     apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev1 libudev-dev &&
 	make && make install
 
 # ------- docker-compose
-RUN export DOCKER_COMPOSE_VER=1.5.2 && \
+# https://github.com/docker/compose/releases/
+RUN export DOCKER_COMPOSE_VER=1.6.0 && \
     curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VER}/docker-compose-Linux-x86_64 > /opt/apps/green/bin/docker-compose &&\
     chmod +x /opt/apps/green/bin/docker-compose
 
@@ -183,7 +184,7 @@ RUN ln -s /opt/apps/python2 /opt/python2 &&\
     cd / &&  git clone https://github.com/ClusterHQ/flocker.git
 
 RUN cd /opt/flocker &&\
-    . bin/activate &&\ 
+    . bin/activate &&\
     cd /flocker &&\
     pip install --upgrade setuptools &&\
     pip install pbr &&\
