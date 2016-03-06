@@ -29,7 +29,7 @@ then
 fi
 
 VBoxManage createvm --name $vmName --register
-VBoxManage modifyvm $vmName --ostype Linux_64  --memory 768
+VBoxManage modifyvm $vmName --ostype Linux_64  --memory $vmMemory
 
 VBoxManage modifyvm $vmName --nic1 nat
 VBoxManage modifyvm $vmName --nictype1 virtio
@@ -75,7 +75,7 @@ if [ $machine_count ]
   then
     for (( i=1; i <= $machine_count; i++ ))
       do
-        vmName="greenbox-vbox-$i"
+        vmName="greenbox-$i"
         vbox_create $vmName $vmDiskSize
       done
 fi

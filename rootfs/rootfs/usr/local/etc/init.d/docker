@@ -7,7 +7,7 @@ DOCKER_PID=/var/run/docker.pid
 
 if [ ! -e $BOOT_DIR/etc/profile ]
 then
-  echo "# put docker settings here e.g. HTTP_PROXY, HTTPS_PROXY, DOCKER_OPTS, DOCKER_STORAGE, DOCKER_LOGFILE, CERT_INTERFACES, CERT_DIR" > $BOOT_DIR/etc/profile
+  echo "# put envars  e.g. GREEN_APPS, HTTP_PROXY, HTTPS_PROXY, DOCKER_OPTS, DOCKER_STORAGE, DOCKER_LOGFILE, CERT_INTERFACES, CERT_DIR" > $BOOT_DIR/etc/profile
 fi
 
 . $BOOT_DIR/etc/profile

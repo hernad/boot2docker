@@ -5,6 +5,7 @@ DOCKER_CACHE=${DOCKER_CACHE:-}
 if [ $# -lt 1 ] ; then
    echo "usage: $0 greenbox apps"
    echo "       $0 greenbox"
+   echo "envars: GREEN_PRODUCTION: (rack|vbox)"
    exit 1
 fi
 
