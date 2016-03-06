@@ -14,12 +14,7 @@ if [ ! -f GREEN_INIT.vmdk ] ; then
 fi
 
 
-if [ -f GREEN_INIT.vmdk ] ; then
-   vagrant scp default:/vagrant/GREEN_INIT.vmdk .
-else
-   echo "GREEN_INIT.vmdk not created!"
-   exit 1
-fi
+vagrant scp default:/vagrant/GREEN_INIT.vmdk .
 
 rm GREEN_INIT.vdi
 VBoxManage clonehd GREEN_INIT.vmdk  GREEN_INIT.vdi
