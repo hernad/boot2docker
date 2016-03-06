@@ -1,6 +1,8 @@
 # /etc/rc.d/green_common
 
 DATE=`date +'%Y%M%d %T'`
+KERNEL_VERSION=`cat /etc/version/KERNEL_VERSION`
+DOCKER_VERSION=`cat /etc/version/DOCKER_VERSION`
 
 if [ -d /opt/boot/log ]
 then

@@ -21,7 +21,9 @@ RUN apt-get update && apt-get -y install  unzip \
 ENV GCC_M -m64
 # https://www.kernel.org/pub/linux/kernel/v4.x/
 
-ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.4.1  KERNEL_VERSION=4.4.1
+
+COPY KERNEL_VERSION $ROOTFS/etc/version
+ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.4.4  KERNEL_VERSION=4.4.4
 
 ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
 

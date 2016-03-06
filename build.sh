@@ -12,10 +12,16 @@ arg=$1
 shift
 
 DOCKER_VERSION=`cat DOCKER_VERSION`
+KERNEL_VERSION=`cat KERNEL_VERSION`
+sed -e "s/XBuildX/$(date +'%Y%M%d-%T %z')/g" motd.template |\
+  sed -e "s/XDockerX/$DOCKER_VERSION/g" \
+  > ./rootfs/rootfs/usr/local/etc/motd
 
 sed -e "s/XBuildX/$(date +'%Y%M%d-%T %z')/g" motd.template |\
   sed -e "s/XDockerX/$DOCKER_VERSION/g" \
   > ./rootfs/rootfs/usr/local/etc/motd
+
+
 
 cat ./rootfs/rootfs/usr/local/etc/motd && \
 cp  ./rootfs/rootfs/usr/local/etc/motd  ./rootfs/isolinux/boot.msg || ( echo error && exit 1)
