@@ -47,9 +47,12 @@ VBoxManage storageattach $vmName --storagectl "IDE Controller" --port 0 --device
 VBoxManage storagectl $vmName --name "SATA Controller" --add sata --controller IntelAHCI
 VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium $vmName.vdi
 
-cp ../GREEN_INIT/GREEN_INIT.vdi ${vmName}_GREEN_INIT.vdi
-VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 1 --device 0 --type hdd --medium ${vmName}_GREEN_INIT.vdi
-
+if [ "$green_init_deploy" == "1" ] ; then
+  cp ../GREEN_INIT/GREEN_INIT.vdi ${vmName}_GREEN_INIT.vdi
+  VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 1 --device 0 --type hdd --medium ${vmName}_GREEN_INIT.vdi
+else
+  echo "no GREN_INIT vdi"
+fi
  
 }
 
@@ -66,16 +69,13 @@ while getopts ":h" opt; do
 done
 
 
-#echo "I'll set up monorail server now..."
 #vagrant up dev
-
-vmDiskSize=16384
 
 if [ $machine_count ]
   then
     for (( i=1; i <= $machine_count; i++ ))
       do
-        vmName="green-vbox-$i"
+        vmName="greenbox-vbox-$i"
         vbox_create $vmName $vmDiskSize
       done
 fi
