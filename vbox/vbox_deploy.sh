@@ -22,34 +22,29 @@ vmDiskSize=$2
 
 echo "deploying machine: $vmName"
 
-if [ -e $vmName.vdi ]
-then
-   echo $vmName.vdi exists
-   return
-fi
+( VBoxManage showvminfo $vmName > /dev/null ) && echo "$vmName already exists" && return
+
 
 VBoxManage createvm --name $vmName --register
 VBoxManage modifyvm $vmName --ostype Linux_64  --memory $vmMemory
 
-VBoxManage modifyvm $vmName --nic1 nat
+VBoxManage modifyvm $vmName --nic1 nat   # eth0
 VBoxManage modifyvm $vmName --nictype1 virtio
 
-VBoxManage modifyvm $vmName --nic2 intnet --intnet2 greennet --nicpromisc1 allow-all
-#VBoxManage modifyvm $vmName --nictype1 82540EM --macaddress1 auto
+VBoxManage modifyvm $vmName --nic2 intnet --intnet2 greennet --nicpromisc1 allow-all # eth1, greennet
 VBoxManage modifyvm $vmName --nictype2 virtio --macaddress1 auto
 
 VBoxManage createhd --filename $vmName --size $vmDiskSize
-#VBoxManage modifyvm $vmName --ostype Ubuntu --boot1 net --memory 768;
 
 VBoxManage storagectl $vmName --name "IDE Controller" --add ide
-VBoxManage storageattach $vmName --storagectl "IDE Controller" --port 0 --device 0 --type dvddrive --medium "greenbox.iso"
+VBoxManage storageattach $vmName --storagectl "IDE Controller" --port 0 --device 0 --type dvddrive --medium "greenbox.iso"  # boot CD iso
 
 VBoxManage storagectl $vmName --name "SATA Controller" --add sata --controller IntelAHCI
-VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium $vmName.vdi
+VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium $vmName.vdi # hdd
 
-if [ "$green_init_deploy" == "1" ] ; then
+if [ "$green_init_hdd" == "1" ] ; then
   cp ../GREEN_INIT/GREEN_INIT.vdi ${vmName}_GREEN_INIT.vdi
-  VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 1 --device 0 --type hdd --medium ${vmName}_GREEN_INIT.vdi
+  VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 1 --device 0 --type hdd --medium ${vmName}_GREEN_INIT.vdi # GREEN_INIT hdd
 else
   echo "no GREN_INIT vdi"
 fi
