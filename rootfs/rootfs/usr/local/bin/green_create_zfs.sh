@@ -34,7 +34,7 @@ then
 fi
 
 log_msg "zfs opt_boot, opt_apps"
-( zfs list $POOL/opt_boot ) || ( zfs create -o mountpoint=/opt/boot green/opt_boot )
+( zfs list $POOL/opt_boot ) || ( zfs create -o mountpoint=$BOOT_DIR green/opt_boot )
 ( zfs list $POOL/opt_apps ) || ( zfs create -o mountpoint=/opt/apps green/opt_apps )
 
 log_msg "zfs docker_home"
@@ -65,7 +65,11 @@ then
    swapon /dev/zvol/$POOL/swap
 fi
 
-[ -d /opt/boot/etc ] || mkdir -p /opt/boot/etc
-[ -d /opt/boot/log ] || mkdir -p /opt/boot/log
+[ -d $BOOT_DIR/etc ] || mkdir -p $BOOT_DIR/etc
+[ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
+[ -d $BOOT_DIR/zfs ] || mkdir -p $BOOT_DIR/zfs
 
+ln -s $BOOT_DIR/zfs /etc/zfs
+
+zpool set cachefile=/etc/zfs/zpool.cache green
 
