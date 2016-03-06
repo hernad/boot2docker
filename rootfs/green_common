@@ -1,8 +1,8 @@
 # /etc/rc.d/green_common
 
-DATE=`date +'%Y%M%d %T'`
-KERNEL_VERSION=`cat /etc/version/KERNEL_VERSION`
-DOCKER_VERSION=`cat /etc/version/DOCKER_VERSION`
+DATE=`date +'%Y%m%d %T'`
+KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
+DOCKER_VERSION=`cat /etc/version`
 
 if [ -d /opt/boot/log ]
 then

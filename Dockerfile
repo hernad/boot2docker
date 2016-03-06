@@ -22,7 +22,6 @@ ENV GCC_M -m64
 # https://www.kernel.org/pub/linux/kernel/v4.x/
 
 
-COPY KERNEL_VERSION $ROOTFS/etc/version
 ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.4.4  KERNEL_VERSION=4.4.4
 
 ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
@@ -143,7 +142,7 @@ RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-file
 
 
 # http://download.virtualbox.org/virtualbox/5.0.14/
-ENV VBOX_VER=5.0.14 VBOX_BUILD=105127
+ENV VBOX_VER=5.0.16 VBOX_BUILD=105871
 
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
     chmod +x *.run ;\
