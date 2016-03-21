@@ -31,7 +31,13 @@ VBoxManage modifyvm $vmName --ostype Linux_64  --memory $vmMemory
 VBoxManage modifyvm $vmName --nic1 nat   # eth0
 VBoxManage modifyvm $vmName --nictype1 virtio
 
-VBoxManage modifyvm $vmName --nic2 intnet --intnet2 greennet --nicpromisc1 allow-all # eth1, greennet
+if [ $vmNet2Type == "hostonly" ] ;
+  VBoxManage modifyvm $vmName --nic2 hostonly  \
+    --hostonlyadapter2 $vmNet2Name  --nicpromisc1 allow-all # eth1
+else
+  VBoxManage modifyvm $vmName --nic2 intnet --intnet2 $vmNet2Name --nicpromisc1 allow-all # eth1, greennet
+fi
+
 VBoxManage modifyvm $vmName --nictype2 virtio --macaddress1 auto
 
 VBoxManage createhd --filename $vmName --size $vmDiskSize
@@ -43,7 +49,7 @@ VBoxManage storagectl $vmName --name "SATA Controller" --add sata --controller I
 VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium $vmName.vdi # hdd
 
 if [ "$green_init_hdd" == "1" ] ; then
-  cp ../GREEN_INIT/GREEN_INIT.vdi ${vmName}_GREEN_INIT.vdi
+  VBoxManage clonehd ../GREEN_INIT/GREEN_INIT.vdi  ${vmName}_GREEN_INIT.vdi
   VBoxManage storageattach $vmName --storagectl "SATA Controller" --port 1 --device 0 --type hdd --medium ${vmName}_GREEN_INIT.vdi # GREEN_INIT hdd
 else
   echo "no GREN_INIT vdi"
@@ -64,7 +70,8 @@ while getopts ":h" opt; do
 done
 
 
-#vagrant up dev
+VBoxManage dhcpserver add --netname $vmNet2Name --ip 10.0.200.1 --lowerip 10.0.200.10 --upperip 10.0.200.200 --netmask 255.255.255.0 --enable
+
 
 if [ $machine_count ]
   then

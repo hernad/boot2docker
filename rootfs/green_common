@@ -4,7 +4,7 @@ DATE=`date +'%Y%m%d %T'`
 KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
 DOCKER_VERSION=`cat /etc/version`
 
-[ -f /opt/boot/etc/profile ] source /opt/boot/etc/profile
+[ -f /opt/boot/etc/profile ] && source /opt/boot/etc/profile
 
 if [ -d /opt/boot/log ]
 then
