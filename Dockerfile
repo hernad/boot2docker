@@ -213,7 +213,7 @@ RUN for dep in $TCZ_DEPS_X ; do \
     done
 
 
-ENV TCZ_DEPS_1  cifs-utils fuse libffi bind-utilities
+ENV TCZ_DEPS_1  cifs-utils fuse libffi bind-utilities libxml2
 
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
