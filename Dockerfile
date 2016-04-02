@@ -159,7 +159,7 @@ RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE
 
 # http://zfsonlinux.org/
 
-ENV ZFS_VER 0.6.5.5
+ENV ZFS_VER 0.6.5.6
 RUN mkdir /zfs && cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz &&\
     cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
