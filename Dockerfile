@@ -342,6 +342,8 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/drivers/input/joystick &&\
     rm -rf ./kernel/fs/btrfs
 
+RUN ln -s /opt/green/bin/rsync $ROOTFS/usr/bin/rsync
+
 RUN /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]
