@@ -1,7 +1,7 @@
-FROM greenbox:1.10.0
+FROM greenbox:1.12.0
 
 # https://www.vagrantup.com/downloads.html
-ENV VAGRANT_VER 1.8.1
+ENV VAGRANT_VER 1.8.4
 RUN curl -k -LO https://releases.hashicorp.com/vagrant/${VAGRANT_VER}/vagrant_${VAGRANT_VER}_x86_64.deb &&\
     dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
 

@@ -1,7 +1,7 @@
 FROM debian:jessie
 MAINTAINER Ernad Husremovic "hernad@bring.out.ba"
 
-RUN apt-get update && apt-get -y install  unzip \
+RUN apt-get update -y && apt-get -y install  unzip \
                         xz-utils \
                         curl \
                         bc \
@@ -22,7 +22,7 @@ ENV GCC_M -m64
 # https://www.kernel.org/pub/linux/kernel/v4.x/
 
 
-ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.4.6  KERNEL_VERSION=4.4.6
+ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.4.21  KERNEL_VERSION=4.4.21
 
 ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
 
@@ -133,16 +133,20 @@ RUN cp -v $ROOTFS/etc/version /tmp/iso/version
 
 # Get the Docker version that matches our greenbox version
 # Note: `docker version` returns non-true when there is no server to ask
-RUN curl -L -o $ROOTFS/usr/local/bin/docker https://get.docker.io/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/version) && \
-    chmod +x $ROOTFS/usr/local/bin/docker && \
-    { $ROOTFS/usr/local/bin/docker version || true; }
+#RUN curl -L -o $ROOTFS/usr/local/bin/docker https://get.docker.io/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/version) && \
+#    chmod +x $ROOTFS/usr/local/bin/docker && \
+#    { $ROOTFS/usr/local/bin/docker version || true; }
+RUN curl -L  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/version).tgz | tar -C / -xz && \
+    mv /docker/* $ROOTFS/usr/local/bin &&\
+    chmod +x $ROOTFS/usr/local/bin/docker*
+
 
 # Install Tiny Core Linux rootfs
 RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
 
 
-# http://download.virtualbox.org/virtualbox/5.0.14/
-ENV VBOX_VER=5.0.16 VBOX_BUILD=105871
+# http://download.virtualbox.org/virtualbox/5.1.2/
+ENV VBOX_VER=5.1.6 VBOX_BUILD=110634
 
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
     chmod +x *.run ;\
@@ -158,9 +162,9 @@ RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$V
 RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install || true
 
 # http://zfsonlinux.org/
-
-ENV ZFS_VER 0.6.5.6
-RUN mkdir /zfs && cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/spl/spl-$ZFS_VER.tar.gz &&\
+# https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.8/spl-0.6.5.8.tar.gz
+ENV ZFS_VER 0.6.5.8
+RUN mkdir /zfs && cd /zfs && curl -LO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/spl-$ZFS_VER.tar.gz &&\
     cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install 
 
@@ -175,7 +179,7 @@ RUN cd /lib/x86_64-linux-gnu && ls librt-2*.so && cp librt-2.19.so $ROOTFS/lib/ 
 # RUN cd /zfs/zfs-git && sh autogen.sh && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && DESTDIR=$ROOTFS make install 
 
 # build zfs from tar
-RUN cd /zfs && curl -LO http://archive.zfsonlinux.org/downloads/zfsonlinux/zfs/zfs-$ZFS_VER.tar.gz &&\
+RUN cd /zfs && curl -LO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/zfs-$ZFS_VER.tar.gz &&\
     cd /zfs && tar xf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make &&\
     DESTDIR=$ROOTFS make install
