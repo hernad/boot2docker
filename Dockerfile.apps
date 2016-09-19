@@ -1,7 +1,7 @@
-FROM greenbox:1.12.0
+FROM greenbox:1.12.1
 
 # https://www.vagrantup.com/downloads.html
-ENV VAGRANT_VER 1.8.4
+ENV VAGRANT_VER 1.8.5
 RUN curl -k -LO https://releases.hashicorp.com/vagrant/${VAGRANT_VER}/vagrant_${VAGRANT_VER}_x86_64.deb &&\
     dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
 
@@ -154,7 +154,7 @@ RUN     apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev1 libudev-dev &&
 
 # ------- docker-compose
 # https://github.com/docker/compose/releases/
-RUN export DOCKER_COMPOSE_VER=1.6.0 && \
+RUN export DOCKER_COMPOSE_VER=1.8.0 && \
     curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VER}/docker-compose-Linux-x86_64 > /opt/apps/green/bin/docker-compose &&\
     chmod +x /opt/apps/green/bin/docker-compose
 
