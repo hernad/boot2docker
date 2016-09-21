@@ -17,7 +17,7 @@ RUN apt-get -y install libssl-dev libncurses5-dev python-dev ruby-dev &&\
                --prefix=/opt/apps/vim &&\                                                                                                  
      make &&\                                                                                                                              
      make install &&\
-     cd /opt/apps/vim/share/vim && mv vim74/* . && rmdir vim74
+     cd /opt/apps/vim/share/vim && ls -l && mv vim??/* . && rmdir vim??
 
 # ===== neovim ==============                                                                                                
 # RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\ 
