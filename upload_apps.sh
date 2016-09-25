@@ -1,5 +1,5 @@
 VER=5.1.6
-KERNEL=4.4.21
+KERNEL=4.4.22
 APP=VirtualBox
 #./upload_app.sh $APP ${VER}-${KERNEL}
 
