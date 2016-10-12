@@ -1,7 +1,8 @@
 FROM debian:jessie
 MAINTAINER Ernad Husremovic "hernad@bring.out.ba"
 
-RUN apt-get update -y && apt-get -y install  unzip \
+RUN date
+RUN apt-get update -y && apt-get install -y wget && apt-get --fix-missing -y install  unzip \
                         xz-utils \
                         curl \
                         bc \
@@ -22,13 +23,13 @@ ENV GCC_M -m64
 # https://www.kernel.org/pub/linux/kernel/v4.x/
 
 
-ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.4.22  KERNEL_VERSION=4.4.22
-
+ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.4.24 KERNEL_VERSION=4.4.24
 ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
 
 
 # Fetch the kernel sources
 RUN mkdir -p /usr/src && \
+    echo "https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz" &&\
     curl --retry 10 https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
     mv /linux-$KERNEL_VERSION_DOWNLOAD $LINUX_KERNEL_SOURCE
 

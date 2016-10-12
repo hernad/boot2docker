@@ -1,4 +1,4 @@
-FROM greenbox:1.12.1
+FROM greenbox:1.12.2
 
 # https://www.vagrantup.com/downloads.html
 ENV VAGRANT_VER 1.8.5
