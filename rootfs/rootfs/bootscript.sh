@@ -72,7 +72,7 @@ log_msg "sync the clock"
 log_msg "start cron"
 /etc/rc.d/crond
 
-log_msg "add docker:docker user"
+log_msg "add docker user"
 if grep -q '^docker:' /etc/passwd; then
     # if we have the docker user, let's create the docker group
     /bin/addgroup -S docker
@@ -111,10 +111,12 @@ if [ -e $BOOT_DIR/bootlocal.sh ]; then
     log_msg "after $BOOT_DIR/bootlocal.sh"
 fi
 
-. /usr/local/bin/install_green_apps
 
 log_msg "ldconfg after mounting apps"
 /sbin/ldconfig -v >> $LOG_FILE 2>&1
 
+/usr/local/bin/install_green_apps&
+
 log_msg "launch Docker"
 /etc/rc.d/docker
+
