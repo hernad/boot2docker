@@ -46,29 +46,29 @@ for i in `cat /proc/cmdline`; do
 		*=*)
 			case $i in
 				waitusb*) WAITUSB=${i#*=} ;;
-				lang) LANGUAGE=${i#*=} ;;
+				lang=*) LANGUAGE=${i#*=} ;;
 				kmap*) KEYMAP=${i#*=} ;;
-				tz) TZ=${i#*=} ;;
-				staticip) STATICIPADDRESS=${i#*=} ;;
-				staticiface) STATICIFACE=${i#*=} ;;
-				ntpserver*) NTPSERVER=${i#*=} ;;
-				user) USER=${i#*=} ;;
-				userpwd) USER_PASSWORD=${i#*=} ;;
-				rootpwd) ROOT_PASSWORD=${i#*=} ;;
-				opt*) MYOPT=${i#*=} ;;
-				swapfile*) SWAPFILE=${i#*=} ;;
-				resume*) RESUME=${i#*=} ;;
-				host*) HOST=1 ;;
-				nfsmount* ) NFSMOUNT=${i#*=} ;;
-				tftplist* ) TFTPLIST=${i#*=} ;;
-				httplist* ) HTTPLIST=${i#*=} ;;
-				nbd* ) NBD=${i#*=} ;;
+				tz=*) TZ=${i#*=} ;;
+				staticip=*) STATICIPADDRESS=${i#*=} ;;
+				staticiface=*) STATICIFACE=${i#*=} ;;
+				ntpserver=*) NTPSERVER=${i#*=} ;;
+				user=*) USER=${i#*=} ;;
+				userpwd=*) USER_PASSWORD=${i#*=} ;;
+				rootpwd=*) ROOT_PASSWORD=${i#*=} ;;
+				opt=*) MYOPT=${i#*=} ;;
+				swapfile=*) SWAPFILE=${i#*=} ;;
+				resume=*) RESUME=${i#*=} ;;
+				host=*) HOST=1 ;;
+				nfsmount=* ) NFSMOUNT=${i#*=} ;;
+				tftplist=* ) TFTPLIST=${i#*=} ;;
+				httplist=* ) HTTPLIST=${i#*=} ;;
+				nbd=* ) NBD=${i#*=} ;;
 				mydata* ) MYDATA=${i#*=} ;;
-				pretce* ) PRETCE=${i#*=} ;;
-				xvesa* ) XVESA=${i#*=} ;;
+				pretce=* ) PRETCE=${i#*=} ;;
+				xvesa=* ) XVESA=${i#*=} ;;
 				rsyslog=* ) RSYSLOG=${i#*=}; SYSLOG=1 ;;
-				blacklist* ) BLACKLIST="$BLACKLIST ${i#*=}" ;;
-				iso* ) ISOFILE=${i#*=} ;;
+				blacklist=* ) BLACKLIST="$BLACKLIST ${i#*=}" ;;
+				iso=* ) ISOFILE=${i#*=} ;;
 			esac
 		;;
 		*)

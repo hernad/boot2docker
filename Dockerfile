@@ -242,8 +242,10 @@ RUN for dep in $TCZ_DEPS_1 ; do \
     done
 
 # https://github.com/docker/docker/releases
-COPY DOCKER_VERSION $ROOTFS/etc/version
-RUN cp -v $ROOTFS/etc/version /tmp/iso/version
+COPY DOCKER_VERSION $ROOTFS/etc/sysconfig/docker
+COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
+
+RUN cp -v $ROOTFS/etc/sysconfig/greenbox /tmp/iso/version
 
 
 RUN curl -L  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/version).tgz | tar -C / -xz && \
@@ -291,7 +293,7 @@ RUN cd /git && \
     GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && \
     GITSHA1=$(git rev-parse --short HEAD) && \
     DATE=$(date) && \
-    echo "${GIT_BRANCH} : ${GITSHA1} - ${DATE}" > $ROOTFS/etc/greenbox
+    echo "${GIT_BRANCH} : ${GITSHA1} - ${DATE}" > $ROOTFS/etc/sysconfig/greenbox_build
   
 
 # Change MOTD                                                                                                                   

@@ -15,7 +15,7 @@ shift
 DOCKER_VERSION=`cat DOCKER_VERSION`
 KERNEL_VERSION=`cat KERNEL_VERSION`
 sed -e "s/XBuildX/$(date +'%Y%m%d-%T %z')/g" motd.template |\
-  sed -e "s/XDockerX/$DOCKER_VERSION/g" \
+  sed -e "s/XDockerX/$GREENBOX_VERSION/g" \
   > ./rootfs/rootfs/usr/local/etc/motd
 
 sed -e "s/XBuildX/$(date +'%Y%m%d-%T %z')/g" motd.template |\

@@ -3,7 +3,7 @@
 DATE=`date +'%Y%m%d %T'`
 
 KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
-DOCKER_VERSION=`cat /etc/version`
+DOCKER_VERSION=`cat /etc/sysconfig/dockerver`
 VBOX_VERSION=5.1.8
 VAGRANT_VERSION=1.8.6
 GREEN_APPS_VERSION=1.6.1
