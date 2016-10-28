@@ -44,7 +44,7 @@ RUN jobs=$(nproc); \
     make -j ${jobs} modules
 
 # The post kernel build process
-ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/6.x/x86_64
+ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
 
 # Make the ROOTFS
 # Prepare the build directory (/tmp/iso)
@@ -127,21 +127,6 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse
                                                                          libdumbnet1:i386 libfuse2:i386 libfuse-dev \
                                                                          libglib2.0-0:i386 libtirpc-dev libtirpc1:i386
 
-# https://github.com/docker/docker/releases
-
-COPY DOCKER_VERSION $ROOTFS/etc/version
-RUN cp -v $ROOTFS/etc/version /tmp/iso/version
-
-# Get the Docker version that matches our greenbox version
-# Note: `docker version` returns non-true when there is no server to ask
-#RUN curl -L -o $ROOTFS/usr/local/bin/docker https://get.docker.io/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/version) && \
-#    chmod +x $ROOTFS/usr/local/bin/docker && \
-#    { $ROOTFS/usr/local/bin/docker version || true; }
-RUN curl -L  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/version).tgz | tar -C / -xz && \
-    mv /docker/* $ROOTFS/usr/local/bin &&\
-    chmod +x $ROOTFS/usr/local/bin/docker*
-
-
 # Install Tiny Core Linux rootfs
 RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
 
@@ -218,7 +203,8 @@ RUN for dep in $TCZ_DEPS_X ; do \
     done
 
 
-ENV TCZ_DEPS_1  cifs-utils fuse libffi bind-utilities libxml2
+ENV TCZ_DEPS_1  cifs-utils fuse libffi bind-utilities libxml2 getlocale 
+#TCZ_DEPS_1 kmaps
 
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
@@ -241,6 +227,15 @@ RUN export SYSLINUX_VER=6.03 && export SYSLINUX_PRE=pre20 &&\
 
 RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
      make && make DESTDIR=$ROOTFS install
+
+# https://github.com/docker/docker/releases
+COPY DOCKER_VERSION $ROOTFS/etc/version
+RUN cp -v $ROOTFS/etc/version /tmp/iso/version
+
+
+RUN curl -L  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/version).tgz | tar -C / -xz && \
+    mv /docker/* $ROOTFS/usr/local/bin &&\
+    chmod +x $ROOTFS/usr/local/bin/docker*
 
 # =============================================================================================
 
