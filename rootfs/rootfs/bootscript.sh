@@ -51,6 +51,11 @@ then
 fi
 ln -s $BOOT_DIR/certs /usr/local/etc/ssl/certs
 
+# http://serverfault.com/questions/151157/ubuntu-10-04-curl-how-do-i-fix-update-the-ca-bundle
+CA_BUNDLE=/usr/local/etc/ssl/certs/ca-certificates.crt
+[ -f $CA_BUNDLE ] || wget http://curl.haxx.se/ca/cacert.pem -O $CA_BUNDLE
+
+
 log_msg "mount cgroups hierarchy"
 /etc/rc.d/cgroupfs-mount
 # see https://github.com/tianon/cgroupfs-mount
