@@ -1,4 +1,4 @@
-# /etc/rc.d/green_common
+# /etc/green_common
 
 DATE=`date +'%Y%m%d %T'`
 

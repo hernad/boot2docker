@@ -3,7 +3,7 @@
 DISK=sda
 POOL=green
 
-. /etc/rc.d/green_common
+. /etc/green_common
 
 fdisk_exist () {
 

@@ -248,7 +248,7 @@ COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
 RUN cp -v $ROOTFS/etc/sysconfig/greenbox /tmp/iso/version
 
 
-RUN curl -L  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/version).tgz | tar -C / -xz && \
+RUN curl -L  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/sysconfig/docker).tgz | tar -C / -xz && \
     mv /docker/* $ROOTFS/usr/local/bin &&\
     chmod +x $ROOTFS/usr/local/bin/docker*
 
@@ -277,7 +277,7 @@ COPY rootfs/services/* $ROOTFS/etc/init.d/services/
 COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
 COPY rootfs/environment $ROOTFS/etc/environment
 COPY rootfs/sshrc $ROOTFS/usr/local/etc/ssh/sshrc
-COPY rootfs/green_common $ROOTFS/etc/rc.d/green_common
+COPY rootfs/green_common $ROOTFS/etc/green_common
 COPY rootfs/sudo_x /usr/local/bin
 
 # Copy boot params                                                                                      

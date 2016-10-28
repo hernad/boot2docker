@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /etc/rc.d/green_common
+. /etc/green_common
 
 if ( is_vbox )
 then

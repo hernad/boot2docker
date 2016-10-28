@@ -4,7 +4,7 @@
 # (c) Robert Shingledecker 2004-2012
 # Several modifications for speed by Curaga
 
-. /etc/rc.d/green_common
+. /etc/green_common
 
 log_msg "start $(date), called by /etc/init.d/rcS"
 
@@ -171,6 +171,14 @@ log_msg "Setting Language to $LANGUAGE"
 echo -n "${GREEN}Setting Language to ${MAGENTA}$LANGUAGE"
 echo "LANG=$LANGUAGE" > /etc/sysconfig/language
 export LANG=$LANGUAGE
+
+if [ ! -d $BOOT_DIR/locale ] ; then
+   [ ! -d $BOOT_DIR ] ||  mkdir -p $BOOT_DIR/locale
+   [ ! -d /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
+   localedef -i en_US -f UTF-8 en_US
+   localedef -i bs_BA -f UTF-8 bs_BA
+fi
+ 
 echo "${GREEN} Done.${NORMAL}"
 
 if [ -n "$TZ" ]; then

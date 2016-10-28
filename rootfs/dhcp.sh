@@ -1,7 +1,7 @@
 #!/bin/sh
 # The DHCP portion is now separated out, in order to not slow the boot down
 # only to wait for slow network cards
-. /etc/rc.d/green_common
+. /etc/green_common
 
 . /etc/init.d/tc-functions
 

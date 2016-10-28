@@ -14,15 +14,11 @@ shift
 
 DOCKER_VERSION=`cat DOCKER_VERSION`
 KERNEL_VERSION=`cat KERNEL_VERSION`
-sed -e "s/XBuildX/$(date +'%Y%m%d-%T %z')/g" motd.template |\
-  sed -e "s/XDockerX/$GREENBOX_VERSION/g" \
-  > ./rootfs/rootfs/usr/local/etc/motd
-
-sed -e "s/XBuildX/$(date +'%Y%m%d-%T %z')/g" motd.template |\
-  sed -e "s/XDockerX/$DOCKER_VERSION/g" \
-  > ./rootfs/rootfs/usr/local/etc/motd
-
-
+GREENBOX_VERSION=`cat GREENBOX_VERSION`
+sed -e "s/XBuildX/$(date +'%Y%m%d-%T %z')/" \
+  -e "s/XDockerX/$DOCKER_VERSION/" \
+  -e "s/XGreenBoxX/$GREENBOX_VERSION/" \
+  motd.template > ./rootfs/rootfs/usr/local/etc/motd
 
 cat ./rootfs/rootfs/usr/local/etc/motd && \
 cp  ./rootfs/rootfs/usr/local/etc/motd  ./rootfs/isolinux/boot.msg || ( echo error && exit 1)
@@ -37,7 +33,8 @@ else
 fi
 
 
-ISO_APPEND="append loglevel=3 user=docker userpwd=test01 lang=bs_BA.UTF-8"
+ISO_APPEND="append loglevel=3 user=docker userpwd=test01"
+# lang=bs_BA.UTF-8"
 # ISO_APPEND+=" secure rootpwd=root01"
 ISO_APPEND+=" nozswap nofstab tz=CET-1CEST,M3.5.0,M10.5.0\/3"
 ISO_APPEND+=" noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD"

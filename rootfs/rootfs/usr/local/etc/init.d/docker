@@ -2,7 +2,8 @@
 # docker daemon start script
 [ $(id -u) = 0 ] || { echo 'must be root' ; exit 1; }
 
-BOOT_DIR=/opt/boot
+. /etc/green_common
+
 DOCKER_PID=/var/run/docker.pid
 
 if [ ! -e $BOOT_DIR/etc/profile ]
@@ -12,7 +13,7 @@ fi
 
 . $BOOT_DIR/etc/profile
 
-: ${DOCKER_HOST:='-H tcp://0.0.0.0:2375'}
+: ${DOCKER_HOST:='-H tcp://0.0.0.0:2376'}
 : ${DOCKER_TLS:=auto}
 
 if [ -e /dev/zvol/green/docker_vol ] ; then

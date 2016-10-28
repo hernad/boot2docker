@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /etc/rc.d/green_common
+. /etc/green_common
 
 [ `whoami` != root ] && echo "you have to be root user !" && exit 1
 
