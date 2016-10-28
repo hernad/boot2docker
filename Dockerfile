@@ -102,7 +102,7 @@ ENV TCZ_DEPS_0      iptables \
                     xz liblzma \
                     git patch expat2 pcre libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
-                    curl ntpclient \
+                    curl acl attr ntpclient \
                     bash readline htop ncurses ncurses-utils ncurses-terminfo \
                     strace glib2 libtirpc 
 
