@@ -234,7 +234,7 @@ RUN for dep in $TCZ_DEPS_1 ; do \
 
 # debian jessie no /usr/lib/syslinux/isohdpfx.bin
 # get syslinux 6.04 from source https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/
-RUN export SYSLINUX_VER=6.04 && export SYSLINUX_PRE=pre20 &&\
+RUN export SYSLINUX_VER=6.04 && export SYSLINUX_PRE=pre1 &&\
    curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
    tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install
 

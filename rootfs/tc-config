@@ -11,7 +11,7 @@ log_msg "start $(date), called by /etc/init.d/rcS"
 . /etc/init.d/tc-functions
 useBusybox
 
-USER="tc"
+USER="docker"
 USER_PASSWORD="docker"
 TCEDIR="/tmp/tce"
 TCEOPT="/tmp/tce/optional"
@@ -53,6 +53,7 @@ for i in `cat /proc/cmdline`; do
 				staticiface*) STATICIFACE=${i#*=} ;;
 				ntpserver*) NTPSERVER=${i#*=} ;;
 				user*) USER=${i#*=} ;;
+				user_password*) USER_PASSWORD=${i#*=} ;;
 				opt*) MYOPT=${i#*=} ;;
 				swapfile*) SWAPFILE=${i#*=} ;;
 				resume*) RESUME=${i#*=} ;;

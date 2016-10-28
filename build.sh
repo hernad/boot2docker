@@ -29,7 +29,22 @@ cp  ./rootfs/rootfs/usr/local/etc/motd  ./rootfs/isolinux/boot.msg || ( echo err
 
 GREEN_PRODUCTION=${GREEN_PRODUCTION:-rack}
 
-cp isolinux.cfg.$GREEN_PRODUCTION ./rootfs/isolinux/isolinux.cfg
+
+if [ "$GREEN_PRODUCTION" == "rack" ] ; then
+   ISO_DEFAULT=rack
+else
+   ISO_DEFAULT=vbox
+fi
+
+ISO_APPEND="append loglevel=3 user=docker user_password=test01 lang=bs_BA.UTF-8"
+ISO_APPEND+=" nozswap nofstab tz=CET-1CEST,M3.5.0,M10.5.0\/3"
+ISO_APPEND+=" noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD"
+
+echo $ISO_APPEND
+sed  -e "s/{{ISO_APPEND}}/${ISO_APPEND}/" \
+      -e "s/{{ISO_APPEND}}/${ISO_APPEND}/" \
+      -e "s/{{ISO_DEFAULT}}/${ISO_DEFAULT}/" \
+      isolinux.cfg.template > rootfs/isolinux/isolinux.cfg
 
 while [ "$arg" ]
 do
