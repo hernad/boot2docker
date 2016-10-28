@@ -1,4 +1,5 @@
 # restart ntpd to combat laptop sleep + VM pause
-0 * * * * killall ntpd > /dev/null 2>&1; /etc/rc.d/ntpd
-# if some jerk kill ssh, return in life
+#0 * * * * killall ntpd > /dev/null 2>&1; /etc/rc.d/ntpd
+
+# if some jerk kill sshd, return it into life
 */30 * * * * /etc/rc.d/sshd

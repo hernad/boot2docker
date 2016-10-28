@@ -5,12 +5,12 @@ APP=VirtualBox
 
 APP=green
 VER=1.6.1
-./upload_app.sh $APP $VER
+#./upload_app.sh $APP $VER
 
 APP=vagrant
 VER=1.8.6
-./upload_app.sh $APP $VER
+#./upload_app.sh $APP $VER
 
 APP=vim
 VER=8.0.5
-./upload_app.sh $APP $VER
+#./upload_app.sh $APP $VER
