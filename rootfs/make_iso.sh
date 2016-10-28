@@ -28,6 +28,7 @@ ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/
 # /bin/bash
 ln -fs /usr/local/bin/bash $ROOTFS/bin/
 
+# symlinks
 # /usr/bin/python, /usr/bin/perl
 ln -fs /opt/python2/bin/python $ROOTFS/usr/bin/
 ln -fs /opt/perl5/bin/perl $ROOTFS/usr/bin/

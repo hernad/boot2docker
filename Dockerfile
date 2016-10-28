@@ -43,7 +43,9 @@ RUN jobs=$(nproc); \
     make -j ${jobs} bzImage && \
     make -j ${jobs} modules
 
-# The post kernel build process
+# The post kernel build process 
+# list tczs: http://distro.ibiblio.org/tinycorelinux/7.x/x86/tcz/
+
 ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
 
 # Make the ROOTFS
@@ -122,16 +124,25 @@ RUN for dep in $TCZ_DEPS_0 ; do \
 RUN curl -L -o $ROOTFS/usr/local/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/0.1/generate_cert-0.1-linux-386/ && \
     chmod +x $ROOTFS/usr/local/bin/generate_cert
 
-RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse2 libtool autoconf \
-                                                                         libglib2.0-dev libdumbnet-dev:i386 \
-                                                                         libdumbnet1:i386 libfuse2:i386 libfuse-dev \
-                                                                         libglib2.0-0:i386 libtirpc-dev libtirpc1:i386
+
+# i386 architecture - why?
+#RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse2 libtool autoconf vim \
+#                                                                         libglib2.0-dev libdumbnet-dev:i386 \
+#                                                                         libdumbnet1:i386 libfuse2:i386 libfuse-dev \
+#                                                                         libglib2.0-0:i386 libtirpc-dev libtirpc1:i386
+
+RUN apt-get update && apt-get install -y libfuse2 libtool autoconf vim \
+                                                     libglib2.0-dev \
+                                                     libfuse-dev \
+                                                     libtirpc-dev
+
+
 
 # Install Tiny Core Linux rootfs
-RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
+RUN echo ROOTFS=$ROOTFS && cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
 
 
-# http://download.virtualbox.org/virtualbox/5.1.2/
+# http://download.virtualbox.org/virtualbox/5.1.8/
 ENV VBOX_VER=5.1.8 VBOX_BUILD=111374
 
 RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
@@ -203,7 +214,9 @@ RUN for dep in $TCZ_DEPS_X ; do \
     done
 
 
-ENV TCZ_DEPS_1  cifs-utils fuse libffi bind-utilities libxml2 getlocale 
+# glibc_apps: /usr/bin/localedef
+
+ENV TCZ_DEPS_1 cifs-utils fuse libffi bind-utilities libxml2 getlocale glibc_i18n_locale glibc_apps glibc_gconv 
 #TCZ_DEPS_1 kmaps
 
 RUN for dep in $TCZ_DEPS_1 ; do \
@@ -220,8 +233,8 @@ RUN for dep in $TCZ_DEPS_1 ; do \
     done
 
 # debian jessie no /usr/lib/syslinux/isohdpfx.bin
-# get syslinux 6.03 from source
-RUN export SYSLINUX_VER=6.03 && export SYSLINUX_PRE=pre20 &&\
+# get syslinux 6.04 from source https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/
+RUN export SYSLINUX_VER=6.04 && export SYSLINUX_PRE=pre20 &&\
    curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
    tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install
 
