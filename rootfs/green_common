@@ -1,8 +1,14 @@
 # /etc/rc.d/green_common
 
 DATE=`date +'%Y%m%d %T'`
+
 KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
 DOCKER_VERSION=`cat /etc/version`
+VBOX_VERSION=5.1.8
+VAGRANT_VERSION=1.8.6
+GREEN_APPS_VERSION=1.6.1
+X11_APPS_VERSION=1.0.0
+VIM_VERSION=8.0.5
 
 [ -f /opt/boot/etc/profile ] && source /opt/boot/etc/profile
 
