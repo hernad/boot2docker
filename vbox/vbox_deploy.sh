@@ -31,7 +31,7 @@ VBoxManage modifyvm $vmName --ostype Linux_64  --memory $vmMemory
 VBoxManage modifyvm $vmName --nic1 nat   # eth0
 VBoxManage modifyvm $vmName --nictype1 virtio
 
-if [ $vmNet2Type == "hostonly" ] ;
+if [ $vmNet2Type == "hostonly" ] ; then
   VBoxManage modifyvm $vmName --nic2 hostonly  \
     --hostonlyadapter2 $vmNet2Name  --nicpromisc1 allow-all # eth1
 else
