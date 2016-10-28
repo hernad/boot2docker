@@ -11,7 +11,7 @@ log_msg "start $(date), called by /etc/init.d/rcS"
 . /etc/init.d/tc-functions
 useBusybox
 
-USER="tc"
+USER="docker"
 USER_PASSWORD="docker"
 TCEDIR="/tmp/tce"
 TCEOPT="/tmp/tce/optional"
@@ -24,7 +24,7 @@ KERNEL="$(uname -r)"
 addUser() {
 	echo "${GREEN}Adding user ${YELLOW}$USER ${NORMAL}"
 	/bin/adduser -s /bin/sh -G staff -D "$USER"
-	echo $USER:$USER_PASSWORD | /usr/sbin/chpasswd -m
+	echo ${USER}:${USER_PASSWORD} | /usr/sbin/chpasswd -m
 	echo -e "$USER\tALL=NOPASSWD: ALL" >> /etc/sudoers
 }
 
@@ -46,15 +46,15 @@ for i in `cat /proc/cmdline`; do
 		*=*)
 			case $i in
 				waitusb*) WAITUSB=${i#*=} ;;
-				lang*) LANGUAGE=${i#*=} ;;
+				lang) LANGUAGE=${i#*=} ;;
 				kmap*) KEYMAP=${i#*=} ;;
-				tz*) TZ=${i#*=} ;;
-				staticip*) STATICIPADDRESS=${i#*=} ;;
-				staticiface*) STATICIFACE=${i#*=} ;;
+				tz) TZ=${i#*=} ;;
+				staticip) STATICIPADDRESS=${i#*=} ;;
+				staticiface) STATICIFACE=${i#*=} ;;
 				ntpserver*) NTPSERVER=${i#*=} ;;
-				user*) USER=${i#*=} ;;
-				userpwd*) USER_PASSWORD=${i#*=} ;;
-				rootpwd*) ROOT_PASSWORD=${i#*=} ;;
+				user) USER=${i#*=} ;;
+				userpwd) USER_PASSWORD=${i#*=} ;;
+				rootpwd) ROOT_PASSWORD=${i#*=} ;;
 				opt*) MYOPT=${i#*=} ;;
 				swapfile*) SWAPFILE=${i#*=} ;;
 				resume*) RESUME=${i#*=} ;;
@@ -229,11 +229,13 @@ wait4Server() {
 }
 
 # add user if set in isolinux.conf
-if [ -n "$USER" ]; then
-	if ! grep "$USER" /etc/passwd >/dev/null; then addUser; fi
-else
-	USER="tc"
-fi
+#if [ -n "$USER" ]; then
+#	if ! grep "$USER" /etc/passwd >/dev/null; then addUser; fi
+#else
+#	USER="tc"
+#fi
+if ! grep "$USER" /etc/passwd >/dev/null; then addUser; fi
+
 
 echo "$USER" > /etc/sysconfig/tcuser
 mkdir -p /home/"$USER"
