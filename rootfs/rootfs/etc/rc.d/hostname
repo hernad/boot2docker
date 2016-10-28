@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BOOT_DIR=/opt/boot
+. /etc/green_common
 
 if [ ! -e $BOOT_DIR/etc/hostname ]; then
     cp /usr/local/etc/hostname $BOOT_DIR/etc/hostname

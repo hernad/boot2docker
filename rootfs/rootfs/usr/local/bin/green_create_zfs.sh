@@ -19,7 +19,7 @@ fi
 
 
 POOL=green
-BOOT_DIR=/opt/boot
+
 
 
 if ( ! zpool list $POOL )
@@ -27,10 +27,10 @@ then
    log_msg "zpool $POOL doesn't exists"
 fi
 
-if zfs_up && ( ! mounted opt_boot ) 
+if zfs_up && ( ! mounted opt_boot )
 then
-    mkdir -p $BOOT_DIR 
-    rm -r -f $BOOT_DIR/* 
+    mkdir -p $BOOT_DIR
+    rm -r -f $BOOT_DIR/*
 fi
 
 log_msg "zfs opt_boot, opt_apps"
@@ -50,7 +50,7 @@ then
    wait_zvol_up $POOL docker_vol
    log_msg "docker_vol mkfs.ext4"
    mkfs.ext4 -F /dev/zvol/$POOL/docker_vol
-  
+
    log_msg "mount docker_vol /var/lib/docker"
    mkdir -p /var/lib/docker
    mount /dev/zvol/$POOL/docker_vol /var/lib/docker
@@ -72,4 +72,3 @@ fi
 ln -s $BOOT_DIR/zfs /etc/zfs
 
 zpool set cachefile=/etc/zfs/zpool.cache green
-

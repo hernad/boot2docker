@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BOOT_DIR=/opt/boot
+. /etc/green_common
 
 : ${NTP_SERVER:=pool.ntp.org}
 if [ -n "$NTP_SERVER" ]; then
@@ -13,7 +13,7 @@ if [ -n "$NTP_SERVER" ]; then
 			break
 		fi
 	done
-	
+
 	ntpd -d -n -p $NTP_SERVER > $BOOT_DIR/log/ntpd.log 2>&1 &
 else
 	echo 'NTP_SERVER not set; skipping starting ntpd' > $BOOT_DIR/log/ntpd.log

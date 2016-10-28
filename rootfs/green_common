@@ -10,6 +10,8 @@ GREEN_APPS_VERSION=1.6.1
 X11_APPS_VERSION=1.0.0
 VIM_VERSION=8.0.5
 
+BOOT_DIR=/opt/boot
+
 [ -f /opt/boot/etc/profile ] && source /opt/boot/etc/profile
 
 if [ -d /opt/boot/log ]

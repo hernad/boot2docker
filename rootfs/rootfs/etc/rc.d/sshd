@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BOOT_DIR=/opt/boot
+. /etc/green_common
 
 if ! ps ax | grep -q sshd$ ; then
    echo sshd already launched

@@ -1,6 +1,7 @@
 #!/bin/sh
 
-BOOT_DIR=/opt/boot
+. /etc/green_common
+
 
 : ${CROND_LOGLEVEL:=8}
 crond -f -d "$CROND_LOGLEVEL" > $BOOT_DIR/log/crond.log 2>&1 &

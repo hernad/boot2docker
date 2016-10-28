@@ -2,8 +2,6 @@
 
 . /etc/green_common
 
-BOOT_DIR=/opt/boot
-
 log_msg "== bootscript.sh: $(date) ===="
 
 log_msg "configure sysctl"
@@ -115,5 +113,3 @@ log_msg "ldconfg after mounting apps"
 
 log_msg "launch Docker"
 /etc/rc.d/docker
-
-
