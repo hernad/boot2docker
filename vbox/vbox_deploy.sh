@@ -29,7 +29,8 @@ VBoxManage createvm --name $vmName --register
 VBoxManage modifyvm $vmName --ostype Linux_64  --memory $vmMemory
 
 VBoxManage modifyvm $vmName --nic1 nat   # eth0
-#VBoxManage modifyvm $vmName --nictype1 virtio
+VBoxManage modifyvm $vmName --nictype1 virtio
+VBoxManage modifyvm $vmName --cableconnected1 on
 
 if [ $vmNet2Type == "hostonly" ] ; then
   VBoxManage modifyvm $vmName --nic2 hostonly  \
@@ -38,7 +39,8 @@ else
   VBoxManage modifyvm $vmName --nic2 intnet --intnet2 $vmNet2Name --nicpromisc1 allow-all # eth1, greennet
 fi
 
-#VBoxManage modifyvm $vmName --nictype2 virtio --macaddress1 auto
+VBoxManage modifyvm $vmName --nictype2 virtio --macaddress1 auto
+VBoxManage modifyvm $vmName --cableconnected2 on
 
 VBoxManage createhd --filename $vmName --size $vmDiskSize
 
