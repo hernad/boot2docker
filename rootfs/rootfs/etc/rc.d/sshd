@@ -2,6 +2,11 @@
 
 BOOT_DIR=/opt/boot
 
+if ! ps ax | grep -q sshd$ ; then
+   echo sshd already launched
+   exit 0
+fi
+
 # Configure sshd and acknowledge for persistence in $BOOT_DIR of the keys/config
 # Move /usr/local/etc/ssh to $BOOT_DIR/ssh if it doesn't exist
 if [ ! -d $BOOT_DIR/ssh ]; then
