@@ -141,7 +141,7 @@ RUN apt-get update && apt-get install -y libfuse2 libtool autoconf vim \
 # get syslinux 6.04 from source https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/
 RUN export SYSLINUX_VER=6.04 && export SYSLINUX_PRE=pre1 &&\
    curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
-   tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install
+   tar xf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install
 
 RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
      make && make DESTDIR=$ROOTFS install

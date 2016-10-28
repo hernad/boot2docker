@@ -16,5 +16,11 @@ if ! grep -q "^UseDNS no" /usr/local/etc/ssh/sshd_config; then
     echo "UseDNS no" >> /usr/local/etc/ssh/sshd_config
 fi
 
+if ! grep -q "^Subsystem .*sftp" /usr/local/etc/ssh/sshd_config; then
+    # ansible needs sftp
+    echo "Subsystem  sftp  /usr/local/lib/openssh/sftp-server" >> /usr/local/etc/ssh/sshd_config
+fi
+
+
 mkdir -p /var/ssh
 /usr/local/etc/init.d/openssh start
