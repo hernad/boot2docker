@@ -137,6 +137,15 @@ RUN apt-get update && apt-get install -y libfuse2 libtool autoconf vim \
                                                      libtirpc-dev
 
 
+# debian jessie no /usr/lib/syslinux/isohdpfx.bin
+# get syslinux 6.04 from source https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/
+RUN export SYSLINUX_VER=6.04 && export SYSLINUX_PRE=pre1 &&\
+   curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
+   tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install
+
+RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
+     make && make DESTDIR=$ROOTFS install
+
 
 # Install Tiny Core Linux rootfs
 RUN echo ROOTFS=$ROOTFS && cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
@@ -231,15 +240,6 @@ RUN for dep in $TCZ_DEPS_1 ; do \
           if [ "$?" != "0" ] ; then exit 1 ; fi ;\
         fi ;\
     done
-
-# debian jessie no /usr/lib/syslinux/isohdpfx.bin
-# get syslinux 6.04 from source https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/
-RUN export SYSLINUX_VER=6.04 && export SYSLINUX_PRE=pre1 &&\
-   curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\ 
-   tar xvf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install
-
-RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
-     make && make DESTDIR=$ROOTFS install
 
 # https://github.com/docker/docker/releases
 COPY DOCKER_VERSION $ROOTFS/etc/version

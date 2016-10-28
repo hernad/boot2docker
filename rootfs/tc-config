@@ -11,7 +11,7 @@ log_msg "start $(date), called by /etc/init.d/rcS"
 . /etc/init.d/tc-functions
 useBusybox
 
-USER="docker"
+USER="tc"
 USER_PASSWORD="docker"
 TCEDIR="/tmp/tce"
 TCEOPT="/tmp/tce/optional"
@@ -21,7 +21,7 @@ INSTALLED=""
 VERSION="$(cat /usr/share/doc/tc/release.txt)"
 KERNEL="$(uname -r)"
 
-addUser(){
+addUser() {
 	echo "${GREEN}Adding user ${YELLOW}$USER ${NORMAL}"
 	/bin/adduser -s /bin/sh -G staff -D "$USER"
 	echo $USER:$USER_PASSWORD | /usr/sbin/chpasswd -m
@@ -53,7 +53,8 @@ for i in `cat /proc/cmdline`; do
 				staticiface*) STATICIFACE=${i#*=} ;;
 				ntpserver*) NTPSERVER=${i#*=} ;;
 				user*) USER=${i#*=} ;;
-				user_password*) USER_PASSWORD=${i#*=} ;;
+				userpwd*) USER_PASSWORD=${i#*=} ;;
+				rootpwd*) ROOT_PASSWORD=${i#*=} ;;
 				opt*) MYOPT=${i#*=} ;;
 				swapfile*) SWAPFILE=${i#*=} ;;
 				resume*) RESUME=${i#*=} ;;
@@ -227,6 +228,7 @@ wait4Server() {
 	DHCP_RAN=1
 }
 
+# add user if set in isolinux.conf
 if [ -n "$USER" ]; then
 	if ! grep "$USER" /etc/passwd >/dev/null; then addUser; fi
 else
@@ -476,13 +478,13 @@ fi
 
 if [ -n "$SECURE" ]; then
 	getpasswd "root"
-	echo "root:$PASSWD" | chpasswd -m
+	echo "root:$ROOT_PASSWORD" | chpasswd -m
 	getpasswd "$USER"
-	echo "$USER:$PASSWD" | chpasswd -m
+	echo "$USER:$ROOT_PASSWORD" | chpasswd -m
 fi
 if [ -n "$PROTECT" ]; then
 	getpasswd "encryption"
-	echo "$PASSWD" > /etc/sysconfig/bfe
+	echo "$ROOT_PASSWORD" > /etc/sysconfig/bfe
 	chown ${USER}:root /etc/sysconfig/bfe
 	chmod 600 /etc/sysconfig/bfe
 fi

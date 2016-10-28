@@ -36,7 +36,9 @@ else
    ISO_DEFAULT=vbox
 fi
 
-ISO_APPEND="append loglevel=3 user=docker user_password=test01 lang=bs_BA.UTF-8"
+
+ISO_APPEND="append loglevel=3 user=docker userpwd=test01 lang=bs_BA.UTF-8"
+# ISO_APPEND+=" secure rootpwd=root01"
 ISO_APPEND+=" nozswap nofstab tz=CET-1CEST,M3.5.0,M10.5.0\/3"
 ISO_APPEND+=" noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD"
 
