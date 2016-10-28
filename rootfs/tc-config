@@ -173,8 +173,8 @@ echo "LANG=$LANGUAGE" > /etc/sysconfig/language
 export LANG=$LANGUAGE
 
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
-   [ ! -d $BOOT_DIR/locale ] ||  mkdir -p $BOOT_DIR/locale
-   [ ! -d /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
+   mkdir -p $BOOT_DIR/locale
+   ln -s $BOOT_DIR/locale /usr/lib/locale
    localedef -i en_US -f UTF-8 en_US
    localedef -i bs_BA -f UTF-8 bs_BA
 fi
