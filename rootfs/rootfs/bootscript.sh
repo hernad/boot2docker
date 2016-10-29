@@ -115,8 +115,7 @@ fi
 log_msg "ldconfg after mounting apps"
 /sbin/ldconfig -v >> $LOG_FILE 2>&1
 
-/usr/local/bin/install_green_apps&
-
 log_msg "launch Docker"
 /etc/rc.d/docker
 
+/usr/local/bin/install_green_apps &

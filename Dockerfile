@@ -102,8 +102,6 @@ RUN cd $LINUX_KERNEL_SOURCE && \
 # Prepare the ISO directory with the kernel
 RUN cp -v $LINUX_KERNEL_SOURCE/arch/x86_64/boot/bzImage /tmp/iso/boot/vmlinuz64
 
-# Download the rootfs, don't unpack it though:
-RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64.gz
 
 ENV TCZ_DEPS_0      iptables \
                     iproute2 \
@@ -115,8 +113,9 @@ ENV TCZ_DEPS_0      iptables \
                     git patch expat2 pcre libgpg-error libgcrypt libssh2 \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     curl acl attr ntpclient \
-                    bash readline htop ncurses ncurses-utils ncurses-terminfo \
-                    strace glib2 libtirpc 
+                    procps bash readline htop ncurses ncurses-utils ncurses-terminfo \
+                    strace glib2 libtirpc \
+                    parted liblvm2 
 
 # Install the base tiny linux dependencies
 RUN for dep in $TCZ_DEPS_0 ; do \
@@ -132,16 +131,31 @@ RUN for dep in $TCZ_DEPS_0 ; do \
         fi ;\
     done
 
+
+
+# Download the rootfs, don't unpack it though:
+RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64.gz
+# Install Tiny Core Linux rootfs
+RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
+
+# Extract ca-certificates
+RUN set -x \
+#  TCL changed something such that these need to be extracted post-install
+	&& chroot "$ROOTFS" sh -xc 'ldconfig && /usr/local/tce.installed/openssl' \
+#  Docker looks for them in /etc/ssl
+	&& ln -sT ../usr/local/etc/ssl "$ROOTFS/etc/ssl" \
+#  a little testing is always prudent
+	&& cp "$ROOTFS/etc/resolv.conf" resolv.conf.bak \
+	&& cp /etc/resolv.conf "$ROOTFS/etc/resolv.conf" \
+	&& chroot "$ROOTFS" curl -fsSL 'https://www.google.com' -o /dev/null \
+	&& mv resolv.conf.bak "$ROOTFS/etc/resolv.conf"
+
+
+
 # get generate_cert
-RUN curl -L -o $ROOTFS/usr/local/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/0.1/generate_cert-0.1-linux-386/ && \
+RUN curl -fL -o $ROOTFS/usr/local/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/0.2/generate_cert-0.2-linux-amd64 && \
     chmod +x $ROOTFS/usr/local/bin/generate_cert
 
-
-# i386 architecture - why?
-#RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y libfuse2 libtool autoconf vim \
-#                                                                         libglib2.0-dev libdumbnet-dev:i386 \
-#                                                                         libdumbnet1:i386 libfuse2:i386 libfuse-dev \
-#                                                                         libglib2.0-0:i386 libtirpc-dev libtirpc1:i386
 
 RUN apt-get update && apt-get install -y libfuse2 libtool autoconf vim \
                                                      libglib2.0-dev \
@@ -157,10 +171,6 @@ RUN export SYSLINUX_VER=6.04 && export SYSLINUX_PRE=pre1 &&\
 
 RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
      make && make DESTDIR=$ROOTFS install
-
-
-# Install Tiny Core Linux rootfs
-RUN echo ROOTFS=$ROOTFS && cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
 
 
 # http://download.virtualbox.org/virtualbox/5.1.8/

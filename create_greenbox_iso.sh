@@ -1,12 +1,13 @@
 #!/bin/sh
 
-DOCKER_VERSION=`cat DOCKER_VERSION`
+GREENBOX_VERSION=`cat GREENBOX_VERSION`
 
 rm greenbox.iso
 
-echo $DOCKER_VERSION
+echo "greenbox version: $GREENBOX_VERSION"
 
-docker run --rm greenbox:$DOCKER_VERSION > greenbox.iso
+
+docker run --rm greenbox:$GREENBOX_VERSION > greenbox.iso
 
 [ -f greenbox.iso ] && echo greenbox.iso created
 [ ! -f greenbox.iso  ] && echo ERROR greenbox.iso NOT created

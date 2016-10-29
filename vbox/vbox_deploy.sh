@@ -77,17 +77,17 @@ done
 
 if [ $vmNet2Type == "hostonly" ] ; then
 
-  vmNet2Name=`VBoxManage list hostonlyifs | grep $HOST_NET.1 -B4 | head -1 | awk '{print $2}' | tail -1`
+  vmNet2Name=`VBoxManage list hostonlyifs | grep ${HOST_NET}.1 -B4 | grep Name: | head -1 | awk '{print $2}' | tail -1`
 
-  if [ -z vmNet2Name ] ; then
+  if [ -n "$vmNet2Name" ] ; then
+    echo "hostonlyif already exist: $vmNet2Name"
+  else
     VBoxManage hostonlyif create 
     vmNet2Name=`VBoxManage list hostonlyifs | grep ^Name:.*vbox | awk '{print $2}' | tail -1`
     echo kreiram hostonly interface $vmNet2Name / dhcp
     VBoxManage hostonlyif ipconfig $vmNet2Name --ip $HOST_NET.1 --netmask 255.255.255.0
     VBoxManage dhcpserver add --ifname $vmNet2Name --ip $HOST_NET.2 --netmask 255.255.255.0 --lowerip $HOST_NET.10 --upperip $HOST_NET.200
     VBoxManage dhcpserver modify --ifname $vmNet2Name --enable
-  else
-    echo hostonlyif already exist: $vmNet2Name
   fi
 
 fi
