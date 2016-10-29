@@ -71,6 +71,7 @@ download_app() {
               log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
               tar xf ${app}_${ver}.tar.gz
               rm ${app}_${ver}.tar.gz
+              chown -R root:root ${app}
               echo ${ver} > /opt/apps/${app}/VERSION
         else
               log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.gz, error tar tf $APPS_HOME/${app}_${ver}.tar.gz (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
