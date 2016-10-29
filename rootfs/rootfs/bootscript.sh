@@ -135,4 +135,4 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
    /usr/bin/localedef -i bs_BA -f UTF-8 bs_BA
 fi
 
-nohup /usr/local/bin/install_green_apps &
+/usr/local/bin/install_green_apps &
