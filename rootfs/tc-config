@@ -37,7 +37,7 @@ echo "${GREEN}Booting green-box ${YELLOW}Core $VERSION ${NORMAL}"
 echo "${GREEN}Running Linux Kernel ${YELLOW}$KERNEL${GREEN}.${NORMAL}"
 
 log_msg "set PATH /usr/local/sbin,bin"
-export PATH=/usr/local/sbin:/usr/local/bin:"$PATH"
+PATH=/usr/local/sbin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin
 
 log_msg "Here we check all the boot parameters using the fastest way known to men, case & loop"
 echo -n "${BLUE}Checking boot options...${NORMAL}"
@@ -527,11 +527,12 @@ fi
 
 /sbin/loadcpufreq 2>/dev/null &
 
-[ -n "$NODOCKERSTART" ] && touch /opt/boot/init.d/nodockerstart
+[ -n "$NODOCKERSTART" ] && touch $BOOT_DIR/init.d/nodockerstart
 [ -n "$NOAUTOLOGIN" ] && echo "booting" > /etc/sysconfig/noautologin
 
-log_msg "before /opt/bootsync.sh"
-/opt/bootsync.sh &
+#log_msg "before /opt/bootsync.sh-fork"
+#/opt/bootsync.sh &
+#log_msg "after /opt/bootsync.sh-fork"
 
 
 if [ -n "$PAUSE" ]; then
@@ -558,3 +559,5 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
    /usr/bin/localedef -i en_US -f UTF-8 en_US
    /usr/bin/localedef -i bs_BA -f UTF-8 bs_BA
 fi
+
+/opt/bootscript.sh

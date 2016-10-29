@@ -26,7 +26,7 @@ if [ -d /opt/apps/$1 ] ; then
     echo mkdir, mount /opt/apps/$1 ...
     sudo mkdir -p /opt/$1
     sudo mount --bind /opt/apps/$1 /opt/$1 >> $LOG_FILE
-    echo "/opt/$1 mounted" >> $LOG_FILE
+    log_msg "/opt/$1 mounted"
   fi
 fi
 
