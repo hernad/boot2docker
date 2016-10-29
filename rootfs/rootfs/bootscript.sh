@@ -48,12 +48,13 @@ done
 [ -d ${BOOT_DIR}.tmp ] && mv ${BOOT_DIR}.tmp/* ${BOOT_DIR}/
 [ -d ${BOOT_DIR}.tmp ] && rm -f ${BOOT_DIR}.tmp
 
-
 log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
 
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
 [ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
+
+set_log_file
 
 #[ -d $BOOT_DIR/certs ] || mkdir -p $BOOT_DIR/certs
 #if [ -d /usr/local/etc/ssl/certs ]
@@ -74,6 +75,8 @@ log_msg "mount cgroups hierarchy"
 
 log_msg "import settings from profile (or unset them) $BOOT_DIR/profile"
 test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
+
+set_log_file
 
 log_msg "set the hostname"
 /etc/rc.d/hostname
@@ -109,7 +112,6 @@ log_msg "launch ACPID"
 log_msg "start openssh server"
 /etc/rc.d/sshd
 
-
 log_msg "virtualbox drivers"
 /etc/rc.d/virtualbox
 
@@ -120,10 +122,7 @@ if [ -e $BOOT_DIR/bootlocal.sh ]; then
 fi
 
 
-log_msg "ldconfg after mounting apps"
-/sbin/ldconfig -v 2>&1 | tee -a $LOG_FILE
-
-log_msg "launch Docker"
+log_msg "launch dockerd"
 /etc/rc.d/docker
 
 log_msg "locale-archive localedef start"
@@ -143,3 +142,6 @@ do
        mount_opt ${app}
    fi
 done
+
+log_msg "ldconfg after mounting apps"
+/sbin/ldconfig -v 2>&1 | tee -a $LOG_FILE

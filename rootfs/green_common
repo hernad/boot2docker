@@ -12,6 +12,7 @@ VIM_VERSION=8.0.5
 
 BOOT_DIR=/opt/boot
 
+set_log_file() {
 [ -f /opt/boot/etc/profile ] && source /opt/boot/etc/profile
 
 if [ -d /opt/boot/log ]
@@ -22,6 +23,8 @@ else
 fi
 
 export LOG_FILE
+}
+
 
 log_msg() {
   echo "$0 $DATE: $1" >> $LOG_FILE
@@ -78,3 +81,4 @@ fi
 
 
 GREEN_DEBUG=${GREEN_DEBUG:-1}
+set_log_file

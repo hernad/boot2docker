@@ -10,7 +10,7 @@ do
       PATH=/opt/$appdir/bin:$PATH
    else
       if  [ -d /opt/$appdir ] && [ "$appdir" != "apps" ] && [ "$appdir" != "boot" ] ; then
-         PATH=/opt/$appdir:$PATH
+         export PATH=/opt/$appdir:$PATH
       fi
    fi
 done
