@@ -1,5 +1,7 @@
 [greenbox_hosts]
+10.10.10.13  ansible_ssh_user=docker 
 ;192.168.168.106  ansible_ssh_user=docker
-192.168.168.137  ansible_ssh_user=docker
+;192.168.168.137  ansible_ssh_user=docker
 
-192.168.168.117 ansible_ssh_user=pi
+[raspberries]
+;192.168.168.117 ansible_ssh_user=pi

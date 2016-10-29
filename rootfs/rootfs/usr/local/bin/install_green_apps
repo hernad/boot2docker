@@ -104,8 +104,8 @@ for appver in $GREEN_APPS; do
             # VirtualBox execs has to be root
             chown root:root -R /opt/apps/VirtualBox
             chmod 4755 /opt/apps/VirtualBox/VirtualBox /opt/apps/VirtualBox/VBoxHeadless
-	    chmod g-w /opt
-	    chmod g-w /opt/VirtualBox
+	          chmod g-w /opt
+	          chmod g-w /opt/VirtualBox
        fi
    fi
 done

@@ -28,9 +28,10 @@ ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/
 # /bin/bash
 ln -fs /usr/local/bin/bash $ROOTFS/bin/
 
-# symlinks
+# symlinks /usr/bin for ansible
 # /usr/bin/python, /usr/bin/perl
 ln -fs /opt/python2/bin/python $ROOTFS/usr/bin/
+ln -fs /opt/python2/lib/libpython2.7.so.1.0 $ROOTFS/usr/lib/
 ln -fs /opt/perl5/bin/perl $ROOTFS/usr/bin/
 
 # Setup /etc/os-release with some nice contents
