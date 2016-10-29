@@ -43,17 +43,17 @@ log_msg "automount GREEN_volumes"
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
 [ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
 
-[ -d $BOOT_DIR/certs ] || mkdir -p $BOOT_DIR/certs
-if [ -d /usr/local/etc/ssl/certs ]
-then
-  mv /usr/local/etc/ssl/certs/* $BOOT_DIR/certs/
-  rm -r -f /usr/local/etc/ssl/certs
-fi
-ln -s $BOOT_DIR/certs /usr/local/etc/ssl/certs
+#[ -d $BOOT_DIR/certs ] || mkdir -p $BOOT_DIR/certs
+#if [ -d /usr/local/etc/ssl/certs ]
+#then
+#  mv /usr/local/etc/ssl/certs/* $BOOT_DIR/certs/
+#  rm -r -f /usr/local/etc/ssl/certs
+#fi
+#ln -s $BOOT_DIR/certs /usr/local/etc/ssl/certs
 
 # http://serverfault.com/questions/151157/ubuntu-10-04-curl-how-do-i-fix-update-the-ca-bundle
-CA_BUNDLE=/usr/local/etc/ssl/certs/ca-certificates.crt
-[ -f $CA_BUNDLE ] || wget http://curl.haxx.se/ca/cacert.pem -O $CA_BUNDLE
+#CA_BUNDLE=/usr/local/etc/ssl/certs/ca-certificates.crt
+#[ -f $CA_BUNDLE ] || wget http://curl.haxx.se/ca/cacert.pem -O $CA_BUNDLE
 
 
 log_msg "mount cgroups hierarchy"

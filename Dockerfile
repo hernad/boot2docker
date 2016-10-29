@@ -1,8 +1,20 @@
 FROM debian:jessie
 MAINTAINER Ernad Husremovic "hernad@bring.out.ba"
 
+ARG KERNEL_VERSION=4.4.27
+
 RUN date
-RUN apt-get update -y && apt-get install -y wget && apt-get --fix-missing -y install  unzip \
+
+#RUN apt-get update && apt-get install -y squid-deb-proxy-client
+#RUN mkdir -p /etc/apt/apt.conf.d/ ; echo 'Acquire::http::Proxy "http://192.168.169.185:8000";' > /etc/apt/apt.conf.d/30proxy
+#RUN /sbin/ip route | awk '/default/ { print "Acquire::http::Proxy \"http://"$3":8000\";" }' > /etc/apt/apt.conf.d/30proxy
+#RUN cat /etc/apt/apt.conf.d/30proxy
+
+RUN echo 'Acquire::HTTP::Proxy "http://172.17.0.4:3142";' >> /etc/apt/apt.conf.d/01proxy \
+ && echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
+
+RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
+                        squid-deb-proxy-client \
                         xz-utils \
                         curl \
                         bc \
@@ -23,7 +35,7 @@ ENV GCC_M -m64
 # https://www.kernel.org/pub/linux/kernel/v4.x/
 
 
-ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=4.4.27 KERNEL_VERSION=4.4.27
+ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=$KERNEL_VERSION
 ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
 
 

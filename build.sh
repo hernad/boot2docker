@@ -25,7 +25,6 @@ cp  ./rootfs/rootfs/usr/local/etc/motd  ./rootfs/isolinux/boot.msg || ( echo err
 
 GREEN_PRODUCTION=${GREEN_PRODUCTION:-rack}
 
-
 if [ "$GREEN_PRODUCTION" == "rack" ] ; then
    ISO_DEFAULT=rack
 else
@@ -51,11 +50,11 @@ do
   case $arg in
       greenbox)
          docker rmi -f greenbox:$DOCKER_VERSION
-         docker build $DOCKER_BUILD_OPTS -t greenbox:$DOCKER_VERSION .
+         docker build $DOCKER_BUILD_OPTS --build-arg KERNEL_VERSION=$KERNEL_VERSION -t greenbox:$GREENBOX_VERSION .
          ;;
      apps)
          docker rmi -f greenbox_apps:$DOCKER_VERSION
-         docker build $DOCKER_BUILD_OPTS -t greenbox_apps:$DOCKER_VERSION -f Dockerfile.apps .
+         docker build $DOCKER_BUILD_OPTS -t greenbox_apps:$GREENBOX_VERSION -f Dockerfile.apps .
          ;;
   esac
 

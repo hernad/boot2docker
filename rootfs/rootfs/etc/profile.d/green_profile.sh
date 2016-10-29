@@ -3,14 +3,14 @@
 for appdir in `ls -1 /opt`
 do
    if [ -d /opt/$appdir/lib ] ; then
-      LD_LIBRARY_PATH=/opt/$appdir/lib:$LD_LIBRARY_PATH
+      export LD_LIBRARY_PATH=/opt/$appdir/lib:$LD_LIBRARY_PATH
    fi
 
    if [ -d /opt/$appdir/bin ] ; then
-      PATH=/opt/$appdir/bin:$PATH
+      export PATH=/opt/$appdir/bin:$PATH
    else
       if  [ -d /opt/$appdir ] && [ "$appdir" != "apps" ] && [ "$appdir" != "boot" ] ; then
-         PATH=/opt/$appdir:$PATH
+         export PATH=/opt/$appdir:$PATH
       fi
    fi
 done

@@ -34,9 +34,11 @@ VBoxManage modifyvm $vmName --cableconnected1 on
 
 if [ $vmNet2Type == "hostonly" ] ; then
   VBoxManage modifyvm $vmName --nic2 hostonly  \
-    --hostonlyadapter2 $vmNet2Name  --nicpromisc1 allow-all # eth1
+    --hostonlyadapter2 $vmNet2Name  --nicpromisc2 allow-all # eth1
+   VBoxManage modifyvm $vmName --hostonlyadapter2 $vmNet2Name
+
 else
-  VBoxManage modifyvm $vmName --nic2 intnet --intnet2 $vmNet2Name --nicpromisc1 allow-all # eth1, greennet
+  VBoxManage modifyvm $vmName --nic2 intnet --intnet2 $vmNet2Name --nicpromisc2 allow-all # eth1, greennet
 fi
 
 VBoxManage modifyvm $vmName --nictype2 virtio --macaddress1 auto
@@ -72,8 +74,23 @@ while getopts ":h" opt; do
 done
 
 
-VBoxManage dhcpserver add --netname $vmNet2Name --ip 10.0.200.1 --lowerip 10.0.200.10 --upperip 10.0.200.200 --netmask 255.255.255.0 --enable
 
+if [ $vmNet2Type == "hostonly" ] ; then
+
+  vmNet2Name=`VBoxManage list hostonlyifs | grep $HOST_NET.1 -B4 | head -1 | awk '{print $2}' | tail -1`
+
+  if [ -z vmNet2Name ] ; then
+    VBoxManage hostonlyif create 
+    vmNet2Name=`VBoxManage list hostonlyifs | grep ^Name:.*vbox | awk '{print $2}' | tail -1`
+    echo kreiram hostonly interface $vmNet2Name / dhcp
+    VBoxManage hostonlyif ipconfig $vmNet2Name --ip $HOST_NET.1 --netmask 255.255.255.0
+    VBoxManage dhcpserver add --ifname $vmNet2Name --ip $HOST_NET.2 --netmask 255.255.255.0 --lowerip $HOST_NET.10 --upperip $HOST_NET.200
+    VBoxManage dhcpserver modify --ifname $vmNet2Name --enable
+  else
+    echo hostonlyif already exist: $vmNet2Name
+  fi
+
+fi
 
 if [ $machine_count ]
   then
