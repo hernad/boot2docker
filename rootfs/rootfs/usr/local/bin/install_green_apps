@@ -49,31 +49,32 @@ download_app() {
   app=$1
   ver=$2
 
-   cd /tmp
+   APPS_HOME=/opt/apps
+   cd $APPS_HOME
 
    LOCAL_MEDIA=/media/GREEN_INIT/apps/${app}_${ver}.tar.gz
-   if [ -f $LOCAL_MEDIA ]  ; then
+   if [ -f $LOCAL_MEDIA ] ; then
       log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.gz ..."
-      cp $LOCAL_MEDIA /tmp/
+      cp $LOCAL_MEDIA $APPS_HOME/
    else
-
       echo "downloading: $GREEN_BINTRAY/${app}_${ver}.tar.gz ..."
       log_msg "START: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
+      cd $APPS_HOME
       curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz
    fi
 
    if [ $? -ne 0 ] ; then
            log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
    else
-           cd /opt/apps/
-	   tar xvf /tmp/${app}_${ver}.tar.gz
-	   if [ $? -ne 0 ] ; then
-              log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz, /tmp/${app}_${ver}.tar.gz not tar archive, or damaged"
-	   else
+        cd $APPS_HOME
+	      tar xvf ${app}_${ver}.tar.gz
+	      if [ $? -ne 0 ] ; then
+              log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz, $APPS_HOME/${app}_${ver}.tar.gz not tar archive, or damaged"
+	      else
               log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
-              rm /tmp/${app}_${ver}.tar.gz
+              rm $APPS_HOME/${app}_${ver}.tar.gz
               echo ${ver} > /opt/apps/${app}/VERSION
-           fi
+        fi
    fi
 
 }
