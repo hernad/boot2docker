@@ -19,30 +19,6 @@ if [ ! -d /opt/apps ] ; then
   exit 1
 fi
 
-mount_opt() {
-
-if [ -d /opt/apps/$1 ] ; then
-  if ! $(grep -q \/opt\/$1 /proc/mounts) ; then
-    echo mkdir, mount /opt/apps/$1 ...
-    sudo mkdir -p /opt/$1
-    sudo mount --bind /opt/apps/$1 /opt/$1 >> $LOG_FILE
-    log_msg "/opt/$1 bind mounted"
-  fi
-fi
-
-}
-
-umount_opt() {
-
-if [ -d /opt/apps/$1 ] ; then
-  if  $(grep -q \/opt\/$1 /proc/mounts) ; then
-    sudo umount -f -l /opt/$1 >> $LOG_FILE
-  fi
-fi
-
-}
-
-
 
 download_app() {
 
@@ -105,16 +81,10 @@ for appver in $GREEN_APPS; do
             # VirtualBox execs has to be root
             chown root:root -R /opt/apps/VirtualBox
             chmod 4755 /opt/apps/VirtualBox/VirtualBox /opt/apps/VirtualBox/VBoxHeadless
-	          chmod g-w /opt
-	          chmod g-w /opt/VirtualBox
+	    chmod g-w /opt
+	    chmod g-w /opt/VirtualBox
        fi
    fi
 done
 
 
-for app in `ls -1 /opt/apps`
-do
-   if [ -d /opt/apps/${app} ] ; then
-       mount_opt ${app}
-   fi
-done

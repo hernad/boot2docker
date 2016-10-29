@@ -52,4 +52,29 @@ done
 
 }
 
+mount_opt() {
+
+if [ -d /opt/apps/$1 ] ; then
+  if ! $(grep -q \/opt\/$1 /proc/mounts) ; then
+    echo mkdir, mount /opt/apps/$1 ...
+    sudo mkdir -p /opt/$1
+    sudo mount --bind /opt/apps/$1 /opt/$1 >> $LOG_FILE
+    log_msg "/opt/$1 bind mounted"
+  fi
+fi
+
+}
+
+umount_opt() {
+
+if [ -d /opt/apps/$1 ] ; then
+  if  $(grep -q \/opt\/$1 /proc/mounts) ; then
+    sudo umount -f -l /opt/$1 >> $LOG_FILE
+  fi
+fi
+
+}
+
+
+
 GREEN_DEBUG=${GREEN_DEBUG:-1}

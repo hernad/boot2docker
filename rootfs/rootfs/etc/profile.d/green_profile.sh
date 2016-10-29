@@ -10,7 +10,7 @@ do
       PATH=/opt/$appdir/bin:$PATH
    else
       if  [ -d /opt/$appdir ] && [ "$appdir" != "apps" ] && [ "$appdir" != "boot" ] ; then
-         export PATH=/opt/$appdir:$PATH
+         PATH=/opt/$appdir:$PATH
       fi
    fi
 done
@@ -28,6 +28,7 @@ echo "docker: `docker -v`"
 echo "PATH: $PATH"
 echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 
+echo -e
 echo "zfs mount points"
 echo "----------------------------------------------------------"
 mount | grep "type zfs" | awk '{print $1 " -> "  $3}'

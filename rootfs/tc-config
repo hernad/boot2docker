@@ -370,8 +370,6 @@ if grep -q "^/dev/root" /proc/mounts; then
 	echo "${RED}Detected Traditional Hard drive installation.${NORMAL}"
 fi
 
-log_msg "ldconfig"
-/sbin/ldconfig >> $LOG_FILE 2>&1
 
 [ -n "$TEXT" ] && touch /etc/sysconfig/text
 [ -n "$XONLY" ] && touch /etc/sysconfig/xonly

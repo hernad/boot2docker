@@ -121,7 +121,7 @@ fi
 
 
 log_msg "ldconfg after mounting apps"
-/sbin/ldconfig -v >> $LOG_FILE 2>&1
+/sbin/ldconfig -v 2>&1 | tee -a $LOG_FILE
 
 log_msg "launch Docker"
 /etc/rc.d/docker
@@ -136,3 +136,10 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
 fi
 
 /usr/local/bin/install_green_apps &
+
+for app in `ls -1 /opt/apps`
+do
+   if [ -d /opt/apps/${app} ] ; then
+       mount_opt ${app}
+   fi
+done
