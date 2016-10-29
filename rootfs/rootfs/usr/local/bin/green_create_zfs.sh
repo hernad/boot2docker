@@ -38,7 +38,9 @@ log_msg "zfs opt_boot, opt_apps"
 ( zfs list $POOL/opt_apps ) || ( zfs create -o mountpoint=/opt/apps green/opt_apps )
 
 log_msg "zfs docker_home"
-( zfs list $POOL/docker_home) || ( zfs create -o mountpoint=/home/docker -o quota=$HOME_QUOTA green/docker_home )
+( zfs list $POOL/docker_home) || \
+   ( zfs create -o mountpoint=/home/docker -o quota=$HOME_QUOTA green/docker_home && chown -R docker:docker /home/docker )
+
 
 log_msg "zfs build"
 ( zfs list $POOL/build )      || ( zfs create -o mountpoint=/build -o quota=$BUILD_QUOTA green/build )

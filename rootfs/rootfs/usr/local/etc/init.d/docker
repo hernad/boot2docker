@@ -83,7 +83,7 @@ start() {
         cp "$CA_CERT" "$USERCFG"
         cp "$CERT" "$USERCFG"
         cp "$KEY" "$USERCFG"
-        chown -R docker:staff "$USERCFG"
+        chown -R docker:docker /home/docker
     fi
 
     mkdir -p "$DOCKER_DIR"

@@ -543,10 +543,10 @@ if ( ! mountedOnGreen docker_home ); then
         log_msg "mount zfs /home/docker"
 
 				[ -d ${DOCKER_HOME_DIR} ] && mv ${DOCKER_HOME_DIR} ${DOCKER_HOME_DIR}.tmp
-				mkdir -p /home/docker
+				mkdir -p ${DOCKER_HOME_DIR}
 	      zfs mount green/docker_home -o mountpoint ${DOCKER_HOME_DIR}
 				[ -d ${DOCKER_HOME_DIR}.tmp ] && mv ${DOCKER_HOME_DIR}.tmp/* ${DOCKER_HOME_DIR}/
-        chown docker:docker ${DOCKER_HOME_DIR}
+        chown -R docker:docker ${DOCKER_HOME_DIR}
 				[ -d ${DOCKER_HOME_DIR}.tmp ] && rm -f ${DOCKER_HOME_DIR}.tmp
 
         if ( mountedOnGreen docker_home ) ; then
