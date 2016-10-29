@@ -31,7 +31,10 @@ echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 echo "zfs mount points"
 echo "----------------------------------------------------------"
 mount | grep "type zfs" | awk '{print $1 " -> "  $3}'
-echo -e
-echo "curl downloads in progres:"
-echo "----------------------------------------------------------"
-ps ax | grep curl.*.tar.gz$ | awk '{print $7}'
+
+if ps ax | grep -q curl.*.tar.gz$ ; then
+  echo -e
+  echo "curl downloads in progres:"
+  echo "----------------------------------------------------------"
+  ps ax | grep curl.*.tar.gz$ | awk '{print $7}'
+fi
