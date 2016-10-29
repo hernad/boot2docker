@@ -266,7 +266,6 @@ RUN for dep in $TCZ_DEPS_1 ; do \
 # https://github.com/docker/docker/releases
 COPY DOCKER_VERSION $ROOTFS/etc/sysconfig/docker
 
-RUN cp -v $ROOTFS/etc/sysconfig/greenbox /tmp/iso/version
 
 
 RUN curl -L  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/sysconfig/docker).tgz | tar -C / -xz && \
@@ -308,6 +307,8 @@ COPY rootfs/make_iso.sh /
 # Make sure init scripts are executable
 RUN find $ROOTFS/etc/rc.d/ $ROOTFS/usr/local/etc/init.d/ -exec chmod +x '{}' ';'
 
+
+COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
 # Get the git versioning info
 COPY .git /git/.git  
 RUN cd /git && \
@@ -316,6 +317,7 @@ RUN cd /git && \
     DATE=$(date) && \
     echo "${GIT_BRANCH} : ${GITSHA1} - ${DATE}" > $ROOTFS/etc/sysconfig/greenbox_build
   
+RUN cp -v $ROOTFS/etc/sysconfig/greenbox /tmp/iso/version
 
 # Change MOTD                                                                                                                   
 RUN mv $ROOTFS/usr/local/etc/motd $ROOTFS/etc/motd                                                                              
@@ -379,7 +381,6 @@ RUN ln -s /opt/green/bin/rsync $ROOTFS/usr/bin/rsync
 
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
  
-COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
 RUN /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]
