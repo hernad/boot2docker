@@ -87,7 +87,7 @@ for appver in $GREEN_APPS; do
    ver=$( echo $appver | cut -d"_" -f2 )
 
    if $(grep -q \/opt\/apps /proc/mounts) && [ ! -d /opt/apps/${app} ] ; then
-         download_app ${app} ${ver}
+         download_app ${app} ${ver} &
    fi
 
    if [ -d /opt/apps/${app} ] ; then
@@ -97,7 +97,7 @@ for appver in $GREEN_APPS; do
        if [ "$installed_ver" != "${ver}" ] ; then
            log_msg "${app} installed version is ${installed_ver}, going to download and  install ${ver} !"
            umount_opt ${app}
-           download_app ${app} ${ver}
+           download_app ${app} ${ver} &
        fi
 
 
