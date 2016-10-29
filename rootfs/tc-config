@@ -541,15 +541,17 @@ if [ -n "$PAUSE" ]; then
 fi
 
 log_msg "setup /home/docker for mountOnGreen"
+DOCKER_HOME_DIR=/home/docker
+
 if ( ! mountedOnGreen docker_home ); then
         log_msg "mount zfs /home/docker"
 
-				[ -d /home/docker ] && mv /home/docker /home/docker.tmp
+				[ -d ${DOCKER_HOME_DIR} ] && mv ${DOCKER_HOME_DIR} ${DOCKER_HOME_DIR}.tmp
 				mkdir -p /home/docker
-	      mount -t zfs green/docker_home /home/docker
-				[ -d /home/docker.tmp ] && mv /home/docker.tmp/* /home/docker/
-        chown docker:docker /home/docker
-				[ -d /home/docker.tmp ] && rm -f /home/docker.tmp
+	      zfs mount green/docker_home -o mountpoint ${DOCKER_HOME_DIR}
+				[ -d ${DOCKER_HOME_DIR}.tmp ] && mv ${DOCKER_HOME_DIR}.tmp/* ${DOCKER_HOME_DIR}/
+        chown docker:docker ${DOCKER_HOME_DIR}
+				[ -d ${DOCKER_HOME_DIR}.tmp ] && rm -f ${DOCKER_HOME_DIR}.tmp
 
         if ( mountedOnGreen docker_home ) ; then
 	          echo "${GREEN}Docker zfs home mount SUCCESS.${NORMAL}"
