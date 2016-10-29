@@ -265,7 +265,6 @@ RUN for dep in $TCZ_DEPS_1 ; do \
 
 # https://github.com/docker/docker/releases
 COPY DOCKER_VERSION $ROOTFS/etc/sysconfig/docker
-COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
 
 RUN cp -v $ROOTFS/etc/sysconfig/greenbox /tmp/iso/version
 
@@ -380,6 +379,7 @@ RUN ln -s /opt/green/bin/rsync $ROOTFS/usr/bin/rsync
 
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
  
+COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
 RUN /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]
