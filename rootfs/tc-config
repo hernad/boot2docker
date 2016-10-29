@@ -73,7 +73,7 @@ for i in `cat /proc/cmdline`; do
 		;;
 		*)
 			case $i in
-				nodockerstart) NODOCKERSTART=1 ;; 
+				nodockerstart) NODOCKERSTART=1 ;;
 				nozswap) NOZSWAP=1 ;;
 				nofstab) NOFSTAB=1 ;;
 				nortc) NORTC=1 ;;
@@ -540,18 +540,25 @@ if [ -n "$PAUSE" ]; then
 	read junk
 fi
 
-if ( ! mounted docker_home ); then
+log_msg "setup /home/docker for mountOnGreen"
+if ( ! mountedOnGreen docker_home ); then
         log_msg "mount zfs /home/docker"
-	mount -t zfs green/docker_home /home/docker
+
+				[ -d /home/docker ] && mv /home/docker /home/docker.tmp
+				mkdir -p /home/docker
+	      mount -t zfs green/docker_home /home/docker
+				[ -d /home/docker.tmp ] && mv /home/docker.tmp/* /home/docker/
         chown docker:docker /home/docker
-        if ( mounted docker_home ) ; then
-	   echo "${GREEN}Docker zfs home mount SUCCESS.${NORMAL}"
+				[ -d /home/docker.tmp ] && rm -f /home/docker.tmp
+
+        if ( mountedOnGreen docker_home ) ; then
+	          echo "${GREEN}Docker zfs home mount SUCCESS.${NORMAL}"
         else
-	   echo "${RED}Docker zfs home mount ERROR!${NORMAL}"
+	          echo "${RED}Docker zfs home mount ERROR!${NORMAL}"
         fi
 fi
 
-
+log_msg "locale-archive localedef start"
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
    echo -n "${BLUE}localedef en_US.UTF-8 bs_BA.UTF-8${NORMAL}"
    mkdir -p $BOOT_DIR/locale

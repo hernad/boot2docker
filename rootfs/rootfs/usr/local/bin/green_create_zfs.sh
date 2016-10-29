@@ -27,7 +27,7 @@ then
    log_msg "zpool $POOL doesn't exists"
 fi
 
-if zfs_up && ( ! mounted opt_boot )
+if zfs_up && ( ! mountedOnGreen opt_boot )
 then
     mkdir -p $BOOT_DIR
     rm -r -f $BOOT_DIR/*

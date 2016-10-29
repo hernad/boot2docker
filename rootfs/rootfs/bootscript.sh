@@ -24,17 +24,29 @@ done
 
 log_msg "if VirtualBox create green pool"
 /usr/local/bin/vbox_create_pool.sh
-
 /usr/local/bin/green_create_zfs.sh
 
 let count=0
-while ( ! mounted opt_boot ) && [ $count -lt 10 ]
+log_msg "setup $BOOT_DIR for mountOnGreen"
+[ ! -d $BOOT_DIR ] &&  mkdir -p $BOOT_DIR
+if ( ! mountedOnGreen opt_boot ); then
+     [ -d $BOOT_DIR ] && mv $BOOT_DIR ${BOOT_DIR}.tmp
+     mkdir -p $BOOT_DIR
+fi
+
+while ( ! mountedOnGreen opt_boot ) && [ $count -lt 10 ]
 do
-   zfs_up && ( ! mounted opt_boot ) && ( mkdir -p $BOOT_DIR ; rm -r -f $BOOT_DIR/* ;  mount -o mountpoint=/opt/boot green/opt_boot )
-   log_msg "waiting for mount zfs /opt/boot"
+   zfs_up
+   sleep 1
+
+   mount -t zfs -o mountpoint=$BOOT_DIR green/opt_boot )
+   log_msg "waiting for mount zfs $BOOT_DIR"
    sleep 1
    let count=count+1
 done
+
+[ -d ${BOOT_DIR}.tmp ] && mv ${BOOT_DIR}.tmp/* ${BOOT_DIR}/
+[ -d ${BOOT_DIR}.tmp ] && rm -f ${BOOT_DIR}.tmp
 
 
 log_msg "automount GREEN_volumes"
@@ -72,7 +84,8 @@ log_msg "sync the clock"
 log_msg "start cron"
 /etc/rc.d/crond
 
-log_msg "add docker user"
+log_msg "setup docker user - docker group"
+
 if grep -q '^docker:' /etc/passwd; then
     # if we have the docker user, let's create the docker group
     /bin/addgroup -S docker
@@ -96,16 +109,11 @@ log_msg "launch ACPID"
 log_msg "start openssh server"
 /etc/rc.d/sshd
 
-log_msg "Allow local bootsync.sh customisation"
-if [ -e $BOOT_DIR/bootsync.sh ]; then
-    $BOOT_DIR/bootsync.sh
-    log_msg "after $BOOT_DIR/bootsync.sh"
-fi
 
 log_msg "virtualbox drivers"
 /etc/rc.d/virtualbox
 
-log_msg "bootlocal.sh - allow local HD customisation"
+log_msg "bootlocal.sh - allow local customisation"
 if [ -e $BOOT_DIR/bootlocal.sh ]; then
     $BOOT_DIR/bootlocal.sh &
     log_msg "after $BOOT_DIR/bootlocal.sh"

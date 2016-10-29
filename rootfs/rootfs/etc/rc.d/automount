@@ -26,7 +26,7 @@ GREENBOX_DATA=`blkid -o device -l -t LABEL=$LABEL`
 echo $GREENBOX_DATA
 if [ ! -n "$GREENBOX_DATA" ]; then
     echo "Is the disk unpartitioned?, test for the 'greenbox format-me' string"
-    
+
     # Is the disk unpartitioned?, test for the 'greenbox format-me' string
     UNPARTITIONED_HD=`fdisk -l | grep "doesn't contain a valid partition table" | head -n 1 | sed 's/Disk \(.*\) doesn.*/\1/'`
 
@@ -61,7 +61,7 @@ if [ ! -n "$GREENBOX_DATA" ]; then
                 # As there are no partitions, let's make sure the disk is empty for real
                 dd if=$UNPARTITIONED_HD of=device_test_file bs=1k count=256 > /dev/null 2>&1
                 NON_NUL=$(<device_test_file tr -d '\0\n' | wc -c)
-                if [ $NON_NUL == 0 ]; then                    
+                if [ $NON_NUL == 0 ]; then
                     # Create the partition, format it and then mount it
                     echo "NEW VMware greenbox managed disk image ($UNPARTITIONED_HD): formatting it for use"
                     log_msg "NEW VMware greenbox managed disk image ($UNPARTITIONED_HD): formatting it for use"
@@ -131,7 +131,7 @@ if [ -n "$GREENBOX_DATA" ]; then
     if [ -e "/userdata.tar" ]; then
         mv /userdata.tar /var/lib/boot2docker/
     fi
-    
+
     ls -l /mnt/$PARTNAME
 fi
 # /etc dirs are initialised from /usr/local, to allow the user/admin to customise

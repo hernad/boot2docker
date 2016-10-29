@@ -27,7 +27,7 @@ log_msg() {
   echo "$0 $DATE: $1" >> $LOG_FILE
 }
 
-mounted() {
+mountedOnGreen() {
   (cat /proc/mounts | grep -q "^green/$1")
 }
 
