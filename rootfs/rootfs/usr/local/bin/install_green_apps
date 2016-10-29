@@ -70,10 +70,10 @@ download_app() {
 	      if tar tf ${app}_${ver}.tar.gz ; then
               log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
               tar xf ${app}_${ver}.tar.gz
-              rm $APPS_HOME/${app}_${ver}.tar.gz
+              rm ${app}_${ver}.tar.gz
               echo ${ver} > /opt/apps/${app}/VERSION
         else
-              log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz, $APPS_HOME/${app}_${ver}.tar.gz not tar archive, or damaged"
+              log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.gz, error tar tf $APPS_HOME/${app}_${ver}.tar.gz (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
         fi
    fi
 
