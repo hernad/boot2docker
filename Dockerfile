@@ -377,6 +377,9 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
 
 RUN ln -s /opt/green/bin/rsync $ROOTFS/usr/bin/rsync
 
+
+RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
+ 
 RUN /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]

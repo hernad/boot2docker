@@ -113,7 +113,7 @@ log_msg "start openssh server"
 log_msg "virtualbox drivers"
 /etc/rc.d/virtualbox
 
-log_msg "bootlocal.sh - allow local customisation"
+log_msg "$BOOT_DIR/bootlocal.sh - run local customisation commands"
 if [ -e $BOOT_DIR/bootlocal.sh ]; then
     $BOOT_DIR/bootlocal.sh &
     log_msg "after $BOOT_DIR/bootlocal.sh"

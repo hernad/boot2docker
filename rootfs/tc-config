@@ -530,10 +530,6 @@ fi
 [ -n "$NODOCKERSTART" ] && touch $BOOT_DIR/init.d/nodockerstart
 [ -n "$NOAUTOLOGIN" ] && echo "booting" > /etc/sysconfig/noautologin
 
-#log_msg "before /opt/bootsync.sh-fork"
-#/opt/bootsync.sh &
-#log_msg "after /opt/bootsync.sh-fork"
-
 
 if [ -n "$PAUSE" ]; then
 	echo -n "${BLUE}Boot time configuration completed. Press <Enter> to continue.${NORMAL}"
