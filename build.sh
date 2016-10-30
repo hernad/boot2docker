@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DOCKER_BUILD_OPTS=${DOCKER_BUILD_OPTS:-}
+DOCKER_PROXY=172.17.0.2
 
 if [ $# -lt 1 ] ; then
    echo "usage: $0 greenbox apps"
@@ -31,8 +32,15 @@ else
    ISO_DEFAULT=vbox
 fi
 
-ISO_APPEND="append loglevel=3"
 
+# Get the git versioning info
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && \
+GITSHA1=$(git rev-parse --short HEAD) && \
+DATE=$(date) && \
+echo "${GIT_BRANCH} : ${GITSHA1} - ${DATE}" > GREENBOX_BUILD
+
+ 
+ISO_APPEND="append loglevel=3"
 
 if [ -f docker_password ] ; then ## if file docker_password exists set dockerpwd
     DOCKER_PASSWORD=`cat docker_password`
@@ -56,11 +64,13 @@ do
   case $arg in
       greenbox)
          docker rmi -f greenbox:$DOCKER_VERSION
-         docker build $DOCKER_BUILD_OPTS --build-arg KERNEL_VERSION=$KERNEL_VERSION -t greenbox:$GREENBOX_VERSION .
+         docker build $DOCKER_BUILD_OPTS \
+              --build-arg DOCKER_PROXY=$DOCKER_PROXY \
+              --build-arg KERNEL_VERSION=$KERNEL_VERSION -t greenbox:$GREENBOX_VERSION .
          ;;
      apps)
          docker rmi -f greenbox_apps:$DOCKER_VERSION
-         docker build $DOCKER_BUILD_OPTS -t greenbox_apps:$GREENBOX_VERSION -f Dockerfile.apps .
+         docker build $DOCKER_BUILD_OPTS --build-arg DOCKER_PROXY=$DOCKER_PROXY -t greenbox_apps:$GREENBOX_VERSION -f Dockerfile.apps .
          ;;
   esac
 

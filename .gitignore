@@ -1,3 +1,8 @@
+GREENBOX_BUILD
+vbox/
+apt-cacher-ng/
+GREEN_INIT/
+bins/
 *.tar.gz
 rootfs/isolinux/boot.msg
 rootfs/rootfs/usr/local/etc/motd

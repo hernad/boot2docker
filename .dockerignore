@@ -4,4 +4,6 @@
 persist.raw
 bins
 vbox
+apt-cacher-ng
 GREEN_INIT
+.git

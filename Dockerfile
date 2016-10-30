@@ -1,20 +1,15 @@
 FROM debian:jessie
 MAINTAINER Ernad Husremovic "hernad@bring.out.ba"
 
-ARG KERNEL_VERSION=4.4.27
+ARG KERNEL_VERSION=4.4.28
+ARG DOCKER_PROXY=172.17.0.4
 
-RUN date
-
-#RUN apt-get update && apt-get install -y squid-deb-proxy-client
-#RUN mkdir -p /etc/apt/apt.conf.d/ ; echo 'Acquire::http::Proxy "http://192.168.169.185:8000";' > /etc/apt/apt.conf.d/30proxy
-#RUN /sbin/ip route | awk '/default/ { print "Acquire::http::Proxy \"http://"$3":8000\";" }' > /etc/apt/apt.conf.d/30proxy
-#RUN cat /etc/apt/apt.conf.d/30proxy
-
-RUN echo 'Acquire::HTTP::Proxy "http://172.17.0.4:3142";' >> /etc/apt/apt.conf.d/01proxy \
+RUN echo "docker proxy: $DOCKER_PROXY" \
+ && echo "Acquire::HTTP::Proxy \"http://$DOCKER_PROXY:3142\";" > /etc/apt/apt.conf.d/01proxy \
  && echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
 
+RUN date
 RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
-                        squid-deb-proxy-client \
                         xz-utils \
                         curl \
                         bc \
@@ -50,6 +45,7 @@ COPY kernel_config $LINUX_KERNEL_SOURCE/.config
 RUN  sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.config
 
 RUN jobs=$(nproc); \
+COPY GREENBOX_BUILD $ROOTFS/etc/sysconfig/greenbox_build
     cd $LINUX_KERNEL_SOURCE && \
     make -j ${jobs} oldconfig && \
     make -j ${jobs} bzImage && \
@@ -309,14 +305,7 @@ RUN find $ROOTFS/etc/rc.d/ $ROOTFS/usr/local/etc/init.d/ -exec chmod +x '{}' ';'
 
 
 COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
-# Get the git versioning info
-COPY .git /git/.git  
-RUN cd /git && \
-    GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && \
-    GITSHA1=$(git rev-parse --short HEAD) && \
-    DATE=$(date) && \
-    echo "${GIT_BRANCH} : ${GITSHA1} - ${DATE}" > $ROOTFS/etc/sysconfig/greenbox_build
-  
+ 
 RUN cp -v $ROOTFS/etc/sysconfig/greenbox /tmp/iso/version
 
 # Change MOTD                                                                                                                   
