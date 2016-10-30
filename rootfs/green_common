@@ -1,4 +1,4 @@
-# /etc/green_common
+#!/bin/sh
 
 DATE=`date +'%Y%m%d %T'`
 
@@ -81,7 +81,7 @@ fi
 }
 
 
-set_path_ld_library {
+set_path_ld_library() {
 
 for appdir in `ls -1 /opt`
 do
@@ -102,7 +102,7 @@ export PATH
 export LD_LIBRARY_PATH
 }
 
-change_user_password {
+change_user_password() {
    echo "$1:$2" | chpasswd -m
 }
 
