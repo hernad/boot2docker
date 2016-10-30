@@ -40,12 +40,12 @@ RUN mkdir -p /usr/src && \
     curl --retry 10 https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
     mv /linux-$KERNEL_VERSION_DOWNLOAD $LINUX_KERNEL_SOURCE
 
+COPY GREENBOX_BUILD $ROOTFS/etc/sysconfig/greenbox_build
+COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
 COPY kernel_config $LINUX_KERNEL_SOURCE/.config
 
-RUN  sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.config
-
-RUN jobs=$(nproc); \
-COPY GREENBOX_BUILD $ROOTFS/etc/sysconfig/greenbox_build
+RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.config && \
+    jobs=$(nproc) && \
     cd $LINUX_KERNEL_SOURCE && \
     make -j ${jobs} oldconfig && \
     make -j ${jobs} bzImage && \
@@ -304,7 +304,6 @@ COPY rootfs/make_iso.sh /
 RUN find $ROOTFS/etc/rc.d/ $ROOTFS/usr/local/etc/init.d/ -exec chmod +x '{}' ';'
 
 
-COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
  
 RUN cp -v $ROOTFS/etc/sysconfig/greenbox /tmp/iso/version
 

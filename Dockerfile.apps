@@ -1,4 +1,4 @@
-FROM greenbox:1.1.0
+FROM greenbox:1.2.0
 
 ARG DOCKER_PROXY=172.17.0.4
 
