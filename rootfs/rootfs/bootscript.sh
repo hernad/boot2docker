@@ -101,6 +101,17 @@ if grep -q '^docker:' /etc/passwd; then
     #fi
 fi
 
+[ -d $BOOT_DIR/root ] || mkdir -p /root
+ln -s $BOOT_DIR/root /root
+
+if [ -f  $BOOT_DIR/root/.password ] ; then
+   change_user_password root `cat $BOOT_DIR/root/.password`
+fi
+
+if [ -f  /home/docker/.password ] ; then
+   change_user_password docker `cat /home/docker/.password`
+fi
+
 log_msg "init tiny.core applications (/usr/local/tce.installed)"
 /etc/rc.d/tce-loader
 

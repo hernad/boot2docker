@@ -1,7 +1,7 @@
 VER=5.1.8
 KERNEL=`cat KERNEL_VERSION`
 APP=VirtualBox
-./upload_app.sh $APP ${VER}-${KERNEL}
+#./upload_app.sh $APP ${VER}-${KERNEL}
 
 APP=green
 VER=1.6.1
@@ -14,3 +14,9 @@ VER=1.8.6
 APP=vim
 VER=8.0.5
 #./upload_app.sh $APP $VER
+
+APP=python2
+VER=2.7.12
+./upload_app.sh $APP $VER
+
+

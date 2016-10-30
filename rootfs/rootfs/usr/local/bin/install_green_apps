@@ -5,7 +5,12 @@
 [ `whoami` != root ] && echo "you have to be root user !" && exit 1
 
 GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
-GREEN_APPS=${GREEN_APPS:-green_$GREEN_APPS_VERSION x11_$X11_APPS_VERSION VirtualBox_$VBOX_VERSION-$KERNEL_VERSION vagrant_$VAGRANT_VERSION perl5_5.22.1 python2_2.7.11 vim_$VIM_VERSION}
+
+if [ -z "$GREEN_APPS" ] ; then
+  GREEN_APPS="green_$GREEN_APPS_VERSION x11_$X11_APPS_VERSION"
+  GREEN_APPS+=" VirtualBox_$VBOX_VERSION-$KERNEL_VERSION vagrant_$VAGRANT_VERSION"
+  GREEN_APPS+=" perl5_$PERL5_VERSION  python2_$PYTHON2_VERSION vim_$VIM_VERSION}"
+fi
 
 echo "environment vars:"
 echo "-------------------------------------------------------------"

@@ -9,28 +9,29 @@ RUN apt-get update -y
 
 # ==== vim ====
 RUN apt-get -y install libssl-dev libncurses5-dev python-dev ruby-dev &&\
-    cd / && git clone https://github.com/vim/vim.git &&\                                                                                       
-    cd /vim && export LDFLAGS="-static" && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \                                  
-               --with-x=no  --disable-gui  --disable-netbeans  \                                                                           
-               --disable-pythoninterp  --disable-python3interp \                                                                           
-               --disable-rubyinterp  --disable-luainterp \                                                                                 
-               --prefix=/opt/apps/vim &&\                                                                                                  
-     make &&\                                                                                                                              
+    cd / && git clone https://github.com/vim/vim.git &&\
+    cd /vim && export LDFLAGS="-static" && ./configure --with-compiledby='Ernad <hernad@bring.out.ba>'  \
+               --with-x=no  --disable-gui  --disable-netbeans  \
+               --disable-pythoninterp  --disable-python3interp \
+               --disable-rubyinterp  --disable-luainterp \
+               --prefix=/opt/apps/vim &&\
+     make &&\
      make install &&\
      cd /opt/apps/vim/share/vim && ls -l && mv vim??/* . && rmdir vim??
 
-# ===== neovim ==============                                                                                                
-# RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\ 
+# ===== neovim ==============
+# RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\
 #     mkdir -p /opt/apps/neovim ; cd /neovim &&\
 #     make || make || make ; cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/apps/nvim &&\
-#     make all install                                                                                 
+#     make all install
 
 # ====== python2 ==============
+# https://pypi.python.org/pypi/pip
 # https://github.com/docker-library/python/blob/master/2.7/wheezy/Dockerfile
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
-ENV LANG=C.UTF-8 PYTHON_VERSION=2.7.11 PYTHON_PIP_VERSION=7.1.2
+ENV LANG=C.UTF-8 PYTHON_VERSION=2.7.12 PYTHON_PIP_VERSION=8.1.2
 
 ENV PATH  /opt/apps/python2/bin:$PATH
 
@@ -67,21 +68,21 @@ RUN mkdir -p /opt/apps/green/bin &&\
     cd / && curl -LO https://download.samba.org/pub/rsync/src/rsync-3.1.1.tar.gz &&\
     tar xvf rsync-3.1.1.tar.gz &&\
     cd /rsync-3.1.1 && ./configure && make && /usr/bin/install -c  -m 755 rsync /opt/apps/green/bin
-                             
+
 RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
     tar xvf pv-1.6.0.tar.gz  &&\
     cd /pv-1.6.0 && ./configure && make && /usr/bin/install -c pv /opt/apps/green/bin
-                              
+
 RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz &&\
-    tar xvf qperf-0.4.9.tar.gz &&\   
+    tar xvf qperf-0.4.9.tar.gz &&\
     cd /tmp/qperf-0.4.9 && sh autogen.sh && \
     ./configure && make && /usr/bin/install -c src/qperf /opt/apps/green/bin &&\
     cd /tmp && rm qperf-0.4.9.tar.gz && rm -r -f qperf-0.4.9
-                                    
+
 RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip &&\
-    unzip master.zip &&\                               
+    unzip master.zip &&\
     cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh /opt/apps/green/bin/zfs-auto-snapshot
- 
+
 
 # --------- tmux & libevent install ------------
 RUN curl -LO  https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz &&\
@@ -89,7 +90,7 @@ RUN curl -LO  https://github.com/libevent/libevent/releases/download/release-2.0
     cd /libevent-2.0.22-stable && sh autogen.sh && ./configure && make install &&\
     ( [  -d /opt/apps/green/lib ] || mkdir -p /opt/apps/green/lib ) &&\
     cp .libs/*so* /opt/apps/green/lib
-                                               
+
 RUN git clone https://github.com/ThomasAdam/tmux.git tmux &&\
     cd tmux && sh autogen.sh && export LD_LIBRARY_PATH=/opt/apps/green/lib && ./configure && make &&\
     ( [  -d /opt/apps/green/bin ] || mkdir -p /opt/apps/green/bin ) &&\
@@ -99,8 +100,8 @@ RUN git clone https://github.com/ThomasAdam/tmux.git tmux &&\
 RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev &&\
      cd / ; git clone https://github.com/ggreer/the_silver_searcher.git &&\
      cd the_silver_searcher && export LDFLAGS="-static" && ./build.sh --prefix=/opt/apps/green &&\
-     make install                                                                                                                          
-                                                                                                                                           
+     make install
+
 # ---------- tcpdump -----------------------------
 RUN apt-get install -y bison flex &&\
     curl -LO http://www.tcpdump.org/release/libpcap-1.7.4.tar.gz && tar xvf libpcap-1.7.4.tar.gz && cd libpcap-1.7.4 &&\
@@ -116,7 +117,7 @@ RUN git clone git://git.kernel.dk/fio.git &&\
     cd fio && ./configure --prefix=/opt/apps/green &&\
     make install
 
-#Version 20151002 md5=b2d20c4d880518c5fb8f8db734962f45 
+#Version 20151002 md5=b2d20c4d880518c5fb8f8db734962f45
 # http://www.maier-komor.de/software/mbuffer/mbuffer-20151002.tgz
 RUN export MBUFFER_VER="20151002" && echo "mbuffer ver: $MBUFFER_VER" && curl -LO http://www.maier-komor.de/software/mbuffer/mbuffer-${MBUFFER_VER}.tgz &&\
     cd / && tar xvf mbuffer-${MBUFFER_VER}.tgz && cd mbuffer-${MBUFFER_VER} && ./configure --prefix=/opt/apps/green &&\
@@ -182,7 +183,7 @@ RUN  apt-get update -y &&\
 #    cp /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /opt/flocker/lib/ &&\
 #    cp /usr/lib/x86_64-linux-gnu/libssl.so.1.0.0 /opt/flocker/lib/
 
-     
+
 # --- pipework in green
 RUN  cd /opt/apps/green/bin &&  curl -LO https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework &&\
      chmod +x pipework
@@ -200,4 +201,3 @@ RUN cd /opt/apps &&\
     cd /opt/apps/aws &&\
     . bin/activate && pip install --upgrade pip &&\
     pip install awscli
-

@@ -5,7 +5,8 @@ set_path_ld_library
 export TERM=linux
 
 [ -e /usr/bin/python ] && echo "python: `/usr/bin/python --version`"
-[ -e /usr/bin/perl ] && echo "perl: `/usr/bin/perl --version`"
+[ -e /usr/bin/perl ] && echo "perl: `perl -v | sed -n '/This is perl/,2p'`"
+
 
 echo "greenbox version $(cat /etc/sysconfig/greenbox), build $(cat /etc/sysconfig/greenbox_build)"
 echo "docker: `docker -v`"
