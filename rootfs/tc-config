@@ -11,8 +11,6 @@ log_msg "start $(date), called by /etc/init.d/rcS"
 . /etc/init.d/tc-functions
 useBusybox
 
-USER="docker"
-USER_PASSWORD="docker"
 TCEDIR="/tmp/tce"
 TCEOPT="/tmp/tce/optional"
 TCLOOP="/tmp/tcloop"
@@ -22,10 +20,10 @@ VERSION="$(cat /usr/share/doc/tc/release.txt)"
 KERNEL="$(uname -r)"
 
 addUser() {
-	echo "${GREEN}Adding user ${YELLOW}$USER ${NORMAL}"
-	/bin/adduser -s /bin/sh -G staff -D "$USER"
-	echo ${USER}:${USER_PASSWORD} | /usr/sbin/chpasswd -m
-	echo -e "$USER\tALL=NOPASSWD: ALL" >> /etc/sudoers
+	echo "${GREEN}Adding user ${YELLOW}docker ${NORMAL}"
+	/bin/adduser -s /bin/sh -G staff -D docker
+	[ -n "$DOCKER_PASSWORD" ] && change_user_password docker $DOCKER_PASSWORD
+	echo -e "docker\tALL=NOPASSWD: ALL" >> /etc/sudoers
 }
 
 ### END functions
@@ -52,8 +50,7 @@ for i in `cat /proc/cmdline`; do
 				staticip=*) STATICIPADDRESS=${i#*=} ;;
 				staticiface=*) STATICIFACE=${i#*=} ;;
 				ntpserver=*) NTPSERVER=${i#*=} ;;
-				user=*) USER=${i#*=} ;;
-				userpwd=*) USER_PASSWORD=${i#*=} ;;
+				dockerpwd=*) DOCKER_PASSWORD=${i#*=} ;;
 				rootpwd=*) ROOT_PASSWORD=${i#*=} ;;
 				opt=*) MYOPT=${i#*=} ;;
 				swapfile=*) SWAPFILE=${i#*=} ;;
@@ -231,17 +228,12 @@ wait4Server() {
 	DHCP_RAN=1
 }
 
-# add user if set in isolinux.conf
-#if [ -n "$USER" ]; then
-#	if ! grep "$USER" /etc/passwd >/dev/null; then addUser; fi
-#else
-#	USER="tc"
-#fi
-if ! grep "$USER" /etc/passwd >/dev/null; then addUser; fi
+
+if ! grep "^docker" /etc/passwd >/dev/null; then addUser; fi
 
 
-echo "$USER" > /etc/sysconfig/tcuser
-mkdir -p /home/"$USER"
+echo "docker" > /etc/sysconfig/tcuser
+mkdir -p /home/docker
 
 if [ -n "$SUPERUSER" ]; then
 	touch /etc/sysconfig/superuser
@@ -253,7 +245,7 @@ log_msg "Setup base directories for TCE Applicatons"
 [ -d "$TCEOPT" ] || mkdir "$TCEOPT"
 [ -d "$TCLOOP" ] || mkdir "$TCLOOP"
 ln -sf "$TCEDIR" /etc/sysconfig/tcedir
-chown "$USER" "$TCEOPT"
+chown docker "$TCEOPT"
 chgrp staff "$TCEDIR" "$TCEOPT" "$TCEINSTALLED" "$TCLOOP"
 chmod g+w "$TCEDIR" "$TCEOPT" "$TCEINSTALLED" "$TCLOOP"
 
@@ -284,7 +276,7 @@ get_app() {
 			[ "$PROTO" = "TFTP" ] && tftp -g -r $FILE $HOST
 			[ "$PROTO" = "HTTP" ] && wget -q http://${HOST}/${FILE}
 			[ $SHOWAPPS ] && echo -ne "$APP "
-			su "$USER" -c "$LOADER $FL $TCE/$APP"
+			su docker -c "$LOADER $FL $TCE/$APP"
 			[ "$FL" == "-c" ] && rm $APP
 		done < $NAME
 		[ $SHOWAPPS ] && echo "${GREEN} Done.${NORMAL}"
@@ -319,7 +311,7 @@ if [ -n "$PRETCE" ]; then
 	do
 		[ $CPTOFS ] || grep -q $NAME $SRC/copy2fs.lst 2>/dev/null && FL="-c" || FL=''
 		[ $FL ] || MNT=1
-		su "$USER" -c "/usr/bin/$LOADER $SRC/$PKG/$NAME"
+		su docker -c "/usr/bin/$LOADER $SRC/$PKG/$NAME"
 		[ "$SRC" == "$RAM" ] && [ "$FL" == "-c" ] && rm $RAM/$PKG/$NAME
 	done < $SRC/$LIST
 	[ "$SRC" != "$RAM" ] && [ $MNT ] || umount /mnt/$PPATH 2>/dev/null
@@ -480,18 +472,16 @@ if [ -f "/usr/share/kmap/$KEYMAP.kmap" ]; then
 fi
 
 if [ -n "$SECURE" ]; then
-	getpasswd "root"
 	echo "root:$ROOT_PASSWORD" | chpasswd -m
 fi
 
 if [ -n "$PROTECT" ]; then
-	getpasswd "encryption"
 	echo "$ROOT_PASSWORD" > /etc/sysconfig/bfe
-	chown ${USER}:root /etc/sysconfig/bfe
+	chown docker:root /etc/sysconfig/bfe
 	chmod 600 /etc/sysconfig/bfe
 fi
 
-[ -n "$XVESA" ]  && sed -i 's/1024x768x32/'"$XVESA"'/' /home/"$USER"/.xsession 2>/dev/null
+[ -n "$XVESA" ]  && sed -i 's/1024x768x32/'"$XVESA"'/' /home/docker/.xsession 2>/dev/null
 
 log_msg "If ntpserver: $NTPSERVER is specified use that"
 if [ -n "$NTPSERVER" ]; then
