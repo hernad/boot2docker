@@ -86,5 +86,3 @@ for appver in $GREEN_APPS; do
        fi
    fi
 done
-
-

@@ -36,7 +36,7 @@ clear
 echo "${GREEN}Booting green-box ${YELLOW}Core $VERSION ${NORMAL}"
 echo "${GREEN}Running Linux Kernel ${YELLOW}$KERNEL${GREEN}.${NORMAL}"
 
-log_msg "set PATH /usr/local/sbin,bin"
+log_msg "set PATH /usr/local/sbin,bin etc ..."
 PATH=/usr/local/sbin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin
 
 log_msg "Here we check all the boot parameters using the fastest way known to men, case & loop"
@@ -133,6 +133,7 @@ echo "${GREEN} Done.${NORMAL}"
 		*) sleep "$WAITUSB" ;;
 	esac
 )
+
 
 modprobe loop 2>/dev/null
 modprobe ohci_hcd
@@ -481,9 +482,8 @@ fi
 if [ -n "$SECURE" ]; then
 	getpasswd "root"
 	echo "root:$ROOT_PASSWORD" | chpasswd -m
-	getpasswd "$USER"
-	echo "$USER:$ROOT_PASSWORD" | chpasswd -m
 fi
+
 if [ -n "$PROTECT" ]; then
 	getpasswd "encryption"
 	echo "$ROOT_PASSWORD" > /etc/sysconfig/bfe

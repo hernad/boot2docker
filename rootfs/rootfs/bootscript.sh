@@ -90,9 +90,7 @@ log_msg "start cron"
 log_msg "setup docker user - docker group"
 
 if grep -q '^docker:' /etc/passwd; then
-    # if we have the docker user, let's create the docker group
     /bin/addgroup -S docker
-    # ... and add our docker user to it!
     /bin/addgroup docker docker
 
     #preload data from grenbox-cli
@@ -121,7 +119,6 @@ if [ -e $BOOT_DIR/bootlocal.sh ]; then
     log_msg "after $BOOT_DIR/bootlocal.sh"
 fi
 
-
 log_msg "launch dockerd"
 /etc/rc.d/docker
 
@@ -129,10 +126,10 @@ log_msg "locale-archive localedef start"
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
    echo -n "${BLUE}localedef en_US.UTF-8 bs_BA.UTF-8${NORMAL}"
    mkdir -p $BOOT_DIR/locale
-   ln -s $BOOT_DIR/locale /usr/lib/locale
-   /usr/bin/localedef -i en_US -f UTF-8 en_US
-   /usr/bin/localedef -i bs_BA -f UTF-8 bs_BA
+   localedef -i en_US -f UTF-8 en_US
+   localedef -i bs_BA -f UTF-8 bs_BA
 fi
+ln -s $BOOT_DIR/locale /usr/lib/locale
 
 /usr/local/bin/install_green_apps &
 
