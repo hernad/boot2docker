@@ -1,6 +1,11 @@
 #!/bin/sh
 
+. /etc/green_common
+
 set_path_ld_library
+export PATH
+export LD_LIBRARY_PATH
+
 
 export TERM=linux
 

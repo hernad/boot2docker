@@ -98,8 +98,6 @@ do
    fi
 done
 
-export PATH
-export LD_LIBRARY_PATH
 }
 
 change_user_password() {

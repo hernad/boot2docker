@@ -9,7 +9,7 @@ GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
 if [ -z "$GREEN_APPS" ] ; then
   GREEN_APPS="green_$GREEN_APPS_VERSION x11_$X11_APPS_VERSION"
   GREEN_APPS+=" VirtualBox_$VBOX_VERSION-$KERNEL_VERSION vagrant_$VAGRANT_VERSION"
-  GREEN_APPS+=" perl5_$PERL5_VERSION  python2_$PYTHON2_VERSION vim_$VIM_VERSION}"
+  GREEN_APPS+=" perl5_$PERL5_VERSION  python2_$PYTHON2_VERSION vim_$VIM_VERSION"
 fi
 
 echo "environment vars:"
@@ -53,6 +53,8 @@ download_app() {
               rm ${app}_${ver}.tar.gz
               chown -R root:root ${app}
               echo ${ver} > /opt/apps/${app}/VERSION
+              log_msg "mount_opt ${app}"
+              mount_opt ${app}
         else
               log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.gz, error tar tf $APPS_HOME/${app}_${ver}.tar.gz (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
         fi
@@ -83,11 +85,11 @@ for appver in $GREEN_APPS; do
 
 
        if [ "$app" == "VirtualBox" ]; then
-            # VirtualBox execs has to be root
-            chown root:root -R /opt/apps/VirtualBox
-            chmod 4755 /opt/apps/VirtualBox/VirtualBox /opt/apps/VirtualBox/VBoxHeadless
-	    chmod g-w /opt
-	    chmod g-w /opt/VirtualBox
+         # VirtualBox execs has to be root
+         chown root:root -R /opt/apps/VirtualBox
+         chmod 4755 /opt/apps/VirtualBox/VirtualBox /opt/apps/VirtualBox/VBoxHeadless
+	       chmod g-w /opt
+	       chmod g-w /opt/VirtualBox
        fi
    fi
 done
