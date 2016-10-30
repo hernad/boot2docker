@@ -1,7 +1,7 @@
 BINTRAY_API_KEY=`cat bintray_api_key`
 BINTRAY_REPOS=greenbox
 
-DOCKER_VERSION=`cat DOCKER_VERSION`
+GREENBOX_VERSION=`cat GREENBOX_VERSION`
 #BINTRAY_PACKAGE=VirtualBox
 BINTRAY_PACKAGE=$1
 #BINTRAY_PACKAGE_VER=5.0.10
@@ -19,7 +19,7 @@ if [ ! -f $FILE ] ; then
       VirtualBox)
            CT=greenbox
            docker rm -f $CT
-           docker run --name $CT $CT:$DOCKER_VERSION ls /opt/apps && rm -rf VirtualBox
+           docker run --name $CT $CT:$GREENBOX_VERSION ls /opt/apps && rm -rf VirtualBox
            docker cp $CT:/opt/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
            chmod +s VirtualBox/VirtualBox VirtualBox/VBoxHeadless &&\
            find VirtualBox/src -type f -exec rm  {} \; &&\
@@ -33,12 +33,12 @@ if [ ! -f $FILE ] ; then
            ;;
       flocker|vagrant)
            docker rm -f $CT
-           docker run --name $CT $CT:$DOCKER_VERSION find /opt/${BINTRAY_PACKAGE}
+           docker run --name $CT $CT:$GREENBOX_VERSION find /opt/${BINTRAY_PACKAGE}
            docker cp $CT:/opt/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
            ;; 
       *) 
            docker rm -f $CT
-           docker run --name $CT $CT:$DOCKER_VERSION ls /opt/apps
+           docker run --name $CT $CT:$GREENBOX_VERSION ls /opt/apps
            docker cp $CT:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
            [ ! -d ${BINTRAY_PACKAGE}/sbin ] ||  mv ${BINTRAY_PACKAGE}/sbin/*  ${BINTRAY_PACKAGE}/bin/ 
            if  [ -d bins/${BINTRAY_PACKAGE} ]

@@ -40,8 +40,6 @@ RUN mkdir -p /usr/src && \
     curl --retry 10 https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
     mv /linux-$KERNEL_VERSION_DOWNLOAD $LINUX_KERNEL_SOURCE
 
-COPY GREENBOX_BUILD $ROOTFS/etc/sysconfig/greenbox_build
-COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
 COPY kernel_config $LINUX_KERNEL_SOURCE/.config
 
 RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.config && \
@@ -263,12 +261,14 @@ RUN for dep in $TCZ_DEPS_1 ; do \
 COPY DOCKER_VERSION $ROOTFS/etc/sysconfig/docker
 
 
-
 RUN curl -L  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/sysconfig/docker).tgz | tar -C / -xz && \
     mv /docker/* $ROOTFS/usr/local/bin &&\
     chmod +x $ROOTFS/usr/local/bin/docker*
 
 # =============================================================================================
+
+COPY GREENBOX_VERSION $ROOTFS/etc/sysconfig/greenbox
+COPY GREENBOX_BUILD $ROOTFS/etc/sysconfig/greenbox_build
 
 COPY rootfs/rootfs $ROOTFS
 
