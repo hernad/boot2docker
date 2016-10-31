@@ -132,12 +132,11 @@ log_msg "locale-archive localedef start"
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
    echo -n "${BLUE}localedef en_US.UTF-8 bs_BA.UTF-8${NORMAL}"
    mkdir -p $BOOT_DIR/locale
+   ln -s $BOOT_DIR/locale /usr/lib/locale
    localedef -i en_US -f UTF-8 en_US
    localedef -i bs_BA -f UTF-8 bs_BA
 fi
-ln -s $BOOT_DIR/locale /usr/lib/locale
-
-/usr/local/bin/install_green_apps &
+[ -d /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
 
 for app in `ls -1 /opt/apps`
 do
@@ -145,6 +144,9 @@ do
        mount_opt ${app}
    fi
 done
+
+/usr/local/bin/install_green_apps &
+
 
 log_msg "ldconfg after mounting apps"
 /sbin/ldconfig -v 2>&1 | tee -a $LOG_FILE
