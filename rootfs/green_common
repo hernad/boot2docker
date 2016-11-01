@@ -36,28 +36,11 @@ mountedOnGreen() {
   (cat /proc/mounts | grep -q "^green/$1")
 }
 
-zfs_up() {
-  zfs list | grep -q green
+mountedApp() {
+  (cat /proc/mounts | grep -q "opt_apps /opt/$1")
 }
 
-is_vbox () {
-  lshw | grep -q "product: VirtualBox"
-}
-
-
-wait_zvol_up () {
-
-retry=0
-while [ ! -e /dev/zvol/$1/$2 ] &&  [ $retry -lt 12 ]
-do
-   log_msg "waiting zvol $retry $1 $2 up"
-   sleep 1
-   let retry=retry+1
-done
-
-}
-
-mount_opt() {
+mount_bind_opt_apps() {
 
 if [ -d /opt/apps/$1 ] ; then
   if ! $(grep -q \/opt\/$1 /proc/mounts) ; then
@@ -79,6 +62,37 @@ if [ -d /opt/apps/$1 ] ; then
 fi
 
 }
+
+mount_all_apps() {
+
+for app in `ls -1 /opt/apps`
+do
+   [ -d /opt/apps/${app} ] && ( ! mountedApp ${app} ) && mount_bind_opt_apps ${app}
+done
+
+}
+
+zfs_up() {
+  zfs list | grep -q green
+}
+
+is_vbox () {
+  lshw | grep -q "product: VirtualBox"
+}
+
+
+wait_zvol_up () {
+
+retry=0
+while [ ! -e /dev/zvol/$1/$2 ] &&  [ $retry -lt 12 ]
+do
+   log_msg "waiting zvol $retry $1 $2 up"
+   sleep 1
+   let retry=retry+1
+done
+
+}
+
 
 
 set_path_ld_library() {

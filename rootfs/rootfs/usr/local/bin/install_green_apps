@@ -53,8 +53,8 @@ download_app() {
               rm ${app}_${ver}.tar.gz
               chown -R root:root ${app}
               echo ${ver} > /opt/apps/${app}/VERSION
-              log_msg "mount_opt ${app}"
-              mount_opt ${app}
+              log_msg "mount_bind_opt_apps ${app}"
+              mount_bind_opt_apps ${app}
         else
               log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.gz, error tar tf $APPS_HOME/${app}_${ver}.tar.gz (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
         fi
