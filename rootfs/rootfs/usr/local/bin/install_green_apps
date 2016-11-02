@@ -47,6 +47,7 @@ download_app() {
    if [ $? -ne 0 ] ; then
         log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
    else
+        umount_opt ${app}
         cd $APPS_HOME
 	      if tar xf ${app}_${ver}.tar.gz 2>&1 | tee -a $LOG_FILE ; then
               log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
@@ -79,7 +80,6 @@ for appver in $GREEN_APPS; do
 
        if [ "$installed_ver" != "${ver}" ] ; then
            log_msg "${app} installed version is ${installed_ver}, going to download and  install ${ver} !"
-           umount_opt ${app}
            download_app ${app} ${ver} &
        fi
 
