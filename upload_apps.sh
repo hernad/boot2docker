@@ -8,7 +8,7 @@ VER=1.7.0
 
 APP=vagrant
 VER=1.8.6
-#./upload_app.sh $APP $VER
+./upload_app.sh $APP $VER
 
 APP=vim
 VER=8.0.5
@@ -39,5 +39,5 @@ VER=8.112.15
 
 APP=atom
 VER=1.11.2
-./upload_app.sh $APP $VER
+#./upload_app.sh $APP $VER
 
