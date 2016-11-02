@@ -29,13 +29,7 @@ Vagrant.configure(2) do |config|
 
    config.vm.synced_folder ".", "/vagrant", type: "rsync",  rsync__exclude: [ "data/", "GREEN_INIT.vdi" ]
 
-  # The most common configuration options are documented and commented below.
-  # For a complete reference, please see the online documentation at
-  # https://docs.vagrantup.com.
-
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "guestfs-tools"  #fedora/23-cloud-base
+  config.vm.box = "fedora-guestfs-tools"  #fedora/23-cloud-base
 
   config.vm.provider "virtualbox" do |vb|
      #   vb.gui = true
