@@ -151,9 +151,6 @@ weekly
 rotate 4
 create 0664 root root
 minsize 1k
-$BOOT_DIR/log/wtmp {
-    rotate 1
-}
 $BOOT_DIR/log/greenbox.log {
     monthly
     size 30k

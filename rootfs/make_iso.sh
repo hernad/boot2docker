@@ -19,7 +19,7 @@ grep -q "/opt/shutdown.sh" $ROOTFS/etc/init.d/rc.shutdown || ( echo "Error: fail
 ln -fs $BOOT_DIR/log/docker.log $ROOTFS/var/log/
 ln -fs $BOOT_DIR/log/udhcp.log $ROOTFS/var/log/
 ln -fs $BOOT_DIR/log/greenbox.log $ROOTFS/var/log/
-ln -fs $BOOT_DIR/log/wtmp $ROOTFS/var/log/
+#ln -fs $BOOT_DIR/log/wtmp $ROOTFS/var/log/
 
 ln -fs $BOOT_DIR/etc/ld.so.cache $ROOTFS/etc/
 ln -fs $BOOT_DIR/etc/dnsmasq.conf $ROOTFS/etc/
