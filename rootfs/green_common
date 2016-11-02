@@ -95,6 +95,9 @@ done
 
 
 set_path_ld_library() {
+
+LD_LIBRARY_PATH=/usr/local/lib:/usr/lib:/lib
+
 for appdir in `ls -1 /opt`
 do
    if [ -d /opt/$appdir/lib ] ; then
