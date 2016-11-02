@@ -19,16 +19,16 @@ SHELL_CMD = <<-SHELL
      export LIBGUESTFS_BACKEND=direct
      export LIBGUESTFS_BACKEND_SETTINGS=force_tcg
      export LIBGUESTFS_DEBUG=0
+     echo "========================= making /vagrant/GREEN_INIT.img =================="
      virt-make-fs /vagrant/green_init.tar.gz --type=ext2 --partition=mbr --size=#{IMG_SIZE} --label=GREEN_INIT  /vagrant/GREEN_INIT.img
+     echo "========================= qemu-img convert .img  to /vagrant/GREEN_INIT.vmdk =================="
      qemu-img convert -O vmdk GREEN_INIT.img GREEN_INIT.vmdk
      ls -1 -l 
   SHELL
-print SHELL_CMD
 
 Vagrant.configure(2) do |config|
 
-   config.vm.synced_folder ".", "/vagrant", type: "rsync",  rsync__exclude: [ "data/", "GREEN_INIT.vdi" ]
-
+  config.vm.synced_folder ".", "/vagrant", type: "rsync",  rsync__exclude: [ "data/", "GREEN_INIT.vdi" ]
   config.vm.box = "fedora-guestfs-tools"  #fedora/23-cloud-base
 
   config.vm.provider "virtualbox" do |vb|
