@@ -143,9 +143,7 @@ while ! ps ax | grep dockerd | grep -q -v grep ; do
    sleep 1
 done
 
-log_msg "starting $BOOT_DIR/init.d scripts ..."
-ls -1 $BOOT_DIR/init.d/ | xargs -I %  $BOOT_DIR/init.d/%
-
+# setup logrotate.conf
 [ -f $BOOT_DIR/etc/logrotate.conf ] || cat > $BOOT_DIR/etc/logrotate.conf <<- EOM
 weekly
 rotate 4
@@ -158,5 +156,9 @@ $BOOT_DIR/log/*.log {
 }
 include $BOOT_DIR/etc/logrotate.d
 EOM
-
 [ -d $BOOT_DIR/etc/logrotate.d ] || mkdir -p $BOOT_DIR/etc/logrotate.d
+
+vbox_fix_permissions
+
+log_msg "starting $BOOT_DIR/init.d scripts ..."
+ls -1 $BOOT_DIR/init.d/ | xargs -I %  $BOOT_DIR/init.d/%
