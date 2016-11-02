@@ -32,22 +32,29 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
 
 
 #http://www.oracle.com/technetwork/java/javase/8u-relnotes-2225394.html
-ENV JAVA8_UPD 112
-ENV JAVA8_BUILD 15
-ENV JAVA_HOME /opt/java
+#ENV JAVA8_UPD 112
+#ENV JAVA8_BUILD 15
+#ENV JAVA_HOME /opt/java
 
-RUN     cd /tmp \
-        && wget -qO jdk8.tar.gz \
-         --header "Cookie: oraclelicense=accept-securebackup-cookie" \
-         http://download.oracle.com/otn-pub/java/jdk/8u${JAVA8_UPD}-b${JAVA8_BUILD}/jdk-8u${JAVA8_UPD}-linux-x64.tar.gz \
-        && tar xzf jdk8.tar.gz -C /opt \
-        && mv /opt/jdk* /opt/java \
-        && rm /tmp/jdk8.tar.gz \
-        && update-alternatives --install /usr/bin/java java /opt/java/bin/java 100 \
-        && update-alternatives --install /usr/bin/javac javac /opt/java/bin/javac 100 \
-        && update-alternatives --install /usr/bin/jar jar /opt/java/bin/jar 100 \
-        && update-alternatives --set java /opt/java/bin/java \
-&& update-alternatives --set jar /opt/java/bin/jar
+#RUN     cd /tmp \
+#        && wget -qO jdk8.tar.gz \
+#         --header "Cookie: oraclelicense=accept-securebackup-cookie" \
+#         http://download.oracle.com/otn-pub/java/jdk/8u${JAVA8_UPD}-b${JAVA8_BUILD}/jdk-8u${JAVA8_UPD}-linux-x64.tar.gz \
+#        && tar xzf jdk8.tar.gz -C /opt \
+#        && mv /opt/jdk* /opt/java \
+#        && rm /tmp/jdk8.tar.gz \
+#        && update-alternatives --install /usr/bin/java java /opt/java/bin/java 100 \
+#        && update-alternatives --install /usr/bin/javac javac /opt/java/bin/javac 100 \
+#        && update-alternatives --install /usr/bin/jar jar /opt/java/bin/jar 100 \
+#        && update-alternatives --set java /opt/java/bin/java \
+#&& update-alternatives --set jar /opt/java/bin/jar
 
-RUN  java -version
-RUN  mv /opt/java /opt/apps/java
+#RUN  java -version
+#RUN  mv /opt/java /opt/apps/java
+
+
+RUN curl -LO https://github.com/atom/atom/releases/download/v1.11.2/atom-amd64.deb 
+RUN dpkg -i atom-amd64.deb || apt-get install -f -y
+RUN mv /opt/atom /opt/apps/atom
+
+

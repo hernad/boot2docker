@@ -132,6 +132,7 @@ fi
 [ -d /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
 
 mount_all_apps
+vbox_fix_permissions
 
 /usr/local/bin/install_green_apps &
 
@@ -158,7 +159,6 @@ include $BOOT_DIR/etc/logrotate.d
 EOM
 [ -d $BOOT_DIR/etc/logrotate.d ] || mkdir -p $BOOT_DIR/etc/logrotate.d
 
-vbox_fix_permissions
 
 log_msg "starting $BOOT_DIR/init.d scripts ..."
 ls -1 $BOOT_DIR/init.d/ | xargs -I %  $BOOT_DIR/init.d/%
