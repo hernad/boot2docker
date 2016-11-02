@@ -1,11 +1,13 @@
 #!/bin/bash
 
+vagrant up # create default vdi
+
+
 if [[ "$1" == "--create-tgz" ]] ; then
    tar -cvf green_init.tar.gz  -C data  . 
-   vagrant resync
+   vagrant rsync
 fi
 
-vagrant up # create default vdi
 
 vagrant ssh -c "ls -l /vagrant/green_init.tar.gz"
 

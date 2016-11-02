@@ -6,9 +6,11 @@ Prerequisites
     vagrant plugin install vagrant-scp
 
 
-    # data in: green_init.tar.gz
-    vagrant up
-    ./create_vdi.sh
+    ./create_init_vdi.sh --create-tgz     # data in: green_init.tar.gz
+
+
+    ./create_init_vdi.sh # if up-to-date tgz
+
     
 
 Notes

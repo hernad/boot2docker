@@ -1,6 +1,6 @@
 VER=5.1.8
 APP=VirtualBox
-./upload_app.sh $APP ${VER}
+#./upload_app.sh $APP ${VER}
 
 APP=green
 VER=1.7.0
@@ -36,3 +36,8 @@ VER=2.0.0
 APP=java
 VER=8.112.15
 #./upload_app.sh $APP $VER
+
+APP=atom
+VER=1.11.2
+./upload_app.sh $APP $VER
+

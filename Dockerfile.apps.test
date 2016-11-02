@@ -55,6 +55,7 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
 
 RUN curl -LO https://github.com/atom/atom/releases/download/v1.11.2/atom-amd64.deb 
 RUN dpkg -i atom-amd64.deb || apt-get install -f -y
-RUN mv /opt/atom /opt/apps/atom
+RUN mv /usr/share/atom /opt/apps/atom
+RUN mkdir -p /opt/apps/atom/bin &&  mv /opt/apps/atom/atom /opt/apps/atom/bin/
 
 
