@@ -146,3 +146,40 @@ done
 log_msg "starting $BOOT_DIR/init.d scripts ..."
 ls -1 $BOOT_DIR/init.d/ | xargs -I %  $BOOT_DIR/init.d/%
 
+
+cat > $BOOT_DIR/log/logrotate.conf <<- EOM
+weekly
+rotate 4
+create 0664 root root
+minsize 1k
+
+$BOOT_DIR/log/wtmp {
+    rotate 1
+}
+
+$BOOT_DIR/log/greenbox.log {
+    monthly
+    size 30k
+}
+
+$BOOT_DIR/log/docker.log {
+    monthly
+}
+
+$BOOT_DIR/log/docker.log {
+    monthly
+}
+
+$BOOT_DIR/log/ntpd.log {
+    monthly
+}
+
+$BOOT_DIR/log/udhcp.log {
+    rotate 1
+}
+
+
+include $BOOT_DIR/log/logrotate.d
+EOM
+
+[ -d $BOOT_DIR/log/logrotate.d ] || mkdir -p $BOOT_DIR/log/logrotate.d

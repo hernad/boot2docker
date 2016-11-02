@@ -14,15 +14,15 @@ start(){
 
    if [ ! -e $SSH_CONFIG_DIR/ssh_host_rsa_key ]
    then
-      log_msg "no ssh cache - ssh-keygen !" 
+      log_msg "no ssh cache - ssh-keygen !"
       keygen
    fi
-   
+
    /usr/local/sbin/sshd
 }
 
 stop(){
-   killall sshd
+   nohup killall -s HUP sshd
 }
 
 restart(){

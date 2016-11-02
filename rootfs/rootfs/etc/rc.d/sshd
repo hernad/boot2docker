@@ -28,6 +28,9 @@ if ! grep -q "^Subsystem .*sftp" /usr/local/etc/ssh/sshd_config; then
     echo "Subsystem  sftp  /usr/local/lib/openssh/sftp-server" >> /usr/local/etc/ssh/sshd_config
 fi
 
+[ -d /var/ssh ] || mkdir -p /var/ssh
 
-mkdir -p /var/ssh
-/usr/local/etc/init.d/openssh start
+case $1 in
+   restart) /usr/local/etc/init.d/openssh restart;;
+   *) /usr/local/etc/init.d/openssh start
+esac
