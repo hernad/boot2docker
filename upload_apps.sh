@@ -4,8 +4,8 @@ APP=VirtualBox
 #./upload_app.sh $APP ${VER}-${KERNEL}
 
 APP=green
-VER=1.6.1
-#./upload_app.sh $APP $VER
+VER=1.7.0
+./upload_app.sh $APP $VER
 
 APP=vagrant
 VER=1.8.6
@@ -17,6 +17,6 @@ VER=8.0.5
 
 APP=python2
 VER=2.7.12
-./upload_app.sh $APP $VER
+#./upload_app.sh $APP $VER
 
 

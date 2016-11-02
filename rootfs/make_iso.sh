@@ -29,8 +29,9 @@ ln -fs $BOOT_DIR/etc/dnsmasq.conf $ROOTFS/etc/
 ln -fs /usr/local/bin/bash $ROOTFS/bin/
 
 # symlinks /usr/bin for ansible
-# /usr/bin/python, /usr/bin/perl
+# /usr/bin/python, /usr/bin/perl, /usr/bin/logrotate
 ln -fs /opt/python2/bin/python $ROOTFS/usr/bin/
+ln -fs /opt/green/bin/logrotate $ROOTFS/usr/bin/
 ln -fs /opt/python2/lib/libpython2.7.so.1.0 $ROOTFS/usr/lib/
 ln -fs /opt/perl5/bin/perl $ROOTFS/usr/bin/
 

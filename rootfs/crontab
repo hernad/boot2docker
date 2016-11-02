@@ -6,4 +6,4 @@
 */30 * * * * /etc/rc.d/sshd
 
 # sunday
-* * * * 0  /etc/init.d/logrotate.sh /etc/logrotate.conf 
+* * * * 0  /etc/init.d/logrotate.sh
