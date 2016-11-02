@@ -109,7 +109,7 @@ ENV TCZ_DEPS_0      iptables \
                     curl acl attr ntpclient \
                     procps bash readline htop ncurses ncurses-utils ncurses-terminfo \
                     strace glib2 libtirpc \
-                    parted liblvm2 
+                    parted udev-lib liblvm2 
 
 # Install the base tiny linux dependencies
 RUN for dep in $TCZ_DEPS_0 ; do \

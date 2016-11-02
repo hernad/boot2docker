@@ -1,0 +1,53 @@
+FROM greenbox:1.2.1
+
+ARG DOCKER_PROXY=172.17.0.4
+
+RUN echo "docker proxy: $DOCKER_PROXY" \
+ && echo "Acquire::HTTP::Proxy \"http://$DOCKER_PROXY:3142\";" > /etc/apt/apt.conf.d/01proxy \
+ && echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
+
+
+
+#ENV LOGROTATE_VER=3.10.0
+
+#RUN apt-get install libpopt-dev
+#RUN curl -k -LO https://github.com/logrotate/logrotate/releases/download/$LOGROTATE_VER/logrotate-$LOGROTATE_VER.tar.gz &&\
+#   tar xvf logrotate-$LOGROTATE_VER.tar.gz &&\
+#   cd /logrotate-$LOGROTATE_VER &&\
+#   export LDFLAGS="-static" && ./configure --prefix=/opt/apps/green &&\
+#   make && make install &&  mkdir -p /opt/apps/green/bin && mv /opt/apps/green/sbin/* /opt/apps/green/bin &&\
+#   ls -lh /opt/apps/green/bin/logrotate
+
+
+#ENV GOLANG_VER=1.7.3
+#RUN curl -LO https://storage.googleapis.com/golang/go${GOLANG_VER}.linux-amd64.tar.gz
+#RUN tar xf go${GOLANG_VER}.linux-amd64.tar.gz
+#RUN ls -ld go* ; mv go /opt/apps/go 
+
+
+#ENV NODEJS_VER=6.9.1
+#RUN curl -LO https://nodejs.org/dist/v${NODEJS_VER}/node-v${NODEJS_VER}-linux-x64.tar.xz
+#RUN tar xf node-v${NODEJS_VER}-linux-x64.tar.xz
+#RUN ls -ld node* ; mv node-v${NODEJS_VER}-linux-x64 /opt/apps/node
+
+
+#http://www.oracle.com/technetwork/java/javase/8u-relnotes-2225394.html
+ENV JAVA8_UPD 112
+ENV JAVA8_BUILD 15
+ENV JAVA_HOME /opt/java
+
+RUN     cd /tmp \
+        && wget -qO jdk8.tar.gz \
+         --header "Cookie: oraclelicense=accept-securebackup-cookie" \
+         http://download.oracle.com/otn-pub/java/jdk/8u${JAVA8_UPD}-b${JAVA8_BUILD}/jdk-8u${JAVA8_UPD}-linux-x64.tar.gz \
+        && tar xzf jdk8.tar.gz -C /opt \
+        && mv /opt/jdk* /opt/java \
+        && rm /tmp/jdk8.tar.gz \
+        && update-alternatives --install /usr/bin/java java /opt/java/bin/java 100 \
+        && update-alternatives --install /usr/bin/javac javac /opt/java/bin/javac 100 \
+        && update-alternatives --install /usr/bin/jar jar /opt/java/bin/jar 100 \
+        && update-alternatives --set java /opt/java/bin/java \
+&& update-alternatives --set jar /opt/java/bin/jar
+
+RUN  java -version
+RUN  mv /opt/java /opt/apps/java
