@@ -101,7 +101,7 @@ LD_LIBRARY_PATH=/usr/local/lib:/usr/lib:/lib
 for appdir in `ls -1 /opt`
 do
    if [ -d /opt/$appdir/lib ] ; then
-      LD_LIBRARY_PATH=/opt/$appdir/lib:$LD_LIBRARY_PATH
+      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/$appdir/lib
    fi
 
    if [ -d /opt/$appdir/bin ] ; then
