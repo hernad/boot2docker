@@ -150,22 +150,11 @@ ls -1 $BOOT_DIR/init.d/ | xargs -I %  $BOOT_DIR/init.d/%
 weekly
 rotate 4
 create 0664 root root
-minsize 1k
-$BOOT_DIR/log/greenbox.log {
+compress
+notifempty
+$BOOT_DIR/log/*.log {
     monthly
     size 30k
-}
-$BOOT_DIR/log/docker.log {
-    monthly
-    size 100k
-}
-$BOOT_DIR/log/ntpd.log {
-    monthly
-    size 20k
-}
-$BOOT_DIR/log/udhcp.log {
-    rotate 1
-    size 1M
 }
 include $BOOT_DIR/etc/logrotate.d
 EOM
