@@ -107,17 +107,10 @@ ln -s $BOOT_DIR/root /root
 [ -f  $BOOT_DIR/root/.password ] && change_user_password root `cat $BOOT_DIR/root/.password` && log_msg "log_msg change root user password"
 [ -f  /home/docker/.password ] && change_user_password docker `cat /home/docker/.password` && log_msg "log_msg change docker user password"
 
-log_msg "init tiny.core applications (/usr/local/tce.installed)"
 /etc/rc.d/tce-loader
-
-log_msg "launch ACPID"
 /etc/rc.d/acpid
-
-log_msg "start openssh server"
 /etc/rc.d/sshd
-
-log_msg "virtualbox drivers"
-/etc/rc.d/virtualbox
+/etc/rc.d/vbox_kernel
 
 log_msg "$BOOT_DIR/bootlocal.sh - run local customisation commands"
 if [ -e $BOOT_DIR/bootlocal.sh ]; then
@@ -144,3 +137,12 @@ mount_all_apps
 
 log_msg "ldconfg after mounting apps"
 /sbin/ldconfig -v 2>&1 | tee -a $LOG_FILE
+
+while ! ps ax | grep dockerd | grep -q -v grep ; do
+   log_msg "waiting for docker daemon"
+   sleep 1
+done
+
+log_msg "starting $BOOT_DIR/init.d scripts ..."
+ls -1 $BOOT_DIR/init.d/ | xargs -I %  $BOOT_DIR/init.d/%
+

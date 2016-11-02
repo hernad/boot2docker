@@ -2,7 +2,7 @@
 
 . /etc/green_common
 
-log_msg start
+log_msg "tce-loader START (/usr/local/tce.installed) "
 
 for prog in $(find /usr/local/tce.installed/ -type f)
 do

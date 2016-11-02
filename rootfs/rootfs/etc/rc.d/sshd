@@ -2,10 +2,12 @@
 
 . /etc/green_common
 
-if ! ps ax | grep -q sshd$ ; then
+if ps ax | grep -q sshd$ ; then
    echo sshd already launched
    exit 0
 fi
+
+log_msg "start openssh server"
 
 # Configure sshd and acknowledge for persistence in $BOOT_DIR of the keys/config
 # Move /usr/local/etc/ssh to $BOOT_DIR/ssh if it doesn't exist

@@ -1,2 +1,7 @@
-# Launch ACPId (shutdown)
+#!/bin/sh
+
+. /etc/green_common
+
+log_msg "start ACPId
+
 /usr/local/etc/init.d/acpid start

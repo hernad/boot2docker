@@ -2,7 +2,7 @@
 
 . /etc/green_common
 
-log_msg "start $(date)"
+log_msg "zfs_automount START"
 
 if ! ( /sbin/lsmod | grep -q nfs )
 then
@@ -25,12 +25,14 @@ mkdir -p /home
 mkdir -p /opt
 /usr/local/sbin/zpool import green >> $LOG_FILE 2>&1
 
+log_msg "zvol/green/swap ON"
 /sbin/swapon  /dev/zvol/green/swap >> $LOG_FILE
 /sbin/swapon -a >> $LOG_FILE
 
+log_msg "mounting zfs blok device /dev/zvol/green/docker_vol"
 mkdir -p /var/lib/docker
 [ -e /dev/zvol/green/docker_vol ] && /bin/mount /dev/zvol/green/docker_vol /var/lib/docker
 
 /usr/local/sbin/zpool status -v >> $LOG_FILE 2>&1
 /usr/local/sbin/zfs list >> $LOG_FILE 2>&1
-log_msg "automount zfs over."
+log_msg "zfs_automount END"

@@ -1,5 +1,9 @@
+#MIN HOUR DOM MON DOW CMD
 # restart ntpd to combat laptop sleep + VM pause
 #0 * * * * killall ntpd > /dev/null 2>&1; /etc/rc.d/ntpd
 
 # if some jerk kill sshd, return it into life
 */30 * * * * /etc/rc.d/sshd
+
+# sunday
+* * * * 0  /etc/init.d/logrotate.sh /etc/logrotate.conf 

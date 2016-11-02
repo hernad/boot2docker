@@ -1,0 +1,10 @@
+#!/bin/sh
+
+. /etc/green_common
+
+log_msg "Loading virtualbox server kernel drivers"
+
+modprobe vboxdrv
+modprobe vboxnetadp
+modprobe vboxnetflt
+modprobe vboxpci
