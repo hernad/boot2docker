@@ -9,8 +9,9 @@
 IMG_SIZE="2G"
 
 SHELL_CMD = <<-SHELL
-     dnf install -y libguestfs-tools
-     dnf install -y xorg-x11-server-Xvfb
+     #dnf install -y libguestfs-tools
+     #dnf install -y xorg-x11-server-Xvfb
+
      /usr/bin/Xvfb :1 -screen 0 1024x768x24 &
      export DISPLAY=:1 
 
@@ -34,7 +35,7 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "fedora/23-cloud-base"
+  config.vm.box = "guestfs-tools"  #fedora/23-cloud-base
 
   config.vm.provider "virtualbox" do |vb|
      #   vb.gui = true

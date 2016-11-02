@@ -117,13 +117,14 @@ change_user_password() {
 
 vbox_fix_permissions() {
   VBOX_DIR=/opt/apps/VirtualBox
-  if [ -d $VBOX_DIR ]
-  # VirtualBox execs has to be root
-  [ "rootroox" == `ls -ld $VBOX_DIR | awk '{print $3 $4;}'` ] || \
-    chown root:root -R $VBOX_DIR
-  chmod u+s $VBOX_DIR/VirtualBox $BOX_DIR/VBoxHeadless
-  chmod g-w /opt
-  chmod g-w /opt/VirtualBox
+  if [ -d $VBOX_DIR ] ; then
+    # VirtualBox execs has to be root
+    [ "rootroox" == `ls -ld $VBOX_DIR | awk '{print $3 $4;}'` ] || \
+       chown root:root -R $VBOX_DIR
+    chmod u+s $VBOX_DIR/VirtualBox $BOX_DIR/VBoxHeadless
+    chmod g-w /opt
+    chmod g-w /opt/VirtualBox
+  fi
 }
 
 GREEN_DEBUG=${GREEN_DEBUG:-1}
