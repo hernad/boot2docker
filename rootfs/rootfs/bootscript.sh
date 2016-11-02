@@ -132,12 +132,14 @@ fi
 [ -d /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
 
 mount_all_apps
+log_msg "ldconfg after mounting apps"
+/sbin/ldconfig -v 2>&1 | tee -a $LOG_FILE
+
+set_path_ld_library
 vbox_fix_permissions
 
 /usr/local/bin/install_green_apps &
 
-log_msg "ldconfg after mounting apps"
-/sbin/ldconfig -v 2>&1 | tee -a $LOG_FILE
 
 while ! ps ax | grep dockerd | grep -q -v grep ; do
    log_msg "waiting for docker daemon"

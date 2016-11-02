@@ -2,8 +2,6 @@
 
 . /etc/green_common
 
-mount_all_apps
-
 set_path_ld_library
 export PATH
 export LD_LIBRARY_PATH

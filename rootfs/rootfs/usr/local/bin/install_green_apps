@@ -56,6 +56,9 @@ download_app() {
               echo ${ver} > /opt/apps/${app}/VERSION
               log_msg "mount_bind_opt_apps ${app}"
               mount_bind_opt_apps ${app}
+              if [ "$app" == "VirtualBox" ]; then
+                  vbox_fix_permissions
+              fi
         else
               log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.gz, error tar tf $APPS_HOME/${app}_${ver}.tar.gz (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
         fi
@@ -84,8 +87,5 @@ for appver in $GREEN_APPS; do
        fi
 
 
-       if [ "$app" == "VirtualBox" ]; then
-            vbox_fix_permissions
-       fi
    fi
 done
