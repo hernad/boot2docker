@@ -8,7 +8,7 @@ GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
 
 if [ -z "$GREEN_APPS" ] ; then
   GREEN_APPS="green_$GREEN_APPS_VERSION x11_$X11_APPS_VERSION"
-  GREEN_APPS+=" VirtualBox_$VBOX_VERSION-$KERNEL_VERSION vagrant_$VAGRANT_VERSION"
+  GREEN_APPS+=" VirtualBox_$VBOX_VERSION vagrant_$VAGRANT_VERSION"
   GREEN_APPS+=" perl5_$PERL5_VERSION  python2_$PYTHON2_VERSION vim_$VIM_VERSION"
 fi
 
@@ -85,11 +85,7 @@ for appver in $GREEN_APPS; do
 
 
        if [ "$app" == "VirtualBox" ]; then
-         # VirtualBox execs has to be root
-         chown root:root -R /opt/apps/VirtualBox
-         chmod 4755 /opt/apps/VirtualBox/VirtualBox /opt/apps/VirtualBox/VBoxHeadless
-	       chmod g-w /opt
-	       chmod g-w /opt/VirtualBox
+            vbox_fix_permissions
        fi
    fi
 done
