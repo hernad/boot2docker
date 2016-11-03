@@ -35,7 +35,6 @@ ln -fs /opt/green/bin/logrotate $ROOTFS/usr/bin/
 ln -fs /opt/python2/lib/libpython2.7.so.1.0 $ROOTFS/usr/lib/
 ln -fs /opt/perl5/bin/perl $ROOTFS/usr/bin/
 
-ln -fs $BOOT_DIR/etc/passwd $ROOTFS/etc/
 
 # Setup /etc/os-release with some nice contents
 NAME=greenbox

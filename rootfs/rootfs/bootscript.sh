@@ -139,6 +139,10 @@ vbox_fix_permissions
 
 /usr/local/bin/install_green_apps &
 
+if [ ! -f $BOOT_DIR/etc/passwd ] ; then
+   mv /etc/passwd $BOOT_DIR/etc/passwd
+fi
+rm /etc/passwd  ; ln -s $BOOT_DIR/etc/passwd /etc/passwd # permanent passwd
 
 while ! ps ax | grep dockerd | grep -q -v grep ; do
    log_msg "waiting for docker daemon"
