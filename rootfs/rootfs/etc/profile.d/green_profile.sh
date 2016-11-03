@@ -24,8 +24,12 @@ if ps ax | grep -q curl.*.tar.gz$ ; then
   ps ax | grep curl.*.tar.gz$ | awk '{print $7}'
 fi
 echo -e
-[ -e /usr/bin/python ] && echo "python: `/usr/bin/python --version`"
-[ -e /usr/bin/perl ] && echo "perl: `perl -v | sed -n '/This is perl/,2p'`"
+[ -e /usr/bin/python ] && echo "`/usr/bin/python --version`"
+[ -e /usr/bin/perl ] && echo "`perl -v | sed -n '/This is perl/,2p'`"
+echo "VirtualBox: `VBoxManage --version`"
+echo -e
+echo_line
+echo "MY Public IP: `curl ifconfig.co`,  adsl.out.ba IP: `dig +short adsl.out.ba` "
 echo -e
 echo_line
 echo "PATH: $PATH"
