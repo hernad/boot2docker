@@ -51,4 +51,4 @@ echo "docker: `docker -v`"
 echo -e
 
 [ "`cat /etc/passwd | grep -q "^tc:" |  awk -F: '{print $7}'`" != "/bin/false" ] && \
-   echo -e "${RED}SECURITY hole (tc_login_open) !\nRUN \$ disable_tc_login !\n${NORMAL}"
+   echo -e "${RED}SECURITY hole (tc_login_open) !\nRUN ${GREEN}\$ disable_tc_login\n${NORMAL}"
