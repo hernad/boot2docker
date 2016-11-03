@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . /etc/green_common
+. /etc/init.d/tc-functions
 
 set_path_ld_library
 export PATH
@@ -8,7 +9,7 @@ export LD_LIBRARY_PATH
 export TERM=linux
 
 echo_line() {
-  echo "----------------------------------------------------------------"
+  echo "------------------------------$1----------------------------------"
 }
 
 echo -e
@@ -24,9 +25,14 @@ if ps ax | grep -q curl.*.tar.gz$ ; then
   ps ax | grep curl.*.tar.gz$ | awk '{print $7}'
 fi
 echo -e
+echo_line " Application versions: "
+[ -n "`which vim`" ] echo "`vim --version | grep ^VIM`"
 [ -e /usr/bin/python ] && echo "`/usr/bin/python --version`"
 [ -e /usr/bin/perl ] && echo "`perl -v | sed -n '/This is perl/,2p'`"
-echo "VirtualBox: `VBoxManage --version`"
+[ -e /opt/VirtualBox/VirtualBox ] && echo "VirtualBox: `VBoxManage --version`"
+[ -d /opt/go ] && export GOROOT=/opt/go && /opt/go/bin/go version
+[ -n "$GOROOT" ] && export GOPATH=/home/docker/go && mkdir -p $GOPATH && echo "GOPATH=$GOPATH"
+[ -n "`which npm`"] && echo "nodejs/npm: `npm version`"
 echo -e
 echo_line
 echo "MY Public IP: `curl -s ifconfig.co`,  adsl.out.ba IP: `dig +short adsl.out.ba` "
@@ -41,4 +47,4 @@ echo "docker: `docker -v`"
 echo -e
 
 [ "`cat /etc/passwd | grep -q "^tc:" |  awk -F: '{print $7}'`" != "/bin/false" ] && \
-   echo "${RED}SECURITY hole (tc_login_open) => \$ disasble_tc_login !${NORMAL}"
+   echo -e "${RED}SECURITY hole (tc_login_open) !\nRUN \$ disable_tc_login !\n${NORMAL}"
