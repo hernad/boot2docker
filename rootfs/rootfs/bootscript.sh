@@ -104,8 +104,8 @@ fi
 [ -d $BOOT_DIR/root ] || mkdir -p /root
 ln -s $BOOT_DIR/root /root
 
-[ -f  $BOOT_DIR/root/.password ] && change_user_password root `cat $BOOT_DIR/root/.password` && log_msg "log_msg change root user password"
-[ -f  /home/docker/.password ] && change_user_password docker `cat /home/docker/.password` && log_msg "log_msg change docker user password"
+#[ -f  $BOOT_DIR/root/.password ] && change_user_password root `cat $BOOT_DIR/root/.password` && log_msg "log_msg change root user password"
+#[ -f  /home/docker/.password ] && change_user_password docker `cat /home/docker/.password` && log_msg "log_msg change docker user password"
 
 /etc/rc.d/tce-loader
 /etc/rc.d/acpid
@@ -139,10 +139,13 @@ vbox_fix_permissions
 
 /usr/local/bin/install_green_apps &
 
-if [ ! -f $BOOT_DIR/etc/passwd ] ; then
-   mv /etc/passwd $BOOT_DIR/etc/passwd
-fi
-rm /etc/passwd  ; ln -s $BOOT_DIR/etc/passwd /etc/passwd # permanent passwd
+for f in passwd shadow shadow- ; do
+ if [ ! -f $BOOT_DIR/etc/$f ] ; then
+    [ -d $BOOT_DIR/etc ] || mkdir -p $BOOT_DIR/etc
+    mv /etc/$f $BOOT_DIR/etc/$f # ram -> BOOT_DIR
+ fi
+ rm /etc/$f  ; ln -s $BOOT_DIR/etc/$f /etc/$f ; chown root:root $BOOT_DIR/etc/$f # permanent passwd
+done
 
 while ! ps ax | grep dockerd | grep -q -v grep ; do
    log_msg "waiting for docker daemon"
