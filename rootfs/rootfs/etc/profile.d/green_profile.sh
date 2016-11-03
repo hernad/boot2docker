@@ -27,12 +27,12 @@ fi
 echo -e
 echo_line " Application versions: "
 [ -n "`which vim`" ] && echo "`vim --version | grep ^VIM`"
-[ -e /usr/bin/python ] && echo "`/usr/bin/python --version`"
+[ -e /usr/bin/python ] && echo "`python -V 2>&1 | xargs`"
 [ -e /usr/bin/perl ] && echo "`perl -v | sed -n '/This is perl/,2p'`"
 [ -e /opt/VirtualBox/VirtualBox ] && echo "VirtualBox: `VBoxManage --version`"
-[ -d /opt/go ] && export GOROOT=/opt/go && /opt/go/bin/go version
-[ -n "$GOROOT" ] && export GOPATH=/home/docker/go && mkdir -p $GOPATH && echo "GOPATH=$GOPATH"
-[ -n "`which npm`" ] && echo "nodejs/npm: `npm version`"
+[ -d /opt/go ] && export GOROOT=/opt/go
+[ -n "$GOROOT" ] && export GOPATH=/home/docker/go && mkdir -p $GOPATH && echo "GOPATH=$GOPATH, `/opt/go/bin/go version`"
+[ -n "`which npm`" ] && echo nodejs/npm: `npm version | tr  -d '\n' | sed -e 's/,[[:space:]]\+/, /g' | sed -e 's/:[[:space:]]\+/: /g' | tr -d "'"`
 echo -e
 echo_line "    Kernel info:   "
 uname -a
