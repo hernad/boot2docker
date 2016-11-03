@@ -34,6 +34,10 @@ echo_line " Application versions: "
 [ -n "$GOROOT" ] && export GOPATH=/home/docker/go && mkdir -p $GOPATH && echo "GOPATH=$GOPATH"
 [ -n "`which npm`"] && echo "nodejs/npm: `npm version`"
 echo -e
+echo_line " Kernel info: "
+uname -a
+echo "ZFS `modinfo zfs | grep "version.*[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]-]\+$"`"
+echo -e
 echo_line
 echo "MY Public IP: `curl -s ifconfig.co`,  adsl.out.ba IP: `dig +short adsl.out.ba` "
 echo -e
