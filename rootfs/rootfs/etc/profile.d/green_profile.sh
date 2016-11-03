@@ -29,7 +29,7 @@ echo -e
 echo "VirtualBox: `VBoxManage --version`"
 echo -e
 echo_line
-echo "MY Public IP: `curl ifconfig.co`,  adsl.out.ba IP: `dig +short adsl.out.ba` "
+echo "MY Public IP: `curl -s ifconfig.co`,  adsl.out.ba IP: `dig +short adsl.out.ba` "
 echo -e
 echo_line
 echo "PATH: $PATH"
@@ -39,3 +39,6 @@ echo_line
 echo "greenbox version $(cat /etc/sysconfig/greenbox), build $(cat /etc/sysconfig/greenbox_build)"
 echo "docker: `docker -v`"
 echo -e
+
+[ "`cat /etc/passwd | grep -q "^tc:" |  awk -F: '{print $7}'`" != "/bin/false" ] && \
+   echo "${RED}SECURITY hole (tc_login_open) => \$ disasble_tc_login !${NORMAL}"

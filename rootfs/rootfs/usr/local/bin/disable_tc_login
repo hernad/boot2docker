@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. /etc/green_common
+
+[ `whoami` != root ] && echo "you have to be root user !" && exit 1
+
+sed -i  's/^\(tc.*\)\/bin\/sh$/\1\/bin\/false/'  /etc/passwd
+
+echo -e
+echo "----------------- /etc/paswd ------------"
+echo -e
+cat /etc/passwd
