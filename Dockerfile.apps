@@ -1,4 +1,4 @@
-FROM greenbox:2.1.1
+FROM greenbox:2.1.3
 
 ARG DOCKER_PROXY=172.17.0.4
 
@@ -9,7 +9,7 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
 RUN apt-get update
 
 ENV LOGROTATE_VER=3.10.0
-RUN apt-get install -y libpopt-dev 
+RUN apt-get install -y libpopt-dev
 RUN curl -k -LO https://github.com/logrotate/logrotate/releases/download/$LOGROTATE_VER/logrotate-$LOGROTATE_VER.tar.gz &&\
    tar xvf logrotate-$LOGROTATE_VER.tar.gz &&\
    cd /logrotate-$LOGROTATE_VER &&\
@@ -226,13 +226,14 @@ ENV GOLANG_VER=1.7.3
 RUN curl -LO https://storage.googleapis.com/golang/go${GOLANG_VER}.linux-amd64.tar.gz &&\
     tar xf go${GOLANG_VER}.linux-amd64.tar.gz &&\
     ls -ld go* ; mv go /opt/apps/go &&\
+    rm -rf /opt/app/go/test &&\
     rm go${GOLANG_VER}.linux-amd64.tar.gz
 
 ENV NODEJS_VER=6.9.1
 RUN curl -LO https://nodejs.org/dist/v${NODEJS_VER}/node-v${NODEJS_VER}-linux-x64.tar.xz &&\
    tar xf node-v${NODEJS_VER}-linux-x64.tar.xz &&\
    ls -ld node* ; mv node-v${NODEJS_VER}-linux-x64 /opt/apps/node &&\
-   rm node-v${NODEJS_VER}-linux-x64.tar.xz 
+   rm node-v${NODEJS_VER}-linux-x64.tar.xz
 
 ENV JAVA8_UPD 112
 ENV JAVA8_BUILD 15
@@ -258,7 +259,8 @@ RUN curl -LO https://github.com/atom/atom/releases/download/v1.11.2/atom-amd64.d
     mkdir -p /opt/apps/atom/bin &&  mv /opt/apps/atom/atom /opt/apps/atom/bin/
 
 # https://github.com/prasmussen/gdrive
-RUN curl --output /opt/apps/green/bin/gdrive -L https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&export=download && \
-    chmod +x /opt/apps/green/bin/gdrive
+RUN curl -L https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA\&export=download > /opt/apps/green/bin/gdrive &&\
+   ls /opt/apps/green/bin/gdrive ; chmod +x /opt/apps/green/bin/gdrive
 
-
+COPY extract_so_deps.sh /
+RUN bash /extract_so_deps.sh

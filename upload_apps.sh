@@ -3,8 +3,8 @@ APP=VirtualBox
 #./upload_app.sh $APP ${VER}
 
 APP=green
-VER=1.7.0
-#./upload_app.sh $APP $VER
+VER=1.7.1
+./upload_app.sh $APP $VER
 
 APP=vagrant
 VER=1.8.6
@@ -29,8 +29,8 @@ VER=6.9.1
 #./upload_app.sh $APP $VER
 
 APP=x11
-VER=2.0.0
-#./upload_app.sh $APP $VER
+VER=3.0.0
+./upload_app.sh $APP $VER
 
 
 APP=java
@@ -40,4 +40,3 @@ VER=8.112.15
 APP=atom
 VER=1.11.2
 #./upload_app.sh $APP $VER
-
