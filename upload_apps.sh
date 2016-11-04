@@ -40,3 +40,8 @@ VER=8.112.15
 APP=atom
 VER=1.11.2
 #./upload_app.sh $APP $VER
+
+APP=code
+VER=1.7.1
+./upload_app $APP $VER
+

@@ -342,8 +342,7 @@ RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
 		   esac ; done < Xorg-7.7-bin.tcz.list &&\
    cd $ROOTFS/usr/local/lib && \
    mv libpng* libXau* libxcb* libXdmcp* libX11* libICE* libXt* libSM* libXmu* libXcursor* libdrm* libXfont* \
-         /opt/apps/x11/lib &&\
-   rm -rf $ROOTFS/usr/local/share/X11
+         /opt/apps/x11/lib
 
 
 # cleanup virtualbox
@@ -366,7 +365,8 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/fs/btrfs
 
 # /opt/apps/x11/share/{xcb,locale}
-RUN cp -av /usr/lib/share/X11 /opt/apps/x11/share
+RUN cp -av /usr/share/X11 /opt/apps/x11/share &&\
+   rm -rf $ROOTFS/usr/local/share/X11
 
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
  
