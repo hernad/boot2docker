@@ -1,5 +1,5 @@
 [greenbox_hosts]
-10.10.10.10  ansible_ssh_user=docker 
+10.10.10.12  ansible_ssh_user=docker 
 ;192.168.168.106  ansible_ssh_user=docker
 ;192.168.168.137  ansible_ssh_user=docker
 
