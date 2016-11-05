@@ -35,7 +35,11 @@ download_app() {
   APPS_HOME=/opt/apps
   cd $APPS_HOME
 
-  for ext in gz xz bz2 ; do
+  case $app in
+    VirtualBox|green|vagrant|vim|python2|go|node|x11|idea|atom|java|code) ext="xz" ;;
+    *) ext="gz" ;;
+  esac
+
 
    LOCAL_MEDIA=/media/GREEN_INIT/apps/${app}_${ver}.tar.${ext}
    if [ -f $LOCAL_MEDIA ] ; then
@@ -53,7 +57,7 @@ download_app() {
    else
         umount_opt ${app}
         cd $APPS_HOME
-	      if tar xf ${app}_${ver}.tar.gz 2>&1 | tee -a $LOG_FILE ; then
+	      if tar xf ${app}_${ver}.tar.${ext} 2>&1 | tee -a $LOG_FILE ; then
               log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.${ext}"
               rm ${app}_${ver}.tar.${ext}
               chown -R root:root ${app}
@@ -67,8 +71,7 @@ download_app() {
               log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.${ext}, error tar tf $APPS_HOME/${app}_${ver}.tar.${ext} (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
         fi
    fi
-   
-  done
+
 
 }
 

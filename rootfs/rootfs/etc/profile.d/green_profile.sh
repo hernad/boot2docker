@@ -33,6 +33,8 @@ echo_line " Application versions: "
 [ -d /opt/go ] && export GOROOT=/opt/go
 [ -n "$GOROOT" ] && export GOPATH=/home/docker/go && mkdir -p $GOPATH && echo "GOPATH=$GOPATH, `/opt/go/bin/go version`"
 [ -n "`which npm`" ] && echo nodejs/npm: `npm version | tr  -d '\n' | sed -e 's/,[[:space:]]\+/, /g' | sed -e 's/:[[:space:]]\+/: /g' | tr -d "'"`
+[ -d /opt/java ] && export JAVA_HOME=/opt/java
+[ -n "$JAVA_HOME" ] && echo "JAVA_HOME=$JAVA_HOME", `/opt/java/bin/java -v 2>&1 | xargs echo`
 echo -e
 echo_line "    Kernel info:   "
 uname -a

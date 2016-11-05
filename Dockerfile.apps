@@ -282,3 +282,10 @@ RUN apt-get -y install libxss1
 
 COPY extract_so_deps.sh /
 RUN bash  /extract_so_deps.sh
+
+
+ENV DROPBOX_VER=1.4.0
+RUN curl -LO https://github.com/dropbox/dbxcli/releases/download/v${DROPBOX_VER}/dbxcli-linux-amd64 &&\
+    mv dbxcli-linux-amd64 /opt/apps/green/bin/dbxcli && chmod +x /opt/apps/green/bin/dbxcli
+
+
