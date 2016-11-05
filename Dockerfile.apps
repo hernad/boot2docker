@@ -280,9 +280,10 @@ RUN echo "X11 `ls -ld /usr/share/X11/*`"  && cp -av /usr/share/X11/* /opt/apps/x
 # visual studio code deps
 RUN apt-get -y install libxss1
 
+RUN rm -rf /opt/apps/x11/lib/libdrm_*  # exclude drm drivers
+
 COPY extract_so_deps.sh /
 RUN bash  /extract_so_deps.sh
-
 
 ENV DROPBOX_VER=1.4.0
 RUN curl -LO https://github.com/dropbox/dbxcli/releases/download/v${DROPBOX_VER}/dbxcli-linux-amd64 &&\
