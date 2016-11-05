@@ -4,7 +4,7 @@ APP=VirtualBox
 
 APP=green
 VER=1.7.1
-./upload_app.sh $APP $VER
+#./upload_app.sh $APP $VER
 
 APP=vagrant
 VER=1.8.6
@@ -29,7 +29,7 @@ VER=6.9.1
 #./upload_app.sh $APP $VER
 
 APP=x11
-VER=3.0.0
+VER=3.0.1
 ./upload_app.sh $APP $VER
 
 
@@ -43,5 +43,5 @@ VER=1.11.2
 
 APP=code
 VER=1.7.1
-./upload_app $APP $VER
+#./upload_app.sh $APP $VER
 

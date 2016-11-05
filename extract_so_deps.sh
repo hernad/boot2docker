@@ -2,16 +2,15 @@
 
 mkdir /opt/apps/x11/lib/
 
-for JAVA_SO in libprism_sw.so libprism_es2.so ; do
+LDD_CHECK="/opt/apps/code/code /opt/apps/atom/bin/atom /opt/apps/java/jre/lib/amd64/ldprism_sw.so /opt/apps/java/jre/lib/amd64/ldprism_es2.so"
 
-echo -e
-echo "================================================"
-echo "checking $JAVA_SO"
-
-FILES_FULLPATH=`ldd /opt/apps/java/jre/lib/amd64/$JAVA_SO | awk '{print $3 }'`
-FILES=`ldd /opt/apps/java/jre/lib/amd64/$JAVA_SO | awk '{print $3 }' | sed -e 's/^.*\/\(lib\([xXa-zA-Z0-9._+]\|-\)\+\)$/\1/'`
+FILES_FULLPATH=`ldd | awk '{print $3 }'`
+FILES=`ldd $LDD_CHECK | awk '{print $3 }' | sed -e 's/^.*\/\(lib\([xXa-zA-Z0-9._+]\|-\)\+\)$/\1/'`
 
 for f in $FILES ; do
+
+   echo $f
+
    f_rootfs=`find /rootfs -name $f`
    if [ -z "$f_rootfs" ] ; then
       echo "$f nema u rootfs"
@@ -20,6 +19,4 @@ for f in $FILES ; do
          [ -n "$f" ] && [[ "$fp" =~ "$f" ]]  && echo kopirati $fp && cp -av $fp /opt/apps/x11/lib/
       done
    fi
-done
-
 done
