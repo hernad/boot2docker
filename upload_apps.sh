@@ -27,6 +27,11 @@ VER=2.7.12
 rm -rf $APP
 #./upload_app.sh $APP $VER J
 
+APP=ruby
+VER=2.3.1
+rm -rf $APP
+./upload_app.sh $APP $VER J
+
 APP=go
 VER=1.7.3
 rm -rf $APP

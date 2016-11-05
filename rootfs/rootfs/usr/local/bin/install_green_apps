@@ -20,8 +20,7 @@ GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
 if [ -z "$GREEN_APPS" ] ; then
   GREEN_APPS="green_$GREEN_APPS_VER x11_$X11_APPS_VER"
   GREEN_APPS+=" VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER"
-  #perl5_$PERL5_VERSION
-  GREEN_APPS+=" python2_$PYTHON2_VER vim_$VIM_VER"
+  GREEN_APPS+=" python2_$PYTHON2_VER vim_$VIM_VER ruby_$RUBY_VER"
 fi
 
 if [ -z "$GREEN_APPS_2" ] ; then

@@ -50,7 +50,8 @@ echo -e
 echo_line
 echo "greenbox version $(cat /etc/sysconfig/greenbox), build $(cat /etc/sysconfig/greenbox_build)"
 echo "docker: `docker -v`"
-echo -e
+[ -d /opt/green ] && echo "`docker-compose --version`"
 
+echo -e
 [ "`cat /etc/passwd | grep "^tc:" |  awk -F: '{print $7}'`" != "/bin/false" ] && \
    echo -e "${RED}SECURITY hole (tc_login_open) !\nRUN ${GREEN}# disable_tc_login\n${NORMAL}"
