@@ -1,9 +1,13 @@
 *.iso__BROKEN
 *.iso
 *.tar.gz
+*.tar.bz2
+*.tar.xz
 persist.raw
 bins
 vbox
 apt-cacher-ng
 GREEN_INIT
 .git
+idea/
+x11/
