@@ -4,6 +4,8 @@ apt-cacher-ng/
 GREEN_INIT/
 bins/
 *.tar.gz
+*.tar.bz2
+*.tar.xz
 rootfs/isolinux/boot.msg
 rootfs/rootfs/usr/local/etc/motd
 rootfs/isolinux/isolinux.cfg

@@ -167,8 +167,8 @@ include $BOOT_DIR/etc/logrotate.d
 EOM
 [ -d $BOOT_DIR/etc/logrotate.d ] || mkdir -p $BOOT_DIR/etc/logrotate.d
 
-[ -f /opt/atom/atom ] || ln -s /opt/atom/atom /usr/bin/atom  # atom editor
-[ -f /opt/idea/bin/idea.sh ] || ln -s /opt/idea/bin/idea.sh /usr/bin/idea # IntelliJ idea
+[ -f /opt/atom/atom ] && ln -s /opt/atom/atom /usr/bin/atom  # atom editor
+[ -f /opt/idea/bin/idea.sh ] && ln -s /opt/idea/bin/idea.sh /usr/bin/idea # IntelliJ idea
 
 
 log_msg "starting $BOOT_DIR/init.d scripts ..."
