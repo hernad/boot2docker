@@ -7,11 +7,25 @@ BINTRAY_PACKAGE=$1
 #BINTRAY_PACKAGE_VER=5.0.10
 BINTRAY_PACKAGE_VER=$2
 
+COMPRESSION=${3:-z} # z - gzip, j-bz2, J-xz
 
 [ -z "$BINTRAY_PACKAGE" ] && echo package name mora biti navedeno && exit 1
 [ -z "$BINTRAY_PACKAGE_VER" ] && echo package version mora biti navedeno && exit 1
 
-FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.tar.gz
+case $COMPRESSION in
+  z)
+  EXT="tar.gz"
+  ;;
+  j)
+  EXT="tar.bz2"
+  ;;
+  J)
+  EXT="tar.xz" ;;
+esac
+
+
+FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.${EXT}
+
 CT=greenbox_apps
 
 if [ ! -f $FILE ] ; then
@@ -50,7 +64,8 @@ if [ ! -f $FILE ] ; then
            fi
            ;;
    esac 
-   tar cvfz $FILE ${BINTRAY_PACKAGE}
+   echo "tar cv${COMPRESSION}f $FILE ${BINTRAY_PACKAGE}"
+   tar cv${COMPRESSION}f $FILE ${BINTRAY_PACKAGE}
    rm -r -f ${BINTRAY_PACKAGE}
 fi
 

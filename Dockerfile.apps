@@ -267,6 +267,18 @@ RUN curl -L https://go.microsoft.com/fwlink/?LinkID=620884 > code.tar.gz
 RUN tar xf code.tar.gz && mv VSCode-linux-x64 /opt/apps/code &&\
     rm code.tar.gz
 
+ENV IDEA_VER=2016.2.5
+RUN cd /opt/apps && curl -LO https://download.jetbrains.com/idea/ideaIC-${IDEA_VER}-no-jdk.tar.gz &&\
+     tar xf ideaIC-${IDEA_VER}-no-jdk.tar.gz &&\
+     rm -rf ideaIC*.tar.gz &&\
+     mv idea-IC-* idea
+
+# /opt/apps/x11/share/{xcb,locale}
+RUN echo "X11 `ls -ld /usr/share/X11/*`"  && cp -av /usr/share/X11/* /opt/apps/x11/share/ &&\
+   rm -rf $ROOTFS/usr/local/share/X11
+
+# visual studio code deps
+RUN apt-get -y install libxss1
 
 COPY extract_so_deps.sh /
-RUN bash /extract_so_deps.sh
+RUN bash  /extract_so_deps.sh

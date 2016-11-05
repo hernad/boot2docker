@@ -45,3 +45,6 @@ APP=code
 VER=1.7.1
 #./upload_app.sh $APP $VER
 
+APP=idea
+VER=2016.5.2
+#./upload_app.sh $APP $VER J  #.tar.xz

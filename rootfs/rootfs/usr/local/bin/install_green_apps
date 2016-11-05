@@ -10,7 +10,7 @@ GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
 if [ -z "$GREEN_APPS" ] ; then
   GREEN_APPS="green_$GREEN_APPS_VERSION x11_$X11_APPS_VERSION"
   GREEN_APPS+=" VirtualBox_$VBOX_VERSION vagrant_$VAGRANT_VERSION"
-  #perl5_$PERL5_VERSION  
+  #perl5_$PERL5_VERSION
   GREEN_APPS+=" python2_$PYTHON2_VERSION vim_$VIM_VERSION"
 fi
 
@@ -32,28 +32,30 @@ download_app() {
   app=$1
   ver=$2
 
-   APPS_HOME=/opt/apps
-   cd $APPS_HOME
+  APPS_HOME=/opt/apps
+  cd $APPS_HOME
 
-   LOCAL_MEDIA=/media/GREEN_INIT/apps/${app}_${ver}.tar.gz
+  for ext in gz xz bz2 ; do
+
+   LOCAL_MEDIA=/media/GREEN_INIT/apps/${app}_${ver}.tar.${ext}
    if [ -f $LOCAL_MEDIA ] ; then
-      log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.gz ..."
+      log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.${ext} ..."
       cp $LOCAL_MEDIA $APPS_HOME/
    else
-      echo "downloading: $GREEN_BINTRAY/${app}_${ver}.tar.gz ..."
-      log_msg "START: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
+      echo "downloading: $GREEN_BINTRAY/${app}_${ver}.tar.${ext} ..."
+      log_msg "START: curl $GREEN_BINTRAY/${app}_${ver}.tar.${ext}"
       cd $APPS_HOME
-      curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.gz
+      curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.${ext}
    fi
 
    if [ $? -ne 0 ] ; then
-        log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
+        log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.${ext}"
    else
         umount_opt ${app}
         cd $APPS_HOME
 	      if tar xf ${app}_${ver}.tar.gz 2>&1 | tee -a $LOG_FILE ; then
-              log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.gz"
-              rm ${app}_${ver}.tar.gz
+              log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.${ext}"
+              rm ${app}_${ver}.tar.${ext}
               chown -R root:root ${app}
               echo ${ver} > /opt/apps/${app}/VERSION
               log_msg "mount_bind_opt_apps ${app}"
@@ -62,9 +64,11 @@ download_app() {
                   vbox_fix_permissions
               fi
         else
-              log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.gz, error tar tf $APPS_HOME/${app}_${ver}.tar.gz (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
+              log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.${ext}, error tar tf $APPS_HOME/${app}_${ver}.tar.${ext} (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
         fi
    fi
+   
+  done
 
 }
 

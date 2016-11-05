@@ -364,10 +364,6 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/drivers/input/joystick &&\
     rm -rf ./kernel/fs/btrfs
 
-# /opt/apps/x11/share/{xcb,locale}
-RUN echo "X11 `ls -ld /usr/share/X11/*`"  && cp -av /usr/share/X11 /opt/apps/x11/share &&\
-   rm -rf $ROOTFS/usr/local/share/X11
-
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
  
 RUN /make_iso.sh
