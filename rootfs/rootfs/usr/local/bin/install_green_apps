@@ -64,6 +64,7 @@ download_app() {
     *) ext="gz" ;;
   esac
 
+   if [ -f /opt/apps/${app}_${ver}.tar.${ext} ] && echo "download in progres STOP!" && return
 
    LOCAL_MEDIA=/media/GREEN_INIT/apps/${app}_${ver}.tar.${ext}
    if [ -f $LOCAL_MEDIA ] ; then

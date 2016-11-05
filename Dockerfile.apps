@@ -1,4 +1,4 @@
-FROM greenbox:2.1.3
+FROM greenbox:2.1.6
 
 ARG DOCKER_PROXY=172.17.0.4
 
@@ -258,14 +258,24 @@ RUN curl -LO https://github.com/atom/atom/releases/download/v1.11.2/atom-amd64.d
     mv /usr/share/atom /opt/apps/atom  &&\
     mkdir -p /opt/apps/atom/bin &&  mv /opt/apps/atom/atom /opt/apps/atom/bin/
 
+
+# green_app/gdrive
 # https://github.com/prasmussen/gdrive
 RUN curl -L https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA\&export=download > /opt/apps/green/bin/gdrive &&\
    ls /opt/apps/green/bin/gdrive ; chmod +x /opt/apps/green/bin/gdrive
 
+# green_app/dbxcli - dropbox client
+ENV DROPBOX_VER=1.4.0
+RUN curl -LO https://github.com/dropbox/dbxcli/releases/download/v${DROPBOX_VER}/dbxcli-linux-amd64 &&\
+    mv dbxcli-linux-amd64 /opt/apps/green/bin/dbxcli && chmod +x /opt/apps/green/bin/dbxcli
+
+
 # visual studio code 
-RUN curl -L https://go.microsoft.com/fwlink/?LinkID=620884 > code.tar.gz 
-RUN tar xf code.tar.gz && mv VSCode-linux-x64 /opt/apps/code &&\
+RUN apt-get -y install libxss1 &&\
+    curl -L https://go.microsoft.com/fwlink/?LinkID=620884 > code.tar.gz  &&\
+    tar xf code.tar.gz && mv VSCode-linux-x64 /opt/apps/code &&\
     rm code.tar.gz
+
 
 ENV IDEA_VER=2016.2.5
 RUN cd /opt/apps && curl -LO https://download.jetbrains.com/idea/ideaIC-${IDEA_VER}-no-jdk.tar.gz &&\
@@ -275,25 +285,14 @@ RUN cd /opt/apps && curl -LO https://download.jetbrains.com/idea/ideaIC-${IDEA_V
 
 # /opt/apps/x11/share/{xcb,locale}
 RUN echo "X11 `ls -ld /usr/share/X11/*`"  && cp -av /usr/share/X11/* /opt/apps/x11/share/ &&\
-   rm -rf $ROOTFS/usr/local/share/X11
-
-# visual studio code deps
-RUN apt-get -y install libxss1
-
-RUN rm -rf /opt/apps/x11/lib/libdrm_*  # exclude drm drivers
+   rm -rf $ROOTFS/usr/local/share/X11  &&\
+   rm -rf /opt/apps/x11/lib/libdrm_*  # exclude drm drivers
 
 COPY extract_so_deps.sh /
 RUN bash  /extract_so_deps.sh
 
-ENV DROPBOX_VER=1.4.0
-RUN curl -LO https://github.com/dropbox/dbxcli/releases/download/v${DROPBOX_VER}/dbxcli-linux-amd64 &&\
-    mv dbxcli-linux-amd64 /opt/apps/green/bin/dbxcli && chmod +x /opt/apps/green/bin/dbxcli
-
-
-ENV RUBY_VER=2.3.1
-
+# ==== ruby ============================================================================
 # https://github.com/docker-library/ruby/blob/master/2.3/Dockerfile
-
 # skip installing gem documentation
 RUN mkdir -p /opt/apps/ruby/etc \
 	&& { \
@@ -309,16 +308,17 @@ ENV RUBYGEMS_VERSION 2.6.8
 ENV PATH /opt/apps/ruby/bin:$PATH
 # some of ruby's build scripts are written in ruby
 #   we purge system ruby later to make sure our final image uses what we just built
+
 RUN set -ex \
 	\
 	&& buildDeps=' \
+                libreadline-dev \
 		bison \
 		libgdbm-dev \
 		ruby \
 	' \
-#	&& apt-get update \
-#	&& apt-get install -y --no-install-recommends $buildDeps \
-#	&& rm -rf /var/lib/apt/lists/* \
+	&& apt-get update \
+	&& apt-get install -y --no-install-recommends $buildDeps \
 	\
 	&& wget -O ruby.tar.gz "https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$RUBY_VERSION.tar.gz" \
 	&& echo "$RUBY_DOWNLOAD_SHA256 *ruby.tar.gz" | sha256sum -c - \
@@ -364,3 +364,5 @@ ENV BUNDLE_PATH="$GEM_HOME" \
 ENV PATH $BUNDLE_BIN:$PATH
 RUN mkdir -p "$GEM_HOME" "$BUNDLE_BIN" \
 	&& chmod 777 "$GEM_HOME" "$BUNDLE_BIN"
+
+
