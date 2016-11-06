@@ -101,7 +101,7 @@ if grep -q '^docker:' /etc/passwd; then
     #fi
 fi
 
-[ -d $BOOT_DIR/root ] || mkdir -p /root
+[ -d $BOOT_DIR/root ] || mkdir -p $BOOT_DIR/root
 ln -s $BOOT_DIR/root /root
 
 #[ -f  $BOOT_DIR/root/.password ] && change_user_password root `cat $BOOT_DIR/root/.password` && log_msg "log_msg change root user password"

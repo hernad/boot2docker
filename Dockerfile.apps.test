@@ -1,11 +1,18 @@
-FROM greenbox:1.2.1
+#FROM greenbox:1.2.1
+FROM debian:jessie
 
-ARG DOCKER_PROXY=172.17.0.4
+ARG DOCKER_PROXY=172.17.0.2
 
 RUN echo "docker proxy: $DOCKER_PROXY" \
  && echo "Acquire::HTTP::Proxy \"http://$DOCKER_PROXY:3142\";" > /etc/apt/apt.conf.d/01proxy \
  && echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
 
+RUN apt-get update ; apt-get install -y curl
+
+# http://download.virtualbox.org/virtualbox/5.1.8/
+ENV VBOX_VER=5.1.8 VBOX_BUILD=111374
+
+RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&    mkdir -p /lib ;    ln -s $ROOTFS/lib/modules /lib/modules ;
 
 
 #ENV LOGROTATE_VER=3.10.0
@@ -53,9 +60,9 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
 #RUN  mv /opt/java /opt/apps/java
 
 
-RUN curl -LO https://github.com/atom/atom/releases/download/v1.11.2/atom-amd64.deb 
-RUN dpkg -i atom-amd64.deb || apt-get install -f -y
-RUN mv /usr/share/atom /opt/apps/atom
-RUN mkdir -p /opt/apps/atom/bin &&  mv /opt/apps/atom/atom /opt/apps/atom/bin/
+#RUN curl -LO https://github.com/atom/atom/releases/download/v1.11.2/atom-amd64.deb 
+#RUN dpkg -i atom-amd64.deb || apt-get install -f -y
+#RUN mv /usr/share/atom /opt/apps/atom
+#RUN mkdir -p /opt/apps/atom/bin &&  mv /opt/apps/atom/atom /opt/apps/atom/bin/
 
 

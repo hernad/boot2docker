@@ -1,7 +1,7 @@
 FROM debian:jessie
 MAINTAINER Ernad Husremovic "hernad@bring.out.ba"
 
-ARG KERNEL_VERSION=4.4.28
+ARG KERNEL_VERSION=4.4.30
 ARG DOCKER_PROXY=172.17.0.4
 
 RUN echo "docker proxy: $DOCKER_PROXY" \
@@ -168,14 +168,18 @@ RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
 
 
 # http://download.virtualbox.org/virtualbox/5.1.8/
-ENV VBOX_VER=5.1.8 VBOX_BUILD=111374
+#ENV VBOX_VER=5.1.8 VBOX_BUILD=111374
+ENV VBOX_VER=5.1.6 VBOX_BUILD=110634
 
-RUN curl -LO http://dlc-cdn.sun.com/virtualbox/$VBOX_VER/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
-    chmod +x *.run ;\
+#RUN curl -LO http://download.virtualbox.org/virtualbox/5.1.8/virtualbox-5.1_${VBOX_VER}-${VBOX_BUILD}~Debian~jessie_amd64.deb &&\
+#    dpkg -i virtualbox*.deb ; apt-get install -y -f
+
+RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
     mkdir -p /lib ;\
     ln -s $ROOTFS/lib/modules /lib/modules ;\
-    ./VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run ;\
-    cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
+    bash VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
+
+RUN cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
     cd / && curl -LO http://download.virtualbox.org/virtualbox/$VBOX_VER/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack &&\
     /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack  
    

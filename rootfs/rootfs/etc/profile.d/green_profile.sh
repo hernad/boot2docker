@@ -18,11 +18,12 @@ echo_line
 
 mount | grep "type zfs" | awk '{print $1 " -> "  $3}'
 
-if ps ax | grep -q curl.*.tar.gz$ ; then
+REGEX="curl.*\.tar\.[xg]z$"
+if ps ax |  grep -q -e  "$REGEX" ; then
   echo -e
   echo "curl downloads in progres:"
   echo_line
-  ps ax | grep curl.*.tar.gz$ | awk '{print $7}'
+  ps ax | grep -e "$REGEX" | awk '{print $7}'
 fi
 echo -e
 echo_line " Application versions: "

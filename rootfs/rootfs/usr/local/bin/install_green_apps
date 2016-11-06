@@ -5,7 +5,7 @@
 
 [ `whoami` != root ] && echo "you have to be root user !" && exit 1
 
-case $i in
+case "$1" in
   2) echo "install GREEN_APPS_2"
      INSTALL_SET="2"
      ;;
@@ -25,7 +25,7 @@ fi
 
 if [ -z "$GREEN_APPS_2" ] ; then
   GREEN_APPS_2="go_${GO_VER} node_${NODE_VER} perl_$PERL_VER java_${JAVA_VER}"
-  GREEN_APPS_2+=" idea_${IDEA_VER} atom_${ATOM_VER} code_${CODE_VER}"
+  GREEN_APPS_2+=" idea_${IDEA_VER} atom_${ATOM_VER} code_${CODE_VER} aws_${AWS_VER}"
 fi
 
 if [ "$INSTALL_SET" == "1" ] ; then
@@ -64,7 +64,7 @@ download_app() {
     *) ext="gz" ;;
   esac
 
-   if [ -f /opt/apps/${app}_${ver}.tar.${ext} ] && echo "download in progres STOP!" && return
+  [ -f /opt/apps/${app}_${ver}.tar.${ext} ] && echo "download in progres STOP!" && return
 
    LOCAL_MEDIA=/media/GREEN_INIT/apps/${app}_${ver}.tar.${ext}
    if [ -f $LOCAL_MEDIA ] ; then
