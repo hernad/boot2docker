@@ -5,12 +5,12 @@ APP=VirtualBox
 APP=green
 VER=2.0.0
 rm -rf $APP
-./upload_app.sh $APP $VER  J
+#./upload_app.sh $APP $VER  J
 
 APP=x11
 VER=3.1.0
 rm -rf $APP
-./upload_app.sh $APP $VER J
+#./upload_app.sh $APP $VER J
 
 APP=vagrant
 VER=1.8.6
@@ -30,7 +30,13 @@ rm -rf $APP
 APP=ruby
 VER=2.3.1
 rm -rf $APP
+#./upload_app.sh $APP $VER J
+
+APP=perl
+VER=5.25.6
+rm -rf $APP
 ./upload_app.sh $APP $VER J
+
 
 APP=go
 VER=1.7.3
@@ -60,3 +66,6 @@ APP=idea
 VER=2016.5.2
 rm -rf $APP
 #./upload_app.sh $APP $VER J
+
+
+

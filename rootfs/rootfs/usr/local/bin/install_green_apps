@@ -60,7 +60,7 @@ download_app() {
   cd $APPS_HOME
 
   case $app in
-    VirtualBox|green|vagrant|vim|python2|ruby|go|node|x11|idea|atom|java|code) ext="xz" ;;
+    VirtualBox|green|vagrant|vim|python2|ruby|go|node|x11|idea|atom|java|code|perl) ext="xz" ;;
     *) ext="gz" ;;
   esac
 

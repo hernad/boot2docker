@@ -154,9 +154,9 @@ RUN  export LD_LIBRARY_PATH=/opt/apps/green/lib &&\
      tar xvf lzop-${LZOP_VER}.tar.gz && cd lzop-${LZOP_VER} &&\
      ./configure --prefix=/opt/apps/green && make install
 
-RUN export PERL5_VER=5.22.1 && cd / && curl -LO http://www.cpan.org/src/5.0/perl-${PERL5_VER}.tar.gz &&\
-    tar xvf perl-${PERL5_VER}.tar.gz &&  cd perl-${PERL5_VER} &&\
-    ./Configure -des -Dprefix=/opt/apps/perl5 && make install
+RUN export PERL_VER=5.25.6 && cd / && curl -LO http://www.cpan.org/src/5.0/perl-${PERL_VER}.tar.gz &&\
+    tar xvf perl-${PERL_VER}.tar.gz &&  cd perl-${PERL_VER} &&\
+    ./Configure -des -Dprefix=/opt/apps/perl && make install
 
 RUN  export PCIUTILS_VER=3.4.0 && cd / && curl -LO ftp://atrey.karlin.mff.cuni.cz/pub/linux/pci/pciutils-${PCIUTILS_VER}.tar.gz &&\
     tar xvf pciutils-${PCIUTILS_VER}.tar.gz && cd pciutils-${PCIUTILS_VER} &&\
