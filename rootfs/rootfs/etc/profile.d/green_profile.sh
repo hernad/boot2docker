@@ -8,23 +8,13 @@ export PATH
 export LD_LIBRARY_PATH
 export TERM=linux
 
-echo_line() {
-  echo "------------------------------$1----------------------------------"
-}
-
 echo -e
 echo "zfs mount points"
 echo_line
 
 mount | grep "type zfs" | awk '{print $1 " -> "  $3}'
 
-REGEX="curl.*\.tar\.[xg]z$"
-if ps ax |  grep -q -e  "$REGEX" ; then
-  echo -e
-  echo "curl downloads in progres:"
-  echo_line
-  ps ax | grep -e "$REGEX" | awk '{print $7}'
-fi
+
 echo -e
 echo_line " Application versions: "
 [ -n "`which vim`" ] && echo "`vim --version | grep ^VIM`"
@@ -40,9 +30,6 @@ echo -e
 echo_line "    Kernel info:   "
 uname -a
 echo "ZFS `modinfo zfs | grep "version.*[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]-]\+$"`"
-echo -e
-echo_line
-echo "MY Public IP: `curl -s ifconfig.co`,  adsl.out.ba IP: `dig +short adsl.out.ba` "
 echo -e
 echo_line
 echo "PATH: $PATH"

@@ -140,5 +140,9 @@ vbox_fix_permissions() {
   fi
 }
 
+echo_line() {
+  echo "------------------------------$1----------------------------------"
+}
+
 GREEN_DEBUG=${GREEN_DEBUG:-1}
 set_log_file
