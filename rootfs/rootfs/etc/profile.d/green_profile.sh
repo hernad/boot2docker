@@ -8,12 +8,6 @@ export PATH
 export LD_LIBRARY_PATH
 export TERM=linux
 
-echo -e
-echo "zfs mount points"
-echo_line
-
-mount | grep "type zfs" | awk '{print $1 " -> "  $3}'
-
 
 echo -e
 echo_line " Application versions: "
