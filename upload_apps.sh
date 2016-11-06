@@ -33,7 +33,7 @@ rm -rf $APP
 #./upload_app.sh $APP $VER J
 
 APP=perl
-VER=5.25.6
+VER=5.24.0
 rm -rf $APP
 ./upload_app.sh $APP $VER J
 
@@ -66,6 +66,3 @@ APP=idea
 VER=2016.5.2
 rm -rf $APP
 #./upload_app.sh $APP $VER J
-
-
-

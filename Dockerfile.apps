@@ -125,7 +125,7 @@ ENV TCPDUMP_VER=4.8.1
 ENV LIBPCAP_VER=1.8.1
 RUN apt-get install -y bison flex &&\
     curl -LO http://www.tcpdump.org/release/libpcap-${LIBPCAP_VER}.tar.gz && tar xvf libpcap-${LIBPCAP_VER}.tar.gz && cd libpcap-${LIBPCAP_VER} &&\
-    ./configure --prefix=/opt/apps/green &&\
+    export LDFLAGS="-static" && ./configure --prefix=/opt/apps/green &&\
     make install &&\
     cd / && curl -LO http://www.tcpdump.org/release/tcpdump-${TCPDUMP_VER}.tar.gz && tar xvf tcpdump-${TCPDUMP_VER}.tar.gz && cd tcpdump-${TCPDUMP_VER} &&\
     ./configure --prefix=/opt/apps/green --libdir=/opt/apps/green/lib &&\
@@ -154,7 +154,7 @@ RUN  export LD_LIBRARY_PATH=/opt/apps/green/lib &&\
      tar xvf lzop-${LZOP_VER}.tar.gz && cd lzop-${LZOP_VER} &&\
      ./configure --prefix=/opt/apps/green && make install
 
-RUN export PERL_VER=5.25.6 && cd / && curl -LO http://www.cpan.org/src/5.0/perl-${PERL_VER}.tar.gz &&\
+RUN export PERL_VER=5.24.0 && cd / && curl -LO http://www.cpan.org/src/5.0/perl-${PERL_VER}.tar.gz &&\
     tar xvf perl-${PERL_VER}.tar.gz &&  cd perl-${PERL_VER} &&\
     ./Configure -des -Dprefix=/opt/apps/perl && make install
 
