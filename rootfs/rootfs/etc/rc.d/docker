@@ -1,5 +1,0 @@
-#!/bin/sh
-
-. /etc/green_common
-
-[ ! -f /opt/boot/init.d/nodockerstart ] && log_msg "start docker" && /usr/local/etc/init.d/docker start 

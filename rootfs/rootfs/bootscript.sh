@@ -111,6 +111,8 @@ ln -s $BOOT_DIR/root /root
 /etc/rc.d/acpid
 /etc/rc.d/sshd
 /etc/rc.d/vbox_kernel
+/etc/rc.d/start_docker_then_opt_boot_init_d_scripts &
+
 
 log_msg "$BOOT_DIR/bootlocal.sh - run local customisation commands"
 if [ -e $BOOT_DIR/bootlocal.sh ]; then
@@ -147,12 +149,6 @@ for f in passwd shadow shadow- ; do
  rm /etc/$f  ; ln -s $BOOT_DIR/etc/$f /etc/$f ; chown root:root $BOOT_DIR/etc/$f # permanent passwd
 done
 
-CNT=0
-while ! ps ax | grep dockerd | grep -q -v grep && [ $CNT -lt 90 ]; do
-   log_msg "waiting for docker daemon"
-   sleep 1
-   let CNT++
-done
 
 [ -d $BOOT_DIR/etc/sysconfig ] || mkdir -p $BOOT_DIR/etc/sysconfig
 [ -f $BOOT_DIR/etc/sysconfig/docker ] || mv /etc/sysconfig/docker $BOOT_DIR/etc/sysconfig/ # permanent docker version
@@ -176,8 +172,3 @@ EOM
 
 [ -f /opt/atom/atom ] && ln -s /opt/atom/atom /usr/bin/atom  # atom editor
 [ -d /opt/idea ] && [ ! -e /opt/idea/bin/idea ] && ln -s /opt/idea/bin/idea.sh /opt/idea/bin/idea # IntelliJ idea
-
-log_msg "starting $BOOT_DIR/init.d scripts ..."
-[ ! -d $BOOT_DIR/init.d ] && mkdir -p $BOOT_DIR/init.d &&\
-  echo "#!/bin/sh" > $BOOT_DIR/init.d/00_test.sh && chmod +x $BOOT_DIR/init.d/00_test.sh
-ls -1 $BOOT_DIR/init.d/ | xargs -I %  $BOOT_DIR/init.d/%
