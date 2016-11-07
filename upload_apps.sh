@@ -5,7 +5,7 @@ APP=VirtualBox
 APP=docker
 VER=`cat DOCKER_VERSION`
 rm -rf $APP
-./upload_app.sh $APP $VER  J
+#./upload_app.sh $APP $VER  J
 
 APP=green
 VER=3.0.0
@@ -25,7 +25,7 @@ rm -rf $APP
 APP=vim
 VER=8.0.62
 rm -rf $APP
-./upload_app.sh $APP $VER J
+#./upload_app.sh $APP $VER J
 
 APP=python2
 VER=2.7.12

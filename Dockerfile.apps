@@ -422,6 +422,12 @@ RUN rm -rf /opt/apps/green/bin/git-cvsserver &&\
 RUN rm /opt/apps/green/lib/*.a &&\
     rm /opt/apps/green/lib/*.la && echo green_apps removing static libraries
 
-RUN rm -rf /opt/apps/green/include/ ; echo green_apps removing include files
-RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
 
+RUN curl -LO https://download.samba.org/pub/samba/stable/samba-4.3.12.tar.gz
+RUN tar xf samba-4*.gz && cd samba-4* && ./configure --prefix=/opt/apps/samba &&\
+    make install
+
+RUN rm -rf /opt/apps/green/include/ ; echo green_apps removing include files
+RUN rm -rf /opt/apps/green/share
+RUN mv /opt/apps/green/sbin/ /opt/apps/green/bin/
+RUN rm -rf /opt/apps/go/test ; echo rm golang test directory

@@ -65,7 +65,7 @@ do
 
   case $arg in
       greenbox)
-         docker rmi -f greenbox:$DOCKER_VERSION
+         docker rmi -f greenbox:$GREENBOX_VERSION
          docker build $DOCKER_BUILD_OPTS \
               --build-arg DOCKER_PROXY=$DOCKER_PROXY \
               --build-arg KERNEL_VERSION=$KERNEL_VERSION -t greenbox:$GREENBOX_VERSION .

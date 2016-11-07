@@ -163,11 +163,8 @@ RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
 
 
 # http://download.virtualbox.org/virtualbox/5.1.8/
-#ENV VBOX_VER=5.1.8 VBOX_BUILD=111374
-ENV VBOX_VER=5.1.6 VBOX_BUILD=110634
-
-#RUN curl -LO http://download.virtualbox.org/virtualbox/5.1.8/virtualbox-5.1_${VBOX_VER}-${VBOX_BUILD}~Debian~jessie_amd64.deb &&\
-#    dpkg -i virtualbox*.deb ; apt-get install -y -f
+ENV VBOX_VER=5.1.8 VBOX_BUILD=111374
+#ENV VBOX_VER=5.1.6 VBOX_BUILD=110634
 
 RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
     mkdir -p /lib ;\
