@@ -245,8 +245,8 @@ RUN for dep in $TCZ_DEPS_X ; do \
 
 # glibc_apps: /usr/bin/localedef
 
-ENV TCZ_DEPS_1 cifs-utils fuse libffi bind-utilities libxml2 getlocale glibc_i18n_locale glibc_apps glibc_gconv
-#TCZ_DEPS_1 kmaps
+ENV TCZ_DEPS_1 cifs-utils fuse libffi getlocale glibc_i18n_locale glibc_apps glibc_gconv
+#TCZ_DEPS_1 bind-utilities libxml2
 
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \

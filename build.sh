@@ -69,11 +69,11 @@ do
          docker build $DOCKER_BUILD_OPTS \
               --build-arg DOCKER_PROXY=$DOCKER_PROXY \
               --build-arg KERNEL_VERSION=$KERNEL_VERSION -t greenbox:$GREENBOX_VERSION .
+         docker tag greenbox:$GREENBOX_VERSION greenbox:last
          ;;
      apps)
          docker rmi -f greenbox_apps:$GREENBOX_APPS_VERSION
          docker build $DOCKER_BUILD_OPTS --build-arg DOCKER_PROXY=$DOCKER_PROXY -t greenbox_apps:$GREENBOX_APPS_VERSION -f Dockerfile.apps . &&\
-         ( [ "$GREENBOX_APPS_VERSION" != "$GREENBOX_VERSION" ] && docker tag greenbox_apps:$GREENBOX_APPS_VERSION greenbox_apps:$GREENBOX_VERSION ) &&\
          docker tag greenbox_apps:$GREENBOX_APPS_VERSION greenbox_apps:last &&\
          echo "=== greenbox_apps:$GREENBOX_APPS_VERSION built!"
          ;;
