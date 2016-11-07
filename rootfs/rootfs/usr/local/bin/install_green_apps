@@ -30,12 +30,12 @@ GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
 
 
 if [ -z "$GREEN_APPS" ] ; then
-  GREEN_APPS="docker_$DOCKER_VERSION green_$GREEN_APPS_VER x11_$X11_APPS_VER"
-  GREEN_APPS+=" python2_$PYTHON2_VER vim_$VIM_VER ruby_$RUBY_VER"
+  GREEN_APPS="docker_$DOCKER_VERSION green_$GREEN_APPS_VER"
+  GREEN_APPS+=" python2_$PYTHON2_VER vim_$VIM_VER"
 fi
 
 if [ -z "$GREEN_APPS_2" ] ; then
-  GREEN_APPS_2="VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER perl_$PERL_VER go_${GO_VER} node_${NODE_VER}"
+  GREEN_APPS_2="x11_$X11_APPS_VER ruby_$RUBY_VER VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER perl_$PERL_VER go_${GO_VER} node_${NODE_VER}"
 fi
 
 if [ -z "$GREEN_APPS_3" ] ; then

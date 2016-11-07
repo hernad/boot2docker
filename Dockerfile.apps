@@ -390,10 +390,13 @@ RUN curl -LO ftp://ftp.isc.org/isc/bind9/9.11.0/bind-9.11.0.tar.gz &&\
     ./configure --prefix=/opt/apps/green && make -C lib/dns && make -C lib/isc && make -C lib/bind9 && make -C lib/isccfg && make -C lib/lwres &&\
      make -C bin/dig install
 
+
+# https://curl.haxx.se/download/curl-7.51.0.tar.bz2
+
 # http://www.linuxfromscratch.org/blfs/view/svn/general/git.html
 RUN curl -LO ftp://ftp.kernel.org/pub/software/scm/git/git-2.10.1.tar.xz
-RUN tar xvf git-2*.xz && cd git-2* &&\
-    apt-get install gettext -y &&\
+RUN tar xf git-2*.xz && cd git-2* &&\
+    apt-get install gettext  libcurl4-openssl-dev -y &&\
     export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
     ./configure --with-curl --with-expat --with-tcltk=no --prefix=/opt/apps/green &&\
     make install
@@ -423,11 +426,40 @@ RUN rm /opt/apps/green/lib/*.a &&\
     rm /opt/apps/green/lib/*.la && echo green_apps removing static libraries
 
 
-RUN curl -LO https://download.samba.org/pub/samba/stable/samba-4.3.12.tar.gz
-RUN tar xf samba-4*.gz && cd samba-4* && ./configure --prefix=/opt/apps/samba &&\
+RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list &&\
+   apt-get update &&\
+   apt-get build-dep samba -y && curl -LO https://download.samba.org/pub/samba/stable/samba-4.3.12.tar.gz
+RUN tar xf samba-4*.gz && cd samba-4* && ./configure --prefix=/opt/apps/green &&\
+    make && make install DESTDIR=/opt/apps/green  
+
+
+RUN curl -LO http://downloads.sourceforge.net/project/libtirpc/libtirpc/1.0.1/libtirpc-1.0.1.tar.bz2
+
+RUN  export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+    ./configure --prefix=/opt/apps/green &&
     make install
+
+RUN curl -LO http://sqlite.org/2016/sqlite-autoconf-3150000.tar.gz
+
+RUN  export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+    ./configure --prefix=/opt/apps/green &&
+    make install
+
+RUN curl -LO https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.25.tar.xz
+
+RUN export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+    ./configure --prefix=/opt/apps/green &&
+    make install
+
+RUN curl -LO http://downloads.sourceforge.net/nfs/nfs-utils-1.3.4.tar.bz2
+
+RUN export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+    ./configure --prefix=/opt/apps/green &&
+    make install
+
 
 RUN rm -rf /opt/apps/green/include/ ; echo green_apps removing include files
 RUN rm -rf /opt/apps/green/share
 RUN mv /opt/apps/green/sbin/ /opt/apps/green/bin/
 RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
+

@@ -9,9 +9,10 @@ DOCKER_PID=/var/run/docker.pid
 PATH=:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/docker/bin
 
 CNT=0
-while [ ! -f /opt/docker/bin/dockerd  ] && [ $CNT -lt 90 ] ; do
+while [ ! -f /opt/docker/bin/dockerd  ] && [ $CNT -lt 60 ] ; do
   echo "waiting install /tmp/dockerd $CNT ..."
-  sleep 1
+  sleep 5 # wait for 5 minutes
+  let CNT++
 done
 
 

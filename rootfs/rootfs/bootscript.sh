@@ -147,14 +147,16 @@ for f in passwd shadow shadow- ; do
  rm /etc/$f  ; ln -s $BOOT_DIR/etc/$f /etc/$f ; chown root:root $BOOT_DIR/etc/$f # permanent passwd
 done
 
-while ! ps ax | grep dockerd | grep -q -v grep ; do
+CNT=0
+while ! ps ax | grep dockerd | grep -q -v grep && [ $CNT -lt 90 ]; do
    log_msg "waiting for docker daemon"
    sleep 1
+   let CNT++
 done
 
-[ -d $BOOT_DIR/etc/sysconfig ]  || mkdir -p $BOOT_DIR/etc/sysconfig
+[ -d $BOOT_DIR/etc/sysconfig ] || mkdir -p $BOOT_DIR/etc/sysconfig
 [ -f $BOOT_DIR/etc/sysconfig/docker ] || mv /etc/sysconfig/docker $BOOT_DIR/etc/sysconfig/ # permanent docker version
-[ -f /etc/sysconfig/docker ] || rm /etc/sysconfig/docker
+[ -f /etc/sysconfig/docker ] && rm /etc/sysconfig/docker
 ln -s $BOOT_DIR/etc/sysconfig/docker /etc/sysconfig/docker
 
 # setup logrotate.conf
@@ -176,4 +178,6 @@ EOM
 [ -d /opt/idea ] && [ ! -e /opt/idea/bin/idea ] && ln -s /opt/idea/bin/idea.sh /opt/idea/bin/idea # IntelliJ idea
 
 log_msg "starting $BOOT_DIR/init.d scripts ..."
+[ ! -d $BOOT_DIR/init.d ] && mkdir -p $BOOT_DIR/init.d &&\
+  echo "#!/bin/sh" > $BOOT_DIR/init.d/00_test.sh && chmod +x $BOOT_DIR/init.d/00_test.sh
 ls -1 $BOOT_DIR/init.d/ | xargs -I %  $BOOT_DIR/init.d/%
