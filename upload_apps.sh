@@ -3,7 +3,7 @@ APP=VirtualBox
 #./upload_app.sh $APP ${VER} J  #.tar.xz
 
 APP=green
-VER=2.0.1
+VER=3.0.0
 rm -rf $APP
 ./upload_app.sh $APP $VER  J
 
@@ -35,7 +35,7 @@ rm -rf $APP
 APP=perl
 VER=5.24.0
 rm -rf $APP
-./upload_app.sh $APP $VER J
+#./upload_app.sh $APP $VER J
 
 
 APP=go

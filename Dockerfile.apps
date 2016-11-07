@@ -369,6 +369,42 @@ RUN mkdir -p "$GEM_HOME" "$BUNDLE_BIN" \
 	&& chmod 777 "$GEM_HOME" "$BUNDLE_BIN"
 
 
+RUN curl -LO ftp://sources.redhat.com/pub/lvm2/releases/LVM2.2.02.164.tgz &&\
+    tar xf LVM2*.tgz &&\
+    cd LVM2* &&\
+    ./configure --prefix=/opt/apps/green &&\
+    make install
+
+RUN curl -LO http://ftp.gnu.org/gnu/parted/parted-3.2.tar.xz
+RUN tar xf parted-3.2.tar.xz &&\
+    cd parted-3* &&\
+    apt-get install libreadline-dev -y &&\
+    LDFLAGS='-L/opt/apps/green/lib/' && export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' && ./configure --prefix=/opt/apps/green  &&\
+    make install
+
+
+# http://www.linuxfromscratch.org/blfs/view/svn/basicnet/bind-utils.html
+RUN curl -LO ftp://ftp.isc.org/isc/bind9/9.11.0/bind-9.11.0.tar.gz &&\
+    tar xf bind-*.tar.gz && cd bind-* &&\
+    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' && ./configure --prefix=/opt/apps/green &&\
+    ./configure --prefix=/opt/apps/green && make -C lib/dns && make -C lib/isc && make -C lib/bind9 && make -C lib/isccfg && make -C lib/lwres &&\
+     make -C bin/dig install
+
+# http://www.linuxfromscratch.org/blfs/view/svn/general/git.html
+RUN curl -LO ftp://ftp.kernel.org/pub/software/scm/git/git-2.10.1.tar.xz
+RUN tar xvf git-2*.xz && cd git-2* &&\
+    apt-get install gettext -y &&\
+    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+    ./configure --with-tcltk=no --prefix=/opt/apps/green &&\
+    make install
+
+RUN git clone https://github.com/hishamhm/htop &&\
+    cd htop &&\
+    ./autogen.sh && ./configure --prefix=/opt/apps/green  &&\
+    make install
+
+RUN rm -rf /opt/apps/green/bin/git-cvsserver
 RUN rm /opt/apps/green/lib/*.a  ; echo green_apps removing static libraries
 RUN rm -rf /opt/apps/green/include/ ; echo green_apps removing include files
 RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
+

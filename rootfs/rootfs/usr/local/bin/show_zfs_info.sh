@@ -2,7 +2,7 @@
 
 . /etc/green_common
 
-show_line " zpool status: "
+echo_line " zpool status: "
 sudo zpool list -v
 echo_line
 
