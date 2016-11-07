@@ -6,6 +6,15 @@
 
 DOCKER_PID=/var/run/docker.pid
 
+PATH=:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/docker/bin
+
+CNT=0
+while [ ! -f /opt/docker/bin/dockerd  ] && [ $CNT -lt 90 ] ; do
+  echo "waiting install /tmp/dockerd $CNT ..."
+  sleep 1
+done
+
+
 if [ ! -e $BOOT_DIR/etc/profile ]
 then
   echo "# put envars  e.g. GREEN_APPS, HTTP_PROXY, HTTPS_PROXY, DOCKER_OPTS, DOCKER_STORAGE, DOCKER_LOGFILE, CERT_INTERFACES, CERT_DIR" > $BOOT_DIR/etc/profile
@@ -52,21 +61,21 @@ start() {
         chmod 700 "$CERT_DIR"
         if [ ! -f "$CA_CERT" ] || [ ! -f "$CA_KEY" ]; then
             echo "Generating CA cert"
-            /usr/local/bin/generate_cert --cert="$CA_CERT" --key="$CA_KEY"
+            generate_cert --cert="$CA_CERT" --key="$CA_KEY"
             rm "$SERVER_CERT" "$SERVER_KEY" "$CERT" "$KEY" "$CERT_DIR/hostnames"
         fi
 
         CERTSEXISTFOR=$(cat "$CERT_DIR/hostnames" 2>/dev/null)
         if [ "$CERTHOSTNAMES" != "$CERTSEXISTFOR" ]; then
             echo "Generate server cert"
-            echo /usr/local/bin/generate_cert --host="$CERTHOSTNAMES" --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$SERVER_CERT" --key="$SERVER_KEY"
-            /usr/local/bin/generate_cert --host="$CERTHOSTNAMES" --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$SERVER_CERT" --key="$SERVER_KEY"
+            log_msg generate_cert --host="$CERTHOSTNAMES" --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$SERVER_CERT" --key="$SERVER_KEY"
+            generate_cert --host="$CERTHOSTNAMES" --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$SERVER_CERT" --key="$SERVER_KEY"
             echo "$CERTHOSTNAMES" > "$CERT_DIR/hostnames"
         fi
 
         if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then
             echo "Generating client cert"
-            /usr/local/bin/generate_cert --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$CERT" --key="$KEY"
+            generate_cert --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$CERT" --key="$KEY"
         fi
 
         if [ "$DOCKER_TLS" == "auto" ]; then
@@ -106,8 +115,8 @@ start() {
     ulimit -n $DOCKER_ULIMITS
     ulimit -p $DOCKER_ULIMITS
 
-    echo /usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
-    /usr/local/bin/docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
+    echo docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
+    docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
 }
 
 stop() {

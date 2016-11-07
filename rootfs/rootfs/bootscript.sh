@@ -152,6 +152,11 @@ while ! ps ax | grep dockerd | grep -q -v grep ; do
    sleep 1
 done
 
+[ -d $BOOT_DIR/etc/sysconfig ]  || mkdir -p $BOOT_DIR/etc/sysconfig
+[ -f $BOOT_DIR/etc/sysconfig/docker ] || mv /etc/sysconfig/docker $BOOT_DIR/etc/sysconfig/ # permanent docker version
+[ -f /etc/sysconfig/docker ] || rm /etc/sysconfig/docker
+ln -s $BOOT_DIR/etc/sysconfig/docker /etc/sysconfig/docker
+
 # setup logrotate.conf
 [ -f $BOOT_DIR/etc/logrotate.conf ] || cat > $BOOT_DIR/etc/logrotate.conf <<- EOM
 weekly

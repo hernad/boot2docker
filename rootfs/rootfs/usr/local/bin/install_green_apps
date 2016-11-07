@@ -30,7 +30,7 @@ GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
 
 
 if [ -z "$GREEN_APPS" ] ; then
-  GREEN_APPS="green_$GREEN_APPS_VER x11_$X11_APPS_VER"
+  GREEN_APPS="docker_$DOCKER_VERSION green_$GREEN_APPS_VER x11_$X11_APPS_VER"
   GREEN_APPS+=" python2_$PYTHON2_VER vim_$VIM_VER ruby_$RUBY_VER"
 fi
 
@@ -100,9 +100,8 @@ download_app() {
               echo ${ver} > /opt/apps/${app}/VERSION
               log_msg "mount_bind_opt_apps ${app}"
               mount_bind_opt_apps ${app}
-              if [ "$app" == "VirtualBox" ]; then
-                  vbox_fix_permissions
-              fi
+              [ "$app" == "VirtualBox" ] && vbox_fix_permissions
+              [ "$app" == "docker" ] && echo ${ver} > $BOOT_DIR/etc/sysconfig/docker # set docker version
         else
               log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.${ext}, error tar tf $APPS_HOME/${app}_${ver}.tar.${ext} (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
         fi

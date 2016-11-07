@@ -146,11 +146,6 @@ RUN set -x \
 
 
 
-# get generate_cert
-RUN curl -fL -o $ROOTFS/usr/local/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/0.2/generate_cert-0.2-linux-amd64 && \
-    chmod +x $ROOTFS/usr/local/bin/generate_cert
-
-
 RUN apt-get update && apt-get install -y libfuse2 libtool autoconf vim \
                                                      libglib2.0-dev \
                                                      libfuse-dev \
@@ -261,13 +256,21 @@ RUN for dep in $TCZ_DEPS_1 ; do \
         fi ;\
     done
 
+
+
+# ========== /opt/apps/docker ==================================
+
+
 # https://github.com/docker/docker/releases
 COPY DOCKER_VERSION $ROOTFS/etc/sysconfig/docker
 
+# get generate_cert
+RUN mkdir -p /opt/apps/docker/bin &&\
+      curl -fL -o /opt/apps/docker/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/0.2/generate_cert-0.2-linux-amd64
 
 RUN curl -L  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/sysconfig/docker).tgz | tar -C / -xz && \
-    mv /docker/* $ROOTFS/usr/local/bin &&\
-    chmod +x $ROOTFS/usr/local/bin/docker*
+    mv /docker/* /opt/apps/docker/bin/ &&\
+    chmod +x /opt/apps/docker/bin/*
 
 # =============================================================================================
 
@@ -349,7 +352,7 @@ RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
    mv libpng* libXau* libxcb* libXdmcp* libX11* libICE* libXt* libSM* libXmu* libXcursor* libdrm* libXfont* \
          /opt/apps/x11/lib
 
-RUN rm -rf $ROOTFS/usr/lib/gconv 
+RUN rm -rf $ROOTFS/usr/lib/gconv
 
 # cleanup virtualbox
 # chmod 4755 - VirtualBox, VBoxHeadless suid
