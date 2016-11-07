@@ -373,6 +373,9 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/drivers/input/joystick &&\
     rm -rf ./kernel/fs/btrfs
 
+RUN rm $ROOTFS/usr/local/lib/*.a &&\
+    rm $ROOTFS/usr/local/lib/*.la
+
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
 
 RUN /make_iso.sh

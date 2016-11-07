@@ -7,7 +7,7 @@ BINTRAY_PACKAGE=$1
 #BINTRAY_PACKAGE_VER=5.0.10
 BINTRAY_PACKAGE_VER=$2
 
-COMPRESSION=${3:-z} # z - gzip, j-bz2, J-xz
+COMPRESSION=${3:-J} # z - gzip, j-bz2, J-xz
 
 [ -z "$BINTRAY_PACKAGE" ] && echo package name mora biti navedeno && exit 1
 [ -z "$BINTRAY_PACKAGE_VER" ] && echo package version mora biti navedeno && exit 1

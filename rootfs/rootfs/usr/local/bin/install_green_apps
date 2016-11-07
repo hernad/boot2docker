@@ -70,10 +70,8 @@ download_app() {
   APPS_HOME=/opt/apps
   cd $APPS_HOME
 
-  case $app in
-    VirtualBox|green|vagrant|vim|python2|ruby|go|node|x11|idea|atom|java|code|perl) ext="xz" ;;
-    *) ext="gz" ;;
-  esac
+  ext="xz"
+  # ext="gz"
 
   [ -f /opt/apps/${app}_${ver}.tar.${ext} ] && echo "download in progres STOP!" && return
 

@@ -2,6 +2,11 @@ VER=5.1.6
 APP=VirtualBox
 #./upload_app.sh $APP ${VER} J  #.tar.xz
 
+APP=docker
+VER=`cat DOCKER_VERSION`
+rm -rf $APP
+./upload_app.sh $APP $VER  J
+
 APP=green
 VER=3.0.0
 rm -rf $APP
@@ -18,9 +23,9 @@ rm -rf $APP
 #./upload_app.sh $APP $VER J
 
 APP=vim
-VER=8.0.5
+VER=8.0.62
 rm -rf $APP
-#./upload_app.sh $APP $VER J
+./upload_app.sh $APP $VER J
 
 APP=python2
 VER=2.7.12
