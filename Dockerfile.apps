@@ -374,10 +374,11 @@ ENV TCZ_DEPS_GREEN  \
                     libpcap libnl tcpdump \
                     cifs-utils \
                     fuse libffi \
-                    nss nspr sqlite3
+                    nss nspr sqlite3 libnotify \
+                    groff
 
-#nss,nspr,sqlite3 - deps for electron applications ( atom, code )
-
+#nss,nspr,sqlite3,libnotify - deps for electron applications ( atom, code )
+#groff - aws deps
 
 # Install the base tiny linux build
 RUN for dep in $TCZ_DEPS_GREEN ; do \

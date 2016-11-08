@@ -60,7 +60,7 @@ rm -rf $APP
 APP=atom
 VER=1.11.2
 rm -rf $APP
-#./upload_app.sh $APP $VER J
+./upload_app.sh $APP $VER J
 
 APP=code
 VER=1.7.1
@@ -76,6 +76,6 @@ rm -rf $APP
 APP=aws
 VER=1.9.17
 rm -rf $APP
-./upload_app.sh $APP $VER J
+#./upload_app.sh $APP $VER J
 
 
