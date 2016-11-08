@@ -148,15 +148,6 @@ echo_line() {
 
 setup_symlinks_and_commands() {
 
-DIR=/opt/atom
-SRC_LINK=/opt/atom/atom
-LINK=/usr/bin/atom
-[ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK  # atom editor
-
-DIR=/opt/idea
-SRC_LINK=/opt/idea/bin/idea.sh
-LINK=/opt/idea/bin/idea
-[ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK # IntelliJ idea
 
 # git helpers location green -> /usr/local
 DIR=/opt/green
@@ -172,16 +163,16 @@ LINK=/usr/local/share/git-core
 # setup idea run script
 [ -d /opt/idea ] && [ ! -f $BOOT_DIR/bin/idea ] &&  (cat > $BOOT_DIR/bin/idea <<- EOF
 #!/bin/sh
-echo "Parameters \$@"
-/opt/green/bin/idea.sh \$@ &
+echo "params: \$@"
+/opt/idea/bin/idea.sh \$@ &
 EOF
 ) && chmod +x $BOOT_DIR/bin/idea
 
 # atom run script
 [ -d /opt/atom ] && [ ! -f $BOOT_DIR/bin/atom ] &&  (cat > $BOOT_DIR/bin/atom <<- EOF
 #!/bin/sh
-echo "Parameters \$@"
-/opt/atom/atom/ \$@ &
+echo "params: \$@"
+/opt/atom/atom \$@ &
 EOF
 ) && chmod +x $BOOT_DIR/bin/atom
 
