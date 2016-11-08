@@ -43,4 +43,4 @@ echo -e
 NOCOLOR="\033[0;0;0m"      # no color or formatting
 PS1="[\u@${GREEN}\h${NOCOLOR} \W]\$ " # prompt
 
-setup_symlinks
+setup_symlinks_and_commands

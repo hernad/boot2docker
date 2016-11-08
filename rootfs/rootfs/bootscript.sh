@@ -172,18 +172,4 @@ EOF
 
 [ -d $BOOT_DIR/bin ] || mkdir -p $BOOT_DIR/bin
 
-# setup idea run script
-[ -d /opt/idea ] && [ ! -f $BOOT_DIR/bin/idea ] &&  cat > $BOOT_DIR/bin/idea <<- EOF
-#!/bin/sh
-echo $@
-/opt/green/bin/idea.sh $@ &
-EOF && chmod +x $BOOT_DIR/bin/idea
-
-# atom run script
-[ -d /opt/atom ] && [ ! -f $BOOT_DIR/bin/atom ] &&  cat > $BOOT_DIR/bin/atom <<- EOF
-#!/bin/sh
-echo $@
-/opt/atom/atom/ $@ &
-EOF && chmod +x $BOOT_DIR/bin/atom
-
-setup_symlinks
+setup_symlinks_and_commands

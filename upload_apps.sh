@@ -71,3 +71,11 @@ APP=idea
 VER=2016.5.2
 rm -rf $APP
 #./upload_app.sh $APP $VER J
+
+
+APP=aws
+VER=1.9.16
+rm -rf $APP
+./upload_app.sh $APP $VER J
+
+
