@@ -403,6 +403,9 @@ ENV GIT_VER=2.10.2
 RUN curl -LO ftp://ftp.kernel.org/pub/software/scm/git/git-${GIT_VER}.tar.xz
 RUN tar xf git-${GIT_VER}.tar.xz && cd git-${GIT_VER} &&\
     apt-get install gettext  libcurl4-openssl-dev -y &&\
+# mismatch between tinycore and debian libraries - force build with tiny core libs
+    cp $ROOTFS/usr/local/lib/libcrypto.so* /usr/lib/x86_64-linux-gnu/ &&\
+    cp $ROOTFS/usr/local/lib/libcurl.* /usr/lib/x86_64-linux-gnu/ &&\
     export LDFLAGS='-static' && CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
 # erase git-imap-send .... IMAP_SEND_LDFLAGS) multiline, git-imap-send cannot be compiled static
     perl  -i.origin -pe 'BEGIN{undef $/;} s/^gitt-imap-send.*filter.*IMAP_SEND_LDFLAGS\)$//smg' Makefile &&\
