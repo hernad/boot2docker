@@ -134,8 +134,8 @@ fi
 [ -d /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
 
 mount_all_apps
-log_msg "ldconfg after mounting apps"
-/sbin/ldconfig -v 2>&1 | tee -a $LOG_FILE
+
+ldcache_update
 
 vbox_fix_permissions
 

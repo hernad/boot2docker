@@ -100,6 +100,7 @@ download_app() {
               mount_bind_opt_apps ${app}
               [ "$app" == "VirtualBox" ] && vbox_fix_permissions
               [ "$app" == "docker" ] && echo ${ver} > $BOOT_DIR/etc/sysconfig/docker # set docker version
+              ldcache_update
         else
               log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.${ext}, error tar tf $APPS_HOME/${app}_${ver}.tar.${ext} (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
         fi

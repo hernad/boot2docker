@@ -176,5 +176,16 @@ LINK=/usr/local/share/terminfo
 
 }
 
+ldcache_update() {
+
+  DIR=/opt/boot/etc
+  SRC_LINK=/opt/boot/etc/ld.so.cache
+  LINK=/etc/ld.so.cache
+  [ -d $DIR ] && [ ! -e $LINK ] && sudo ln -s $SRC_LINK $LINK
+
+  log_msg "ldconfg after mounting apps"
+  sudo /sbin/ldconfig -v 2>&1 | tee -a $LOG_FILE
+}
+
 GREEN_DEBUG=${GREEN_DEBUG:-1}
 set_log_file
