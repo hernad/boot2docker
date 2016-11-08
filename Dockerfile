@@ -373,6 +373,7 @@ RUN rm $ROOTFS/usr/local/lib/*.a &&\
     rm $ROOTFS/usr/local/lib/*.la
 
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
+RUN rm $ROOTFS/usr/local/etc/ssh/*_example
 
 RUN /make_iso.sh
 
