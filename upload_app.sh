@@ -1,7 +1,7 @@
 BINTRAY_API_KEY=`cat bintray_api_key`
 BINTRAY_REPOS=greenbox
 
-GREENBOX_VERSION=last
+GREENBOX_VERSION=latest
 #BINTRAY_PACKAGE=VirtualBox
 BINTRAY_PACKAGE=$1
 #BINTRAY_PACKAGE_VER=5.0.10
@@ -52,8 +52,8 @@ if [ ! -f $FILE ] ; then
            ;; 
       *) 
            docker rm -f $CT
-           docker run --name $CT $CT:$GREENBOX_VERSION ls /opt/apps
-           docker cp -L $CT:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
+           docker run --name $CT $CT:$GREENBOX_VERSION ls -l /opt/apps/${BINTRAY_PACKAGE}
+           docker cp $CT:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
            [ ! -d ${BINTRAY_PACKAGE}/sbin ] ||  mv ${BINTRAY_PACKAGE}/sbin/*  ${BINTRAY_PACKAGE}/bin/ 
            if  [ -d bins/${BINTRAY_PACKAGE} ]
            then

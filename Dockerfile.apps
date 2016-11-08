@@ -273,7 +273,7 @@ RUN curl -LO https://github.com/dropbox/dbxcli/releases/download/v${DROPBOX_VER}
     mv dbxcli-linux-amd64 /opt/apps/green/bin/dbxcli && chmod +x /opt/apps/green/bin/dbxcli
 
 
-# visual studio code 
+# visual studio code
 RUN apt-get -y install libxss1 &&\
     curl -L https://go.microsoft.com/fwlink/?LinkID=620884 > code.tar.gz  &&\
     tar xf code.tar.gz && mv VSCode-linux-x64 /opt/apps/code &&\
@@ -291,8 +291,7 @@ RUN echo "X11 `ls -ld /usr/share/X11/*`"  && mkdir -p /opt/apps/x11/share ; cp -
    rm -rf $ROOTFS/usr/local/share/X11  &&\
    rm -rf /opt/apps/x11/lib/libdrm_*  # exclude drm drivers
 
-COPY extract_so_deps.sh /
-RUN bash  /extract_so_deps.sh
+
 
 # ==== ruby ============================================================================
 # https://github.com/docker-library/ruby/blob/master/2.3/Dockerfile
@@ -391,30 +390,42 @@ RUN curl -LO ftp://ftp.isc.org/isc/bind9/9.11.0/bind-9.11.0.tar.gz &&\
      make -C bin/dig install
 
 
-# https://curl.haxx.se/download/curl-7.51.0.tar.bz2
+#RUN curl -LO https://curl.haxx.se/download/curl-7.51.0.tar.bz2 &&\
+#    tar xf curl*.tar.bz2 &&\
+#    cd curl*7.51.0 &&\
+#    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    ./configure --prefix=/opt/apps/green &&\
+#    make install
 
+
+ENV GIT_VER=2.10.2
 # http://www.linuxfromscratch.org/blfs/view/svn/general/git.html
-RUN curl -LO ftp://ftp.kernel.org/pub/software/scm/git/git-2.10.1.tar.xz
-RUN tar xf git-2*.xz && cd git-2* &&\
+RUN curl -LO ftp://ftp.kernel.org/pub/software/scm/git/git-${GIT_VER}.tar.xz
+RUN tar xf git-${GIT_VER}.tar.xz && cd git-${GIT_VER} &&\
     apt-get install gettext  libcurl4-openssl-dev -y &&\
-    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
-    ./configure --with-curl --with-expat --with-tcltk=no --prefix=/opt/apps/green &&\
+    export LDFLAGS='-static' && CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+# erase git-imap-send .... IMAP_SEND_LDFLAGS) multiline, git-imap-send cannot be compiled static
+    perl  -i.origin -pe 'BEGIN{undef $/;} s/^gitt-imap-send.*filter.*IMAP_SEND_LDFLAGS\)$//smg' Makefile &&\
+    perl  -i.origin -pe 's/^PROGRAM_OBJS.*imap-send.o$//smg' Makefile &&\
+    ./configure --with-curl --with-expat --with-tcltk=no \
+       --with-pager=more \
+       --with-editor=vim \
+       --prefix=/opt/apps/green &&\
     make install
 
-
 # ncurses 6.0 utf support
-RUN curl -LO ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz &&\
-    tar xf ncurses*.tar.gz &&\
-    cd ncurses* &&\
-    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
-    ./configure --enable-widec --prefix=/opt/apps/green &&\
-   make install DESTDIR=/opt/apps/green 
+#RUN curl -LO ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz &&\
+#    tar xf ncurses*.tar.gz &&\
+#    cd ncurses-6.0 &&\
+#    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    ./configure --enable-widec --prefix=/opt/apps/green &&\
+#    make && make install &&\
+#    ls /opt/apps/green/bin/ncursesw6-config
 
 RUN git clone https://github.com/hishamhm/htop &&\
     cd htop &&\
-    export PATH=/opt/apps/green/bin:$PATH &&\
     export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
-    ./autogen.sh && ./configure --enable-cgroup --prefix=/opt/apps/green  &&\
+    ./autogen.sh && ./configure --with-sysroot=/rootfs --enable-cgroup --prefix=/opt/apps/green  &&\
     make install
 
 RUN rm -rf /opt/apps/green/bin/git-cvsserver &&\
@@ -422,15 +433,12 @@ RUN rm -rf /opt/apps/green/bin/git-cvsserver &&\
     rm -rf /opt/apps/green/libexec/git-core/git-svn* &&\
     rm -rf /opt/apps/green/libexec/git-core/git-web--browse*
 
-RUN rm /opt/apps/green/lib/*.a &&\
-    rm /opt/apps/green/lib/*.la && echo green_apps removing static libraries
 
-
-RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list &&\
-   apt-get update &&\
-   apt-get build-dep samba -y && curl -LO https://download.samba.org/pub/samba/stable/samba-4.3.12.tar.gz
-RUN tar xf samba-4*.gz && cd samba-4* && ./configure --prefix=/opt/apps/green &&\
-    make && make install 
+#RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list &&\
+#   apt-get update &&\
+#   apt-get build-dep samba -y && curl -LO https://download.samba.org/pub/samba/stable/samba-4.3.12.tar.gz
+#RUN tar xf samba-4*.gz && cd samba-4* && ./configure --prefix=/opt/apps/green &&\
+#    make && make install
 
 
 #RUN curl -LO http://downloads.sourceforge.net/project/libtirpc/libtirpc/1.0.1/libtirpc-1.0.1.tar.bz2
@@ -439,28 +447,37 @@ RUN tar xf samba-4*.gz && cd samba-4* && ./configure --prefix=/opt/apps/green &&
 #    ./configure --prefix=/opt/apps/green &&\
 #    make install
 
-RUN curl -LO http://sqlite.org/2016/sqlite-autoconf-3150000.tar.gz
-RUN export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
-    tar xf sqlite*.tar.gz && cd sqlite*0 &&\
-    ./configure --prefix=/opt/apps/green &&\
-    make install
+#RUN curl -LO http://sqlite.org/2016/sqlite-autoconf-3150000.tar.gz
+#RUN export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    tar xf sqlite*.tar.gz && cd sqlite*0 &&\
+#    ./configure --prefix=/opt/apps/green &&\
+#    make install
 
-RUN curl -LO https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.25.tar.xz
-RUN export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
-    tar xf libcap*.tar.xz && cd libcap-2.25 &&\
-    make install DESTDIR=/opt/apps/green &&\
-    make install
+#RUN curl -LO https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.25.tar.xz
+#RUN export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    tar xf libcap*.tar.xz && cd libcap-2.25 &&\
+#    make install DESTDIR=/opt/apps/green &&\
+#    make install
 
-RUN curl -LO http://downloads.sourceforge.net/nfs/nfs-utils-1.3.4.tar.bz2
-RUN apt-get install libwrap0 &&\
-    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
-    tar xf nfs-utils*.bz2 && cd nfs-utils*1.3.4 &&\
-    ./configure --prefix=/opt/apps/green &&\
-    make install
+#RUN curl -LO http://downloads.sourceforge.net/nfs/nfs-utils-1.3.4.tar.bz2
+#RUN apt-get install libwrap0 -y &&\
+#    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    tar xf nfs-utils*.bz2 && cd nfs-utils*1.3.4 &&\
+#    ./configure --prefix=/opt/apps/green &&\
+#    make install
 
-
+RUN rm /opt/apps/green/lib/*.a &&\
+    rm /opt/apps/green/lib/*.la && echo green_apps removing static libraries
 RUN rm -rf /opt/apps/green/include/ ; echo green_apps removing include files
-RUN rm -rf /opt/apps/green/share
-RUN mv /opt/apps/green/sbin/ /opt/apps/green/bin/
+RUN rm -rf /opt/apps/green/share /opt/apps/green/opt
+RUN mv /opt/apps/green/sbin/* /opt/apps/green/bin/ ; rmdir /opt/apps/green/sbin
+RUN echo "/opt/apps/green:" && ls -l /opt/apps/green
 RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
 
+# collect shared libraries needed for x11 execution
+COPY extract_so_deps_x11.sh /
+RUN bash  /extract_so_deps_x11.sh
+
+# collect shared libraries needed for green apps execution
+COPY extract_so_deps_green.sh /
+RUN bash  /extract_so_deps_green.sh

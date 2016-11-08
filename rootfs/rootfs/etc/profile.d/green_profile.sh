@@ -37,3 +37,8 @@ echo "docker: `docker -v`"
 echo -e
 [ "`cat /etc/passwd | grep "^tc:" |  awk -F: '{print $7}'`" != "/bin/false" ] && \
    echo -e "${RED}SECURITY hole (tc_login_open) !\nRUN ${GREEN}# disable_tc_login\n${NORMAL}"
+
+
+git config --global core.pager 'more'  # git diff
+NOCOLOR="\033[0;0;0m"      # no color or formatting
+PS1="[\u@${GREEN}\h${NCOLOR} \W]\$ " # prompt
