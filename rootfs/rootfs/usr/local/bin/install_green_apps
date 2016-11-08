@@ -12,7 +12,7 @@ case "$1" in
      IND2="[*]${GREN}"
      IND3="[ ]${RED}"
      ;;
-  2) echo "install GREEN_APPS_3"
+  3) echo "install GREEN_APPS_3"
      INSTALL_SET="3"
      IND1="[ ]${RED}"
      IND2="[ ]${RED}"

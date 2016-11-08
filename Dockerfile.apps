@@ -392,7 +392,9 @@ RUN for dep in $TCZ_DEPS_GREEN ; do \
         fi ;\
 done
 
-RUN mkdir -p /opt/apps/{bin,share,lib} &&\
+RUN mkdir -p /opt/apps/bin ;\
+    mkdir -p /opt/apps/lib ;\
+    mkdir -p /opt/apps/share ;\
     cp -av /opt/apps/green/usr/local/bin/* /opt/apps/green/bin/ &&\
     cp -av /opt/apps/green/usr/local/sbin/* /opt/apps/green/bin/ &&\
     cp -av /opt/apps/green/usr/local/lib/* /opt/apps/green/lib/ &&\
