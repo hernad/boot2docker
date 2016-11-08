@@ -19,7 +19,7 @@
 
 ### upload_app
 
-     ./upload_app.sh vim 8.0.5 J  # upload to bintray.com/hernad/greenbox  vim_8.0.5.tar.xz
+     ./upload_app.sh vim 8.0.5  # upload to bintray.com/hernad/greenbox  vim_8.0.5.tar.xz
      ./upload_apps.sh  # upload all apps to bintray
 
 
