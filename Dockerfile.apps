@@ -373,7 +373,7 @@ ENV TCZ_DEPS_GREEN  \
                     procps \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     bind-utilities libxml2 \
-                    libpcap tcpdump \
+                    libpcap libusb tcpdump \
                     cifs-utils \
                     fuse libffi
 
