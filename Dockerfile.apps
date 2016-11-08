@@ -227,9 +227,7 @@ RUN     cd /tmp \
 
 RUN curl -LO https://github.com/atom/atom/releases/download/v1.11.2/atom-amd64.deb &&\
     dpkg -i atom-amd64.deb || apt-get install -f -y &&\
-    mv /usr/share/atom /opt/apps/atom  &&\
-    mkdir -p /opt/apps/atom/bin &&  mv /opt/apps/atom/atom /opt/apps/atom/bin/
-
+    mv /usr/share/atom /opt/apps/atom
 
 # green_app/gdrive
 # https://github.com/prasmussen/gdrive
@@ -375,7 +373,10 @@ ENV TCZ_DEPS_GREEN  \
                     bind-utilities libxml2 \
                     libpcap libnl tcpdump \
                     cifs-utils \
-                    fuse libffi
+                    fuse libffi \
+                    nss nspr sqlite3
+
+#nss,nspr,sqlite3 - deps for electron applications ( atom, code )
 
 
 # Install the base tiny linux build

@@ -108,6 +108,7 @@ done
 set_path_ld_library() {
 
 LD_LIBRARY_PATH=/usr/local/lib:/usr/lib:/lib
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/bin:/usr/sbin:$BOOT_DIR/bin
 
 for appdir in `ls -1 /opt`
 do
@@ -177,7 +178,7 @@ ldcache_update() {
   LINK=/etc/ld.so.cache
   log_msg "ldconfg after mounting apps"
   [ -f $LINK ] && rm $LINK
-  sudo /sbin/ldconfig -C $SRC_LINK -v 2>&1 | tee -a $LOG_FILE
+  /sbin/ldconfig  -C $SRC_LINK  >/dev/null 2>&1
   [ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
 }
 

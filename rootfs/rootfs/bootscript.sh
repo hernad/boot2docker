@@ -156,7 +156,7 @@ done
 ln -s $BOOT_DIR/etc/sysconfig/docker /etc/sysconfig/docker
 
 # setup logrotate.conf
-[ -f $BOOT_DIR/etc/logrotate.conf ] || cat > $BOOT_DIR/etc/logrotate.conf <<- EOM
+[ -f $BOOT_DIR/etc/logrotate.conf ] || cat > $BOOT_DIR/etc/logrotate.conf <<- EOF
 weekly
 rotate 4
 create 0664 root root
@@ -167,7 +167,23 @@ $BOOT_DIR/log/*.log {
     size 30k
 }
 include $BOOT_DIR/etc/logrotate.d
-EOM
+EOF
 [ -d $BOOT_DIR/etc/logrotate.d ] || mkdir -p $BOOT_DIR/etc/logrotate.d
+
+[ -d $BOOT_DIR/bin ] || mkdir -p $BOOT_DIR/bin
+
+# setup idea run script
+[ -d /opt/idea ] && [ ! -f $BOOT_DIR/bin/idea ] &&  cat > $BOOT_DIR/bin/idea <<- EOF
+#!/bin/sh
+echo $@
+/opt/green/bin/idea.sh $@ &
+EOF && chmod +x $BOOT_DIR/bin/idea
+
+# atom run script
+[ -d /opt/atom ] && [ ! -f $BOOT_DIR/bin/atom ] &&  cat > $BOOT_DIR/bin/atom <<- EOF
+#!/bin/sh
+echo $@
+/opt/atom/atom/ $@ &
+EOF && chmod +x $BOOT_DIR/bin/atom
 
 setup_symlinks
