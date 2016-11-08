@@ -39,6 +39,8 @@ echo -e
    echo -e "${RED}SECURITY hole (tc_login_open) !\nRUN ${GREEN}# disable_tc_login\n${NORMAL}"
 
 
-git config --global core.pager 'more'  # git diff
+[ -d /opt/green ] && git config --global core.pager 'more'  # git diff
 NOCOLOR="\033[0;0;0m"      # no color or formatting
-PS1="[\u@${GREEN}\h${NCOLOR} \W]\$ " # prompt
+PS1="[\u@${GREEN}\h${NOCOLOR} \W]\$ " # prompt
+
+setup_symlinks

@@ -4,7 +4,7 @@
 GREEN_LIB=/opt/apps/green/lib/
 mkdir $GREEN_LIB
 
-LDD_CHECK="/opt/apps/green/bin/parted"
+LDD_CHECK="/opt/apps/green/bin/testestest"
 
 
 for ldd_f in $LDD_CHECK ; do

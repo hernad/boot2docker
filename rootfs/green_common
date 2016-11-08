@@ -145,5 +145,32 @@ echo_line() {
   echo "------------------------------$1----------------------------------"
 }
 
+setup_symlinks() {
+
+DIR=/opt/atom
+SRC_LINK=/opt/atom/atom
+LINK=/usr/bin/atom
+[ -d $DIR ] && [ ! -e $LINK ] && ln -s $SRC_LINK $LINK  # atom editor
+
+DIR=/opt/idea
+SRC_LINK=/opt/idea/bin/idea.sh
+LINK=/opt/idea/bin/idea
+[ -d $DIR ] && [ ! -e $LINK ] && ln -s $SRC_LINK $LINK # IntelliJ idea
+
+# git helpers location green -> /usr/local
+DIR=/opt/green
+SRC_LINK=/opt/green/lib/git-core
+LINK=/usr/local/lib/git-core
+[ -d $DIR ] && [ ! -e $LINK ] && ln -s $SRC_LINK $LINK
+
+# terminal info green -> /usr/local
+DIR=/opt/green
+SRC_LINK=/opt/green/share/terminfo
+LINK=/usr/local/share/terminfo 
+[ -d $DIR ] && [ ! -e $LINK ] && ln -s $SRC_LINK $LINK
+
+
+}
+
 GREEN_DEBUG=${GREEN_DEBUG:-1}
 set_log_file

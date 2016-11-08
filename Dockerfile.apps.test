@@ -29,7 +29,7 @@ RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-
 #ENV GOLANG_VER=1.7.3
 #RUN curl -LO https://storage.googleapis.com/golang/go${GOLANG_VER}.linux-amd64.tar.gz
 #RUN tar xf go${GOLANG_VER}.linux-amd64.tar.gz
-#RUN ls -ld go* ; mv go /opt/apps/go 
+#RUN ls -ld go* ; mv go /opt/apps/go
 
 
 #ENV NODEJS_VER=6.9.1
@@ -60,9 +60,155 @@ RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-
 #RUN  mv /opt/java /opt/apps/java
 
 
-#RUN curl -LO https://github.com/atom/atom/releases/download/v1.11.2/atom-amd64.deb 
+#RUN curl -LO https://github.com/atom/atom/releases/download/v1.11.2/atom-amd64.deb
 #RUN dpkg -i atom-amd64.deb || apt-get install -f -y
 #RUN mv /usr/share/atom /opt/apps/atom
 #RUN mkdir -p /opt/apps/atom/bin &&  mv /opt/apps/atom/atom /opt/apps/atom/bin/
 
 
+# ================= old Dockerfile.apps ===========
+
+# --------  green : tcpdump -----------------------------
+#ENV TCPDUMP_VER=4.8.1
+#ENV LIBPCAP_VER=1.8.1
+#RUN apt-get install -y bison flex &&\
+#    curl -LO http://www.tcpdump.org/release/libpcap-${LIBPCAP_VER}.tar.gz && tar xvf libpcap-${LIBPCAP_VER}.tar.gz && cd libpcap-${LIBPCAP_VER} &&\
+#    ./configure --prefix=/opt/apps/green &&\
+#    make install &&\
+#    cd / && curl -LO http://www.tcpdump.org/release/tcpdump-${TCPDUMP_VER}.tar.gz && tar xvf tcpdump-${TCPDUMP_VER}.tar.gz &&\
+#    cd tcpdump-${TCPDUMP_VER} &&\
+#    ./configure --with-crypto=/rootfs/lib/ --prefix=/opt/apps/green --libdir=/opt/apps/green/lib &&\
+#    make && make install &&\
+#    cd /opt/apps/green && mv sbin/* bin/
+
+
+
+# ----- flocker 1.8.0
+#RUN ln -s /opt/apps/python2 /opt/python2 &&\
+#    cd /opt && /opt/python2/bin/virtualenv --python=/opt/python2/bin/python flocker &&\
+#    cd /opt/flocker &&\
+#    . bin/activate && pip install --upgrade pip &&\
+#    cd / &&  git clone https://github.com/ClusterHQ/flocker.git
+
+#RUN cd /opt/flocker &&\
+#    . bin/activate &&\
+#    cd /flocker &&\
+#    pip install --upgrade setuptools &&\
+#    pip install pbr &&\
+#    pip install pycparser &&\
+#    pip install twisted --verbose &&\
+#    pip install . &&\
+#    cp /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /opt/flocker/lib/ &&\
+#    cp /usr/lib/x86_64-linux-gnu/libssl.so.1.0.0 /opt/flocker/lib/
+
+
+
+# ===== neovim ==============
+# RUN  apt-get install -y apt-utils libtool autoconf automake cmake g++ pkg-config unzip &&\
+#     mkdir -p /opt/apps/neovim ; cd /neovim &&\
+#     make || make || make ; cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/apps/nvim &&\
+#     make all install
+
+
+
+#RUN git clone https://github.com/hishamhm/htop &&\
+#    cd htop &&\
+#    export CFLAGS='-I/usr/local/include -L/usr/local/lib' &&\
+#    ./autogen.sh && ./configure  --enable-cgroup --prefix=/opt/apps/green  &&\
+#    make install
+
+
+
+#RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list &&\
+#   apt-get update &&\
+#   apt-get build-dep samba -y && curl -LO https://download.samba.org/pub/samba/stable/samba-4.3.12.tar.gz
+#RUN tar xf samba-4*.gz && cd samba-4* && ./configure --prefix=/opt/apps/green &&\
+#    make && make install
+
+
+#RUN curl -LO http://downloads.sourceforge.net/project/libtirpc/libtirpc/1.0.1/libtirpc-1.0.1.tar.bz2
+#RUN  export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    tar xf libti*bz2 && cd libtirpc*1.0.1 &&\
+#    ./configure --prefix=/opt/apps/green &&\
+#    make install
+
+#RUN curl -LO http://sqlite.org/2016/sqlite-autoconf-3150000.tar.gz
+#RUN export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    tar xf sqlite*.tar.gz && cd sqlite*0 &&\
+#    ./configure --prefix=/opt/apps/green &&\
+#    make install
+
+#RUN curl -LO https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.25.tar.xz
+#RUN export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    tar xf libcap*.tar.xz && cd libcap-2.25 &&\
+#    make install DESTDIR=/opt/apps/green &&\
+#    make install
+
+#RUN curl -LO http://downloads.sourceforge.net/nfs/nfs-utils-1.3.4.tar.bz2
+#RUN apt-get install libwrap0 -y &&\
+#    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    tar xf nfs-utils*.bz2 && cd nfs-utils*1.3.4 &&\
+#    ./configure --prefix=/opt/apps/green &&\
+#    make install
+
+
+
+#RUN curl -LO ftp://sources.redhat.com/pub/lvm2/releases/LVM2.2.02.164.tgz &&\
+#    tar xf LVM2*.tgz &&\
+#    cd LVM2* &&\
+#    ./configure --prefix=/opt/apps/green &&\
+#    make install
+
+#RUN curl -LO http://ftp.gnu.org/gnu/parted/parted-3.2.tar.xz
+#RUN tar xf parted-3.2.tar.xz &&\
+#    cd parted-3* &&\
+#    export CFLAGS='-I/usr/local/include -L/usr/local/lib' &&\
+#   LDFLAGS='-L/opt/apps/green/lib/' && export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    ./configure --prefix=/opt/apps/green  &&\
+#    make install
+
+
+# http://www.linuxfromscratch.org/blfs/view/svn/basicnet/bind-utils.html
+RUN curl -LO ftp://ftp.isc.org/isc/bind9/9.11.0/bind-9.11.0.tar.gz &&\
+    tar xf bind-*.tar.gz && cd bind-* &&\
+    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' && ./configure --prefix=/opt/apps/green &&\
+    ./configure --prefix=/opt/apps/green && make -C lib/dns && make -C lib/isc && make -C lib/bind9 && make -C lib/isccfg && make -C lib/lwres &&\
+     make -C bin/dig install
+
+
+#RUN curl -LO https://curl.haxx.se/download/curl-7.51.0.tar.bz2 &&\
+#    tar xf curl*.tar.bz2 &&\
+#    cd curl*7.51.0 &&\
+#    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    ./configure --prefix=/opt/apps/green &&\
+#    make install
+
+
+ENV GIT_VER=2.10.2
+# http://www.linuxfromscratch.org/blfs/view/svn/general/git.html
+RUN curl -LO ftp://ftp.kernel.org/pub/software/scm/git/git-${GIT_VER}.tar.xz
+RUN tar xf git-${GIT_VER}.tar.xz && cd git-${GIT_VER} &&\
+    apt-get install gettext  -y &&\
+    export CFLAGS='-I/usr/local/include -L/usr/local/lib' &&\
+# mismatch between tinycore and debian libraries - force build with tiny core libs
+#    cp /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /opt/apps/green/lib/ &&\
+#    cp /usr/lib/x86_64-linux-gnu/libcurl.so.4 /opt/apps/green/lib/ &&\
+#    export LDFLAGS='-static' &&\
+#     CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+# erase git-imap-send .... IMAP_SEND_LDFLAGS) multiline, git-imap-send cannot be compiled static
+#    perl  -i.origin -pe 'BEGIN{undef $/;} s/^gitt-imap-send.*filter.*IMAP_SEND_LDFLAGS\)$//smg' Makefile &&\
+#    perl  -i.origin -pe 's/^PROGRAM_OBJS.*imap-send.o$//smg' Makefile &&\
+    ./configure --with-curl --with-expat --with-tcltk=no \
+       --with-pager=more \
+       --with-editor=vim \
+       --prefix=/opt/apps/green &&\
+    make install
+
+# ncurses 6.0 utf support
+#RUN curl -LO ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz &&\
+#    tar xf ncurses*.tar.gz &&\
+#    cd ncurses-6.0 &&\
+#    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' &&\
+#    ./configure --enable-widec --prefix=/opt/apps/green &&\
+#    make && make install &&\
+#    ls /opt/apps/green/bin/ncursesw6-config

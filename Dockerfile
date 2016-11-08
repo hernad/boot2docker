@@ -24,8 +24,14 @@ RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
                         automake \
                         pkg-config \
                         uuid-dev \
-                        libncursesw5-dev libncurses-dev
+                        libncursesw5-dev libncurses-dev \
+                        libfuse2 libtool autoconf vim \
+                        libglib2.0-dev \
+                        libfuse-dev \
+                        libtirpc-dev
 
+# tiny core rootfs location
+ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
 ENV GCC_M -m64
 # https://www.kernel.org/pub/linux/kernel/v4.x/
 
@@ -49,10 +55,27 @@ RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.confi
     make -j ${jobs} bzImage && \
     make -j ${jobs} modules
 
+
+# ======================= VirtualBox install ============================================
+
+# http://download.virtualbox.org/virtualbox/5.1.8/
+ENV VBOX_VER=5.1.8 VBOX_BUILD=111374
+#ENV VBOX_VER=5.1.6 VBOX_BUILD=110634
+
+RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
+        mkdir -p /lib ;\
+        ln -s $ROOTFS/lib/modules /lib/modules ;\
+        bash VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
+
+RUN cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
+        cd / && curl -LO http://download.virtualbox.org/virtualbox/$VBOX_VER/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack &&\
+        /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack
+
+
+# =======================  tiny core =====================================================
 # The post kernel build process
 # list tczs: http://distro.ibiblio.org/tinycorelinux/7.x/x86/tcz/
 
-ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
 
 # Make the ROOTFS
 # Prepare the build directory (/tmp/iso)
@@ -104,12 +127,11 @@ ENV TCZ_DEPS_0      iptables \
                     gcc_libs \
                     acpid \
                     xz liblzma \
-                    patch expat2 pcre libgpg-error libgcrypt libssh2 \
-                    nfs-utils tcp_wrappers portmap rpcbind libtirpc \
+                    libgpg-error libgcrypt libssh2 \
                     curl acl attr ntpclient \
-                    procps bash readline ncurses ncurses-utils ncurses-terminfo \
-                    strace glib2 libtirpc \
+                    bash readline ncurses \
                     udev-lib
+
 
 # Install the base tiny linux dependencies
 RUN for dep in $TCZ_DEPS_0 ; do \
@@ -146,36 +168,18 @@ RUN set -x \
 
 
 
-RUN apt-get update && apt-get install -y libfuse2 libtool autoconf vim \
-                                                     libglib2.0-dev \
-                                                     libfuse-dev \
-                                                     libtirpc-dev
-
-
 # debian jessie no /usr/lib/syslinux/isohdpfx.bin
 # get syslinux 6.04 from source https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/
 RUN export SYSLINUX_VER=6.04 && export SYSLINUX_PRE=pre1 &&\
    curl -LO https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$SYSLINUX_VER/syslinux-$SYSLINUX_VER-$SYSLINUX_PRE.tar.xz &&\
    tar xf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install
 
+# uses bootscript to detect VirtualBox session - has to be firmware!
 RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
      make && make DESTDIR=$ROOTFS install
 
 
-# http://download.virtualbox.org/virtualbox/5.1.8/
-ENV VBOX_VER=5.1.8 VBOX_BUILD=111374
-#ENV VBOX_VER=5.1.6 VBOX_BUILD=110634
-
-RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
-    mkdir -p /lib ;\
-    ln -s $ROOTFS/lib/modules /lib/modules ;\
-    bash VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
-
-RUN cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
-    cd / && curl -LO http://download.virtualbox.org/virtualbox/$VBOX_VER/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack &&\
-    /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack
-
-
+# VirtualBox install kernel drivers
 #RUN echo ignoring depmod -a errors
 RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install || true
 
@@ -234,11 +238,9 @@ RUN for dep in $TCZ_DEPS_X ; do \
         fi ;\
     done
 
-
 # glibc_apps: /usr/bin/localedef
 
-ENV TCZ_DEPS_1 cifs-utils fuse libffi getlocale glibc_i18n_locale glibc_apps glibc_gconv
-#TCZ_DEPS_1 bind-utilities libxml2
+ENV TCZ_DEPS_1 getlocale glibc_i18n_locale glibc_apps glibc_gconv
 
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
@@ -254,9 +256,7 @@ RUN for dep in $TCZ_DEPS_1 ; do \
     done
 
 
-
 # ========== /opt/apps/docker ==================================
-
 
 # https://github.com/docker/docker/releases
 COPY DOCKER_VERSION $ROOTFS/etc/sysconfig/docker
@@ -306,7 +306,6 @@ COPY rootfs/make_iso.sh /
 
 # Make sure init scripts are executable
 RUN find $ROOTFS/etc/rc.d/ $ROOTFS/usr/local/etc/init.d/ -exec chmod +x '{}' ';'
-
 
 
 RUN cp -v $ROOTFS/etc/sysconfig/greenbox /tmp/iso/version

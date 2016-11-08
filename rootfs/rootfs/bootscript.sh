@@ -170,5 +170,4 @@ include $BOOT_DIR/etc/logrotate.d
 EOM
 [ -d $BOOT_DIR/etc/logrotate.d ] || mkdir -p $BOOT_DIR/etc/logrotate.d
 
-[ -f /opt/atom/atom ] && ln -s /opt/atom/atom /usr/bin/atom  # atom editor
-[ -d /opt/idea ] && [ ! -e /opt/idea/bin/idea ] && ln -s /opt/idea/bin/idea.sh /opt/idea/bin/idea # IntelliJ idea
+setup_symlinks
