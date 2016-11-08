@@ -9,14 +9,14 @@ case "$1" in
   2) echo "install GREEN_APPS_2"
      INSTALL_SET="2"
      IND1="[ ]${RED}"
-     IND2="[*]${GREN}"
+     IND2="[*]${GREEN}"
      IND3="[ ]${RED}"
      ;;
   3) echo "install GREEN_APPS_3"
      INSTALL_SET="3"
      IND1="[ ]${RED}"
      IND2="[ ]${RED}"
-     IND3="[*]${GREN}"
+     IND3="[*]${GREEN}"
      ;;
   *) echo "install GREEN_APPS"
      INSTALL_SET="1"
