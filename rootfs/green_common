@@ -167,12 +167,6 @@ SRC_LINK=/opt/green/share/git-core
 LINK=/usr/local/share/git-core
 [ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
 
-# terminal info green -> /usr/local
-DIR=/opt/green
-SRC_LINK=/opt/green/share/terminfo
-LINK=/usr/local/share/terminfo
-[ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
-
 
 }
 

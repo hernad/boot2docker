@@ -1,4 +1,4 @@
-FROM greenbox:3.0.7
+FROM greenbox:3.0.12
 
 ARG DOCKER_PROXY=172.17.0.4
 
@@ -373,7 +373,7 @@ ENV TCZ_DEPS_GREEN  \
                     procps \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     bind-utilities libxml2 \
-                    libpcap libusb tcpdump \
+                    libpcap libnl tcpdump \
                     cifs-utils \
                     fuse libffi
 
@@ -392,9 +392,9 @@ RUN for dep in $TCZ_DEPS_GREEN ; do \
         fi ;\
 done
 
-RUN mkdir -p /opt/apps/bin ;\
-    mkdir -p /opt/apps/lib ;\
-    mkdir -p /opt/apps/share ;\
+RUN mkdir -p /opt/apps/green/bin ;\
+    mkdir -p /opt/apps/green/lib ;\
+    mkdir -p /opt/apps/green/share ;\
     cp -av /opt/apps/green/usr/local/bin/* /opt/apps/green/bin/ &&\
     cp -av /opt/apps/green/usr/local/sbin/* /opt/apps/green/bin/ &&\
     cp -av /opt/apps/green/usr/local/lib/* /opt/apps/green/lib/ &&\
@@ -416,7 +416,7 @@ RUN rm /opt/apps/green/lib/*.a &&\
     rm /opt/apps/green/lib/*.la && echo green_apps removing static libraries
 RUN rm -rf /opt/apps/green/include/ ; echo green_apps removing include files
 
-RUN rm -rf /opt/apps/green/share /opt/apps/green/opt
+RUN rm -rf /opt/apps/green/share/terminfo /opt/apps/green/share/git-gui /opt/apps/green/share/applications
 RUN mv /opt/apps/green/sbin/* /opt/apps/green/bin/ ; rmdir /opt/apps/green/sbin
 RUN echo "/opt/apps/green:" && ls -l /opt/apps/green
 RUN rm -rf /opt/apps/go/test ; echo rm golang test directory

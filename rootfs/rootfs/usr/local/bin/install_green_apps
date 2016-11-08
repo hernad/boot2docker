@@ -83,7 +83,7 @@ download_app() {
       echo "downloading: $GREEN_BINTRAY/${app}_${ver}.tar.${ext} ..."
       log_msg "START: curl $GREEN_BINTRAY/${app}_${ver}.tar.${ext}"
       cd $APPS_HOME
-      curl -LO $GREEN_BINTRAY/${app}_${ver}.tar.${ext}
+      curl -s -LO $GREEN_BINTRAY/${app}_${ver}.tar.${ext}
    fi
 
    if [ $? -ne 0 ] ; then
