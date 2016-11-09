@@ -298,6 +298,7 @@ COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
 COPY rootfs/environment $ROOTFS/etc/environment
 COPY rootfs/sshrc $ROOTFS/usr/local/etc/ssh/sshrc
 COPY rootfs/green_common $ROOTFS/etc/green_common
+COPY rootfs/green_service_common $ROOTFS/etc/green_service_common
 COPY rootfs/sudo_x /usr/local/bin
 
 # Copy boot params
@@ -373,7 +374,7 @@ RUN rm $ROOTFS/usr/local/lib/*.a &&\
     rm $ROOTFS/usr/local/lib/*.la
 
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
-RUN rm $ROOTFS/usr/local/etc/ssh/*_example
+RUN rm $ROOTFS/usr/local/etc/ssh/*.orig
 
 RUN /make_iso.sh
 

@@ -3,7 +3,7 @@
 . /etc/green_common
 
 [ ! -f /opt/boot/init.d/nodockerstart ] && log_msg "start docker" &&\
-    /usr/local/etc/init.d/docker start 
+    /usr/local/etc/init.d/docker start
 
 while ! ps ax | grep dockerd | grep -q -v grep; do
    log_msg "waiting for docker daemon"
@@ -12,5 +12,12 @@ done
 
 log_msg "starting $BOOT_DIR/init.d scripts ..."
 [ ! -d $BOOT_DIR/init.d ] && mkdir -p $BOOT_DIR/init.d &&\
-  echo "#!/bin/sh" > $BOOT_DIR/init.d/00_test.sh && chmod +x $BOOT_DIR/init.d/00_test.sh
+(cat  > $BOOT_DIR/init.d/00_test.sh <<- EOF
+echo "#!/bin/sh"
+. /etc/green_service_common
+
+log_msg "test service path $PATH, test service $LD_LIBRARY_PATH"
+
+EOF
+) && chmod +x $BOOT_DIR/init.d/00_test.sh
 ls -1 $BOOT_DIR/init.d/ | xargs -I %  $BOOT_DIR/init.d/%
