@@ -15,9 +15,9 @@ log_msg "starting $BOOT_DIR/init.d scripts ..."
 (cat  > $BOOT_DIR/init.d/00_test.sh <<- EOF
 echo "#!/bin/sh"
 . /etc/green_service_common
+log_msg "test service PATH: \$PATH, LD_LIBRARY_PATH: \$LD_LIBRARY_PATH  docker: `docker --version`"
 
-log_msg "test service path $PATH, test service $LD_LIBRARY_PATH"
-
+set | grep _VER | xargs echo | tee -a \$LOG_FILE
 EOF
 ) && chmod +x $BOOT_DIR/init.d/00_test.sh
 ls -1 $BOOT_DIR/init.d/ | xargs -I %  $BOOT_DIR/init.d/%
