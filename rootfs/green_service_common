@@ -5,4 +5,4 @@ set_path_ld_library
 export PATH
 export LD_LIBRARY_PATH
 
-log_msg "start service $0"
+log_msg "START: $0"

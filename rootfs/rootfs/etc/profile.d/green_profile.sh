@@ -44,7 +44,7 @@ echo -e
 NOCOLOR="\033[0;0;0m"      # no color or formatting
 
 PCOLOR=$GREEN
-if [ $(id -u) = 0 ] && PCOLOR=$RED # root user
+[ $(id -u) = 0 ] && PCOLOR=$RED # root user
 
 PS1="[${PCOLOR}\u@\h${NOCOLOR} \W]\\$ " # prompt
 
