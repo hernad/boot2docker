@@ -19,5 +19,5 @@ set | grep _VER | xargs echo | tee -a \$LOG_FILE
 EOF
 ) && chmod +x $BOOT_DIR/init.d/00_test.sh
 
-cd $BOOT_DIR/init.d
-ls -1 $BOOT_DIR/init.d/*.sh | xargs -I %  % &
+
+cd $BOOT_DIR/init.d   && ls -1 *.sh | xargs -I %  sh -c "$BOOT_DIR/init.d/%&"

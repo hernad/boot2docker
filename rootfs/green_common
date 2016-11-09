@@ -2,6 +2,7 @@
 
 DATE=`date +'%Y%m%d %T'`
 
+GREENBOX_VERSION=`cat /etc/sysconfig/greenbox`
 KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
 DOCKER_VERSION=`cat /etc/sysconfig/docker`
 
