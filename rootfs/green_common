@@ -6,7 +6,7 @@ GREENBOX_VERSION=`cat /etc/sysconfig/greenbox`
 KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
 DOCKER_VERSION=`cat /etc/sysconfig/docker`
 
-GREEN_APPS_VER=3.0.0
+GREEN_APPS_VER=3.0.1
 X11_APPS_VER=3.1.0
 VIM_VER=8.0.62
 PYTHON2_VER=2.7.12
@@ -176,6 +176,11 @@ echo "params: \$@"
 /opt/atom/atom \$@ &
 EOF
 ) && chmod +x $BOOT_DIR/bin/atom
+
+# vi -> vim
+LINK=/usr/local/bin/vi
+SRC_LINK=/opt/vim/bin/vim
+[ -d /opt/vim ] && [ ! -h $LINK ] && ln -s $SRC_LINK $LINK
 
 }
 

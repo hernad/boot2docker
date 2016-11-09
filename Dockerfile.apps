@@ -428,5 +428,5 @@ COPY extract_so_deps_x11.sh /
 RUN bash  /extract_so_deps_x11.sh
 
 # collect shared libraries needed for green apps execution
-#COPY extract_so_deps_green.sh /
-#RUN bash  /extract_so_deps_green.sh
+COPY extract_so_deps_green.sh /
+RUN bash  /extract_so_deps_green.sh
