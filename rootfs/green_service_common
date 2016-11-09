@@ -6,3 +6,8 @@ export PATH
 export LD_LIBRARY_PATH
 
 log_msg "START: $0"
+
+while ! ps ax | grep dockerd | grep -q -v grep; do
+   log_msg "waiting for docker daemon"
+   sleep 1
+done
