@@ -20,7 +20,7 @@ PERL_VER=5.24.0
 
 JAVA_VER=8.112.15
 IDEA_VER=2016.5.2
-ATOM_VER=1.11.2
+ATOM_VER=1.12.0
 CODE_VER=1.7.1
 AWS_VER=1.9.17
 
@@ -137,7 +137,7 @@ vbox_fix_permissions() {
     # VirtualBox execs has to be root
     [ "rootroox" == `ls -ld $VBOX_DIR | awk '{print $3 $4;}'` ] || \
        chown root:root -R $VBOX_DIR
-    chmod u+s $VBOX_DIR/VirtualBox $BOX_DIR/VBoxHeadless
+    chmod u+s $VBOX_DIR/VirtualBox $VBOX_DIR/VBoxHeadless
     chmod g-w /opt
     chmod g-w /opt/VirtualBox
   fi

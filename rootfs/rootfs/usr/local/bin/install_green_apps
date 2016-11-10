@@ -91,6 +91,7 @@ download_app() {
    else
         umount_opt ${app}
         cd $APPS_HOME
+        rm -rf ${app} # delete old version
 	      if tar xf ${app}_${ver}.tar.${ext} 2>&1 | tee -a $LOG_FILE ; then
               log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.${ext}"
               rm ${app}_${ver}.tar.${ext}

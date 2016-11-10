@@ -224,8 +224,8 @@ RUN     cd /tmp \
         && update-alternatives --set jar $JAVA_HOME/bin/jar \
         && java -version
 
-
-RUN curl -LO https://github.com/atom/atom/releases/download/v1.11.2/atom-amd64.deb &&\
+ENV ATOM_VER=1.12.0
+RUN curl -LO https://github.com/atom/atom/releases/download/v${ATOM_VER}/atom-amd64.deb &&\
     dpkg -i atom-amd64.deb || apt-get install -f -y &&\
     mv /usr/share/atom /opt/apps/atom
 

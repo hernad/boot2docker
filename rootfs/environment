@@ -1,2 +1,1 @@
-PATH=/opt/x11/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
-#LD_LIBRARY_PATH=/opt/x11/lib
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
