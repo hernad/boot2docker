@@ -74,6 +74,6 @@ rm -rf $APP
 
 
 APP=aws
-VER=1.9.17
+VER=1.11.13
 rm -rf $APP
-#./upload_app.sh $APP $VER J
+./upload_app.sh $APP $VER J
