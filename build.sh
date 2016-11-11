@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DOCKER_BUILD_OPTS=${DOCKER_BUILD_OPTS:-}
-DOCKER_PROXY=172.17.0.2
+DOCKER_PROXY=${DOCKER_PROXY:-172.17.0.2}
 
 if [ $# -lt 1 ] ; then
    echo "usage: $0 greenbox apps"
