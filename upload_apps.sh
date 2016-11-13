@@ -10,7 +10,7 @@ rm -rf $APP
 APP=green
 VER=3.0.2
 rm -rf $APP
-./upload_app.sh $APP $VER  J
+#./upload_app.sh $APP $VER  J
 
 APP=x11
 VER=3.1.0
@@ -20,7 +20,7 @@ rm -rf $APP
 APP=vagrant
 VER=1.8.7
 rm -rf $APP
-./upload_app.sh $APP $VER J
+#./upload_app.sh $APP $VER J
 
 APP=vim
 VER=8.0.62
@@ -60,7 +60,7 @@ rm -rf $APP
 APP=atom
 VER=1.12.0
 rm -rf $APP
-./upload_app.sh $APP $VER J
+#./upload_app.sh $APP $VER J
 
 APP=code
 VER=1.7.1
@@ -76,4 +76,4 @@ rm -rf $APP
 APP=aws
 VER=1.11.13
 rm -rf $APP
-./upload_app.sh $APP $VER J
+#./upload_app.sh $APP $VER J
