@@ -2,15 +2,15 @@ BINTRAY_API_KEY=`cat bintray_api_key`
 BINTRAY_REPOS=greenbox
 
 GREENBOX_VERSION=latest
-#BINTRAY_PACKAGE=VirtualBox
-BINTRAY_PACKAGE=$1
-#BINTRAY_PACKAGE_VER=5.0.10
-BINTRAY_PACKAGE_VER=$2
+#GREEN_APP=VirtualBox
+GREEN_APP=$1
+#GREEN_APP_VER=5.0.10
+GREEN_APP_VER=$2
 
 COMPRESSION=${3:-J} # z - gzip, j-bz2, J-xz
 
-[ -z "$BINTRAY_PACKAGE" ] && echo package name mora biti navedeno && exit 1
-[ -z "$BINTRAY_PACKAGE_VER" ] && echo package version mora biti navedeno && exit 1
+[ -z "$GREEN_APP" ] && echo package name mora biti navedeno && exit 1
+[ -z "$GREEN_APP_VER" ] && echo package version mora biti navedeno && exit 1
 
 case $COMPRESSION in
   z)
@@ -24,17 +24,16 @@ case $COMPRESSION in
 esac
 
 
-FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.${EXT}
+FILE=${GREEN_APP}_${GREEN_APP_VER}.${EXT}
 
-CT=greenbox_apps
 
 if [ ! -f $FILE ] ; then
-   case ${BINTRAY_PACKAGE} in
+   case ${GREEN_APP} in
       VirtualBox)
            CT=greenbox
            docker rm -f $CT
            docker run --name $CT $CT:$GREENBOX_VERSION ls /opt/apps && rm -rf VirtualBox
-           docker cp $CT:/opt/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
+           docker cp $CT:/opt/${GREEN_APP} ${GREEN_APP} || exit 1
            chmod +s VirtualBox/VirtualBox VirtualBox/VBoxHeadless &&\
            find VirtualBox/src -type f -exec rm  {} \; &&\
            find VirtualBox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack/solaris.amd64 -type f -exec rm {} \; &&\
@@ -47,26 +46,43 @@ if [ ! -f $FILE ] ; then
            ;;
       flocker|vagrant)
            docker rm -f $CT
-           docker run --name $CT $CT:$GREENBOX_VERSION find /opt/${BINTRAY_PACKAGE}
-           docker cp $CT:/opt/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
+           docker run --name $CT $CT:$GREENBOX_VERSION find /opt/${GREEN_APP}
+           docker cp $CT:/opt/${GREEN_APP} ${GREEN_APP} || exit 1
            ;; 
-      *) 
+      ruby)
+           CT=greenbox_app_ruby
+           CT_VER=${GREEN_APP_VER}
            docker rm -f $CT
-           docker run --name $CT $CT:$GREENBOX_VERSION ls -l /opt/apps/${BINTRAY_PACKAGE}
-           docker cp $CT:/opt/apps/${BINTRAY_PACKAGE} ${BINTRAY_PACKAGE} || exit 1
-           [ ! -d ${BINTRAY_PACKAGE}/sbin ] ||  mv ${BINTRAY_PACKAGE}/sbin/*  ${BINTRAY_PACKAGE}/bin/ 
-           if  [ -d bins/${BINTRAY_PACKAGE} ]
+           docker run --name $CT $CT:$CT_VER ls -l /opt/apps/${GREEN_APP}
+           docker cp $CT:/opt/apps/${GREEN_APP} ${GREEN_APP} || exit 1
+           [ ! -d ${GREEN_APP}/sbin ] ||  mv ${GREEN_APP}/sbin/*  ${GREEN_APP}/bin/ 
+           if  [ -d bins/${GREEN_APP} ]
            then
-             echo "bins/${BINTRAY_PACKAGE}"
-             cp bins/${BINTRAY_PACKAGE}/* ${BINTRAY_PACKAGE}/bin/  
+             echo "bins/${GREEN_APP}"
+             cp bins/${GREEN_APP}/* ${GREEN_APP}/bin/  
            else
-             echo "NO bins/${BINTRAY_PACKAGE}"
+             echo "NO bins/${GREEN_APP}"
+           fi
+           ;;
+ 
+      *) 
+           CT=greenbox_apps
+           docker rm -f $CT
+           docker run --name $CT $CT:$GREENBOX_VERSION ls -l /opt/apps/${GREEN_APP}
+           docker cp $CT:/opt/apps/${GREEN_APP} ${GREEN_APP} || exit 1
+           [ ! -d ${GREEN_APP}/sbin ] ||  mv ${GREEN_APP}/sbin/*  ${GREEN_APP}/bin/ 
+           if  [ -d bins/${GREEN_APP} ]
+           then
+             echo "bins/${GREEN_APP}"
+             cp bins/${GREEN_APP}/* ${GREEN_APP}/bin/  
+           else
+             echo "NO bins/${GREEN_APP}"
            fi
            ;;
    esac 
-   echo "tar cv${COMPRESSION}f $FILE ${BINTRAY_PACKAGE}"
-   tar cv${COMPRESSION}f $FILE ${BINTRAY_PACKAGE}
-   rm -r -f ${BINTRAY_PACKAGE}
+   echo "tar cv${COMPRESSION}f $FILE ${GREEN_APP}"
+   tar cv${COMPRESSION}f $FILE ${GREEN_APP}
+   rm -r -f ${GREEN_APP}
 fi
 
 ls -lh $FILE
@@ -76,9 +92,9 @@ echo uploading to bintray ...
 curl -T $FILE \
       -u hernad:$BINTRAY_API_KEY \
       --header "X-Bintray-Override: 1" \
-     https://api.bintray.com/content/hernad/greenbox/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$FILE
+     https://api.bintray.com/content/hernad/greenbox/$GREEN_APP/$GREEN_APP_VER/$FILE
 
 curl -u hernad:$BINTRAY_API_KEY \
-   -X POST https://api.bintray.com/content/hernad/greenbox/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/publish
+   -X POST https://api.bintray.com/content/hernad/greenbox/$GREEN_APP/$GREEN_APP_VER/publish
 
 
