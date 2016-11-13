@@ -4,7 +4,7 @@ DOCKER_BUILD_OPTS=${DOCKER_BUILD_OPTS:-}
 DOCKER_PROXY=${DOCKER_PROXY:-172.17.0.2}
 
 if [ $# -lt 1 ] ; then
-   echo "usage: $0 greenbox apps"
+   echo "usage: $0 greenbox apps green x11 ruby"
    echo "       $0 greenbox"
    echo "envars: GREEN_PRODUCTION: (rack|vbox)"
    exit 1
@@ -77,6 +77,15 @@ do
          docker tag greenbox_apps:$GREENBOX_APPS_VERSION greenbox_apps:latest &&\
          echo "=== greenbox_apps:$GREENBOX_APPS_VERSION built!"
          ;;
+     *)
+         app=$arg
+         APP_VERSION=`cat apps/${app}/VERSION`
+         docker rmi -f greenbox_app_${app}:$GREENBOX_APPS_VERSION
+         docker build $DOCKER_BUILD_OPTS --build-arg DOCKER_PROXY=$DOCKER_PROXY -t greenbox_app_${app}:$APP_VERSION -f apps/${app}/Dockerfile . &&\
+         docker tag greenbox_app_${app}:$APP_VERSION greenbox_app_${app}:latest &&\
+         echo "=== greenbox_app_${app}:$APP_VERSION built!"
+         ;;
+      
   esac
 
   arg=$1
