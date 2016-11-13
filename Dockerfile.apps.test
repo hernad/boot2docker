@@ -1,5 +1,5 @@
-#FROM greenbox:1.2.1
-FROM debian:jessie
+#FROM debian:jessie
+FROM greenbox:3.0.22
 
 ARG DOCKER_PROXY=172.17.0.2
 
@@ -10,9 +10,9 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
 RUN apt-get update ; apt-get install -y curl
 
 # http://download.virtualbox.org/virtualbox/5.1.8/
-ENV VBOX_VER=5.1.8 VBOX_BUILD=111374
+#ENV VBOX_VER=5.1.8 VBOX_BUILD=111374
 
-RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&    mkdir -p /lib ;    ln -s $ROOTFS/lib/modules /lib/modules ;
+#RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&    mkdir -p /lib ;    ln -s $ROOTFS/lib/modules /lib/modules ;
 
 
 #ENV LOGROTATE_VER=3.10.0
@@ -169,11 +169,11 @@ RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-
 
 
 # http://www.linuxfromscratch.org/blfs/view/svn/basicnet/bind-utils.html
-RUN curl -LO ftp://ftp.isc.org/isc/bind9/9.11.0/bind-9.11.0.tar.gz &&\
-    tar xf bind-*.tar.gz && cd bind-* &&\
-    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' && ./configure --prefix=/opt/apps/green &&\
-    ./configure --prefix=/opt/apps/green && make -C lib/dns && make -C lib/isc && make -C lib/bind9 && make -C lib/isccfg && make -C lib/lwres &&\
-     make -C bin/dig install
+#RUN curl -LO ftp://ftp.isc.org/isc/bind9/9.11.0/bind-9.11.0.tar.gz &&\
+#    tar xf bind-*.tar.gz && cd bind-* &&\
+#    export CFLAGS='-I/opt/apps/green/include -L/opt/apps/green/lib' && ./configure --prefix=/opt/apps/green &&\
+#    ./configure --prefix=/opt/apps/green && make -C lib/dns && make -C lib/isc && make -C lib/bind9 && make -C lib/isccfg && make -C lib/lwres &&\
+#     make -C bin/dig install
 
 
 #RUN curl -LO https://curl.haxx.se/download/curl-7.51.0.tar.bz2 &&\
@@ -184,12 +184,12 @@ RUN curl -LO ftp://ftp.isc.org/isc/bind9/9.11.0/bind-9.11.0.tar.gz &&\
 #    make install
 
 
-ENV GIT_VER=2.10.2
+#ENV GIT_VER=2.10.2
 # http://www.linuxfromscratch.org/blfs/view/svn/general/git.html
-RUN curl -LO ftp://ftp.kernel.org/pub/software/scm/git/git-${GIT_VER}.tar.xz
-RUN tar xf git-${GIT_VER}.tar.xz && cd git-${GIT_VER} &&\
-    apt-get install gettext  -y &&\
-    export CFLAGS='-I/usr/local/include -L/usr/local/lib' &&\
+#RUN curl -LO ftp://ftp.kernel.org/pub/software/scm/git/git-${GIT_VER}.tar.xz
+#RUN tar xf git-${GIT_VER}.tar.xz && cd git-${GIT_VER} &&\
+#    apt-get install gettext  -y &&\
+#    export CFLAGS='-I/usr/local/include -L/usr/local/lib' &&\
 # mismatch between tinycore and debian libraries - force build with tiny core libs
 #    cp /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /opt/apps/green/lib/ &&\
 #    cp /usr/lib/x86_64-linux-gnu/libcurl.so.4 /opt/apps/green/lib/ &&\
@@ -198,11 +198,11 @@ RUN tar xf git-${GIT_VER}.tar.xz && cd git-${GIT_VER} &&\
 # erase git-imap-send .... IMAP_SEND_LDFLAGS) multiline, git-imap-send cannot be compiled static
 #    perl  -i.origin -pe 'BEGIN{undef $/;} s/^gitt-imap-send.*filter.*IMAP_SEND_LDFLAGS\)$//smg' Makefile &&\
 #    perl  -i.origin -pe 's/^PROGRAM_OBJS.*imap-send.o$//smg' Makefile &&\
-    ./configure --with-curl --with-expat --with-tcltk=no \
-       --with-pager=more \
-       --with-editor=vim \
-       --prefix=/opt/apps/green &&\
-    make install
+#    ./configure --with-curl --with-expat --with-tcltk=no \
+#       --with-pager=more \
+#       --with-editor=vim \
+#       --prefix=/opt/apps/green &&\
+#    make install
 
 # ncurses 6.0 utf support
 #RUN curl -LO ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz &&\
@@ -212,3 +212,14 @@ RUN tar xf git-${GIT_VER}.tar.xz && cd git-${GIT_VER} &&\
 #    ./configure --enable-widec --prefix=/opt/apps/green &&\
 #    make && make install &&\
 #    ls /opt/apps/green/bin/ncursesw6-config
+
+
+RUN apt-get install git -y
+
+RUN git clone https://github.com/relan/exfat.git
+RUN cd exfat && autoreconf --install &&\
+    ./configure --prefix=/opt/apps/green &&\
+    make &&\
+    make install &&\
+    mkdir -p /opt/apps/green/bin ;\
+    mv /opt/apps/green/sbin/* /opt/apps/green/bin/

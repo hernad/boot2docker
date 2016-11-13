@@ -1,4 +1,4 @@
-FROM greenbox:3.0.20
+FROM greenbox:3.0.22
 
 ARG DOCKER_PROXY=172.17.0.4
 
@@ -394,6 +394,16 @@ RUN for dep in $TCZ_DEPS_GREEN ; do \
         fi ;\
 done
 
+
+RUN git clone https://github.com/relan/exfat.git &&\
+    cd exfat && autoreconf --install &&\
+    ./configure --prefix=/opt/apps/green &&\
+    make &&\
+    make install &&\
+    mkdir -p /opt/apps/green/bin ;\
+    mv /opt/apps/green/sbin/* /opt/apps/green/bin/
+
+# ====================================== remove what we don't need  ==============================
 RUN mkdir -p /opt/apps/green/bin ;\
     mkdir -p /opt/apps/green/lib ;\
     mkdir -p /opt/apps/green/share ;\
@@ -430,3 +440,4 @@ RUN bash  /extract_so_deps_x11.sh
 # collect shared libraries needed for green apps execution
 COPY extract_so_deps_green.sh /
 RUN bash  /extract_so_deps_green.sh
+
