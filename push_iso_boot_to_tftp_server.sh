@@ -1,7 +1,9 @@
 #!/bin/sh
 
 GREENBOX_VERSION=`cat GREENBOX_VERSION`
-TFTP_DEST=root@192.168.168.117:/srv/tftp/
+ROOT_SRV=root@192.168.168.117
+TFTP_DIR=/srv/tftp
+TFTP_DEST=$ROOT_SRV:$TFTP_DIR
 rm greenbox.iso
 
 echo "greenbox version: $GREENBOX_VERSION"
@@ -15,6 +17,8 @@ docker run --rm greenbox:$GREENBOX_VERSION > greenbox.iso
 
 hdiutil mount -mountpoint /Volumes/greenbox greenbox.iso
 
-scp -r /Volumes/greenbox/boot $TFTP_DEST
- 
+scp -r /Volumes/greenbox/boot $TFTP_DEST/boot-$GREENBOX_VERSION
+ssh  $ROOT_SRV "ls -l $TFTP_DIR/boot ; rm $TFTP_DIR/boot"
+ssh  $ROOT_SRV "ln -s  $TFTP_DIR/boot-$GREENBOX_VERSION $TFTP_DIR/boot ; ls -l $TFTP_DIR/boot"
+
 hdiutil unmount /Volumes/greenbox
