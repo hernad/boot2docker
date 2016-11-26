@@ -126,7 +126,7 @@ ENV TCZ_DEPS_0      iptables \
                     tar e2fsprogs \
                     gcc_libs \
                     acpid \
-                    xz liblzma \
+                     xz liblzma \
                     libgpg-error libgcrypt libssh2 \
                     curl acl attr ntpclient \
                     bash readline ncurses \
@@ -153,6 +153,8 @@ RUN for dep in $TCZ_DEPS_0 ; do \
 RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64.gz
 # Install Tiny Core Linux rootfs
 RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
+
+RUN ls -l $ROOTFS/usr/local/tce.installed
 
 # Extract ca-certificates
 RUN set -x \
