@@ -23,10 +23,11 @@ RUN curl -k -LO https://github.com/logrotate/logrotate/releases/download/$LOGROT
 
 
 # === rsync ===
+RSYNC_VER=3.1.2
 RUN mkdir -p /opt/apps/green/bin &&\
-    cd / && curl -LO https://download.samba.org/pub/rsync/src/rsync-3.1.1.tar.gz &&\
-    tar xvf rsync-3.1.1.tar.gz &&\
-    cd /rsync-3.1.1 && ./configure && make && /usr/bin/install -c  -m 755 rsync /opt/apps/green/bin
+    cd / && curl -LO https://download.samba.org/pub/rsync/src/rsync-${RSYNC_VER}.tar.gz &&\
+    tar xvf rsync-${RSYNC_VER}.tar.gz &&\
+    cd /rsync-${RSYNC_VER} && ./configure && make && /usr/bin/install -c  -m 755 rsync /opt/apps/green/bin
 
 # Pipe Viewer - is a terminal-based tool for monitoring the progress of data through a pipeline.
 RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
