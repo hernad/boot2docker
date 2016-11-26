@@ -8,9 +8,9 @@ rm -rf $APP
 #./upload_app.sh $APP $VER  J
 
 APP=green
-VER=3.0.2
+VER=3.1.0
 rm -rf $APP
-#./upload_app.sh $APP $VER  J
+./upload_app.sh $APP $VER  J
 
 APP=x11
 VER=3.1.0

@@ -173,7 +173,8 @@ ENV TCZ_DEPS_GREEN  \
                     cifs-utils \
                     fuse libffi \
                     nss nspr sqlite3 libnotify \
-                    groff
+                    groff \
+                    util-linux
 
 #nss,nspr,sqlite3,libnotify - deps for electron applications ( atom, code )
 #groff - aws deps

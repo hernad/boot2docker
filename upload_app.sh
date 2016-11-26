@@ -49,8 +49,8 @@ if [ ! -f $FILE ] ; then
            docker run --name $CT $CT:$GREENBOX_VERSION find /opt/${GREEN_APP}
            docker cp $CT:/opt/${GREEN_APP} ${GREEN_APP} || exit 1
            ;; 
-      ruby)
-           CT=greenbox_app_ruby
+      ruby|green)
+           CT=greenbox_app_${GREEN_APP}
            CT_VER=${GREEN_APP_VER}
            docker rm -f $CT
            docker run --name $CT $CT:$CT_VER ls -l /opt/apps/${GREEN_APP}
@@ -65,6 +65,7 @@ if [ ! -f $FILE ] ; then
            fi
            ;;
  
+
       *) 
            CT=greenbox_apps
            docker rm -f $CT
