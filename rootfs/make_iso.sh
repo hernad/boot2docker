@@ -34,7 +34,6 @@ ln -fs /opt/green/bin/rsync $ROOTFS/usr/bin/rsync
 # /usr/bin/python, /usr/bin/perl, /usr/bin/logrotate
 ln -fs /opt/python2/bin/python $ROOTFS/usr/bin/ ; ln -fs /opt/python2/lib/libpython2.7.so.1.0 $ROOTFS/usr/lib/ # symlinks /usr/bin for ansible
 ln -fs /opt/green/bin/logrotate $ROOTFS/usr/bin/
-ln -fs /opt/perl5/bin/perl $ROOTFS/usr/bin/
 
 ln -fs /opt/x11/bin/xauth $ROOTFS/usr/bin/
 ln -fs /opt/x11/share $ROOTFS/usr/share/X11
