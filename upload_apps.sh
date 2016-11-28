@@ -1,6 +1,6 @@
 VER=5.1.10
 APP=VirtualBox
-./upload_app.sh $APP ${VER} J  #.tar.xz
+#./upload_app.sh $APP ${VER} J  #.tar.xz
 
 APP=docker
 VER=`cat DOCKER_VERSION`

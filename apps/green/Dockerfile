@@ -23,7 +23,7 @@ RUN curl -k -LO https://github.com/logrotate/logrotate/releases/download/$LOGROT
 
 
 # === rsync ===
-RSYNC_VER=3.1.2
+ENV RSYNC_VER=3.1.2
 RUN mkdir -p /opt/apps/green/bin &&\
     cd / && curl -LO https://download.samba.org/pub/rsync/src/rsync-${RSYNC_VER}.tar.gz &&\
     tar xvf rsync-${RSYNC_VER}.tar.gz &&\
