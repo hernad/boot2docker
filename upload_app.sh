@@ -1,4 +1,4 @@
-BINTRAY_API_KEY=`cat bintray_api_key`
+#BINTRAY_API_KEY=`cat bintray_api_key`
 BINTRAY_REPOS=greenbox
 
 GREENBOX_VERSION=latest
