@@ -180,7 +180,7 @@ EOF
 # vi -> vim
 LINK=/usr/local/bin/vi
 SRC_LINK=/opt/vim/bin/vim
-[ -d /opt/vim ] && [ ! -h $LINK ] && ln -s $SRC_LINK $LINK
+[ -d /opt/vim ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
 
 }
 

@@ -8,7 +8,7 @@ if ! ( /sbin/lsmod | grep -q nfs )
 then
 
    /sbin/modprobe zfs >> $LOG_FILE 2>&1
-   
+
    for i in 1 2 3 4
    do
      echo "/dev/zfs try: $i"
@@ -23,16 +23,16 @@ fi
 
 mkdir -p /home
 mkdir -p /opt
-/usr/local/sbin/zpool import green >> $LOG_FILE 2>&1
+zpool import green >> $LOG_FILE 2>&1
 
 log_msg "zvol/green/swap ON"
-/sbin/swapon  /dev/zvol/green/swap >> $LOG_FILE
-/sbin/swapon -a >> $LOG_FILE
+swapon  /dev/zvol/green/swap >> $LOG_FILE
+swapon -a >> $LOG_FILE
 
 log_msg "mounting zfs blok device /dev/zvol/green/docker_vol"
 mkdir -p /var/lib/docker
-[ -e /dev/zvol/green/docker_vol ] && /bin/mount /dev/zvol/green/docker_vol /var/lib/docker
+[ -e /dev/zvol/green/docker_vol ] && mount /dev/zvol/green/docker_vol /var/lib/docker
 
-/usr/local/sbin/zpool status -v >> $LOG_FILE 2>&1
-/usr/local/sbin/zfs list >> $LOG_FILE 2>&1
+zpool status -v >> $LOG_FILE 2>&1
+zfs list >> $LOG_FILE 2>&1
 log_msg "zfs_automount END"
