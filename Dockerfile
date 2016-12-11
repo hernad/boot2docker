@@ -187,9 +187,10 @@ RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE
 
 # http://zfsonlinux.org/
 # https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.8/spl-0.6.5.8.tar.gz
-ENV ZFS_VER 0.6.5.8
+#ENV ZFS_VER 0.6.5.8
+ENV ZFS_VER 0.7.0-rc2
 RUN mkdir /zfs && cd /zfs && curl -LO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/spl-$ZFS_VER.tar.gz &&\
-    cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-$ZFS_VER &&\
+    cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-* &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install
 
 # hernad: zfs build demands librt from debian
@@ -202,9 +203,12 @@ RUN cd /lib/x86_64-linux-gnu && ls librt-2*.so && cp librt-2.19.so $ROOTFS/lib/ 
 # RUN cd /zfs && git clone https://github.com/zfsonlinux/zfs.git zfs-git && cd /zfs/zfs-git && git checkout $ZFS_GIT_BRANCH
 # RUN cd /zfs/zfs-git && sh autogen.sh && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && DESTDIR=$ROOTFS make install
 
+
+RUN apt-get install -y libblkid-dev libattr1-dev
+
 # build zfs from tar
 RUN cd /zfs && curl -LO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/zfs-$ZFS_VER.tar.gz &&\
-    cd /zfs && tar xf zfs-$ZFS_VER.tar.gz && cd zfs-$ZFS_VER &&\
+    cd /zfs && tar xf zfs-$ZFS_VER.tar.gz && cd zfs-* &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make &&\
     DESTDIR=$ROOTFS make install
 
@@ -378,6 +382,14 @@ RUN rm $ROOTFS/usr/local/lib/*.a &&\
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
 RUN rm $ROOTFS/usr/local/etc/ssh/*.orig
 
+RUN cp -av /lib/x86_64-linux-gnu/libtirpc.so.1* $ROOTFS/usr/local/lib/ &&\
+    cp -av /lib/x86_64-linux-gnu/libblkid.so.1* $ROOTFS/usr/local/lib/ &&\ 
+    cp -av /usr/lib/x86_64-linux-gnu/libk5crypto* $ROOTFS/usr/local/lib/ &&\
+    cp -av /usr/lib/x86_64-linux-gnu/libgssapi_krb5* $ROOTFS/usr/local/lib/ &&\
+    cp -av /usr/lib/x86_64-linux-gnu/libkrb5* $ROOTFS/usr/local/lib/ &&\
+    cp -av /lib/x86_64-linux-gnu/libkeyutils* $ROOTFS/usr/local/lib/
+
 RUN /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]
+
