@@ -17,7 +17,8 @@ docker run --rm greenbox:$GREENBOX_VERSION > greenbox.iso
 
 hdiutil mount -mountpoint /Volumes/greenbox greenbox.iso
 
-scp -r /Volumes/greenbox/boot/* $TFTP_DEST/boot-$GREENBOX_VERSION/
+ssh  $ROOT_SRV "mkdir -p $TFTP_DIR/boot-$GREENBOX_VERSION"
+scp -r /Volumes/greenbox/boot/* $TFTP_DEST/boot-$GREENBOX_VERSION
 ssh  $ROOT_SRV "ls -l $TFTP_DIR/boot ; rm $TFTP_DIR/boot"
 ssh  $ROOT_SRV "ln -s  $TFTP_DIR/boot-$GREENBOX_VERSION $TFTP_DIR/boot ; ls -l $TFTP_DIR/boot"
 

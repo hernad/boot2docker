@@ -24,10 +24,16 @@ fi
 : ${DOCKER_HOST:='-H tcp://0.0.0.0:2376'}
 : ${DOCKER_TLS:=auto}
 
-if [ -e /dev/zvol/green/docker_vol ] ; then
-: ${DOCKER_STORAGE:=overlay}
-else
-: ${DOCKER_STORAGE:=zfs}
+if [ -z "$DOCKER_STORAGE" ] ; then
+   if [ -e /dev/zvol/green/docker_vol ] ; then
+       if [ ! -d /var/lib/docker/overlay ] ; then
+         DOCKER_STORAGE=overlay2 # best choice!
+       else
+         DOCKER_STORAGE:=overlay # legacy
+       fi
+   else
+       DOCKER_STORAGE=zfs # legacy
+   fi
 fi
 
 : ${DOCKER_DIR:=/var/lib/docker}

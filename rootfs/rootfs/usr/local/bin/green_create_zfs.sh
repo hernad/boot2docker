@@ -60,9 +60,9 @@ fi
 
 if ( ! zfs list $POOL/swap )
 then
-   log_msg "zfs swap /dev/zvol"
+   log_msg "zfs create swap /dev/zvol"
    zfs create  -V $SWAP_VOL_SIZE \
-      -b $(getconf PAGESIZE) -o primarycache=metadata -o com.sun:auto-snapshot=false -o sync=disable -s $POOL/swap
+      -b $(getconf PAGESIZE) -o primarycache=metadata -o com.sun:auto-snapshot=false -o sync=disabled -s $POOL/swap
    wait_zvol_up $POOL swap
    mkswap  /dev/zvol/$POOL/swap
    swapon /dev/zvol/$POOL/swap

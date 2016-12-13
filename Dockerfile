@@ -382,6 +382,7 @@ RUN rm $ROOTFS/usr/local/lib/*.a &&\
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
 RUN rm $ROOTFS/usr/local/etc/ssh/*.orig
 
+# zfs 0.7.0 dependencies
 RUN cp -av /lib/x86_64-linux-gnu/libtirpc.so.1* $ROOTFS/usr/local/lib/ &&\
     cp -av /lib/x86_64-linux-gnu/libblkid.so.1* $ROOTFS/usr/local/lib/ &&\ 
     cp -av /usr/lib/x86_64-linux-gnu/libk5crypto* $ROOTFS/usr/local/lib/ &&\
