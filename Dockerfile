@@ -31,7 +31,8 @@ RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
                         libtirpc-dev
 
 # tiny core rootfs location
-ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
+#ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
+ENV ROOTFS=/rootfs TCL_REPO_BASE=http://distro.ibiblio.org/tinycorelinux/7.x/x86_64
 ENV GCC_M -m64
 # https://www.kernel.org/pub/linux/kernel/v4.x/
 
