@@ -1,6 +1,5 @@
-#BINTRAY_API_KEY=`cat bintray_api_key`
+BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
 BINTRAY_REPOS=greenbox
-
 GREENBOX_VERSION=latest
 #GREEN_APP=VirtualBox
 GREEN_APP=$1
