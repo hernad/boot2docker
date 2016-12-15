@@ -43,12 +43,7 @@ if [ ! -f $FILE ] ; then
            find VirtualBox -name "*.o" -exec rm {} \; &&\
            find VirtualBox -name "*.c" -exec rm {} \; || exit 1
            ;;
-      flocker|vagrant)
-           docker rm -f $CT
-           docker run --name $CT $CT:$GREENBOX_VERSION find /opt/${GREEN_APP}
-           docker cp $CT:/opt/${GREEN_APP} ${GREEN_APP} || exit 1
-           ;; 
-      ruby|green|docker)
+      ruby|green|docker|vagrant)
            CT=greenbox_app_${GREEN_APP}
            CT_VER=${GREEN_APP_VER}
            docker rm -f $CT
