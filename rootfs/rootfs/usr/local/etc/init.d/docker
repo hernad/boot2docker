@@ -29,7 +29,7 @@ if [ -z "$DOCKER_STORAGE" ] ; then
        if [ ! -d /var/lib/docker/overlay ] ; then
          DOCKER_STORAGE=overlay2 # best choice!
        else
-         DOCKER_STORAGE:=overlay # legacy
+         DOCKER_STORAGE=overlay # legacy
        fi
    else
        DOCKER_STORAGE=zfs # legacy
