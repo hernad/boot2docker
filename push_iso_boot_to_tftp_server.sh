@@ -24,7 +24,7 @@ docker run --rm greenbox:$GREENBOX_VERSION > greenbox.iso
 
 if [ "$LINUX" == "1" ] ; then
 	MNT_DIR=/mnt/greenbox
-	#sudo mkdir -p /mnt/greenbox
+        [ -d /mnt/greenbox ]  || sudo mkdir -p /mnt/greenbox
         echo mount linux $MNT_DIR
 	sudo mount -o loop greenbox.iso $MNT_DIR
 else
