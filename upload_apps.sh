@@ -1,4 +1,4 @@
-VER=5.1.10
+VER=5.1.12
 APP=VirtualBox
 #./upload_app.sh $APP ${VER} J  #.tar.xz
 
@@ -20,7 +20,7 @@ rm -rf $APP
 APP=vagrant
 VER=1.9.1
 rm -rf $APP
-#./upload_app.sh $APP $VER J
+./upload_app.sh $APP $VER J
 
 APP=vim
 VER=8.0.62
