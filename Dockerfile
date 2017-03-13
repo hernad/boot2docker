@@ -60,7 +60,7 @@ RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.confi
 # ======================= VirtualBox install ============================================
 
 # http://download.virtualbox.org/virtualbox/5.1.8/
-ENV VBOX_VER=5.1.12 VBOX_BUILD=112440
+ENV VBOX_VER=5.1.16 VBOX_BUILD=113841
 #ENV VBOX_VER=5.1.6 VBOX_BUILD=110634
 
 RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
@@ -189,7 +189,7 @@ RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE
 # http://zfsonlinux.org/
 # https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.8/spl-0.6.5.8.tar.gz
 #ENV ZFS_VER 0.6.5.8
-ENV ZFS_VER 0.7.0-rc2
+ENV ZFS_VER 0.7.0-rc3
 RUN mkdir /zfs && cd /zfs && curl -LO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/spl-$ZFS_VER.tar.gz &&\
     cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-* &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install
