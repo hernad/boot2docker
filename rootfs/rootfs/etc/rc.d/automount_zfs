@@ -25,13 +25,15 @@ mkdir -p /home
 mkdir -p /opt
 zpool import green >> $LOG_FILE 2>&1
 
-log_msg "zvol/green/swap ON"
-swapon  /dev/zvol/green/swap >> $LOG_FILE
-swapon -a >> $LOG_FILE
-
 log_msg "mounting zfs blok device /dev/zvol/green/docker_vol"
 mkdir -p /var/lib/docker
 [ -e /dev/zvol/green/docker_vol ] && mount /dev/zvol/green/docker_vol /var/lib/docker
+
+log_msg "zvol/green/swap ON"
+mkswap /dev/zvol/green/swap
+swapon  /dev/zvol/green/swap >> $LOG_FILE
+swapon -a >> $LOG_FILE
+
 
 zpool status -v >> $LOG_FILE 2>&1
 zfs list >> $LOG_FILE 2>&1

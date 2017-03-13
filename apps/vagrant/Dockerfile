@@ -9,7 +9,7 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
 RUN apt-get update
 
 # https://www.vagrantup.com/downloads.html
-ENV VAGRANT_VER 1.9.1
+ENV VAGRANT_VER 1.9.2
 RUN curl -k -LO https://releases.hashicorp.com/vagrant/${VAGRANT_VER}/vagrant_${VAGRANT_VER}_x86_64.deb &&\
     dpkg -i vagrant_${VAGRANT_VER}_x86_64.deb
 
