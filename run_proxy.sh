@@ -1,3 +1,5 @@
+#!/bin/bash
+
 docker rm -f apt-cacher-ng
 docker run --name apt-cacher-ng -d --restart=always \
   --publish 3142:3142 \

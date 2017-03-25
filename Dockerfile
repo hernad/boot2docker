@@ -28,7 +28,8 @@ RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
                         libfuse2 libtool autoconf vim \
                         libglib2.0-dev \
                         libfuse-dev \
-                        libtirpc-dev
+                        libtirpc-dev \
+                        gettext
 
 # tiny core rootfs location
 #ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
