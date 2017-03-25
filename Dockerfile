@@ -60,8 +60,7 @@ RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.confi
 # ======================= VirtualBox install ============================================
 
 # http://download.virtualbox.org/virtualbox/5.1.8/
-ENV VBOX_VER=5.1.16 VBOX_BUILD=113841
-#ENV VBOX_VER=5.1.6 VBOX_BUILD=110634
+ENV VBOX_VER=5.1.18 VBOX_BUILD=114002
 
 RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
         mkdir -p /lib ;\
