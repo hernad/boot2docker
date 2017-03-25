@@ -17,7 +17,6 @@ shift
 DOCKER_VERSION=`cat DOCKER_VERSION`
 KERNEL_VERSION=`cat KERNEL_VERSION`
 GREENBOX_VERSION=`cat GREENBOX_VERSION`
-GREENBOX_APPS_VERSION=`grep FROM Dockerfile.apps | awk -F: '{print $2}'`
 
 sed -e "s/XBuildX/$(date +'%Y%m%d-%T %z')/" \
   -e "s/XDockerX/$DOCKER_VERSION/" \
@@ -76,12 +75,6 @@ do
               --build-arg DOCKER_PROXY=$DOCKER_PROXY \
               --build-arg KERNEL_VERSION=$KERNEL_VERSION -t greenbox:$GREENBOX_VERSION .
          docker tag greenbox:$GREENBOX_VERSION greenbox:latest
-         ;;
-     apps)
-         docker rmi -f greenbox_apps:$GREENBOX_APPS_VERSION
-         docker build $DOCKER_BUILD_OPTS --build-arg DOCKER_PROXY=$DOCKER_PROXY -t greenbox_apps:$GREENBOX_APPS_VERSION -f Dockerfile.apps . &&\
-         docker tag greenbox_apps:$GREENBOX_APPS_VERSION greenbox_apps:latest &&\
-         echo "=== greenbox_apps:$GREENBOX_APPS_VERSION built!"
          ;;
      *)
          app=$arg
