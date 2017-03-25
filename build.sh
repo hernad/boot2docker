@@ -23,6 +23,9 @@ sed -e "s/XBuildX/$(date +'%Y%m%d-%T %z')/" \
   -e "s/XGreenBoxX/$GREENBOX_VERSION/" \
   motd.template > ./rootfs/rootfs/usr/local/etc/motd
 
+sed "s/___GREEN_VER___/$(cat apps/green/VERSION)/" green_common.template > rootfs/green_common
+sed "s/___VBOX_VER___/$(cat apps/green/VERSION)/"  green_common.template > rootfs/green_common
+
 cat ./rootfs/rootfs/usr/local/etc/motd && \
 cp  ./rootfs/rootfs/usr/local/etc/motd  ./rootfs/isolinux/boot.msg || ( echo error && exit 1)
 

@@ -1,4 +1,4 @@
-VER=5.1.16
+VER=`cat VBOX_VERSION`
 APP=VirtualBox
 #./upload_app.sh $APP ${VER} J  #.tar.xz
 
