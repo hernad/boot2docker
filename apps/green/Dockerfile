@@ -206,6 +206,16 @@ RUN git clone https://github.com/relan/exfat.git &&\
     mkdir -p /opt/apps/green/bin ;\
     mv /opt/apps/green/sbin/* /opt/apps/green/bin/
 
+
+
+RUN curl -LO https://github.com/OpenVPN/openvpn/archive/v2.4.1.tar.gz &&\
+    tar -zxf openvpn-2.4.1.tar.gz &&\
+    cd openvpn-2.4.1 &&\
+    ./configure --prefix=/opt/apps/green &&\
+    make &&
+    make install
+
+
 # ====================================== remove what we don't need  ==============================
 
 RUN mkdir -p /opt/apps/green/bin ;\
