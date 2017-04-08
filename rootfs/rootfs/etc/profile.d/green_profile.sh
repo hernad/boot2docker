@@ -46,6 +46,7 @@ NOCOLOR="\033[0;0;0m"      # no color or formatting
 PCOLOR=$GREEN
 [ $(id -u) = 0 ] && PCOLOR=$RED # root user
 
-PS1="[${PCOLOR}\u@\h${NOCOLOR} \W]\\$ " # prompt
+#http://unix.stackexchange.com/questions/105958/terminal-prompt-not-wrapping-correctly
+PS1="[\[$PCOLOR\]\u@\h\[$NOCOLOR\] \W]\\$ " # prompt
 
 setup_symlinks_and_commands
