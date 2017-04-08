@@ -125,8 +125,8 @@ RUN  apt-get update -y && apt-get install -y bridge-utils openvswitch-switch &&\
 
 # green_app/gdrive
 # https://github.com/prasmussen/gdrive
-RUN curl -L https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA\&export=download > /opt/apps/green/bin/gdrive &&\
-   ls /opt/apps/green/bin/gdrive ; chmod +x /opt/apps/green/bin/gdrive
+#RUN curl -L https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA\&export=download > /opt/apps/green/bin/gdrive &&\
+#   ls /opt/apps/green/bin/gdrive ; chmod +x /opt/apps/green/bin/gdrive
 
 # green_app/dbxcli - dropbox client
 # ne treba imamo rclone
@@ -136,10 +136,9 @@ RUN curl -L https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA\&export=d
 
 
 RUN  curl -LO https://github.com/ncw/rclone/releases/download/v1.36/rclone-v1.36-linux-amd64.zip &&\
-     unzip rclone*zip &&\
-     chmod +x rclone-*-amd64 &&\
-     mv rclone*-amd64 /opt/apps/green/bin/
-     
+     unzip rclone-v*-linux-amd64.zip &&\
+     chmod +x rclone-*linux-amd64/rclone &&\
+     mv rclone*-linux-amd64/rclone /opt/apps/green/bin/
 
 
 ENV TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
@@ -187,7 +186,7 @@ ENV TCZ_DEPS_GREEN  \
                     iftop util-linux \
                     icu icu-bin \
                     man-pages man-db
-                    
+
 
 #nss,nspr,sqlite3,libnotify - deps for electron applications ( atom, code )
 #groff - aws deps
@@ -218,7 +217,7 @@ RUN git clone https://github.com/relan/exfat.git &&\
 
 
 ENV OPENVPN_VER=2.4.1
-RUN curl -L -o openvpn-${OPENVPN_VER} https://github.com/OpenVPN/openvpn/archive/v${OPENVPN_VER}.tar.gz  &&\
+RUN curl -L -o openvpn-${OPENVPN_VER}.tar.gz https://github.com/OpenVPN/openvpn/archive/v${OPENVPN_VER}.tar.gz  &&\
     tar -xf openvpn-${OPENVPN_VER}.tar.gz &&\
     cd openvpn-${OPENVPN_VER} &&\
     ./configure --prefix=/opt/apps/green &&\
@@ -262,4 +261,3 @@ RUN rm -rf /opt/apps/green/usr
 # collect shared libraries needed for green apps execution
 COPY extract_so_deps_green.sh /
 RUN bash  /extract_so_deps_green.sh
-
