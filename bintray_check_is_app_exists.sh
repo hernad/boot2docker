@@ -1,22 +1,18 @@
 #!/bin/bash
 
+APP=$1
+VER=$2
 
-BINTRAY_USER=hernad
+
 BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
+BINTRAY_USER=hernad
 BINTRAY_REPOS=greenbox
-GREENBOX_VERSION=latest
-GREEN_APP=$1
-GREEN_APP_VER=$2
 
-
-app=docker
-ver=17.04.0-ce
-
-echo "bintray $GREEN_APP / $GREEN_VER  .tar.xz check file exists"
-curl \
-      -u hernad:$BINTRAY_API_KEY \
+echo "bintray check $APP_$VER.tar.xz file exists"
+curl -s  -u hernad:$BINTRAY_API_KEY \
       --header "X-Bintray-Override: 1" \
-      -X GET https://api.bintray.com/file_version/$BINTRAY_USER/$BINTRAY_REPOS/${GREEN_APP}_${GREEN_VER}.tar.xz
+      -X GET https://api.bintray.com/file_version/$BINTRAY_USER/$BINTRAY_REPOS/${APP}_${VER}.tar.xz \
+      | grep $VER
 
 
 
