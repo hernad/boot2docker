@@ -218,7 +218,7 @@ RUN git clone https://github.com/relan/exfat.git &&\
 
 
 RUN curl -LO https://github.com/OpenVPN/openvpn/archive/v2.4.1.tar.gz &&\
-    tar -zxf openvpn-2.4.1.tar.gz &&\
+    tar -xf openvpn-2.4.1.tar.gz &&\
     cd openvpn-2.4.1 &&\
     ./configure --prefix=/opt/apps/green &&\
     make &&\
