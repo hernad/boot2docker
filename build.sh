@@ -95,4 +95,4 @@ do
 
 done
 
-return $ret
+exit $ret
