@@ -1,10 +1,9 @@
 BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
 BINTRAY_REPOS=greenbox
 GREENBOX_VERSION=latest
-#GREEN_APP=VirtualBox
 GREEN_APP=$1
-#GREEN_APP_VER=5.0.10
 GREEN_APP_VER=$2
+
 
 COMPRESSION=${3:-J} # z - gzip, j-bz2, J-xz
 
