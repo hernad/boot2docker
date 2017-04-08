@@ -76,7 +76,7 @@ do
               --build-arg KERNEL_VERSION=$KERNEL_VERSION -t greenbox:$GREENBOX_VERSION .
          docker tag greenbox:$GREENBOX_VERSION greenbox:latest
          docker images greenbox | awk '{ print  $2 } ' | grep $GREENBOX_VERSION
-
+         ret=$?
          ;;
      *)
          app=$arg
@@ -85,6 +85,7 @@ do
          docker build $DOCKER_BUILD_OPTS --build-arg DOCKER_PROXY=$DOCKER_PROXY -t greenbox_app_${app}:$APP_VERSION -f apps/${app}/Dockerfile . &&\
          docker tag greenbox_app_${app}:$APP_VERSION greenbox_app_${app}:latest
          docker images greenbox_app_${app} | awk '{ print  $2 } ' | grep $APP_VERSION
+         ret=$?
          ;;
       
   esac
@@ -94,3 +95,4 @@ do
 
 done
 
+return $ret
