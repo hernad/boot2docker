@@ -47,6 +47,7 @@ RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.
 #    cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh /opt/apps/green/bin/zfs-auto-snapshot
 
 
+
 # === tmux & libevent install =====
 RUN curl -LO  https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz &&\
     tar xvf libevent-2.0.22-stable.tar.gz &&\
@@ -128,9 +129,17 @@ RUN curl -L https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA\&export=d
    ls /opt/apps/green/bin/gdrive ; chmod +x /opt/apps/green/bin/gdrive
 
 # green_app/dbxcli - dropbox client
-ENV DROPBOX_VER=1.4.0
-RUN curl -LO https://github.com/dropbox/dbxcli/releases/download/v${DROPBOX_VER}/dbxcli-linux-amd64 &&\
-    mv dbxcli-linux-amd64 /opt/apps/green/bin/dbxcli && chmod +x /opt/apps/green/bin/dbxcli
+# ne treba imamo rclone
+#ENV DROPBOX_VER=1.4.0
+#RUN curl -LO https://github.com/dropbox/dbxcli/releases/download/v${DROPBOX_VER}/dbxcli-linux-amd64 &&\
+#    mv dbxcli-linux-amd64 /opt/apps/green/bin/dbxcli && chmod +x /opt/apps/green/bin/dbxcli
+
+
+RUN  curl -LO https://github.com/ncw/rclone/releases/download/v1.36/rclone-v1.36-linux-amd64.zip &&\
+     unzip rclone*zip &&\
+     chmod +x rclone-*-amd64 &&\
+     mv rclone*-amd64 /opt/apps/green/bin/
+     
 
 
 ENV TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
