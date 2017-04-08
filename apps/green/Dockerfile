@@ -212,7 +212,7 @@ RUN curl -LO https://github.com/OpenVPN/openvpn/archive/v2.4.1.tar.gz &&\
     tar -zxf openvpn-2.4.1.tar.gz &&\
     cd openvpn-2.4.1 &&\
     ./configure --prefix=/opt/apps/green &&\
-    make &&
+    make &&\
     make install
 
 
@@ -246,6 +246,8 @@ RUN rm -rf /opt/apps/green/share/terminfo /opt/apps/green/share/git-gui /opt/app
 RUN mv /opt/apps/green/sbin/* /opt/apps/green/bin/ ; rmdir /opt/apps/green/sbin
 RUN echo "/opt/apps/green:" && ls -l /opt/apps/green
 RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
+
+RUN rm -rf /opt/apps/green/usr
 
 # collect shared libraries needed for green apps execution
 COPY extract_so_deps_green.sh /
