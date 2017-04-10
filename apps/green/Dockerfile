@@ -217,7 +217,7 @@ RUN git clone https://github.com/relan/exfat.git &&\
 
 
 ENV OPENVPN_VER=2.4.1
-RUN apt-get build-dep openvpn -y
+#RUN apt-get build-dep openvpn -y
 RUN curl -L -o openvpn-${OPENVPN_VER}.tar.gz https://github.com/OpenVPN/openvpn/archive/v${OPENVPN_VER}.tar.gz  &&\
     tar -xf openvpn-${OPENVPN_VER}.tar.gz &&\
     cd openvpn-${OPENVPN_VER} &&\
