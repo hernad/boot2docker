@@ -23,7 +23,7 @@ sed -e "s/XBuildX/$(date +'%Y%m%d-%T %z')/" \
   -e "s/XGreenBoxX/$GREENBOX_VERSION/" \
   motd.template > ./rootfs/rootfs/usr/local/etc/motd
 
-sed "s/___GREEN_VER___/$(cat apps/green/VERSION)/" green_common.template > rootfs/green_common
+sed "s/___GREEN_APPS_VER___/$(cat apps/green/VERSION)/" green_common.template > rootfs/green_common
 sed "s/___VBOX_VER___/$(cat VBOX_VERSION)/"  green_common.template > rootfs/green_common
 
 cat ./rootfs/rootfs/usr/local/etc/motd && \
@@ -46,7 +46,7 @@ GITSHA1=$(git rev-parse --short HEAD) && \
 DATE=$(date) && \
 echo "${GIT_BRANCH} : ${GITSHA1} - ${DATE}" > GREENBOX_BUILD
 
- 
+
 ISO_APPEND="append loglevel=3"
 
 if [ -f docker_password ] ; then ## if file docker_password exists set dockerpwd
@@ -89,7 +89,7 @@ do
          docker images greenbox_app_${app} | awk '{ print  $2 } ' | grep $APP_VERSION
          ret=$?
          ;;
-      
+
   esac
 
   arg=$1
