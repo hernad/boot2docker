@@ -155,8 +155,7 @@ ENV TCZ_DEPS_DEV    curl-dev \
                     ncurses \
                     expat2-dev \
                     readline-dev \
-                    libxml2-dev \
-                    openvpn
+                    libxml2-dev
 
 ENV ROOTFS=/
 # Install the base tiny linux build
@@ -193,8 +192,8 @@ ENV TCZ_DEPS_GREEN  \
                     groff \
                     iftop util-linux \
                     icu icu-bin \
-                    man-pages man-db
-
+                    man-pages man-db \
+                    openvpn
 
 #nss,nspr,sqlite3,libnotify - deps for electron applications ( atom, code )
 #groff - aws deps
