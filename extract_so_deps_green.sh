@@ -2,7 +2,7 @@
 
 
 GREEN_LIB=/opt/apps/green/lib/
-mkdir $GREEN_LIB
+[ -d $GREEN_LIB ] || mkdir $GREEN_LIB
 
 LDD_CHECK="/opt/apps/green/bin/rsync"
 

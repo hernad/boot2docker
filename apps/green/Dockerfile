@@ -155,7 +155,8 @@ ENV TCZ_DEPS_DEV    curl-dev \
                     ncurses \
                     expat2-dev \
                     readline-dev \
-                    libxml2-dev
+                    libxml2-dev \
+                    openvpn
 
 ENV ROOTFS=/
 # Install the base tiny linux build
@@ -223,15 +224,20 @@ RUN git clone https://github.com/relan/exfat.git &&\
 
 
 
-ENV OPENVPN_VER=2.4.1
+#ENV OPENVPN_VER=2.4.1
+#RUN apt-get install -y pkg-config libtool automake
 #RUN apt-get build-dep openvpn -y
-RUN curl -L -o openvpn-${OPENVPN_VER}.tar.gz https://github.com/OpenVPN/openvpn/archive/v${OPENVPN_VER}.tar.gz  &&\
-    tar -xf openvpn-${OPENVPN_VER}.tar.gz &&\
-    cd openvpn-${OPENVPN_VER} &&\
-    autoconf &&\
-    ./configure --prefix=/opt/apps/green &&\
-    make &&\
-    make install
+#RUN curl -L -o openvpn-${OPENVPN_VER}.tar.gz https://github.com/OpenVPN/openvpn/archive/v${OPENVPN_VER}.tar.gz  &&\
+#    tar -xf openvpn-${OPENVPN_VER}.tar.gz
+
+#RUN apt-get install -y libssl-dev
+#RUN cd openvpn-${OPENVPN_VER} && libtoolize --force && aclocal && autoheader && automake --force-missing --add-missing
+
+#RUN cd openvpn-${OPENVPN_VER} &&\
+#    autoconf &&\
+#    ./configure --prefix=/opt/apps/green &&\
+#    make &&\
+#    make install
 
 
 # ====================================== remove what we don't need  ==============================
@@ -266,7 +272,7 @@ RUN echo "/opt/apps/green:" && ls -l /opt/apps/green
 RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
 
 RUN rm -rf /opt/apps/green/usr
-
+RUN ls -l /opt/apps/green/bin/
 # collect shared libraries needed for green apps execution
 COPY extract_so_deps_green.sh /
 RUN bash  /extract_so_deps_green.sh
