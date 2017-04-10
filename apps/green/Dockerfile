@@ -12,7 +12,7 @@ RUN apt-get update
 
 
 # == logrotate ==
-ENV LOGROTATE_VER=3.10.0
+ENV LOGROTATE_VER=3.11.0
 RUN apt-get install -y libpopt-dev
 RUN curl -k -LO https://github.com/logrotate/logrotate/releases/download/$LOGROTATE_VER/logrotate-$LOGROTATE_VER.tar.gz &&\
    tar xvf logrotate-$LOGROTATE_VER.tar.gz &&\
@@ -22,7 +22,7 @@ RUN curl -k -LO https://github.com/logrotate/logrotate/releases/download/$LOGROT
    ls -lh /opt/apps/green/bin/logrotate
 
 
-# === rsync ===
+# === rsync 3.1.2, 2015-12-21===
 ENV RSYNC_VER=3.1.2
 RUN mkdir -p /opt/apps/green/bin &&\
     cd / && curl -LO https://download.samba.org/pub/rsync/src/rsync-${RSYNC_VER}.tar.gz &&\
@@ -30,11 +30,12 @@ RUN mkdir -p /opt/apps/green/bin &&\
     cd /rsync-${RSYNC_VER} && ./configure && make && /usr/bin/install -c  -m 755 rsync /opt/apps/green/bin
 
 # Pipe Viewer - is a terminal-based tool for monitoring the progress of data through a pipeline.
+# pv 1.6.0, 15 Mar 2015
 RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
     tar xvf pv-1.6.0.tar.gz  &&\
     cd /pv-1.6.0 && ./configure && make && /usr/bin/install -c pv /opt/apps/green/bin
 
-# == qperf =====
+# == qperf 0.4.9, 2012-11-07 ===
 RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz &&\
     tar xvf qperf-0.4.9.tar.gz &&\
     cd /tmp/qperf-0.4.9 && sh autogen.sh && \
@@ -67,14 +68,18 @@ RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev 
      make install
 
 # ---------- fio http://jrs-s.net/2015/11/23/fio-cheat-sheet/ ------------
+# fio - Flexible IO Tester
+# http://git.kernel.dk/?p=fio.git;a=summary,  last change	Sat, 8 Apr 2017 19:04:21 +0200 (11:04 -0600)
 RUN git clone git://git.kernel.dk/fio.git &&\
     cd fio && ./configure --prefix=/opt/apps/green &&\
     make install
 
 # ==== mbuffer =========
-#Version 20151002 md5=b2d20c4d880518c5fb8f8db734962f45
-# http://www.maier-komor.de/software/mbuffer/mbuffer-20151002.tgz
-RUN export MBUFFER_VER="20151002" && echo "mbuffer ver: $MBUFFER_VER" && curl -LO http://www.maier-komor.de/software/mbuffer/mbuffer-${MBUFFER_VER}.tgz &&\
+# Version 20161115 md5=b81940da5b750c6adda65dfbf8b2ad36
+# http://www.maier-komor.de/software/mbuffer/mbuffer-20161115.tgz
+# http://www.maier-komor.de/mbuffer.html
+
+RUN export MBUFFER_VER="20161115" && echo "mbuffer ver: $MBUFFER_VER" && curl -LO http://www.maier-komor.de/software/mbuffer/mbuffer-${MBUFFER_VER}.tgz &&\
     cd / && tar xvf mbuffer-${MBUFFER_VER}.tgz && cd mbuffer-${MBUFFER_VER} && ./configure --prefix=/opt/apps/green &&\
     make install
 
@@ -89,8 +94,10 @@ RUN  export LD_LIBRARY_PATH=/opt/apps/green/lib &&\
      tar xvf lzop-${LZOP_VER}.tar.gz && cd lzop-${LZOP_VER} &&\
      ./configure --prefix=/opt/apps/green && make install
 
-RUN export PERL_VER=5.24.0 && cd / && curl -LO http://www.cpan.org/src/5.0/perl-${PERL_VER}.tar.gz &&\
-    tar xvf perl-${PERL_VER}.tar.gz &&  cd perl-${PERL_VER} &&\
+
+# perl-5.24.1.tar.xz	14-Jan-2017 12:05	11M	 
+RUN export PERL_VER=5.24.1 && cd / && curl -LO http://www.cpan.org/src/5.0/perl-${PERL_VER}.tar.xz &&\
+    tar xf perl-${PERL_VER}.tar.xz &&  cd perl-${PERL_VER} &&\
     ./Configure -des -Dprefix=/opt/apps/perl && make install
 
 RUN  export PCIUTILS_VER=3.4.0 && cd / && curl -LO ftp://atrey.karlin.mff.cuni.cz/pub/linux/pci/pciutils-${PCIUTILS_VER}.tar.gz &&\
