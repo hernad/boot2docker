@@ -225,8 +225,7 @@ ENV TCZ_DEPS_GREEN  \
                     groff \
                     iftop util-linux \
                     icu icu-bin \
-                    man-pages man-db \
-                    openvpn
+                    man-pages man-db
 
 #nss,nspr,sqlite3,libnotify - deps for electron applications ( atom, code )
 #groff - aws deps
