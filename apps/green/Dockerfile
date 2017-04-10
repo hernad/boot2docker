@@ -270,8 +270,17 @@ RUN mv /opt/apps/green/sbin/* /opt/apps/green/bin/ ; rmdir /opt/apps/green/sbin
 RUN echo "/opt/apps/green:" && ls -l /opt/apps/green
 RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
 
+
+# manuals out
+RUN rm -rf /opt/apps/green/man /opt/apps/green/share/doc /opt/apps/green/share/man
+
 RUN rm -rf /opt/apps/green/usr
+
+RUN ls -ld /opt/apps/green/*
 RUN ls -l /opt/apps/green/bin/
+RUN ls -l /opt/apps/green/lib/
 # collect shared libraries needed for green apps execution
+
+
 COPY extract_so_deps_green.sh /
 RUN bash  /extract_so_deps_green.sh

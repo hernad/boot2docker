@@ -46,6 +46,7 @@ if [ ! -f $FILE ] ; then
            CT=greenbox_app_${GREEN_APP}
            CT_VER=${GREEN_APP_VER}
            docker rm -f $CT
+	   echo "source docker image $CT:$CT_VER"
            docker run --name $CT $CT:$CT_VER ls -l /opt/apps/${GREEN_APP}
            docker cp $CT:/opt/apps/${GREEN_APP} ${GREEN_APP} || exit 1
            [ ! -d ${GREEN_APP}/sbin ] ||  mv ${GREEN_APP}/sbin/*  ${GREEN_APP}/bin/ 
