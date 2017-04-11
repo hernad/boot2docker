@@ -25,8 +25,10 @@ AWS_VER=1.11.13
 
 BOOT_DIR=/opt/boot
 
-set_log_file() {
 [ -f /opt/boot/etc/profile ] && source /opt/boot/etc/profile
+
+
+set_log_file() {
 
 if [ -d /opt/boot/log ]
 then
@@ -159,6 +161,14 @@ SRC_LINK=/opt/green/share/git-core
 LINK=/usr/local/share/git-core
 [ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
 
+# jenkins ssh agent needs  java + git in /usr/bin or /usr/local/bin
+SRC_LINK=/opt/green/bin/git
+LINK=/usr/local/bin/git
+[ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
+
+SRC_LINK=/opt/java/bin/java
+LINK=/usr/local/bin/java
+[ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
 
 # setup idea run script
 [ -d /opt/idea ] && [ ! -f $BOOT_DIR/bin/idea ] &&  (cat > $BOOT_DIR/bin/idea <<- EOF
