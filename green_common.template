@@ -138,7 +138,7 @@ vbox_fix_permissions() {
     # VirtualBox execs has to be root
     [ "rootroox" == `ls -ld $VBOX_DIR | awk '{print $3 $4;}'` ] || \
        chown root:root -R $VBOX_DIR
-    chmod u+s $VBOX_DIR/VirtualBox $VBOX_DIR/VBoxHeadless
+    chmod u+s $VBOX_DIR/VirtualBox $VBOX_DIR/VBoxHeadless $VBOX_DIR/VBoxNetAdpCtl
     chmod g-w /opt
     chmod g-w /opt/VirtualBox
   fi
