@@ -18,9 +18,11 @@ ENV CPPFLAGS="-I/opt/apps/green/include" LCFLAGS="-I/opt/apps/green/include" LDF
 
 RUN git clone https://github.com/fukuchi/libqrencode.git &&\
     cd libqrencode &&\
+    libtoolize --force && aclocal && autoheader && automake --force-missing --add-missing &&\
+    autoconf &&\
     ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
     make &&\
-    sudo make install
+    make install
 
 
 RUN git clone https://github.com/google/google-authenticator-libpam.git &&\
@@ -53,7 +55,8 @@ RUN curl -LO http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz &&
 ENV OPENVPN_VER=2.4.1
 RUN curl -L -o openvpn-${OPENVPN_VER}.tar.gz https://github.com/OpenVPN/openvpn/archive/v${OPENVPN_VER}.tar.gz  &&\
     tar -xf openvpn-${OPENVPN_VER}.tar.gz &&\
-    cd openvpn-${OPENVPN_VER} && libtoolize --force && aclocal && autoheader && automake --force-missing --add-missing &&\
+    cd openvpn-${OPENVPN_VER} &&\
+    libtoolize --force && aclocal && autoheader && automake --force-missing --add-missing &&\
     autoconf &&\
     ls /opt/apps/green/include/lzo &&\
     ./configure --prefix=/opt/apps/green CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" OPENSSL_LIBS="-L/opt/apps/green/lib -lssl -lcrypto" OPENSSL_CFLAGS="-I/opt/apps/green/include" --disable-debug --disable-dependency-tracking --disable-silent-rules --with-crypto-library=openssl &&\
@@ -269,6 +272,14 @@ RUN git clone https://github.com/relan/exfat.git &&\
     mkdir -p /opt/apps/green/bin ;\
     mv /opt/apps/green/sbin/* /opt/apps/green/bin/
 
+
+
+
+RUN  curl -LO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
+      tar xf autossh-1.4e.tgz &&\
+      cd autossh-1.4e &&\
+      ./configure --prefix=/opt/apps/green &&\
+      make && make install
 
 
 
