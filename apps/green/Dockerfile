@@ -6,12 +6,22 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
  && echo "Acquire::HTTP::Proxy \"http://$DOCKER_PROXY:3142\";" > /etc/apt/apt.conf.d/01proxy \
  && echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
 
-RUN apt-get update
+RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list
+RUN apt-get update -y
+
 
 # ================= /opt/apps/green =========================================================
 
-# openvpn trazi 1.0.x https://community.openvpn.net/openvpn/ticket/802
 
+RUN apt-get build-dep libpam-google-authenticator -y
+
+RUN git clone https://github.com/google/google-authenticator-libpam.git &&\
+    cd google-authenticator-libpam &&\
+   ./bootstrap.sh  && ./configure --prefix=/opt/apps/green && make &&\
+    make install
+
+
+# openvpn trazi 1.0.x https://community.openvpn.net/openvpn/ticket/802
 
 RUN curl -LO https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.5.2.tar.gz &&\
     tar xvf libressl-* && cd libressl-* &&\
@@ -26,8 +36,7 @@ RUN curl -LO https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.5.2.tar.gz 
 #    make install
     
 
-RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list
-RUN apt-get update -y && apt-get build-dep openvpn -y
+RUN apt-get build-dep openvpn -y
 RUN apt-get install net-tools -y
 
 RUN curl -LO http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz &&\

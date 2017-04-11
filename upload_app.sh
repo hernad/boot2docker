@@ -84,12 +84,12 @@ ls -lh $FILE
 
 echo uploading to bintray ...
 
-curl -T $FILE \
+curl -k -T $FILE \
       -u hernad:$BINTRAY_API_KEY \
       --header "X-Bintray-Override: 1" \
      https://api.bintray.com/content/hernad/greenbox/$GREEN_APP/$GREEN_APP_VER/$FILE
 
 curl -u hernad:$BINTRAY_API_KEY \
-   -X POST https://api.bintray.com/content/hernad/greenbox/$GREEN_APP/$GREEN_APP_VER/publish
+   -k -X POST https://api.bintray.com/content/hernad/greenbox/$GREEN_APP/$GREEN_APP_VER/publish
 
 
