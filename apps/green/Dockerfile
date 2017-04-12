@@ -14,7 +14,7 @@ RUN apt-get update -y
 
 
 RUN apt-get build-dep libpam-google-authenticator -y
-ENV CPPFLAGS="-I/opt/apps/green/include" LCFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib"
+ENV CPPFLAGS="-I/opt/apps/green/include" CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib"
 
 RUN git clone https://github.com/fukuchi/libqrencode.git &&\
     cd libqrencode &&\
@@ -282,6 +282,53 @@ RUN  curl -LO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
       make && make install
 
 
+RUN apt-get -y install libgnutls28-dev bzip2 make gettext texinfo gnutls-bin
+
+RUN gpg --recv-keys --keyserver pgp.mit.edu  0x4F25E3B6 0xE0856959 0x33BD3F06 0x7EFD60D9 0xF7E48EDB
+
+ENV PATH="/opt/apps/green/bin:$PATH"
+ 
+RUN wget -c ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.26.tar.gz && \
+    wget -c ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.26.tar.gz.sig && \
+    gpg --verify libgpg-error-1.26.tar.gz.sig && tar -xzf libgpg-error-1.26.tar.gz && \
+    cd libgpg-error-1.26/ && ./configure --prefix=/opt/apps/green && make && make install
+
+RUN ls /opt/apps/green/lib ; ls /opt/apps/green/include &&\
+    wget -c ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.7.6.tar.gz && \
+    wget -c ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.7.6.tar.gz.sig && \
+    gpg --verify libgcrypt-1.7.6.tar.gz.sig && tar -xzf libgcrypt-1.7.6.tar.gz && \
+    cd libgcrypt-1.7.6 && ./configure CFLAGS="-I/opt/apps/green/include" LD_LIBRARY_PATH="/opt/apps/green/lib:$LD_LIBRARY_PATH" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green  && make && make install
+
+RUN wget -c ftp://ftp.gnupg.org/gcrypt/libassuan/libassuan-2.4.3.tar.bz2 && \
+    wget -c ftp://ftp.gnupg.org/gcrypt/libassuan/libassuan-2.4.3.tar.bz2.sig && \
+    gpg --verify libassuan-2.4.3.tar.bz2.sig && tar -xjf libassuan-2.4.3.tar.bz2 && \
+    cd libassuan-2.4.3 && ./configure --prefix=/opt/apps/green && make && make install
+
+RUN wget -c  ftp://ftp.gnupg.org/gcrypt/libksba/libksba-1.3.5.tar.bz2 && \
+    wget -c ftp://ftp.gnupg.org/gcrypt/libksba/libksba-1.3.5.tar.bz2.sig && \
+    gpg --verify libksba-1.3.5.tar.bz2.sig && tar -xjf libksba-1.3.5.tar.bz2 && \
+    cd libksba-1.3.5 && ./configure --prefix=/opt/apps/green && make && make install
+
+RUN wget -c ftp://ftp.gnupg.org/gcrypt/npth/npth-1.3.tar.bz2 && \
+    wget -c ftp://ftp.gnupg.org/gcrypt/npth/npth-1.3.tar.bz2.sig && \
+    gpg --verify npth-1.3.tar.bz2.sig && tar -xjf npth-1.3.tar.bz2 && \
+    cd npth-1.3 && ./configure --prefix=/opt/apps/green && make && make install
+
+RUN wget -c ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz && \
+    wget -c ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz.sig && \
+    gpg --verify ncurses-6.0.tar.gz.sig && tar -xzf ncurses-6.0.tar.gz && \
+    cd ncurses-6.0 && export CPPFLAGS="$CPPFLAGS -P" && ./configure --prefix=/opt/apps/green && make && make install
+
+RUN wget -c ftp://ftp.gnupg.org/gcrypt/pinentry/pinentry-1.0.0.tar.bz2 && \
+   wget -c ftp://ftp.gnupg.org/gcrypt/pinentry/pinentry-1.0.0.tar.bz2.sig && \
+   gpg --verify pinentry-1.0.0.tar.bz2.sig && tar -xjf pinentry-1.0.0.tar.bz2 && \
+   cd pinentry-1.0.0 && ./configure --prefix=/opt/apps/green  --enable-pinentry-curses --disable-pinentry-qt4 && \
+   make && make install
+
+RUN wget -c ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-2.1.18.tar.bz2 && \
+    wget -c ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-2.1.18.tar.bz2.sig && \
+    gpg --verify gnupg-2.1.18.tar.bz2.sig && tar -xjf gnupg-2.1.18.tar.bz2 && \
+    cd gnupg-2.1.18 && ./configure --prefix=/opt/apps/green  && make && make install
 
 # ====================================== remove what we don't need  ==============================
 
