@@ -62,17 +62,17 @@ RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.confi
 # ======================= VirtualBox host install ============================================
 
 # http://download.virtualbox.org/virtualbox/5.1.8/
-ENV VBOX_VER=5.1.18 VBOX_BUILD=114002
+ENV VBOX_VERSION=5.1.18 VBOX_BUILD=114002
 ENV VBOX_SHA256 f2951b49f48a560fbc1afe9d135d1f3f82a3e158b9002278d05d978428adca8a
 
-RUN curl -LO http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
+RUN curl -LO http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VirtualBox-$VBOX_VERSION-$VBOX_BUILD-Linux_amd64.run &&\
         mkdir -p /lib ;\
         ln -s $ROOTFS/lib/modules /lib/modules ;\
-        bash VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
+        bash VirtualBox-$VBOX_VERSION-$VBOX_BUILD-Linux_amd64.run
 
 RUN cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
-        cd / && curl -LO http://download.virtualbox.org/virtualbox/$VBOX_VER/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack &&\
-        /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack
+        cd / && curl -LO http://download.virtualbox.org/virtualbox/$VBOX_VERSION/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VERSION.vbox-extpack &&\
+        /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VERSION.vbox-extpack
 
 
 # Build VBox guest additions
@@ -81,7 +81,7 @@ RUN set -x && \
     mkdir -p /vboxguest && \
     cd /vboxguest && \
     \
-    curl -fL -o vboxguest.iso http://download.virtualbox.org/virtualbox/${VBOX_VER}/VBoxGuestAdditions_${VBOX_VER}.iso && \
+    curl -fL -o vboxguest.iso http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VBoxGuestAdditions_${VBOX_VERSION}.iso && \
     echo "${VBOX_SHA256} *vboxguest.iso" | sha256sum -c - && \
     7z x vboxguest.iso -ir'!VBoxLinuxAdditions.run' && \
     rm vboxguest.iso && \
