@@ -90,7 +90,7 @@ RUN set -x && \
     mkdir amd64 && tar -C amd64 -xjf VBoxGuestAdditions-amd64.tar.bz2 && \
     rm VBoxGuestAdditions*.tar.bz2 && \
     \
-    KERN_DIR=/linux-kernel/ make -C amd64/src/vboxguest-${VBOX_VERSION} && \
+    KERN_DIR=$LINUX_KERNEL_SOURCE make -C amd64/src/vboxguest-${VBOX_VERSION} && \
     cp amd64/src/vboxguest-${VBOX_VERSION}/*.ko $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/ && \
     \
     mkdir -p $ROOTFS/sbin && \
