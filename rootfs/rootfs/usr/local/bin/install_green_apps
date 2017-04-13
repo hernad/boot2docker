@@ -35,7 +35,8 @@ if [ -z "$GREEN_APPS" ] ; then
 fi
 
 if [ -z "$GREEN_APPS_2" ] ; then
-  GREEN_APPS_2="x11_$X11_APPS_VER VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER perl_$PERL_VER ruby_$RUBY_VER java_${JAVA_VER} go_${GO_VER} node_${NODE_VER}"
+  GREEN_APPS_2="x11_$X11_APPS_VER VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER"
+  GREEN_APPS_2+=" perl_$PERL_VER ruby_$RUBY_VER java_${JAVA_VER} go_${GO_VER} node_${NODE_VER}"
 fi
 
 if [ -z "$GREEN_APPS_3" ] ; then
