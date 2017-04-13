@@ -88,15 +88,7 @@ RUN set -x && \
     \
     sh VBoxLinuxAdditions.run --noexec --target . && \
     mkdir amd64 && tar -C amd64 -xjf VBoxGuestAdditions-amd64.tar.bz2 && \
-    rm VBoxGuestAdditions*.tar.bz2 && \
-    \
-    KERN_DIR=$LINUX_KERNEL_SOURCE make -C amd64/src/vboxguest-${VBOX_VERSION} && \
-    cp amd64/src/vboxguest-${VBOX_VERSION}/*.ko $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/ && \
-    \
-    mkdir -p $ROOTFS/sbin && \
-    cp amd64/lib/VBoxGuestAdditions/mount.vboxsf amd64/sbin/VBoxService $ROOTFS/sbin/ && \
-    mkdir -p $ROOTFS/bin && \
-    cp amd64/bin/VBoxClient amd64/bin/VBoxControl $ROOTFS/bin/
+    rm VBoxGuestAdditions*.tar.bz2
 
 # TODO figure out how to make this work reasonably (these tools try to read /proc/self/exe at startup, even for a simple "--version" check)
 ## verify that all the above actually worked (at least producing a valid binary, so we don't repeat issue #1157)
@@ -218,6 +210,16 @@ RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
 # VirtualBox install kernel drivers
 #RUN echo ignoring depmod -a errors
 RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install || true
+
+RUN cd /vboxguest && KERN_DIR=$LINUX_KERNEL_SOURCE make -C amd64/src/vboxguest-${VBOX_VERSION} \
+    MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install
+#cp amd64/src/vboxguest-${VBOX_VERSION}/*.ko $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/ && \
+
+RUN cd /vboxguest && mkdir -p $ROOTFS/sbin && \
+    cp amd64/lib/VBoxGuestAdditions/mount.vboxsf amd64/sbin/VBoxService $ROOTFS/sbin/ && \
+    mkdir -p $ROOTFS/bin && \
+    cp amd64/bin/VBoxClient amd64/bin/VBoxControl $ROOTFS/bin/
+
 
 # http://zfsonlinux.org/
 # https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.8/spl-0.6.5.8.tar.gz
