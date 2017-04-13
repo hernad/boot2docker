@@ -29,7 +29,8 @@ RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
                         libglib2.0-dev \
                         libfuse-dev \
                         libtirpc-dev \
-                        gettext
+                        gettext \
+                        p7zip-full
 
 # tiny core rootfs location
 #ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
@@ -58,12 +59,13 @@ RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.confi
     make -j ${jobs} modules
 
 
-# ======================= VirtualBox install ============================================
+# ======================= VirtualBox host install ============================================
 
 # http://download.virtualbox.org/virtualbox/5.1.8/
 ENV VBOX_VER=5.1.18 VBOX_BUILD=114002
+ENV VBOX_SHA256 f2951b49f48a560fbc1afe9d135d1f3f82a3e158b9002278d05d978428adca8a
 
-RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
+RUN curl -LO http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run &&\
         mkdir -p /lib ;\
         ln -s $ROOTFS/lib/modules /lib/modules ;\
         bash VirtualBox-$VBOX_VER-$VBOX_BUILD-Linux_amd64.run
@@ -71,6 +73,37 @@ RUN curl -LO   http://download.virtualbox.org/virtualbox/${VBOX_VER}/VirtualBox-
 RUN cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
         cd / && curl -LO http://download.virtualbox.org/virtualbox/$VBOX_VER/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack &&\
         /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VER.vbox-extpack
+
+
+# Build VBox guest additions
+#   (VBoxGuestAdditions_X.Y.Z.iso SHA256, for verification)
+RUN set -x && \
+    mkdir -p /vboxguest && \
+    cd /vboxguest && \
+    \
+    curl -fL -o vboxguest.iso http://download.virtualbox.org/virtualbox/${VBOX_VER}/VBoxGuestAdditions_${VBOX_VER}.iso && \
+    echo "${VBOX_SHA256} *vboxguest.iso" | sha256sum -c - && \
+    7z x vboxguest.iso -ir'!VBoxLinuxAdditions.run' && \
+    rm vboxguest.iso && \
+    \
+    sh VBoxLinuxAdditions.run --noexec --target . && \
+    mkdir amd64 && tar -C amd64 -xjf VBoxGuestAdditions-amd64.tar.bz2 && \
+    rm VBoxGuestAdditions*.tar.bz2 && \
+    \
+    KERN_DIR=/linux-kernel/ make -C amd64/src/vboxguest-${VBOX_VERSION} && \
+    cp amd64/src/vboxguest-${VBOX_VERSION}/*.ko $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/ && \
+    \
+    mkdir -p $ROOTFS/sbin && \
+    cp amd64/lib/VBoxGuestAdditions/mount.vboxsf amd64/sbin/VBoxService $ROOTFS/sbin/ && \
+    mkdir -p $ROOTFS/bin && \
+    cp amd64/bin/VBoxClient amd64/bin/VBoxControl $ROOTFS/bin/
+
+# TODO figure out how to make this work reasonably (these tools try to read /proc/self/exe at startup, even for a simple "--version" check)
+## verify that all the above actually worked (at least producing a valid binary, so we don't repeat issue #1157)
+#RUN set -x && \
+#    chroot "$ROOTFS" VBoxControl --version && \
+#    chroot "$ROOTFS" VBoxService --version
+
 
 
 # =======================  tiny core =====================================================
@@ -385,7 +418,7 @@ RUN rm $ROOTFS/usr/local/etc/ssh/*.orig
 
 # zfs 0.7.0 dependencies
 RUN cp -av /lib/x86_64-linux-gnu/libtirpc.so.1* $ROOTFS/usr/local/lib/ &&\
-    cp -av /lib/x86_64-linux-gnu/libblkid.so.1* $ROOTFS/usr/local/lib/ &&\ 
+    cp -av /lib/x86_64-linux-gnu/libblkid.so.1* $ROOTFS/usr/local/lib/ &&\
     cp -av /usr/lib/x86_64-linux-gnu/libk5crypto* $ROOTFS/usr/local/lib/ &&\
     cp -av /usr/lib/x86_64-linux-gnu/libgssapi_krb5* $ROOTFS/usr/local/lib/ &&\
     cp -av /usr/lib/x86_64-linux-gnu/libkrb5* $ROOTFS/usr/local/lib/ &&\
@@ -394,4 +427,3 @@ RUN cp -av /lib/x86_64-linux-gnu/libtirpc.so.1* $ROOTFS/usr/local/lib/ &&\
 RUN /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]
-
