@@ -132,7 +132,8 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
    localedef -i en_US -f UTF-8 en_US
    localedef -i bs_BA -f UTF-8 bs_BA
 fi
-[ -d /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
+[ -L /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
+[ -L /var/lib/boot2docker ] || ln -s $BOOT_DIR /var/lib/boot2docker
 
 mount_all_apps
 
