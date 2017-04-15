@@ -46,12 +46,12 @@ tclVersion="$(cat $ROOTFS/usr/share/doc/tc/release.txt)" # something like "5.3"
 cat > $ROOTFS/etc/os-release <<-EOOS
 NAME=$NAME
 VERSION=$greenVersion
-ID=greenbox
+ID=boot2docker
 ID_LIKE=tcl
 VERSION_ID=$greenVersion
 PRETTY_NAME="greenbox $greenVersion (TCL $tclVersion); $greenDetail"
 ANSI_COLOR="1;34"
-HOME_URL="https://github.com/hernad"
+HOME_URL="https://github.com/hernad/greenbox"
 SUPPORT_URL="https://github.com/hernad/greenbox"
 BUG_REPORT_URL="https://github.com/hernad/greenbox/issues"
 EOOS
