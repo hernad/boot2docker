@@ -94,11 +94,11 @@ if grep -q '^docker:' /etc/passwd; then
     /bin/addgroup docker docker
 
     #preload data from grenbox-cli
-    #if [ -e "$BOOT_DIR/userdata.tar" ]; then
-    #    tar xf $BOOT_DIR/userdata.tar -C /home/docker/ >> $LOG_FILE  2>&1
-    #    rm -f 'greenbox, please format-me'
-    #    chown -R docker:staff /home/docker
-    #fi
+    if [ -e "/userdata.tar" ]; then
+        tar xf /userdata.tar -C /home/docker/ >> $LOG_FILE  2>&1
+        rm -f 'greenbox, please format-me'
+        chown -R docker:staff /home/docker
+    fi
 fi
 
 [ -d $BOOT_DIR/root ] || mkdir -p $BOOT_DIR/root
@@ -115,7 +115,7 @@ ln -s $BOOT_DIR/root /root && mv /root.orig/* /root/ && rm -rf /root.orig
 /etc/rc.d/start_docker_then_opt_boot_init_d_scripts &
 
 
-log_msg "$BOOT_DIR/bootlocal.sh - run local customisation commands"
+log_msg "$BOOT_DIR/bootlocal.sh - run local customization commands"
 if [ -e $BOOT_DIR/bootlocal.sh ]; then
     $BOOT_DIR/bootlocal.sh &
     log_msg "after $BOOT_DIR/bootlocal.sh"

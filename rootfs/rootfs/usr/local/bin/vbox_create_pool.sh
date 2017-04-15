@@ -5,6 +5,38 @@ POOL=green
 
 . /etc/green_common
 
+extract_userdata_tar() {
+
+# docker-machine creates this volume
+LABEL=boot2docker-data
+MAGIC="boot2docker, please format-me"
+
+# If there is a partition with `boot2docker-data` as its label, use it and be
+# very happy. Thus, you can come along if you feel like a room without a roof.
+BOOT2DOCKER_DATA=`blkid -o device -l -t LABEL=$LABEL`
+echo $BOOT2DOCKER_DATA
+
+if [ ! -n "$BOOT2DOCKER_DATA" ]; then
+    echo "Is the disk unpartitioned?, test for the 'boot2docker format-me' string"
+
+    # Is the disk unpartitioned?, test for the 'boot2docker format-me' string
+    UNPARTITIONED_HD=`fdisk -l | grep "doesn't contain a valid partition table" | head -n 1 | sed 's/Disk \(.*\) doesn.*/\1/'`
+
+    if [ -n "$UNPARTITIONED_HD" ]; then
+        # Test for our magic string (it means that the disk was made by ./boot2docker init)
+        HEADER=`dd if=$UNPARTITIONED_HD bs=1 count=${#MAGIC} 2>/dev/null`
+
+        if [ "$HEADER" = "$MAGIC" ]; then
+            # save the preload userdata.tar file
+            dd if=$UNPARTITIONED_HD of=/userdata.tar bs=1 count=4096 2>/dev/null
+        fi
+    fi
+fi
+
+}
+
+
+
 fdisk_exist () {
 fdisk -l /dev/${DISK} | grep -q "/dev/$1"
 }
@@ -21,6 +53,7 @@ then
   exit 0
 fi
 
+extract_userdata_tar
 
 fdisk -l /dev/$DISK >> $LOG_FILE
 
