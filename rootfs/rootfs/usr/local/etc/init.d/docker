@@ -46,6 +46,8 @@ fi
 : ${CA_KEY:="${CERT_DIR}cakey.pem"}
 : ${SERVER_CERT:="${CERT_DIR}server.pem"}
 : ${SERVER_KEY:="${CERT_DIR}serverkey.pem"}
+
+# client certificates
 : ${CERT:="${CERT_DIR}cert.pem"}
 : ${KEY:="${CERT_DIR}key.pem"}
 
@@ -78,10 +80,6 @@ start() {
             echo "$CERTHOSTNAMES" > "$CERT_DIR/hostnames"
         fi
 
-        if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then
-            echo "Generating client cert"
-            generate_cert --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$CERT" --key="$KEY"
-        fi
 
         if [ "$DOCKER_TLS" == "auto" ]; then
             DOCKER_HOST='-H tcp://0.0.0.0:2376'
@@ -90,14 +88,21 @@ start() {
             DOCKER_OPTS="$DOCKER_OPTS $DOCKER_TLS --tlscacert=$CA_CERT --tlscert=$SERVER_CERT --tlskey=$SERVER_KEY"
         fi
 
+        # client certificates are responsibility of docker-machine
+
+        #if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then
+        #    echo "Generating client cert"
+        #    generate_cert --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$CERT" --key="$KEY"
+        #fi
+
         # now make the client certificates available to the docker user
-        USERCFG="/home/docker/.docker"
-        mkdir -p "$USERCFG"
-        chmod 700 "$USERCFG"
-        cp "$CA_CERT" "$USERCFG"
-        cp "$CERT" "$USERCFG"
-        cp "$KEY" "$USERCFG"
-        chown -R docker:docker /home/docker
+        #USERCFG="/home/docker/.docker"
+        #mkdir -p "$USERCFG"
+        #chmod 700 "$USERCFG"
+        #cp "$CA_CERT" "$USERCFG"
+        #cp "$CERT" "$USERCFG"
+        #cp "$KEY" "$USERCFG"
+        #chown -R docker:docker /home/docker
     fi
 
     mkdir -p "$DOCKER_DIR"
