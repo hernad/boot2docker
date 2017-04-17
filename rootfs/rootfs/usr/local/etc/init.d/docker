@@ -112,23 +112,37 @@ start() {
     ulimit -p $DOCKER_ULIMITS
 
     echo docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
-    docker daemon --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
+    dockerd --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
 }
 
 stop() {
     kill $(cat $DOCKER_PID)
+    killall dockerd
+    killall dockerd
+    killall dockerd
 }
 
 restart() {
-    if check; then
+    if check
+    then
         stop && sleep 1 && start
+        if check
+        then
+           echo restart SUCCESS
+        else
+           echo restart ERROR
+        fi
     else
         start
     fi
 }
 
 check() {
-    [ -f $DOCKER_PID ] && ps $(cat $DOCKER_PID) > /dev/null 2>&1
+
+    [ ! -f $DOCKER_PID ] &&  return 1
+    ps $(cat $DOCKER_PID)  | grep -v grep | grep -q dockerd
+    return $?
+
 }
 
 status() {
