@@ -133,8 +133,6 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
    localedef -i bs_BA -f UTF-8 bs_BA
 fi
 [ -L /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
-[ -L /var/lib/boot2docker ] || ln -s $BOOT_DIR /var/lib/boot2docker
-[ -L /etc/init.d/docker  ] || ln -s /usr/local/etc/init.d/docker /etc/init.d/docker
 
 mount_all_apps
 

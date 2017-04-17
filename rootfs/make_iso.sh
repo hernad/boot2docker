@@ -38,6 +38,11 @@ ln -fs /opt/green/bin/logrotate $ROOTFS/usr/bin/
 ln -fs /opt/x11/bin/xauth $ROOTFS/usr/bin/
 ln -fs /opt/x11/share $ROOTFS/usr/share/X11
 
+#docker-machine wants /var/lib/boot2docker
+ln -fs /opt/boot $ROOTFS/var/lib/boot2docker
+ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/docker
+
+
 # Setup /etc/os-release with some nice contents
 NAME=greenbox
 greenVersion="$(cat $ROOTFS/etc/sysconfig/greenbox)" # something like "1.1.0"
