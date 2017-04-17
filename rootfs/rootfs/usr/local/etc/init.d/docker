@@ -2,6 +2,12 @@
 # docker daemon start script
 [ $(id -u) = 0 ] || { echo 'must be root' ; exit 1; }
 
+# docker-machine generated profile, /opt/boot = /var/lib/boot2docker
+. /var/lib/boot2docker/profile
+# ignore docker-machine generated DOCKER_STORAGE
+unset DOCKER_STORAGE
+
+
 . /etc/green_common
 
 DOCKER_PID=/var/run/docker.pid
@@ -42,10 +48,10 @@ fi
 
 : ${CERT_DIR:=$BOOT_DIR/tls/}
 : ${CERT_INTERFACES:='eth0 eth1'}
-: ${CA_CERT:="${CERT_DIR}ca.pem"}
-: ${CA_KEY:="${CERT_DIR}cakey.pem"}
-: ${SERVER_CERT:="${CERT_DIR}server.pem"}
-: ${SERVER_KEY:="${CERT_DIR}serverkey.pem"}
+: ${CACERT:="${CERT_DIR}ca.pem"}
+: ${CAKEY:="${CERT_DIR}cakey.pem"}
+: ${SERVERCERT:="${CERT_DIR}server.pem"}
+: ${SERVERKEY:="${CERT_DIR}serverkey.pem"}
 
 # client certificates
 : ${CERT:="${CERT_DIR}cert.pem"}
@@ -66,40 +72,40 @@ start() {
 
         mkdir -p "$CERT_DIR"
         chmod 700 "$CERT_DIR"
-        if [ ! -f "$CA_CERT" ] || [ ! -f "$CA_KEY" ]; then
+        if [ ! -f "$CACERT" ] || [ ! -f "$CAKEY" ]; then
             echo "Generating CA cert"
-            generate_cert --cert="$CA_CERT" --key="$CA_KEY"
-            rm "$SERVER_CERT" "$SERVER_KEY" "$CERT" "$KEY" "$CERT_DIR/hostnames"
+            generate_cert --cert="$CACERT" --key="$CAKEY"
+            rm "$SERVERCERT" "$SERVERKEY" "$CERT" "$KEY" "$CERT_DIR/hostnames"
         fi
 
         CERTSEXISTFOR=$(cat "$CERT_DIR/hostnames" 2>/dev/null)
         if [ "$CERTHOSTNAMES" != "$CERTSEXISTFOR" ]; then
             echo "Generate server cert"
-            log_msg generate_cert --host="$CERTHOSTNAMES" --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$SERVER_CERT" --key="$SERVER_KEY"
-            generate_cert --host="$CERTHOSTNAMES" --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$SERVER_CERT" --key="$SERVER_KEY"
+            log_msg generate_cert --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
+            generate_cert --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
             echo "$CERTHOSTNAMES" > "$CERT_DIR/hostnames"
         fi
 
 
         if [ "$DOCKER_TLS" == "auto" ]; then
             DOCKER_HOST='-H tcp://0.0.0.0:2376'
-            DOCKER_OPTS="$DOCKER_OPTS --tlsverify --tlscacert=$CA_CERT --tlscert=$SERVER_CERT --tlskey=$SERVER_KEY"
+            DOCKER_OPTS="$DOCKER_OPTS --tlsverify --tlscacert=$CACERT --tlscert=$SERVERCERT --tlskey=$SERVERKEY"
         elif [ "$DOCKER_TLS" != "no" ]; then
-            DOCKER_OPTS="$DOCKER_OPTS $DOCKER_TLS --tlscacert=$CA_CERT --tlscert=$SERVER_CERT --tlskey=$SERVER_KEY"
+            DOCKER_OPTS="$DOCKER_OPTS $DOCKER_TLS --tlscacert=$CACERT --tlscert=$SERVERCERT --tlskey=$SERVERKEY"
         fi
 
         # client certificates are responsibility of docker-machine
 
         #if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then
         #    echo "Generating client cert"
-        #    generate_cert --ca="$CA_CERT" --ca-key="$CA_KEY" --cert="$CERT" --key="$KEY"
+        #    generate_cert --ca="$CACERT" --ca-key="$CAKEY" --cert="$CERT" --key="$KEY"
         #fi
 
         # now make the client certificates available to the docker user
         #USERCFG="/home/docker/.docker"
         #mkdir -p "$USERCFG"
         #chmod 700 "$USERCFG"
-        #cp "$CA_CERT" "$USERCFG"
+        #cp "$CACERT" "$USERCFG"
         #cp "$CERT" "$USERCFG"
         #cp "$KEY" "$USERCFG"
         #chown -R docker:docker /home/docker
