@@ -3,9 +3,12 @@
 [ $(id -u) = 0 ] || { echo 'must be root' ; exit 1; }
 
 # docker-machine generated profile, /opt/boot = /var/lib/boot2docker
-. /var/lib/boot2docker/profile
-# ignore docker-machine generated DOCKER_STORAGE
-unset DOCKER_STORAGE
+BOOT2DOCKER_PROFILE=/var/lib/boot2docker/profile
+if [ -f BOOT2DOCKER_PROFILE ] ; then
+  source $BOOT2DOCKER_PROFILE
+  # ignore docker-machine generated DOCKER_STORAGE
+  unset DOCKER_STORAGE
+fi
 
 
 . /etc/green_common
