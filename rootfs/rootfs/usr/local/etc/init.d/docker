@@ -7,7 +7,7 @@ BOOT2DOCKER_PROFILE=/var/lib/boot2docker/profile
 if [ -f $BOOT2DOCKER_PROFILE ] ; then
   . $BOOT2DOCKER_PROFILE
   # ignore docker-machine generated DOCKER_STORAGE
-  unset DOCKER_STORAGE
+  unset DOCKER_STORAGE DOCKER_HOST
 fi
 
 
