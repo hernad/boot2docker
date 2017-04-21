@@ -4,7 +4,13 @@
 
 log_msg "Loading virtualbox server kernel drivers"
 
-modprobe vboxdrv
-modprobe vboxnetadp
-modprobe vboxnetflt
-modprobe vboxpci
+if ( is_vbox )
+then
+ modprobe vboxguest
+ modprobe vboxsf
+else
+ modprobe vboxdrv
+ modprobe vboxnetadp
+ modprobe vboxnetflt
+ modprobe vboxpci
+fi
