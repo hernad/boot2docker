@@ -45,17 +45,24 @@ log_msg "zfs docker_home"
 log_msg "zfs build"
 ( zfs list $POOL/build )      || ( zfs create -o mountpoint=/build -o quota=$BUILD_QUOTA green/build )
 
-if ( ! zfs list $POOL/docker_vol )
+if ( is_vbox )
 then
-   log_msg "zfs docker_vol /dev/zvol"
-   zfs create -V $DOCKER_VOL_SIZE -s -o sync=disabled $POOL/docker_vol
-   wait_zvol_up $POOL docker_vol
-   log_msg "docker_vol mkfs.ext4"
-   mkfs.ext4 -F /dev/zvol/$POOL/docker_vol
+  # vbox host, zfs storage
+  zfs create green/docker
+else
+  # NOT vbox host, overlay2 storage
+  if ( ! zfs list $POOL/docker_vol )
+  then
+     log_msg "zfs docker_vol /dev/zvol"
+     zfs create -V $DOCKER_VOL_SIZE -s -o sync=disabled $POOL/docker_vol
+     wait_zvol_up $POOL docker_vol
+     log_msg "docker_vol mkfs.ext4"
+     mkfs.ext4 -F /dev/zvol/$POOL/docker_vol
 
-   log_msg "mount docker_vol /var/lib/docker"
-   mkdir -p /var/lib/docker
-   mount /dev/zvol/$POOL/docker_vol /var/lib/docker
+     log_msg "mount docker_vol /var/lib/docker"
+     mkdir -p /var/lib/docker
+     mount /dev/zvol/$POOL/docker_vol /var/lib/docker
+  fi
 fi
 
 if ( ! zfs list $POOL/swap )
