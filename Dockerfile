@@ -62,8 +62,8 @@ RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.confi
 # ======================= VirtualBox host install ============================================
 
 # http://download.virtualbox.org/virtualbox/5.1.8/
-ENV VBOX_VERSION=5.1.18 VBOX_BUILD=114002
-ENV VBOX_SHA256 f2951b49f48a560fbc1afe9d135d1f3f82a3e158b9002278d05d978428adca8a
+ENV VBOX_VERSION=5.1.20 VBOX_BUILD=114628
+ENV VBOX_ISO_SHA256 8f1aa5ffda9f9cfb1dd5faa1fafd909763a1f6204cce2045e0912a2583ba75e9
 
 RUN curl -LO http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VirtualBox-$VBOX_VERSION-$VBOX_BUILD-Linux_amd64.run &&\
         mkdir -p /lib ;\
@@ -82,7 +82,7 @@ RUN set -x && \
     cd /vboxguest && \
     \
     curl -fL -o vboxguest.iso http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VBoxGuestAdditions_${VBOX_VERSION}.iso && \
-    echo "${VBOX_SHA256} *vboxguest.iso" | sha256sum -c - && \
+    echo "${VBOX_ISO_SHA256} *vboxguest.iso" | sha256sum -c - && \
     7z x vboxguest.iso -ir'!VBoxLinuxAdditions.run' && \
     rm vboxguest.iso && \
     \
