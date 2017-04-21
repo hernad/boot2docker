@@ -72,7 +72,7 @@ RUN curl -LO http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VirtualBo
 
 RUN cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
         cd / && curl -LO http://download.virtualbox.org/virtualbox/$VBOX_VERSION/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VERSION.vbox-extpack &&\
-        /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VERSION.vbox-extpack
+        echo y | /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VERSION.vbox-extpack
 
 
 # Build VBox guest additions
