@@ -16,6 +16,14 @@ RUN apt-get update -y
 RUN apt-get build-dep libpam-google-authenticator -y
 ENV CPPFLAGS="-I/opt/apps/green/include" CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib"
 
+
+RUN tar xvf http://linux-pam.org/library/Linux-PAM-1.3.0.tar.bz2 &&\
+    cd Linux-PAM* &&\
+    ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
+    make &&\
+    make install
+
+
 RUN git clone https://github.com/fukuchi/libqrencode.git &&\
     cd libqrencode &&\
     libtoolize --force && aclocal && autoheader && automake --force-missing --add-missing &&\
@@ -43,7 +51,7 @@ RUN curl -LO https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.5.2.tar.gz 
 #    ./config --prefix=/opt/apps/green &&\
 #    make &&\
 #    make install
-    
+
 
 RUN apt-get build-dep openvpn -y
 RUN apt-get install net-tools -y
@@ -147,7 +155,7 @@ RUN  export LD_LIBRARY_PATH=/opt/apps/green/lib &&\
      ./configure --prefix=/opt/apps/green && make install
 
 
-# perl-5.24.1.tar.xz	14-Jan-2017 12:05	11M	 
+# perl-5.24.1.tar.xz	14-Jan-2017 12:05	11M
 RUN export PERL_VER=5.24.1 && cd / && curl -LO http://www.cpan.org/src/5.0/perl-${PERL_VER}.tar.xz &&\
     tar xf perl-${PERL_VER}.tar.xz &&  cd perl-${PERL_VER} &&\
     ./Configure -des -Dprefix=/opt/apps/perl && make install
@@ -287,7 +295,7 @@ RUN apt-get -y install libgnutls28-dev bzip2 make gettext texinfo gnutls-bin
 RUN gpg --recv-keys --keyserver pgp.mit.edu  0x4F25E3B6 0xE0856959 0x33BD3F06 0x7EFD60D9 0xF7E48EDB
 
 ENV PATH="/opt/apps/green/bin:$PATH"
- 
+
 RUN wget -c ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.26.tar.gz && \
     wget -c ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.26.tar.gz.sig && \
     gpg --verify libgpg-error-1.26.tar.gz.sig && tar -xzf libgpg-error-1.26.tar.gz && \
