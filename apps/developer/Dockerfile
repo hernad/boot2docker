@@ -24,10 +24,11 @@ RUN curl -L https://sourceforge.net/projects/pamtester/files/latest/download?sou
     make &&\
     make install
 
-ENV MAKE_VER=4.1.90
-RUN curl -LO http://alpha.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
+ENV MAKE_VER=4.2.1
+RUN apt-get build-dep make -y
+RUN curl -LO http://ftp.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
     tar xf make-${MAKE_VER}.tar.gz && cd make-${MAKE_VER} &&\
-    ./configure CFLAGS="-I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
+    ./configure CFLAGS=" -I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
     make &&\
     make install
 
