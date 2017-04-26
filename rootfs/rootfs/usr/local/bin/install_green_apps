@@ -11,18 +11,29 @@ case "$1" in
      IND1="[ ]${RED}"
      IND2="[*]${GREEN}"
      IND3="[ ]${RED}"
+     IND4="[ ]${RED}"
      ;;
   3) echo "install GREEN_APPS_3"
      INSTALL_SET="3"
      IND1="[ ]${RED}"
      IND2="[ ]${RED}"
      IND3="[*]${GREEN}"
+     IND4="[ ]${RED}"
      ;;
+  4) echo "install GREEN_APPS_3"
+     INSTALL_SET="3"
+     IND1="[ ]${RED}"
+     IND2="[ ]${RED}"
+     IND3="[ ]${RED}"
+     IND4="[*]${GREEN}"
+     ;;
+
   *) echo "install GREEN_APPS"
      INSTALL_SET="1"
      IND1="[*]${GREEN}"
      IND2="[ ]${RED}"
      IND3="[ ]${RED}"
+     IND4="[ ]${RED}"
      ;;
 esac
 
@@ -44,6 +55,10 @@ if [ -z "$GREEN_APPS_3" ] ; then
   GREEN_APPS_3+=" idea_${IDEA_VER} atom_${ATOM_VER} code_${CODE_VER}"
 fi
 
+if [ -z "$GREEN_APPS_4" ] ; then
+  GREEN_APPS_4="developer_${DEVELOPER_VER} "
+fi
+
 
 echo "environment vars:"
 echo "-------------------------------------------------------------"
@@ -51,11 +66,13 @@ echo "GREEN_BINTRAY: $GREEN_BINTRAY"
 echo "${IND1}   GREEN_APPS: ${GREEN_APPS}${NORMAL}"
 echo "${IND2} GREEN_APPS_2: ${GREEN_APPS_2}${NORMAL}"
 echo "${IND3} GREEN_APPS_3: ${GREEN_APPS_3}${NORMAL}"
+echo "${IND4} GREEN_APPS_4: ${GREEN_APPS_4}${NORMAL}"
 
 echo ===== download_green_apps start: $(date) ====== >> $LOG_FILE
 
 [ "$INSTALL_SET" == "2" ] && GREEN_APPS="${GREEN_APPS_2}"  # install GREEN_APPS_2
-[ "$INSTALL_SET" == "3" ] && GREEN_APPS="${GREEN_APPS_3}"  # install GREEN_APPS_2
+[ "$INSTALL_SET" == "3" ] && GREEN_APPS="${GREEN_APPS_3}"  # install GREEN_APPS_3
+[ "$INSTALL_SET" == "4" ] && GREEN_APPS="${GREEN_APPS_4}"  # install GREEN_APPS_4
 
 if [ ! -d /opt/apps ] ; then
   log_msg "/opt/apps doesn't exists"
