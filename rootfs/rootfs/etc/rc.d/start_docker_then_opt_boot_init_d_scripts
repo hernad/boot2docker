@@ -4,9 +4,7 @@
 
 [ -f /opt/boot/init.d/nodockerstart ] && log_msg "nodockerstart SET - stop!" && exit 1
 
-
 /usr/local/etc/init.d/docker start
-
 
 log_msg "starting $BOOT_DIR/init.d scripts ..."
 [ ! -d $BOOT_DIR/init.d ] && mkdir -p $BOOT_DIR/init.d &&\

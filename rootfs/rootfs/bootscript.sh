@@ -112,17 +112,6 @@ ln -s $BOOT_DIR/root /root && mv /root.orig/* /root/ && rm -rf /root.orig
 /etc/rc.d/acpid
 /etc/rc.d/sshd
 /etc/rc.d/vbox_kernel
-/etc/rc.d/start_docker_then_opt_boot_init_d_scripts &
-
-
-log_msg "$BOOT_DIR/bootlocal.sh - run local customization commands"
-if [ -e $BOOT_DIR/bootlocal.sh ]; then
-    $BOOT_DIR/bootlocal.sh &
-    log_msg "after $BOOT_DIR/bootlocal.sh"
-fi
-
-log_msg "launch dockerd"
-/etc/rc.d/docker
 
 log_msg "locale-archive localedef start"
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
@@ -135,12 +124,26 @@ fi
 [ -L /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
 
 mount_all_apps
-
 ldcache_update
-
 vbox_fix_permissions
 
 /usr/local/bin/install_green_apps &
+
+if [ ! -f /opt/boot/apps/docker/VERSION ] ; then
+   log_msg "docker is not installed, wait 60sec ..."
+   sleep 60
+fi
+
+# if there are errors during first install, try again
+/usr/local/bin/install_green_apps &
+
+/etc/rc.d/start_docker_then_opt_boot_init_d_scripts &
+
+log_msg "$BOOT_DIR/bootlocal.sh - run local customization commands"
+if [ -e $BOOT_DIR/bootlocal.sh ]; then
+    $BOOT_DIR/bootlocal.sh &
+    log_msg "after $BOOT_DIR/bootlocal.sh"
+fi
 
 for f in passwd shadow shadow- ; do
  if [ ! -f $BOOT_DIR/etc/$f ] ; then
@@ -149,7 +152,6 @@ for f in passwd shadow shadow- ; do
  fi
  rm /etc/$f  ; ln -s $BOOT_DIR/etc/$f /etc/$f ; chown root:root $BOOT_DIR/etc/$f # permanent passwd
 done
-
 
 [ -d $BOOT_DIR/etc/sysconfig ] || mkdir -p $BOOT_DIR/etc/sysconfig
 [ -f $BOOT_DIR/etc/sysconfig/docker ] || mv /etc/sysconfig/docker $BOOT_DIR/etc/sysconfig/ # permanent docker version

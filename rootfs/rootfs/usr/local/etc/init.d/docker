@@ -17,9 +17,20 @@ DOCKER_PID=/var/run/docker.pid
 
 PATH=:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/docker/bin
 
+CNT=1
 while [ ! -f /opt/docker/bin/dockerd  ] ; do
   log_msg "waiting install /tmp/dockerd $CNT ..."
-  sleep 1
+  sleep 30
+  let CNT=$CNT+1
+
+  if [ $CNT -eq 3  ] || [ $CNT -eq 6 ]  || [ $CNT -eq 10 ] ; then
+    /usr/local/bin/install_green_apps &
+  fi
+
+  if [ $CNT -eq 20  ] ; then
+     log_msg "docker wait timeout 10 minutes"
+     exit 1
+  fi
 done
 
 
