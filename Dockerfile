@@ -300,7 +300,7 @@ RUN for dep in $TCZ_DEPS_1 ; do \
 
 # ========== /opt/apps/docker ==================================
 
-# https://github.com/docker/docker/releases
+# https://github.com/moby/moby/releases
 COPY DOCKER_VERSION $ROOTFS/etc/sysconfig/docker
 
 # get generate_cert

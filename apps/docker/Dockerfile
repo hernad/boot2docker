@@ -9,7 +9,7 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
 RUN apt-get update
 
 # https://github.com/docker/compose/releases/
-RUN export DOCKER_COMPOSE_VER=1.12.0 && \
+RUN export DOCKER_COMPOSE_VER=1.13.0 && \
     curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VER}/docker-compose-Linux-x86_64 > /opt/apps/docker/bin/docker-compose &&\
     chmod +x /opt/apps/docker/bin/docker-compose
 
