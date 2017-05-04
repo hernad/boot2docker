@@ -49,3 +49,5 @@ RUN     curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
         && rm -rf /usr/src/python \
         && pip install --no-cache-dir virtualenv readline
 
+
+RUN    rm  -rf /opt/apps/python2/lib/python2.7/test /opt/apps/python2/lib/python2.7/json/tests /opt/apps/python2/lib/python2.7/ctypes/test
