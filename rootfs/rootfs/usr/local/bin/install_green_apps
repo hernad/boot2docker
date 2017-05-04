@@ -20,14 +20,13 @@ case "$1" in
      IND3="[*]${GREEN}"
      IND4="[ ]${RED}"
      ;;
-  4) echo "install GREEN_APPS_3"
-     INSTALL_SET="3"
+  4) echo "install GREEN_APPS_4"
+     INSTALL_SET="4"
      IND1="[ ]${RED}"
      IND2="[ ]${RED}"
      IND3="[ ]${RED}"
      IND4="[*]${GREEN}"
      ;;
-
   9) echo "install GREEN_APPS_9"
      INSTALL_SET="9"
      IND1="[ ]${RED}"
@@ -35,7 +34,6 @@ case "$1" in
      IND3="[ ]${RED}"
      IND4="[ ]${RED}"
      ;;
-
   *) echo "install GREEN_APPS"
      INSTALL_SET="1"
      IND1="[*]${GREEN}"
@@ -62,6 +60,21 @@ if [ "$INSTALL_SET" == "9" ] ; then
            vagrant)
              GREEN_APPS_9+=" vagrant_${VAGRANT_VER}"
              ;;
+           developer)
+             GREEN_APPS_9+=" developer_${DEVELOPER_VER}"
+             ;;
+           java)
+             GREEN_APPS_9+=" java_${JAVA_VER}"
+             ;;
+           go)
+             GREEN_APPS_9+=" go_${GO_VER}"
+             ;;
+           x11)
+             GREEN_APPS_9+=" x11_${X11_APPS_VER}"
+             ;;
+           node)
+             GREEN_APPS_9+=" node_${NODE_VER}"
+             ;;
          esac
      done
 
@@ -71,7 +84,7 @@ else
     GREEN_APPS+=" python2_$PYTHON2_VER vim_$VIM_VER"
   fi
   if [ -z "$GREEN_APPS_2" ] ; then
-    GREEN_APPS_2="x11_$X11_APPS_VER VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER"
+    GREEN_APPS_2="x11_${X11_APPS_VER} VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER"
     GREEN_APPS_2+=" perl_$PERL_VER ruby_$RUBY_VER java_${JAVA_VER} go_${GO_VER} node_${NODE_VER}"
   fi
 
