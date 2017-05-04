@@ -1,7 +1,21 @@
 #!/bin/sh
 
+TFTP_SERVER=${TFTP_SERVER:-192.168.168.117}
+
+SSH_OPT=""
+if [ -f .ssh_download_key ] ; then
+  SSH_OPT="-i .ssh_download_key"
+  chmod 0600 .ssh_download_key
+fi
+
+if [ -f id_rsa ] ; then
+  SSH_OPT="-i id_rsa"
+  chmod 0600 id_rsa
+fi
+
+
 GREENBOX_VERSION=`cat GREENBOX_VERSION`
-ROOT_SRV=root@192.168.168.117
+ROOT_SRV=root@$TFTP_SERVER
 TFTP_DIR=/srv/tftp
 TFTP_DEST=$ROOT_SRV:$TFTP_DIR
 rm greenbox.iso
@@ -33,10 +47,10 @@ else
 	hdiutil mount -mountpoint $MNT_DIR greenbox.iso
 fi
 
-ssh  $ROOT_SRV "mkdir -p $TFTP_DIR/boot-$GREENBOX_VERSION"
-scp -r $MNT_DIR/boot/* $TFTP_DEST/boot-$GREENBOX_VERSION
-ssh  $ROOT_SRV "ls -l $TFTP_DIR/boot ; rm $TFTP_DIR/boot"
-ssh  $ROOT_SRV "ln -s  $TFTP_DIR/boot-$GREENBOX_VERSION $TFTP_DIR/boot ; ls -l $TFTP_DIR/boot* ; ls -l $TFTP_DIR/boot/*"
+ssh $SSH_OPT  $ROOT_SRV "mkdir -p $TFTP_DIR/boot-$GREENBOX_VERSION"
+scp $SSH_OPT -r $MNT_DIR/boot/* $TFTP_DEST/boot-$GREENBOX_VERSION
+ssh $SSH_OPT $ROOT_SRV "ls -l $TFTP_DIR/boot ; rm $TFTP_DIR/boot"
+ssh $SSH_OPT $ROOT_SRV "ln -s  $TFTP_DIR/boot-$GREENBOX_VERSION $TFTP_DIR/boot ; ls -l $TFTP_DIR/boot* ; ls -l $TFTP_DIR/boot/*"
 
 echo umount
 if [ "$LINUX" == 1 ]
