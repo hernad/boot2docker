@@ -35,6 +35,7 @@ RUN curl -s -LO http://ftp.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
     make install
 
 
+RUN apt-get build-dep gcc -y
 RUN curl -s -LO http://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2 &&\
     tar xf gcc-${GCC_VER}.tar.bz2 && cd gcc-${GCC_VER} &&\
     ./configure \
