@@ -34,7 +34,7 @@ RUN curl -LO https://github.com/coreos/etcd/releases/download/v3.1.4/etcd-v${ETC
    mv etcd-v${ETCD_VERSION}-linux-amd64/etcd* $K8S_HOME/bin/
 
 
-RUN cd $K8_HOME/bin &&\
+RUN cd $K8S_HOME/bin &&\
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kube-apiserver  &&\
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kube-controller-manager &&\
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kube-scheduler &&\
