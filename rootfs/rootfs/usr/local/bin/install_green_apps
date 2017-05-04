@@ -75,6 +75,9 @@ if [ "$INSTALL_SET" == "9" ] ; then
            node)
              GREEN_APPS_9+=" node_${NODE_VER}"
              ;;
+           python2)
+             GREEN_APPS_9+=" python2_${PYTHON2_VER}"
+             ;;
          esac
      done
 
