@@ -25,12 +25,11 @@ ENV LANG=C.UTF-8 PYTHON_VERSION=2.7.13 PYTHON_PIP_VERSION=9.0.1
 
 ENV PATH  /opt/apps/python2/bin:$PATH
 
-RUN apt-get purge -y python.*
-RUN apt-get build-dep -y python
+#RUN apt-get purge -y python.*
+RUN apt-get install -y python-dev libffi-dev libssl-dev bzip2 libbz2-dev
 
 # gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
-RUN apt-get install -y bzip2 libbz2-dev &&\
-    set -x \
+RUN   set -x \
         && mkdir -p /usr/src/python \
         && curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
         && tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
