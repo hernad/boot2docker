@@ -259,7 +259,8 @@ ENV TCZ_DEPS_GREEN  \
                     groff \
                     iftop util-linux \
                     icu icu-bin \
-                    man-pages man-db
+                    man-pages man-db \
+                    coreutils
 
 #nss,nspr,sqlite3,libnotify - deps for electron applications ( atom, code )
 #groff - aws deps
