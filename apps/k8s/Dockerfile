@@ -29,8 +29,8 @@ RUN cd $K8S_HOME/bin && curl -LO https://pkg.cfssl.org/R1.2/cfssljson_linux-amd6
      mv cfssljson_linux-amd64 cfssljson
 
 
-RUN curl -LO https://github.com/coreos/etcd/releases/download/v3.1.4/etcd-v${ETCD_VERSION}-linux-amd64.tar.gz
-   tar -xvf etcd-v${ETCD_VERSION}-linux-amd64.tar.gz
+RUN curl -LO https://github.com/coreos/etcd/releases/download/v3.1.4/etcd-v${ETCD_VERSION}-linux-amd64.tar.gz &&\
+   tar -xvf etcd-v${ETCD_VERSION}-linux-amd64.tar.gz &&\
    mv etcd-v${ETCD_VERSION}-linux-amd64/etcd* $K8S_HOME/bin/
 
 
