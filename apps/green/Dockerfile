@@ -17,6 +17,13 @@ RUN apt-get build-dep libpam-google-authenticator -y
 ENV CPPFLAGS="-I/opt/apps/green/include" CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib"
 
 
+RUN curl -LO http://downloads.es.net/pub/iperf/iperf-3-current.tar.gz &&\
+    tar xf iperf-3*.tar.gz && rm iperf-3*.tar.gz && cd iperf* &&\
+    ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
+    make &&\
+    make install
+
+
 RUN curl -LO http://linux-pam.org/library/Linux-PAM-1.3.0.tar.bz2 &&\
     tar xf Linux-PAM*.bz2 && cd Linux-PAM* &&\
     ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
