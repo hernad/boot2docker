@@ -36,7 +36,7 @@ RUN curl -LO http://ftp.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
 
 
 RUN curl -LO http://ftpmirror.gnu.org/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2 &&\
-    tar xf make-${GCC_VER}.tar.gz && cd make-${GCC_VER} &&\
+    tar xf gcc-${GCC_VER}.tar.gz && cd gcc-${GCC_VER} &&\
     ./configure \
        --disable-multilib \
        --enable-languages=c,c++,go,objc,obj-c++ \
