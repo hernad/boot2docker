@@ -24,7 +24,7 @@ RUN curl -L https://sourceforge.net/projects/pamtester/files/latest/download?sou
     make &&\
     make install
 
-ENV GCC_VER=6.3.0
+ENV GCC_VER=7.1.0
 ENV MAKE_VER=4.2.1
 
 RUN apt-get build-dep make -y
@@ -35,7 +35,7 @@ RUN curl -LO http://ftp.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
     make install
 
 
-RUN curl -LO http://ftpmirror.gnu.org/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2 &&\
+RUN curl -LO http://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2 &&\
     tar xf gcc-${GCC_VER}.tar.gz && cd gcc-${GCC_VER} &&\
     ./configure \
        --disable-multilib \
