@@ -26,7 +26,7 @@ ENV LANG=C.UTF-8 PYTHON_VERSION=2.7.13 PYTHON_PIP_VERSION=9.0.1
 ENV PATH  /opt/apps/python2/bin:$PATH
 
 # gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
-RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF &&\
+RUN gpg --keyserver pgp.mit.edu --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF &&\
     apt-get purge -y python.* &&\
     apt-get install -y bzip2 libbz2-dev &&\
     set -x \
