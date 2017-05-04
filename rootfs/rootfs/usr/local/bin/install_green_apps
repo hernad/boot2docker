@@ -28,6 +28,14 @@ case "$1" in
      IND4="[*]${GREEN}"
      ;;
 
+  9) echo "install GREEN_APPS_9"
+     INSTALL_SET="9"
+     IND1="[ ]${RED}"
+     IND2="[ ]${RED}"
+     IND3="[ ]${RED}"
+     IND4="[ ]${RED}"
+     ;;
+
   *) echo "install GREEN_APPS"
      INSTALL_SET="1"
      IND1="[*]${GREEN}"
@@ -35,44 +43,61 @@ case "$1" in
      IND3="[ ]${RED}"
      IND4="[ ]${RED}"
      ;;
+
 esac
 
 GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
 
 
-if [ -z "$GREEN_APPS" ] ; then
-  GREEN_APPS="docker_$DOCKER_VERSION green_$GREEN_APPS_VER"
-  GREEN_APPS+=" python2_$PYTHON2_VER vim_$VIM_VER"
+if [ "$INSTALL_SET" == "9" ] ; then
+     shift
+     for app in $@ ; do
+         case $app in
+           k8s)
+             GREEN_APPS_9+=" k8s_${K8S_VER}"
+             ;;
+           virtualbox|vbox|vbox)
+             green_apps_9+=" virtualbox_${vbox_ver}"
+             ;;
+           vagrant)
+             GREEN_APPS_9+=" vagrant_${VAGRANT_VER}"
+             ;;
+         esac
+     done
+
+else
+  if [ -z "$GREEN_APPS" ] ; then
+    GREEN_APPS="docker_$DOCKER_VERSION green_$GREEN_APPS_VER"
+    GREEN_APPS+=" python2_$PYTHON2_VER vim_$VIM_VER"
+  fi
+  if [ -z "$GREEN_APPS_2" ] ; then
+    GREEN_APPS_2="x11_$X11_APPS_VER VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER"
+    GREEN_APPS_2+=" perl_$PERL_VER ruby_$RUBY_VER java_${JAVA_VER} go_${GO_VER} node_${NODE_VER}"
+  fi
+
+  if [ -z "$GREEN_APPS_3" ] ; then
+    GREEN_APPS_3="aws_${AWS_VER} "
+    GREEN_APPS_3+=" idea_${IDEA_VER} atom_${ATOM_VER} code_${CODE_VER}"
+  fi
+
+  if [ -z "$GREEN_APPS_4" ] ; then
+    GREEN_APPS_4="developer_${DEVELOPER_VER} "
+  fi
+  echo "environment vars:"
+  echo "-------------------------------------------------------------"
+  echo "GREEN_BINTRAY: $GREEN_BINTRAY"
+  echo "${IND1}   GREEN_APPS: ${GREEN_APPS}${NORMAL}"
+  echo "${IND2} GREEN_APPS_2: ${GREEN_APPS_2}${NORMAL}"
+  echo "${IND3} GREEN_APPS_3: ${GREEN_APPS_3}${NORMAL}"
+  echo "${IND4} GREEN_APPS_4: ${GREEN_APPS_4}${NORMAL}"
 fi
-
-if [ -z "$GREEN_APPS_2" ] ; then
-  GREEN_APPS_2="x11_$X11_APPS_VER VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER"
-  GREEN_APPS_2+=" perl_$PERL_VER ruby_$RUBY_VER java_${JAVA_VER} go_${GO_VER} node_${NODE_VER}"
-fi
-
-if [ -z "$GREEN_APPS_3" ] ; then
-  GREEN_APPS_3="aws_${AWS_VER} "
-  GREEN_APPS_3+=" idea_${IDEA_VER} atom_${ATOM_VER} code_${CODE_VER}"
-fi
-
-if [ -z "$GREEN_APPS_4" ] ; then
-  GREEN_APPS_4="developer_${DEVELOPER_VER} "
-fi
-
-
-echo "environment vars:"
-echo "-------------------------------------------------------------"
-echo "GREEN_BINTRAY: $GREEN_BINTRAY"
-echo "${IND1}   GREEN_APPS: ${GREEN_APPS}${NORMAL}"
-echo "${IND2} GREEN_APPS_2: ${GREEN_APPS_2}${NORMAL}"
-echo "${IND3} GREEN_APPS_3: ${GREEN_APPS_3}${NORMAL}"
-echo "${IND4} GREEN_APPS_4: ${GREEN_APPS_4}${NORMAL}"
 
 echo ===== download_green_apps start: $(date) ====== >> $LOG_FILE
 
 [ "$INSTALL_SET" == "2" ] && GREEN_APPS="${GREEN_APPS_2}"  # install GREEN_APPS_2
 [ "$INSTALL_SET" == "3" ] && GREEN_APPS="${GREEN_APPS_3}"  # install GREEN_APPS_3
 [ "$INSTALL_SET" == "4" ] && GREEN_APPS="${GREEN_APPS_4}"  # install GREEN_APPS_4
+[ "$INSTALL_SET" == "9" ] && GREEN_APPS="${GREEN_APPS_9}"  # install GREEN_APPS_9
 
 if [ ! -d /opt/apps ] ; then
   log_msg "/opt/apps doesn't exists"

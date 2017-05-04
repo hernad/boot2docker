@@ -42,7 +42,7 @@ if [ ! -f $FILE ] ; then
            find VirtualBox -name "*.o" -exec rm {} \; &&\
            find VirtualBox -name "*.c" -exec rm {} \; || exit 1
            ;;
-      ruby|green|docker|vagrant|developer)
+      ruby|green|docker|vagrant|developer|k8s)
            CT=greenbox_app_${GREEN_APP}
            CT_VER=${GREEN_APP_VER}
            docker rm -f $CT

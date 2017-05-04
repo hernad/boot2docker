@@ -25,6 +25,7 @@ sed -e "s/XBuildX/$(date +'%Y%m%d-%T %z')/" \
 
 sed -e "s/___GREEN_APPS_VER___/$(cat apps/green/VERSION)/"  \
     -e "s/___VBOX_VER___/$(cat VBOX_VERSION)/"  \
+    -e "s/___K8S_VER___/$(cat apps/k8s/VERSION)/"  \
      green_common.template > rootfs/green_common
 
 cat ./rootfs/rootfs/usr/local/etc/motd && \
