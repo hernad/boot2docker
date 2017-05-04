@@ -23,7 +23,7 @@ addUser() {
 	echo "${GREEN}Adding user ${YELLOW}docker ${NORMAL}"
 	/bin/adduser -s /bin/sh -G staff -D docker
 	[ -n "$DOCKER_PASSWORD" ] && change_user_password docker $DOCKER_PASSWORD
-	echo -e "docker\tALL=NOPASSWD: ALL" >> /etc/sudoers
+	echo -e "docker\tALL=NOPASSWD: ALL" >> /etc/sudoers 
 }
 
 ### END functions

@@ -96,8 +96,13 @@ if grep -q '^docker:' /etc/passwd; then
     #preload data from grenbox-cli
     if [ -e "/userdata.tar" ]; then
         tar xf /userdata.tar -C /home/docker/ >> $LOG_FILE  2>&1
-        rm -f 'greenbox, please format-me'
-        chown -R docker:staff /home/docker
+        rm -f "/home/docker/greenbox, please format-me"
+        chown -R docker:docker /home/docker
+    fi
+
+    if ls -ld /home/docker | grep -q root
+    then
+       chown -R docker:docker /docker
     fi
 fi
 
