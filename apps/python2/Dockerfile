@@ -25,17 +25,14 @@ ENV LANG=C.UTF-8 PYTHON_VERSION=2.7.13 PYTHON_PIP_VERSION=9.0.1
 
 ENV PATH  /opt/apps/python2/bin:$PATH
 
-RUN apt-get -y build-dep python
+RUN apt-get purge -y python.*
+RUN apt-get build-dep -y python
 
 # gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
-RUN gpg --keyserver pgp.mit.edu --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF &&\
-    apt-get purge -y python.* &&\
-    apt-get install -y bzip2 libbz2-dev &&\
+RUN apt-get install -y bzip2 libbz2-dev &&\
     set -x \
         && mkdir -p /usr/src/python \
         && curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
-        && curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
-        && gpg --verify python.tar.xz.asc \
         && tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
         && rm python.tar.xz* \
         && cd /usr/src/python \
@@ -43,7 +40,7 @@ RUN gpg --keyserver pgp.mit.edu --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218AD
         && make -j$(nproc) \
         && make install
 
-ENV  LD_LIBRARY_PATH=/opt/apps/python2/lib
+ENV     LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
 RUN     curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
         && pip install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
         && find /usr/local \
