@@ -28,15 +28,15 @@ ENV GCC_VER=7.1.0
 ENV MAKE_VER=4.2.1
 
 RUN apt-get build-dep make -y
-RUN curl -LO http://ftp.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
+RUN curl -s -LO http://ftp.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
     tar xf make-${MAKE_VER}.tar.gz && cd make-${MAKE_VER} &&\
     ./configure CFLAGS=" -I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
     make &&\
     make install
 
 
-RUN curl -LO http://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2 &&\
-    tar xf gcc-${GCC_VER}.tar.gz && cd gcc-${GCC_VER} &&\
+RUN curl -s -LO http://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2 &&\
+    tar xf gcc-${GCC_VER}.tar.bz2 && cd gcc-${GCC_VER} &&\
     ./configure \
        --disable-multilib \
        --enable-languages=c,c++,go,objc,obj-c++ \
