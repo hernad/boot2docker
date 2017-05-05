@@ -43,14 +43,8 @@ ln -fs /opt/x11/share $ROOTFS/usr/share/X11
 ln -fs /opt/boot $ROOTFS/var/lib/boot2docker
 ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/docker
 
-# every iso lib on one place
-mv $ROOTFS/usr/local/lib/* $ROOTFS/usr/lib/
-
 # no includes in iso
-rm -rf $ROOTFS/usr/local/lib $ROOTFS/usr/local/include $ROOTFS/usr/include
-
-# git-core has to bo /usr/local/lib/git-core
-mkdir $ROOTFS/usr/local/lib
+rm -rf  $ROOTFS/usr/local/include $ROOTFS/usr/include
 
 ln -fs /opt/developer/include $ROOTFS/usr/include
 
