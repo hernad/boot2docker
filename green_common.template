@@ -151,7 +151,6 @@ echo_line() {
 
 setup_symlinks_and_commands() {
 
-
 # git helpers location green -> /usr/local
 DIR=/opt/green
 SRC_LINK=/opt/green/lib/git-core

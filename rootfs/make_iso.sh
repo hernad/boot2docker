@@ -49,6 +49,9 @@ mv $ROOTFS/usr/local/lib/* $ROOTFS/usr/lib/
 # no includes in iso
 rm -rf $ROOTFS/usr/local/lib $ROOTFS/usr/local/include $ROOTFS/usr/include
 
+# git-core has to bo /usr/local/lib/git-core
+mkdir $ROOTFS/usr/local/lib
+
 ln -fs /opt/developer/include $ROOTFS/usr/include
 
 # gcc asks for this library archive here
