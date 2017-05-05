@@ -79,8 +79,8 @@ RUN mkdir -p /opt/apps/developer/bin ;\
     mkdir -p /opt/apps/developer/lib ;\
     mkdir -p /opt/apps/developer/include ;\
     mkdir -p /opt/apps/developer/share ;\
-        cp -av /opt/apps/developer/usr/local/bin/* /opt/apps/green/bin/ &&\
-        cp -av /opt/apps/developer/usr/local/lib/* /opt/apps/green/lib/ &&\
-        cp -av /opt/apps/developer/usr/local/include/* /opt/apps/green/include/ &&\
-        cp -av /opt/apps/developer/usr/local/share/* /opt/apps/green/share/ &&\
+        cp -av /opt/apps/developer/usr/local/bin/* /opt/apps/developer/bin/ &&\
+        cp -av /opt/apps/developer/usr/local/lib/* /opt/apps/developer/lib/ &&\
+        cp -av /opt/apps/developer/usr/local/include/* /opt/apps/developer/include/ &&\
+        cp -av /opt/apps/developer/usr/local/share/* /opt/apps/developer/share/ &&\
         rm -rf /opt/apps/developer/usr/local
