@@ -27,12 +27,12 @@ RUN curl -L https://sourceforge.net/projects/pamtester/files/latest/download?sou
 ENV GCC_VER=7.1.0
 ENV MAKE_VER=4.2.1
 
-RUN apt-get build-dep make -y
-RUN curl -s -LO http://ftp.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
-    tar xf make-${MAKE_VER}.tar.gz && cd make-${MAKE_VER} &&\
-    ./configure CFLAGS=" -I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
-    make &&\
-    make install
+#RUN apt-get build-dep make -y
+#RUN curl -s -LO http://ftp.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
+#    tar xf make-${MAKE_VER}.tar.gz && cd make-${MAKE_VER} &&\
+#    ./configure CFLAGS=" -I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
+#    make &&\
+#    make install
 
 
 #RUN curl -s -LO http://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2 &&\
@@ -51,7 +51,7 @@ ENV ROOTFS=/opt/apps/developer
 ENV TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
 ENV TCZ_DEPS_DEVELOER  \
     binutils \
-    compiletc gcc \
+    compiletc gcc make \
     cloog isl \
     mpc mpfr gmp \
     readline \
@@ -79,8 +79,11 @@ RUN mkdir -p /opt/apps/developer/bin ;\
     mkdir -p /opt/apps/developer/lib ;\
     mkdir -p /opt/apps/developer/include ;\
     mkdir -p /opt/apps/developer/share ;\
-        cp -av /opt/apps/developer/usr/local/bin/* /opt/apps/developer/bin/ &&\
-        cp -av /opt/apps/developer/usr/local/lib/* /opt/apps/developer/lib/ &&\
-        cp -av /opt/apps/developer/usr/local/include/* /opt/apps/developer/include/ &&\
-        cp -av /opt/apps/developer/usr/local/share/* /opt/apps/developer/share/ &&\
+        cp -av /opt/apps/developer/usr/local/bin/*      /opt/apps/developer/bin/ &&\
+        cp -av /opt/apps/developer/usr/local/lib/*      /opt/apps/developer/lib/ &&\
+        cp -av /opt/apps/developer/usr/local/include/*  /opt/apps/developer/include/ &&\
+        cp -av /opt/apps/developer/usr/local/share/*    /opt/apps/developer/share/ &&\
+        cp -av /opt/apps/developer/usr/lib/*            /opt/apps/developer/lib/ &&\
+        cp -av /opt/apps/developer/usr/include/*        /opt/apps/developer/include/ &&\
+
         rm -rf /opt/apps/developer/usr/local

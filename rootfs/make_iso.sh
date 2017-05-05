@@ -31,6 +31,7 @@ ln -fs /usr/local/bin/bash $ROOTFS/bin/
 # green apps
 ln -fs /opt/green/bin/rsync $ROOTFS/usr/bin/rsync
 
+
 # /usr/bin/python, /usr/bin/perl, /usr/bin/logrotate
 ln -fs /opt/python2/bin/python $ROOTFS/usr/bin/ ; ln -fs /opt/python2/lib/libpython2.7.so.1.0 $ROOTFS/usr/lib/ # symlinks /usr/bin for ansible
 ln -fs /opt/green/bin/logrotate $ROOTFS/usr/bin/
@@ -42,6 +43,16 @@ ln -fs /opt/x11/share $ROOTFS/usr/share/X11
 ln -fs /opt/boot $ROOTFS/var/lib/boot2docker
 ln -fs /usr/local/etc/init.d/docker $ROOTFS/etc/init.d/docker
 
+# every iso lib on one place
+mv $ROOTFS/usr/local/lib/* $ROOTFS/usr/lib/
+
+# no includes in iso
+rm -rf $ROOTFS/usr/local/lib $ROOTFS/usr/local/include $ROOTFS/usr/include
+
+ln -fs /opt/developer/include $ROOTFS/usr/include
+
+# gcc asks for this library archive here
+ln -fs /opt/developer/lib/libc_nonshared.a $ROOTFS/usr/lib/libc_nonshared.a
 
 # Setup /etc/os-release with some nice contents
 NAME=greenbox
