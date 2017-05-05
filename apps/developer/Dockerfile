@@ -35,14 +35,41 @@ RUN curl -s -LO http://ftp.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
     make install
 
 
-RUN curl -s -LO http://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2 &&\
-    tar xf gcc-${GCC_VER}.tar.bz2 && cd gcc-${GCC_VER} &&\
-    ./contrib/download_prerequisites &&\
-    ./configure \
-       --disable-multilib \
-       --enable-languages=c,c++ \
-       CFLAGS=" -I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
-    make &&\
-    make make install-strip
+#RUN curl -s -LO http://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2 &&\
+#    tar xf gcc-${GCC_VER}.tar.bz2 && cd gcc-${GCC_VER} &&\
+#    ./contrib/download_prerequisites &&\
+#    ./configure \
+#       --disable-multilib \
+#       --enable-languages=c,c++ \
+#       CFLAGS=" -I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
+#    make &&\
+#    make make install-strip
 
 
+
+ENV ROOTFS=/opt/apps/developer
+ENV TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
+ENV TCZ_DEPS_DEVELOER  \
+    binutils \
+    compiletc gcc \
+    cloog isl \
+    mpc mpfr gmp \
+    readline \
+    gawk patch sed m4 grep bison flex pkg-config \
+    acl attr \
+    gcc_libs gcc_libs-dev glibc_base-dev glibc_add_lib \
+    zlib_base-dev util-linux_base-dev e2fsprogs_base-dev
+
+
+RUN for dep in $TCZ_DEPS_DEVELOER ; do \
+        echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
+        curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
+        if [ ! -s /tmp/$dep.tcz ] ; then \
+            echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
+            exit 1 ;\
+        else \
+            unsquashfs -i -f -d $ROOTFS /tmp/$dep.tcz && \
+            rm -f /tmp/$dep.tcz ;\
+            if [ "$?" != "0" ] ; then exit 1 ; fi ;\
+        fi ;\
+    done
