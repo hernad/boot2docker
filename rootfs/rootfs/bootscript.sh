@@ -102,7 +102,7 @@ if grep -q '^docker:' /etc/passwd; then
 
     if ls -ld /home/docker | grep -q root
     then
-       chown -R docker:docker /docker
+       chown -R docker:docker /home/docker
     fi
 fi
 
