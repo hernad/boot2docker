@@ -73,3 +73,14 @@ RUN for dep in $TCZ_DEPS_DEVELOER ; do \
             if [ "$?" != "0" ] ; then exit 1 ; fi ;\
         fi ;\
     done
+
+
+RUN mkdir -p /opt/apps/developer/bin ;\
+    mkdir -p /opt/apps/developer/lib ;\
+    mkdir -p /opt/apps/developer/include ;\
+    mkdir -p /opt/apps/developer/share ;\
+        cp -av /opt/apps/developer/usr/local/bin/* /opt/apps/green/bin/ &&\
+        cp -av /opt/apps/developer/usr/local/lib/* /opt/apps/green/lib/ &&\
+        cp -av /opt/apps/developer/usr/local/include/* /opt/apps/green/include/ &&\
+        cp -av /opt/apps/developer/usr/local/share/* /opt/apps/green/share/ &&\
+        rm -rf /opt/apps/developer/usr/local
