@@ -40,7 +40,7 @@ RUN curl -s -LO http://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/gcc-${GCC_VER}.tar.bz2
     ./contrib/download_prerequisites &&\
     ./configure \
        --disable-multilib \
-       --enable-languages=c,c++,go,objc,obj-c++ \
+       --enable-languages=c,c++ \
        CFLAGS=" -I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
     make &&\
     make install
