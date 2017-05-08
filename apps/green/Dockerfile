@@ -12,23 +12,29 @@ RUN apt-get update -y
 
 # ================= /opt/apps/green =========================================================
 
-RUN apt-get build-dep -y nbd-server && apt-get install -y docbook-utils
-RUN curl -LO https://github.com/NetworkBlockDevice/nbd/archive/nbd-3.15.2.tar.gz &&\
+RUN apt-get build-dep -y nbd-server && apt-get install -y docbook-utils && \
+    curl -LO https://github.com/NetworkBlockDevice/nbd/archive/nbd-3.15.2.tar.gz &&\
     tar xf nbd-*.tar.gz && rm nbd-*.tar.gz && cd nbd* &&\
     sh autogen.sh &&\
     ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
     make &&\
     make install
 
-RUN apt-get build-dep libpam-google-authenticator -y
 ENV CPPFLAGS="-I/opt/apps/green/include" CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib"
-
 
 RUN curl -LO http://downloads.es.net/pub/iperf/iperf-3-current.tar.gz &&\
     tar xf iperf-3*.tar.gz && rm iperf-3*.tar.gz && cd iperf* &&\
     ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
     make &&\
     make install
+
+
+# == qperf 0.4.9, 2012-11-07 ===
+RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz &&\
+        tar xvf qperf-0.4.9.tar.gz &&\
+        cd /tmp/qperf-0.4.9 && sh autogen.sh && \
+        ./configure && make && /usr/bin/install -c src/qperf /opt/apps/green/bin &&\
+        cd /tmp && rm qperf-0.4.9.tar.gz && rm -r -f qperf-0.4.9
 
 
 RUN curl -LO http://linux-pam.org/library/Linux-PAM-1.3.0.tar.bz2 &&\
@@ -66,16 +72,13 @@ RUN curl -LO https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.5.2.tar.gz 
 #    make &&\
 #    make install
 
-
-RUN apt-get build-dep openvpn -y
-RUN apt-get install net-tools -y
-
-RUN curl -LO http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz &&\
-    tar xvf lzo-2.10.tar.gz && cd lzo-* && ./configure --prefix=/opt/apps/green &&\
-    make install
-
 ENV OPENVPN_VER=2.4.1
-RUN curl -L -o openvpn-${OPENVPN_VER}.tar.gz https://github.com/OpenVPN/openvpn/archive/v${OPENVPN_VER}.tar.gz  &&\
+
+RUN apt-get build-dep openvpn -y && apt-get install net-tools -y &&\
+    curl -LO http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz &&\
+    tar xvf lzo-2.10.tar.gz && cd lzo-* && ./configure --prefix=/opt/apps/green &&\
+    make install &&\
+    curl -L -o openvpn-${OPENVPN_VER}.tar.gz https://github.com/OpenVPN/openvpn/archive/v${OPENVPN_VER}.tar.gz  &&\
     tar -xf openvpn-${OPENVPN_VER}.tar.gz &&\
     cd openvpn-${OPENVPN_VER} &&\
     libtoolize --force && aclocal && autoheader && automake --force-missing --add-missing &&\
@@ -108,13 +111,6 @@ RUN mkdir -p /opt/apps/green/bin &&\
 RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
     tar xvf pv-1.6.0.tar.gz  &&\
     cd /pv-1.6.0 && ./configure && make && /usr/bin/install -c pv /opt/apps/green/bin
-
-# == qperf 0.4.9, 2012-11-07 ===
-RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz &&\
-    tar xvf qperf-0.4.9.tar.gz &&\
-    cd /tmp/qperf-0.4.9 && sh autogen.sh && \
-    ./configure && make && /usr/bin/install -c src/qperf /opt/apps/green/bin &&\
-    cd /tmp && rm qperf-0.4.9.tar.gz && rm -r -f qperf-0.4.9
 
 
 # RUN curl -LO https://github.com/zfsonlinux/zfs-auto-snapshot/archive/master.zip &&\
@@ -185,23 +181,22 @@ RUN     apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev1 libudev-dev &&
         git clone https://github.com/gregkh/usbutils.git &&\
         cp /usr/lib/x86_64-linux-gnu/libusb*.so /opt/apps/green/lib &&\
         cp /usr/lib/x86_64-linux-gnu/libudev*.so /opt/apps/green/lib &&\
-	cd usbutils && git submodule init && git submodule update &&\
-	./autogen.sh --prefix=/opt/apps/green &&\
-	make && make install
+	      cd usbutils && git submodule init && git submodule update &&\
+	      ./autogen.sh --prefix=/opt/apps/green &&\
+	      make && make install
 
 RUN  apt-get update -y &&\
      apt-get -y install gcc libffi-dev libssl-dev python2.7 python2.7-dev  &&\
      ln -s /opt/apps/python2 /opt/python2
 
-
 # ==== pipework in green ====
 RUN  cd /opt/apps/green/bin &&  curl -LO https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework &&\
      chmod +x pipework
 
-RUN  apt-get update -y && apt-get install -y bridge-utils openvswitch-switch &&\
-     cp /sbin/brctl /opt/apps/green/bin/ &&\
-     cp `which ovs-vsctl` /opt/apps/green/bin/ &&\
-     cp `which truncate` /opt/apps/green/bin/
+#RUN  apt-get update -y && apt-get install -y bridge-utils openvswitch-switch &&\
+#     cp /sbin/brctl /opt/apps/green/bin/ &&\
+#     cp `which ovs-vsctl` /opt/apps/green/bin/ &&\
+#     cp `which truncate` /opt/apps/green/bin/
 
 
 # green_app/gdrive
@@ -297,7 +292,6 @@ RUN git clone https://github.com/relan/exfat.git &&\
 
 
 
-
 RUN  curl -LO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
       tar xf autossh-1.4e.tgz &&\
       cd autossh-1.4e &&\
@@ -305,9 +299,8 @@ RUN  curl -LO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
       make && make install
 
 
-RUN apt-get -y install libgnutls28-dev bzip2 make gettext texinfo gnutls-bin
-
-RUN gpg --recv-keys --keyserver pgp.mit.edu  0x4F25E3B6 0xE0856959 0x33BD3F06 0x7EFD60D9 0xF7E48EDB
+RUN apt-get -y install libgnutls28-dev bzip2 make gettext texinfo gnutls-bin &&\
+    gpg --recv-keys --keyserver pgp.mit.edu  0x4F25E3B6 0xE0856959 0x33BD3F06 0x7EFD60D9 0xF7E48EDB
 
 ENV PATH="/opt/apps/green/bin:$PATH"
 
@@ -386,13 +379,10 @@ RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
 
 
 # manuals out
-RUN rm -rf /opt/apps/green/man /opt/apps/green/share/doc /opt/apps/green/share/man
+RUN rm -rf /opt/apps/green/man /opt/apps/green/share/doc /opt/apps/green/share/man ;\
+    rm -rf /opt/apps/green/usr /opt/apps/green/var
 
-#RUN rm -rf /opt/apps/green/usr
-
-RUN ls -ld /opt/apps/green/*
-RUN ls -l /opt/apps/green/bin/
-RUN ls -l /opt/apps/green/lib/
+RUN ls -ld /opt/apps/green/* ; ls -l /opt/apps/green/bin/ ; ls -l /opt/apps/green/lib/
 # collect shared libraries needed for green apps execution
 
 
