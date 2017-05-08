@@ -388,7 +388,7 @@ RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
 # manuals out
 RUN rm -rf /opt/apps/green/man /opt/apps/green/share/doc /opt/apps/green/share/man
 
-RUN rm -rf /opt/apps/green/usr
+#RUN rm -rf /opt/apps/green/usr
 
 RUN ls -ld /opt/apps/green/*
 RUN ls -l /opt/apps/green/bin/
