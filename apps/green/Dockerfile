@@ -56,7 +56,7 @@ RUN git clone https://github.com/fukuchi/libqrencode.git &&\
 RUN apt-get build-dep libpam-google-authenticator -y &&\
     git clone https://github.com/google/google-authenticator-libpam.git &&\
     cd google-authenticator-libpam &&\
-   ./bootstrap.sh  && ./configure ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green && make &&\
+   ./bootstrap.sh  && ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green && make &&\
     make install
 
 # openvpn trazi 1.0.x https://community.openvpn.net/openvpn/ticket/802
