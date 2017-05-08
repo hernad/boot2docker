@@ -2,13 +2,9 @@
 
 . /etc/green_common
 
-log_msg "Loading virtualbox server kernel drivers"
-
-if ( is_vbox )
+if ( ! is_vbox )
 then
- modprobe vboxguest
- modprobe vboxsf
-else
+ log_msg "Loading virtualbox host server kernel drivers"
  modprobe vboxdrv
  modprobe vboxnetadp
  modprobe vboxnetflt

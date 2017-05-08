@@ -1,0 +1,9 @@
+#!/bin/sh
+
+. /etc/green_common
+
+SIGNAL_SERVER="169.254.42.42"
+
+# https://community.online.net/t/openbsd-on-a-vc1/1933
+echo "Signalink server state: booted"
+curl http://SIGNAL_SERVER/state -X PATCH -H 'Content-Type: application/json' -d '{"state_detail": "booted"}' &
