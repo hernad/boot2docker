@@ -1,6 +1,5 @@
 #!/bin/sh
 
-DATE=`date +'%Y%m%d %T'`
 
 GREENBOX_VERSION=`cat /etc/sysconfig/greenbox`
 KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
@@ -43,7 +42,7 @@ export LOG_FILE
 
 
 log_msg() {
-  echo "$0 $DATE: $1" >> $LOG_FILE
+  echo "$0 `date +'%Y%m%d %T'`: $1" >> $LOG_FILE
 }
 
 mountedOnGreen() {

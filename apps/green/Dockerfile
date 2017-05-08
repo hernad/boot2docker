@@ -12,6 +12,12 @@ RUN apt-get update -y
 
 # ================= /opt/apps/green =========================================================
 
+RUN curl -LO https://github.com/NetworkBlockDevice/nbd/archive/nbd-3.15.2.tar.gz &&\
+    tar xf nbd-*.tar.gz && rm nbd-*.tar.gz && cd nbd* &&\
+    sh autogen.sh &&\
+    ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
+    make &&\
+    make install
 
 RUN apt-get build-dep libpam-google-authenticator -y
 ENV CPPFLAGS="-I/opt/apps/green/include" CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib"
