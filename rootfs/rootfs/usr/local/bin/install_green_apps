@@ -3,6 +3,10 @@
 . /etc/green_common
 . /etc/init.d/tc-functions
 
+APPS_HOME=/opt/apps
+
+[ ! -d $APPS_HOME ] &&  echo "$APPS_HOME not exists !?" && exit 1
+
 [ `whoami` != root ] && echo "you have to be root user !" && exit 1
 
 case "$1" in
@@ -126,7 +130,6 @@ download_app() {
   app=$1
   ver=$2
 
-  APPS_HOME=/opt/apps
   cd $APPS_HOME
 
   ext="xz"

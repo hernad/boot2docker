@@ -128,19 +128,21 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
 fi
 [ -L /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
 
+
 mount_all_apps
 ldcache_update
 vbox_fix_permissions
 
-/usr/local/bin/install_green_apps &
 
-if [ ! -f /opt/boot/apps/docker/VERSION ] ; then
+install_green_apps &
+
+if [ -d /opt/apps ] && [ ! -f /opt/apps/docker/VERSION ] ; then
    log_msg "docker is not installed, wait 60sec ..."
    sleep 60
 fi
 
 # if there are errors during first install, try again
-/usr/local/bin/install_green_apps &
+install_green_apps &
 
 /etc/rc.d/start_docker_then_opt_boot_init_d_scripts &
 
