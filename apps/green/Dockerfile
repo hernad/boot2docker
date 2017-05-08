@@ -12,6 +12,7 @@ RUN apt-get update -y
 
 # ================= /opt/apps/green =========================================================
 
+RUN apt-get build-dep -y nbd-server
 RUN curl -LO https://github.com/NetworkBlockDevice/nbd/archive/nbd-3.15.2.tar.gz &&\
     tar xf nbd-*.tar.gz && rm nbd-*.tar.gz && cd nbd* &&\
     sh autogen.sh &&\
