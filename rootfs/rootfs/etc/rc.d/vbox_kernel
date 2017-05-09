@@ -2,7 +2,7 @@
 
 . /etc/green_common
 
-if ( ! is_vbox )
+if ( ! is_vbox ) && ( ! scaleway_virtual_server )
 then
  log_msg "Loading virtualbox host server kernel drivers"
  modprobe vboxdrv

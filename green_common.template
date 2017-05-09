@@ -210,17 +210,22 @@ ldcache_update() {
 
 scaleway_server () {
 
-#fdisk -l
-
-#fdisk /dev/vda -l | grep -q sectors
-#if [ "$?" != "0" ]; then
-#   return 1
-#fi
-
 cat /proc/cmdline | grep -q "SCALEWAY=1"
 if [ "$?" != "0" ]; then
    return 1
 fi
+
+}
+
+scaleway_virtual_server () {
+
+if ( ! scaleway_server)
+then
+  return 1
+fi
+
+# echo /dev/vda - virtual disk
+fdisk /dev/vda -l | grep -q sectors
 
 }
 

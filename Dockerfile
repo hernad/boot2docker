@@ -223,8 +223,8 @@ RUN cd /vboxguest && mkdir -p $ROOTFS/sbin && \
 
 # http://zfsonlinux.org/
 # https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.8/spl-0.6.5.8.tar.gz
-#ENV ZFS_VER 0.6.5.8
-ENV ZFS_VER 0.7.0-rc3
+#ENV ZFS_VER 0.6.5.9
+ENV ZFS_VER 0.7.0-rc4
 RUN mkdir /zfs && cd /zfs && curl -LO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/spl-$ZFS_VER.tar.gz &&\
     cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-* &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install
