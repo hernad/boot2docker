@@ -227,9 +227,10 @@ RUN  curl -LO https://github.com/ncw/rclone/releases/download/v1.36/rclone-v1.36
      chmod +x rclone-*linux-amd64/rclone &&\
      mv rclone*-linux-amd64/rclone /opt/apps/green/bin/
 
-RUN  curl -LO https://github.com/fatedier/frp/releases/download/v0.9.3/frp_0.9.3_linux_amd64.tar.gz &&\
-     tar xf frp-v*-linux-amd64.tar.gz &&\
-     cd frp-*linux-amd64/ &&\
+ENV FRP_VER 0.9.3
+RUN  curl -LO https://github.com/fatedier/frp/releases/download/v${FRP_VER}/frp_${FRP_VER}_linux_amd64.tar.gz &&\
+     tar xf frp*.tar.gz &&\
+     cd frp_*linux_amd64/ &&\
      chmod +x frps frpc &&\
      mv frps frpc /opt/apps/green/bin/
 
