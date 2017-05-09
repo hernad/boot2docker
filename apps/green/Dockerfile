@@ -26,8 +26,8 @@ ENV XNBD_VER=0.4.0
 RUN apt-get build-dep -y xnbd &&\
     curl -LO https://bitbucket.org/hirofuchi/xnbd/downloads/xnbd-${XNBD_VER}.tgz &&\
     tar xf xnbd-${XNBD_VER}.tgz &&\
-    cd xnbd-${XNBD_VER} &&\
-    autoreconf -i &&\
+    cd xnbd-${XNBD_VER}/trunk &&\
+    ls -l * && autoreconf -i &&\
     ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
     make
 
