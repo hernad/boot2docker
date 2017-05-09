@@ -128,7 +128,7 @@ do
       fi
    fi
 done
-export PATH
+export PATH LD_LIBRARY_PATH
 
 }
 
@@ -210,18 +210,18 @@ ldcache_update() {
 
 scaleway_server () {
 
-echo "KERNEL cmdline:  `cat /proc/cmdline`"
+#fdisk -l
 
-#cat /proc/cmdline | grep -q "SCALEWAY=1"
-
-fdisk -l
-
-#fdisk /dev/vda -l | grep -q GB
+#fdisk /dev/vda -l | grep -q sectors
 #if [ "$?" != "0" ]; then
 #   return 1
 #fi
 
-echo "ok"
+cat /proc/cmdline | grep -q "SCALEWAY=1"
+if [ "$?" != "0" ]; then
+   return 1
+fi
+
 }
 
 GREEN_DEBUG=${GREEN_DEBUG:-1}

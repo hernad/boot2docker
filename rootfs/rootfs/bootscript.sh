@@ -115,6 +115,8 @@ ln -s $BOOT_DIR/root /root && mv /root.orig/* /root/ && rm -rf /root.orig
 #[ -f  $BOOT_DIR/root/.password ] && change_user_password root `cat $BOOT_DIR/root/.password` && log_msg "log_msg change root user password"
 #[ -f  /home/docker/.password ] && change_user_password docker `cat /home/docker/.password` && log_msg "log_msg change docker user password"
 
+echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
+
 /etc/rc.d/tce-loader
 /etc/rc.d/acpid
 /etc/rc.d/sshd

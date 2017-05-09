@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . /etc/green_common
+set_path_ld_library
 
 if ( ! scaleway_server )
 then
@@ -8,7 +9,6 @@ then
    exit 0
 fi
 
-set_path_ld_library
 
 # https://community.online.net/t/openbsd-on-a-vc1/1933
 if ! curl -s http://$SCALEWAY_SIG_SERVER/state -X PATCH -H 'Content-Type: application/json' -d '{"state_detail": "booted"}'
