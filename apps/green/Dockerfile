@@ -36,6 +36,13 @@ RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.
         ./configure && make && /usr/bin/install -c src/qperf /opt/apps/green/bin &&\
         cd /tmp && rm qperf-0.4.9.tar.gz && rm -r -f qperf-0.4.9
 
+# ---------- fio http://jrs-s.net/2015/11/23/fio-cheat-sheet/ ------------
+# fio - Flexible IO Tester
+# http://git.kernel.dk/?p=fio.git;a=summary,  last change	Sat, 8 Apr 2017 19:04:21 +0200 (11:04 -0600)
+RUN git clone git://git.kernel.dk/fio.git &&\
+      cd fio && ./configure --prefix=/opt/apps/green &&\
+      make install
+
 
 RUN curl -LO http://linux-pam.org/library/Linux-PAM-1.3.0.tar.bz2 &&\
     tar xf Linux-PAM*.bz2 && cd Linux-PAM* &&\
@@ -138,12 +145,6 @@ RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev 
      cd the_silver_searcher && export LDFLAGS="-static" && ./build.sh --prefix=/opt/apps/green &&\
      make install
 
-# ---------- fio http://jrs-s.net/2015/11/23/fio-cheat-sheet/ ------------
-# fio - Flexible IO Tester
-# http://git.kernel.dk/?p=fio.git;a=summary,  last change	Sat, 8 Apr 2017 19:04:21 +0200 (11:04 -0600)
-RUN git clone git://git.kernel.dk/fio.git &&\
-    cd fio && ./configure --prefix=/opt/apps/green &&\
-    make install
 
 # ==== mbuffer =========
 # Version 20161115 md5=b81940da5b750c6adda65dfbf8b2ad36
@@ -216,6 +217,12 @@ RUN  curl -LO https://github.com/ncw/rclone/releases/download/v1.36/rclone-v1.36
      unzip rclone-v*-linux-amd64.zip &&\
      chmod +x rclone-*linux-amd64/rclone &&\
      mv rclone*-linux-amd64/rclone /opt/apps/green/bin/
+
+RUN  curl -LO https://github.com/fatedier/frp/releases/download/v0.9.3/frp_0.9.3_linux_amd64.tar.gz &&\
+     tar xf frp-v*-linux-amd64.tar.gz &&\
+     cd frp-*linux-amd64/ &&\
+     chmod +x frps frpc &&\
+     mv frps frpc /opt/apps/green/bin/
 
 
 ENV TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
