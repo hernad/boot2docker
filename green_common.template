@@ -214,12 +214,14 @@ echo "KERNEL cmdline:  `cat /proc/cmdline`"
 
 #cat /proc/cmdline | grep -q "SCALEWAY=1"
 
-fdisk /dev/vda -l | grep -q GB
-if [ "$?" != "0" ]; then
-   return 1
-fi
+fdisk -l
 
+#fdisk /dev/vda -l | grep -q GB
+#if [ "$?" != "0" ]; then
+#   return 1
+#fi
 
+echo "ok"
 }
 
 GREEN_DEBUG=${GREEN_DEBUG:-1}
