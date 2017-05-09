@@ -210,16 +210,15 @@ ldcache_update() {
 
 scaleway_server () {
 
+echo "KERNEL cmdline:  `cat /proc/cmdline`"
+
+#cat /proc/cmdline | grep -q "SCALEWAY=1"
+
 fdisk /dev/vda -l | grep -q GB
 if [ "$?" != "0" ]; then
    return 1
 fi
 
-#initrd=initrd showopts console=ttyS0,115200 nousb vga=0 root=/dev/vda ip=:::::eth0: boot=local
-cat /proc/cmdline | grep -q "root=/dev/vda"
-if [ "$?" != "0" ]; then
-   return 1
-fi
 
 }
 
