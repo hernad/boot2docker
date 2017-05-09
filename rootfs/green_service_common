@@ -8,12 +8,12 @@ set_path_ld_library
 
 log_msg "START: $0"
 
-while ! curl -s --unix-socket /var/run/docker.sock http:/_ping | grep -q OK ; do
+while ! curl -s --connect-timeout 10 --unix-socket /var/run/docker.sock http:/_ping | grep -q OK ; do
    log_msg "waiting for dockerd"
    sleep 30
 done
 
-# docker_run "-p 80:80 -d nginx"
+
 docker_run() {
   (docker run $1 2>&1) >> $LOG_FILE
 }

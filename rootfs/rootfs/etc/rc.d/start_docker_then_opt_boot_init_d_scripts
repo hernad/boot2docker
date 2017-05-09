@@ -14,6 +14,8 @@ log_msg "starting $BOOT_DIR/init.d scripts ..."
 log_msg "test service PATH: \$PATH, LD_LIBRARY_PATH: \$LD_LIBRARY_PATH  docker: \`docker --version\`"
 
 set | grep _VER | xargs echo | tee -a \$LOG_FILE
+
+#docker_run "-p 8080:80 -d nginx"
 EOF
 ) && chmod +x $BOOT_DIR/init.d/00_test.sh
 

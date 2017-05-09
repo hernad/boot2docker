@@ -175,8 +175,10 @@ download_app() {
               mount_bind_opt_apps ${app}
               [ "$app" == "VirtualBox" ] && vbox_fix_permissions
               if [ "$app" == "docker" ] ; then
+                 echo "DOCKER `cat $BOOT_DIR/etc/sysconfig/docker` -> ${ver} /etc/init.d/docker stop, start" >> $LOG_FILE
                  echo ${ver} > $BOOT_DIR/etc/sysconfig/docker # set docker new version
-                 /etc/init.d/docker restart
+                 /etc/init.d/docker stop
+                 /etc/init.d/docker start
               fi
               ldcache_update
         else
