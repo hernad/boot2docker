@@ -22,10 +22,11 @@ ENV CPPFLAGS="-I/opt/apps/green/include" CFLAGS="-I/opt/apps/green/include" LDFL
 #    make &&\
 #    make install
 
+ENV XNBD_VER=0.4.0
 RUN apt-get build-dep -y xnbd &&\
-    curl -LO https://bitbucket.org/hirofuchi/xnbd/downloads/xnbd-0.4.0.tgz &&\
-    tar xf xnbd-0.4.0 &&\
-    cd xnbd-0.4.0 &&\
+    curl -LO https://bitbucket.org/hirofuchi/xnbd/downloads/xnbd-${XNBD_VER}.tgz &&\
+    tar xf xnbd-${XNBD_VER}.tgz &&\
+    cd xnbd-${XNBD_VER} &&\
     autoreconf -i &&\
     ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
     make
