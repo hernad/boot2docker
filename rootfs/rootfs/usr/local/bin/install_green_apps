@@ -23,6 +23,7 @@ case "$1" in
      IND2="[ ]${RED}"
      IND3="[*]${GREEN}"
      IND4="[ ]${RED}"
+     IND9="[ ]${RED}"
      ;;
   4) echo "install GREEN_APPS_4"
      INSTALL_SET="4"
@@ -30,6 +31,7 @@ case "$1" in
      IND2="[ ]${RED}"
      IND3="[ ]${RED}"
      IND4="[*]${GREEN}"
+     IND9="[ ]${RED}"
      ;;
   9) echo "install GREEN_APPS_9"
      INSTALL_SET="9"
@@ -37,6 +39,7 @@ case "$1" in
      IND2="[ ]${RED}"
      IND3="[ ]${RED}"
      IND4="[ ]${RED}"
+     IND9="[*]${GREEN}"
      ;;
   *) echo "install GREEN_APPS"
      INSTALL_SET="1"
@@ -44,6 +47,7 @@ case "$1" in
      IND2="[ ]${RED}"
      IND3="[ ]${RED}"
      IND4="[ ]${RED}"
+     IND9="[ ]${RED}"
      ;;
 
 esac
@@ -110,13 +114,14 @@ else
   echo "${IND2} GREEN_APPS_2: ${GREEN_APPS_2}${NORMAL}"
   echo "${IND3} GREEN_APPS_3: ${GREEN_APPS_3}${NORMAL}"
   echo "${IND4} GREEN_APPS_4: ${GREEN_APPS_4}${NORMAL}"
+  echo "${IND9} GREEN_APPS_9: ${GREEN_APPS_4}${NORMAL}"
 fi
 
 echo ===== download_green_apps start: $(date) ====== >> $LOG_FILE
 
 [ "$INSTALL_SET" == "2" ] && GREEN_APPS="${GREEN_APPS_2}"  # install GREEN_APPS_2
-[ "$INSTALL_SET" == "3" ] && GREEN_APPS="${GREEN_APPS_3}"  # install GREEN_APPS_3
-[ "$INSTALL_SET" == "4" ] && GREEN_APPS="${GREEN_APPS_4}"  # install GREEN_APPS_4
+[ "$INSTALL_SET" == "3" ] && GREEN_APPS="${GREEN_APPS_3}"
+[ "$INSTALL_SET" == "4" ] && GREEN_APPS="${GREEN_APPS_4}"
 [ "$INSTALL_SET" == "9" ] && GREEN_APPS="${GREEN_APPS_9}"  # install GREEN_APPS_9
 
 if [ ! -d /opt/apps ] ; then
@@ -132,8 +137,7 @@ download_app() {
 
   cd $APPS_HOME
 
-  ext="xz"
-  # ext="gz"
+  ext="xz"  # ext="gz"
 
   [ -f /opt/apps/${app}_${ver}.tar.${ext} ] && echo "download in progres STOP!" && return
 
@@ -170,16 +174,17 @@ download_app() {
               log_msg "mount_bind_opt_apps ${app}"
               mount_bind_opt_apps ${app}
               [ "$app" == "VirtualBox" ] && vbox_fix_permissions
-              [ "$app" == "docker" ] && echo ${ver} > $BOOT_DIR/etc/sysconfig/docker # set docker version
+              if [ "$app" == "docker" ] ; then
+                 echo ${ver} > $BOOT_DIR/etc/sysconfig/docker # set docker new version
+                 /etc/init.d/docker restart
+              fi
               ldcache_update
         else
               log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.${ext}, error tar tf $APPS_HOME/${app}_${ver}.tar.${ext} (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
         fi
    fi
 
-
 }
-
 
 for appver in $GREEN_APPS; do
 

@@ -10,7 +10,6 @@ if [ -f $BOOT2DOCKER_PROFILE ] ; then
   unset DOCKER_STORAGE DOCKER_HOST
 fi
 
-
 . /etc/green_common
 
 DOCKER_PID=/var/run/docker.pid
@@ -24,7 +23,7 @@ while [ ! -f /opt/docker/bin/dockerd  ] ; do
   let CNT=$CNT+1
 
   if [ $CNT -eq 3  ] || [ $CNT -eq 6 ]  || [ $CNT -eq 10 ] ; then
-    /usr/local/bin/install_green_apps &
+    install_green_apps &
   fi
 
   if [ $CNT -eq 20  ] ; then
