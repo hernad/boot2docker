@@ -122,10 +122,12 @@ do
       PATH=/opt/$appdir/bin:$PATH
    else
       if  [ -d /opt/$appdir ] && [ "$appdir" != "apps" ] && [ "$appdir" != "boot" ] ; then
-         export PATH=/opt/$appdir:$PATH
+         PATH=/opt/$appdir:$PATH
       fi
    fi
 done
+export PATH
+
 }
 
 change_user_password() {
@@ -206,12 +208,7 @@ ldcache_update() {
 
 scaleway_server () {
 
-#parted /dev/vda  print
-#WARNING: You are not superuser.  Watch out for permissions.
-#Model: Virtio Block Device (virtblk)
-#Disk /dev/vda: 50.0GB
-
-parted /dev/vda print | grep -q "/dev/$1.*GB"
+fdisk /dev/vda -l | grep -q GB
 if [ "$?" != "0" ]; then
    return 1
 fi
