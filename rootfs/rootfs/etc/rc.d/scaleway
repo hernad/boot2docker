@@ -2,6 +2,12 @@
 
 . /etc/green_common
 
+if ( ! scaleway_server )
+then
+   echo "this is not scaleway server"
+   exit 0
+fi
+
 # https://community.online.net/t/openbsd-on-a-vc1/1933
 echo "Signalink server state: booted"
 curl http://$SCALEWAY_SIGNAL_SERVER/state -X PATCH -H 'Content-Type: application/json' -d '{"state_detail": "booted"}' &

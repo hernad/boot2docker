@@ -2,6 +2,6 @@
 
 . /etc/green_common
 
-log_msg "start ACPId
+log_msg "start ACPId"
 
 /usr/local/etc/init.d/acpid start

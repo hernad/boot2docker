@@ -5,6 +5,8 @@ POOL=green
 
 . /etc/green_common
 
+echo "${GREEN}vbox create pool.sh start${NORMAL}"
+
 extract_userdata_tar() {
 
 # docker-machine creates this volume

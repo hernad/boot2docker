@@ -23,8 +23,10 @@ do
 done
 
 log_msg "if VirtualBox create green pool"
-/usr/local/bin/vbox_create_pool.sh
-/usr/local/bin/green_create_zfs.sh
+vbox_create_pool.sh
+scaleway_create_pool.sh
+green_create_zfs.sh
+
 
 let count=0
 log_msg "setup $BOOT_DIR for mountOnGreen"
@@ -116,6 +118,7 @@ ln -s $BOOT_DIR/root /root && mv /root.orig/* /root/ && rm -rf /root.orig
 /etc/rc.d/tce-loader
 /etc/rc.d/acpid
 /etc/rc.d/sshd
+/etc/rc.d/scaleway
 /etc/rc.d/vbox_kernel
 
 log_msg "locale-archive localedef start"

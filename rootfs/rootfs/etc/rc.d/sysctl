@@ -1,4 +1,6 @@
 #!/bin/sh
 
+. /etc/green_common
+
 log_msg "sysctl start"
 sysctl -p /etc/sysctl.conf
