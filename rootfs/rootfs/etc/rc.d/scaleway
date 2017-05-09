@@ -10,9 +10,14 @@ fi
 
 # https://community.online.net/t/openbsd-on-a-vc1/1933
 
-if ! curl http://$SCALEWAY_SIGNAL_SERVER/state -X PATCH -H 'Content-Type: application/json' -d '{"state_detail": "booted"}'
+if ! curl -s http://$SCALEWAY_SIG_SERVER/state -X PATCH -H 'Content-Type: application/json' -d '{"state_detail": "booted"}'
 then
-  echo "${RED}SCALEWAY Signalink server $SCALEWAY_SIGNAL_SERVER ERROR${NORMAL}"
+  echo "${RED}SCALEWAY Signalink server $SCALEWAY_SIG_SERVER ERROR${NORMAL}"
 else
   echo "${GREEN}SCALEWAY Signalink server booted OK${NORMAL}"
 fi
+
+
+[ -d /run ] || mkdir /run
+curl -s http://$SCALEWAY_SIGNAL_SERVER/conf -X GET > /run/scw-metadata.cache
+cat /run/scw-metadata.cache
