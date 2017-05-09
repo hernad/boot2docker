@@ -10,17 +10,26 @@ RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.
 RUN apt-get update -y
 
 
+ENV CPPFLAGS="-I/opt/apps/green/include" CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib"
+
 # ================= /opt/apps/green =========================================================
 
-RUN apt-get build-dep -y nbd-server && apt-get install -y docbook-utils && \
-    curl -LO https://github.com/NetworkBlockDevice/nbd/archive/nbd-3.15.2.tar.gz &&\
-    tar xf nbd-*.tar.gz && rm nbd-*.tar.gz && cd nbd* &&\
-    sh autogen.sh &&\
-    ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
-    make &&\
-    make install
+#RUN apt-get build-dep -y nbd-server && apt-get install -y docbook-utils && \
+#    curl -LO https://github.com/NetworkBlockDevice/nbd/archive/nbd-3.15.2.tar.gz &&\
+#    tar xf nbd-*.tar.gz && rm nbd-*.tar.gz && cd nbd* &&\
+#    sh autogen.sh &&\
+#    ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
+#    make &&\
+#    make install
 
-ENV CPPFLAGS="-I/opt/apps/green/include" CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib"
+RUN apt-get build-dep -y xnbd &&\
+    curl -LO https://bitbucket.org/hirofuchi/xnbd/downloads/xnbd-0.4.0.tgz &&\
+    tar xf xnbd-0.4.0 &&\
+    cd xnbd-0.4.0 &&\
+    autoreconf -i &&\
+    ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
+    make
+
 
 RUN curl -LO http://downloads.es.net/pub/iperf/iperf-3-current.tar.gz &&\
     tar xf iperf-3*.tar.gz && rm iperf-3*.tar.gz && cd iperf* &&\
