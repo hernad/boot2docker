@@ -1,6 +1,8 @@
 #!/bin/sh
 
 . /etc/green_common
+. /etc/init.d/tc-functions
+
 set_path_ld_library
 
 if ( ! scaleway_server )
@@ -20,5 +22,7 @@ fi
 
 
 [ -d /run ] || mkdir /run
-curl -s http://$SCALEWAY_SIGNAL_SERVER/conf -X GET > /run/scw-metadata.cache
+curl -s http://$SCALEWAY_SIG_SERVER/conf -X GET > /run/scw-metadata.cache
+
+echo "${GREEN}===== SCALEWAY /run/scw-metadata.cache =====${NORMAL}"
 cat /run/scw-metadata.cache
