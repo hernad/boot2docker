@@ -23,7 +23,7 @@ ENV CPPFLAGS="-I/opt/apps/green/include" CFLAGS="-I/opt/apps/green/include" LDFL
 #    make install
 
 ENV XNBD_VER=0.4.0
-RUN apt-get build-dep -y xnbd &&\
+RUN apt-get build-dep -y xnbd && apt-get -y install jannson libjansson-dev &&\
     curl -LO https://bitbucket.org/hirofuchi/xnbd/downloads/xnbd-${XNBD_VER}.tgz &&\
     tar xf xnbd-${XNBD_VER}.tgz &&\
     cd xnbd-${XNBD_VER}/trunk &&\
