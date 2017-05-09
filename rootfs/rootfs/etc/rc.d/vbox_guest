@@ -2,6 +2,8 @@
 
 . /etc/green_common
 
+set_path_ld_library
+
 if ( is_vbox )
 then
   modprobe vboxguest

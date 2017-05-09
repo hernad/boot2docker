@@ -8,8 +8,9 @@ then
    exit 0
 fi
 
-# https://community.online.net/t/openbsd-on-a-vc1/1933
+set_path_ld_library
 
+# https://community.online.net/t/openbsd-on-a-vc1/1933
 if ! curl -s http://$SCALEWAY_SIG_SERVER/state -X PATCH -H 'Content-Type: application/json' -d '{"state_detail": "booted"}'
 then
   echo "${RED}SCALEWAY Signalink server $SCALEWAY_SIG_SERVER ERROR${NORMAL}"
