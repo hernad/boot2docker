@@ -9,5 +9,5 @@ then
 fi
 
 # https://community.online.net/t/openbsd-on-a-vc1/1933
-echo "Signalink server state: booted"
+echo "SCALEWAY Signalink server state: booted"
 curl http://$SCALEWAY_SIGNAL_SERVER/state -X PATCH -H 'Content-Type: application/json' -d '{"state_detail": "booted"}' &
