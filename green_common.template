@@ -23,6 +23,7 @@ ATOM_VER=1.12.0
 CODE_VER=1.7.1
 AWS_VER=1.11.13
 
+
 BOOT_DIR=/opt/boot
 
 [ -f /opt/boot/etc/profile ] && source /opt/boot/etc/profile
@@ -223,6 +224,7 @@ fi
 #curl http://$SCALEWAY_SIGNAL_SERVER/conf -X GET > /run/scw-metadata.cache
 #cat /run/scw-metadata.cache  | grep PUBLIC_IP_ADDRESS
 
+export SCALEWAY_SIGNAL_SERVER="169.254.42.42"
 }
 
 GREEN_DEBUG=${GREEN_DEBUG:-1}

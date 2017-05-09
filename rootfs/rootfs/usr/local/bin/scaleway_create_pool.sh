@@ -1,6 +1,5 @@
 #!/bin/sh
 
-SCALEWAY_SIGNAL_SERVER="169.254.42.42"
 DISK=vda
 POOL=green
 
