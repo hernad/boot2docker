@@ -52,8 +52,6 @@ for i in `cat /proc/cmdline`; do
 				ntpserver=*) NTPSERVER=${i#*=} ;;
 				dockerpwd=*) DOCKER_PASSWORD=${i#*=} ;;
 				rootpwd=*) ROOT_PASSWORD=${i#*=} ;;
-				opt=*) MYOPT=${i#*=} ;;
-				swapfile=*) SWAPFILE=${i#*=} ;;
 				resume=*) RESUME=${i#*=} ;;
 				host=*) HOST=1 ;;
 				nfsmount=* ) NFSMOUNT=${i#*=} ;;
@@ -83,14 +81,12 @@ for i in `cat /proc/cmdline`; do
 				noswap) NOSWAP=1 ;;
 				secure) SECURE=1 ;;
 				protect) PROTECT=1 ;;
-				cron) CRON=1 ;;
 				xsetup) XSETUP=1 ;;
 				laptop) LAPTOP=1 ;;
 				base) ONLYBASE=1 ;;
 				showapps) SHOWAPPS=1 ;;
 				norestore) NORESTORE=1 ;;
 				noautologin) NOAUTOLOGIN=1 ;;
-				pause) PAUSE=1 ;;
 			esac
 		;;
 	esac
@@ -131,7 +127,6 @@ echo "${GREEN} Done.${NORMAL}"
 	esac
 )
 
-
 modprobe loop 2>/dev/null
 modprobe ohci_hcd
 
@@ -169,7 +164,6 @@ log_msg "Setting Language to $LANGUAGE"
 echo -n "${GREEN}Setting Language to ${MAGENTA}$LANGUAGE"
 echo "LANG=$LANGUAGE" > /etc/sysconfig/language
 export LANG=$LANGUAGE
-
 
 echo "${GREEN} Done.${NORMAL}"
 
@@ -228,9 +222,7 @@ wait4Server() {
 	DHCP_RAN=1
 }
 
-
 if ! grep "^docker" /etc/passwd >/dev/null; then addUser; fi
-
 
 echo "docker" > /etc/sysconfig/tcuser
 mkdir -p /home/docker
@@ -239,8 +231,8 @@ if [ -n "$SUPERUSER" ]; then
 	touch /etc/sysconfig/superuser
 fi
 
-# register scaleway server
-/etc/rc.d/scaleway
+#/etc/rc.d/server_scaleway
+#/etc/rc.d/server_vultr
 
 log_msg "Setup base directories for TCE Applicatons"
 [ -d "$TCEINSTALLED" ] || mkdir "$TCEINSTALLED"
@@ -255,7 +247,7 @@ chmod g+w "$TCEDIR" "$TCEOPT" "$TCEINSTALLED" "$TCLOOP"
 chmod u+s /bin/busybox.suid /usr/bin/sudo
 
 get_app() {
-        log_msg "get_app $1 $2"
+  log_msg "get_app $1 $2"
 	LOADER="tce-load -i" ; PKG=optional
 	PROTO=$1
 	HOST=${2%%/*}
@@ -322,11 +314,10 @@ if [ -n "$PRETCE" ]; then
 	[ -x /tmp/onpre.sh ] && /tmp/onpre.sh
 fi
 
-log_msg "squashfs: First process tftp and http entries"
-
-modprobe -q squashfs 2>/dev/null
-[ -n "$TFTPLIST" ] && get_app "TFTP" $TFTPLIST
-[ -n "$HTTPLIST" ] && get_app "HTTP" $HTTPLIST
+#log_msg "squashfs: First process tftp and http entries"
+#modprobe -q squashfs 2>/dev/null
+#[ -n "$TFTPLIST" ] && get_app "TFTP" $TFTPLIST
+#[ -n "$HTTPLIST" ] && get_app "HTTP" $HTTPLIST
 
 if [ -n "$NFSMOUNT" ]; then
 	SERVER=$( echo $NFSMOUNT | awk -F: '{ print $1 }')
@@ -366,40 +357,8 @@ if grep -q "^/dev/root" /proc/mounts; then
 	echo "${RED}Detected Traditional Hard drive installation.${NORMAL}"
 fi
 
-
 [ -n "$TEXT" ] && touch /etc/sysconfig/text
 [ -n "$XONLY" ] && touch /etc/sysconfig/xonly
-
-
-unset OPT_SETUP
-if [ -n "$MYOPT" ]; then
-	wait $fstab_pid
-	PARTITION=${MYOPT##/dev/}
-	find_mountpoint "$PARTITION"
-	if [ -n "$MOUNTPOINT" ]; then
-		[ "$MOUNTED" == "yes" ] || mount "$MOUNTPOINT"
-
-		MS_MNTS=`mount|awk '$5~/fat|vfat|msdos|ntfs/{printf "%s ",$3}'`
-		case "$MS_MNTS" in
-			*"$MOUNTPOINT"* )
-				echo "Persistent OPT not supported on Microsoft File Systems."
-				echo "${YELLOW}Request for persistent OPT on $PARTITION ignored."
-				echo -n "${RED}Press Enter key.${NORMAL}"; read ans
-			;;
-			* )
-				[ -d "$MOUNTPOINT"/opt ] || mkdir "$MOUNTPOINT"/opt
-				yes n | cp -ai /opt/. "$MOUNTPOINT"/opt/ 2>/dev/null
-				mount --bind "$MOUNTPOINT"/opt/ /opt/
-				chgrp -R staff /opt/ >/dev/null 2>&1
-				chmod -R g+w /opt/ >/dev/null 2>&1
-				chmod g+s /opt/ >/dev/null 2>&1
-			;;
-		esac
-
-	else
-		echo "Invalid device specified. Skipping persistent OPT request!"
-	fi
-fi
 
 [ -n "$XSETUP" ] && touch /tmp/xsetup_requested
 
@@ -418,18 +377,6 @@ else
 	if [ "$?" == 0 ]; then echo "${GREEN}Possible swap partition(s) enabled.${NORMAL}"; fi
 fi
 
-if [ -n "$SWAPFILE" ]; then
-	wait $fstab_pid
-	SWAPFILE=${SWAPFILE##/dev/}
-	find_mountpoint "$SWAPFILE"
-	if [ -n "$MOUNTPOINT" ]; then
-		if [ "$MOUNTED" == "yes" ]; then
-			swapon "$MOUNTPOINT"/tc.swp
-		else
-			mount "$MOUNTPOINT" && swapon "$MOUNTPOINT"/tc.swp
-		fi
-	fi
-fi
 
 if [ -n "$RESUME" ]; then
 	rm -f /etc/sysconfig/tc.resume 2>/dev/null
@@ -443,28 +390,28 @@ if [ -n "$RESUME" ]; then
 	fi
 fi
 
-wait $fstab_pid
-MSSG="${BLUE}Loading extensions...${NORMAL}"
-if [ -n "$SHOWAPPS" ]; then
-	touch /etc/sysconfig/showapps
-	echo "$MSSG"
-	/usr/bin/tce-setup "booting"
-	[ -n "$ISOFILE" ] && /usr/bin/fromISOfile "$ISOFILE"
-	rm /etc/sysconfig/showapps
-	echo "${GREEN} Done.${NORMAL}"
-else
-	echo -n "$MSSG"
-	/usr/bin/tce-setup "booting" > /dev/null 2>&1 &
-	rotdash $!
-	[ -n "$ISOFILE" ] && /usr/bin/fromISOfile "$ISOFILE" > /dev/null 2>&1 &
-	rotdash $!
-	echo "${GREEN} Done.${NORMAL}"
-	if [ -s /tmp/aberr ]; then
-		echo "${RED}Warning! Errors occured during the loading of the extensions.${YELLOW}"
-		cat /tmp/aberr
-		echo -n "${RED}Press Enter key.${NORMAL}"; read ans
-	fi
-fi
+#wait $fstab_pid
+#MSSG="${BLUE}Loading extensions...${NORMAL}"
+#if [ -n "$SHOWAPPS" ]; then
+# touch /etc/sysconfig/showapps
+#	echo "$MSSG"
+#	/usr/bin/tce-setup "booting"
+#	[ -n "$ISOFILE" ] && /usr/bin/fromISOfile "$ISOFILE"
+#	rm /etc/sysconfig/showapps
+#	echo "${GREEN} Done.${NORMAL}"
+#else
+#	echo -n "$MSSG"
+#	/usr/bin/tce-setup "booting" > /dev/null 2>&1 &
+#	rotdash $!
+#	[ -n "$ISOFILE" ] && /usr/bin/fromISOfile "$ISOFILE" > /dev/null 2>&1 &
+#	rotdash $!
+#	echo "${GREEN} Done.${NORMAL}"
+#	if [ -s /tmp/aberr ]; then
+#		echo "${RED}Warning! Errors occured during the loading of the extensions.${YELLOW}"
+#		cat /tmp/aberr
+#		echo -n "${RED}Press Enter key.${NORMAL}"; read ans
+#	fi
+#fi
 
 [ -n "$KEYMAP" ] || KEYMAP="us"
 if [ -f "/usr/share/kmap/$KEYMAP.kmap" ]; then
@@ -514,7 +461,6 @@ else
 	[ -z "$NORTC" ] || /etc/init.d/settime.sh &
 fi
 
-[ -n "$CRON" ] && /etc/init.d/services/crond start
 
 /sbin/loadcpufreq 2>/dev/null &
 
@@ -522,10 +468,10 @@ fi
 [ -n "$NOAUTOLOGIN" ] && echo "booting" > /etc/sysconfig/noautologin
 
 
-if [ -n "$PAUSE" ]; then
-	echo -n "${BLUE}Boot time configuration completed. Press <Enter> to continue.${NORMAL}"
-	read junk
-fi
+#if [ -n "$PAUSE" ]; then
+#	echo -n "${BLUE}Boot time configuration completed. Press <Enter> to continue.${NORMAL}"
+#	read junk
+#fi
 
 log_msg "setup /home/docker for mountOnGreen"
 DOCKER_HOME_DIR=/home/docker

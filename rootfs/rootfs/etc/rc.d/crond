@@ -4,7 +4,28 @@
 
 set_path_ld_library
 
-log_msg "start crond"
-
 : ${CROND_LOGLEVEL:=8}
-crond -f -d "$CROND_LOGLEVEL" > $BOOT_DIR/log/crond.log 2>&1 &
+
+CMD=$1
+if [ -z ${CMD} ] ; then
+   CMD=start
+fi
+
+case "${CMD}" in
+	start)
+    log_msg "start crond"
+		crond -f -d "$CROND_LOGLEVEL" > $BOOT_DIR/log/crond.log 2>&1 &
+		;;
+
+	stop)
+		pkill crond
+		;;
+
+	status)
+		pidof -o %PPID crond
+		;;
+
+	*)
+		exit 1
+		;;
+esac

@@ -84,9 +84,7 @@ log_msg "set the hostname"
 
 log_msg "sync the clock"
 /etc/rc.d/ntpd &
-
-log_msg "start cron"
-/etc/rc.d/crond
+/etc/rc.d/crond start
 
 log_msg "setup docker user - docker group"
 
@@ -119,7 +117,8 @@ echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 /etc/rc.d/tce-loader
 /etc/rc.d/acpid
 /etc/rc.d/sshd
-/etc/rc.d/scaleway
+/etc/rc.d/server_scaleway
+/etc/rc.d/server_vultr
 /etc/rc.d/vbox_kernel
 
 log_msg "locale-archive localedef start"
@@ -132,11 +131,9 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
 fi
 [ -L /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
 
-
 mount_all_apps
 ldcache_update
 vbox_fix_permissions
-
 
 install_green_apps &
 
