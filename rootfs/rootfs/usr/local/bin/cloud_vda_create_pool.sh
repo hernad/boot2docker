@@ -5,12 +5,9 @@ POOL=green
 
 . /etc/green_common
 
-
-echo "${GREEN}scaleway create pool.sh start${NORMAL}"
-
-if ( ! scaleway_server ) || ( ! vultr_server )
+if ( ! scaleway_server ) && ( ! vultr_server )
 then
-   log_msg "automatsko kreiranje zpool-a: scaleway, vultr only"
+   log_msg "automatsko kreiranje zpool-a: za cloud servere only"
    exit 1
 fi
 
@@ -20,6 +17,7 @@ then
   exit 0
 fi
 
+echo "${GREEN}cloud vda create pool.sh start${NORMAL}"
 fdisk /dev/vda -l | grep GB >> $LOG_FILE
 
 zpool create -f $POOL /dev/${DISK}
