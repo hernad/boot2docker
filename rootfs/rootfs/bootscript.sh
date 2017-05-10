@@ -40,7 +40,6 @@ while ( ! mountedOnGreen opt_boot ) && [ $count -lt 10 ]
 do
    zfs_up
    sleep 1
-
    zfs mount -o mountpoint=$BOOT_DIR green/opt_boot
    log_msg "waiting for mount zfs $BOOT_DIR"
    sleep 1
