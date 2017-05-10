@@ -2,11 +2,14 @@
 
 . /etc/green_common
 
-if ( ! is_vbox ) && ( ! scaleway_virtual_server )
+if ( is_vbox ) || ( ! scaleway_virtual_server ) || ( ! vultr_server )
 then
- log_msg "Loading virtualbox host server kernel drivers"
- modprobe vboxdrv
- modprobe vboxnetadp
- modprobe vboxnetflt
- modprobe vboxpci
+ log_msg "virtual server vbox, scaleway, vultr - NO virtualbox host server"
+ exit 0
 fi
+
+log_msg "Loading virtualbox host server kernel drivers"
+modprobe vboxdrv
+modprobe vboxnetadp
+modprobe vboxnetflt
+modprobe vboxpci

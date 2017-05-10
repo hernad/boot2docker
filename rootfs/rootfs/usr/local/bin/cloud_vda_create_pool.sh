@@ -10,9 +10,9 @@ set_path_ld_library
 
 echo "${GREEN}scaleway create pool.sh start${NORMAL}"
 
-if ( ! scaleway_server )
+if ( ! scaleway_server ) || ( ! vultr_server )
 then
-   log_msg "automatsko kreiranje zpool-a: scaleway only"
+   log_msg "automatsko kreiranje zpool-a: scaleway, vultr only"
    exit 1
 fi
 

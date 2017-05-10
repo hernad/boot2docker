@@ -24,7 +24,7 @@ done
 
 log_msg "if VirtualBox create green pool"
 vbox_create_pool.sh
-scaleway_create_pool.sh
+cloud_vda_create_pool.sh
 green_create_zfs.sh
 
 
