@@ -1,9 +1,6 @@
 #!/bin/sh
 
 . /etc/green_common
-. /etc/init.d/tc-functions
-
-set_path_ld_library
 
 
 log_msg "START: $0"

@@ -1,9 +1,7 @@
 #!/bin/sh
 
 . /etc/green_common
-. /etc/init.d/tc-functions
 
-set_path_ld_library
 
 if ( ! vultr_server )
 then

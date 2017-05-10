@@ -1,5 +1,5 @@
 #!/bin/sh
-. /etc/init.d/tc-functions
+. /etc/green_common
 
 echo "${YELLOW}Running boot2docker shutdown script...${NORMAL}"
 

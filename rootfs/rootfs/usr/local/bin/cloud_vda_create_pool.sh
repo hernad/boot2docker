@@ -4,9 +4,7 @@ DISK=vda
 POOL=green
 
 . /etc/green_common
-. /etc/init.d/tc-functions
 
-set_path_ld_library
 
 echo "${GREEN}scaleway create pool.sh start${NORMAL}"
 

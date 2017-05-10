@@ -3,7 +3,6 @@
 # only to wait for slow network cards
 . /etc/green_common
 
-. /etc/init.d/tc-functions
 
 log_msg "dhcp - udhcpc start"
 # This waits until all devices have registered

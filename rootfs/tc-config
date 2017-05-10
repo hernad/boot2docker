@@ -8,7 +8,6 @@
 
 log_msg "start $(date), called by /etc/init.d/rcS"
 
-. /etc/init.d/tc-functions
 useBusybox
 
 TCEDIR="/tmp/tce"
@@ -52,25 +51,18 @@ for i in `cat /proc/cmdline`; do
 				ntpserver=*) NTPSERVER=${i#*=} ;;
 				dockerpwd=*) DOCKER_PASSWORD=${i#*=} ;;
 				rootpwd=*) ROOT_PASSWORD=${i#*=} ;;
-				resume=*) RESUME=${i#*=} ;;
 				host=*) HOST=1 ;;
 				nfsmount=* ) NFSMOUNT=${i#*=} ;;
-				tftplist=* ) TFTPLIST=${i#*=} ;;
-				httplist=* ) HTTPLIST=${i#*=} ;;
 				nbd=* ) NBD=${i#*=} ;;
-				mydata* ) MYDATA=${i#*=} ;;
 				pretce=* ) PRETCE=${i#*=} ;;
 				xvesa=* ) XVESA=${i#*=} ;;
 				rsyslog=* ) RSYSLOG=${i#*=}; SYSLOG=1 ;;
 				blacklist=* ) BLACKLIST="$BLACKLIST ${i#*=}" ;;
-				iso=* ) ISOFILE=${i#*=} ;;
 			esac
 		;;
 		*)
 			case $i in
 				nodockerstart) NODOCKERSTART=1 ;;
-				nozswap) NOZSWAP=1 ;;
-				nofstab) NOFSTAB=1 ;;
 				nortc) NORTC=1 ;;
 				syslog) SYSLOG=1 ;;
 				noutc) NOUTC=1 ;;
@@ -78,9 +70,6 @@ for i in `cat /proc/cmdline`; do
 				text) TEXT=1 ;;
 				xonly) XONLY=1 ;;
 				superuser) SUPERUSER=1 ;;
-				noswap) NOSWAP=1 ;;
-				secure) SECURE=1 ;;
-				protect) PROTECT=1 ;;
 				xsetup) XSETUP=1 ;;
 				laptop) LAPTOP=1 ;;
 				base) ONLYBASE=1 ;;
@@ -130,28 +119,21 @@ echo "${GREEN} Done.${NORMAL}"
 modprobe loop 2>/dev/null
 modprobe ohci_hcd
 
-if [ -n "$NOZSWAP" ]; then
-	echo "${BLUE}Skipping compressed swap in ram as requested from the boot command line.${NORMAL}"
-else
-	modprobe -q zram
-	modprobe -q zcache
 
-	while [ ! -e /dev/zram0 ]; do usleep 50000; done
-	grep MemFree /proc/meminfo | awk '{print $2/4 "K"}' > /sys/block/zram0/disksize
+#modprobe -q zram
+#modprobe -q zcache
+#while [ ! -e /dev/zram0 ]; do usleep 50000; done
+#	grep MemFree /proc/meminfo | awk '{print $2/4 "K"}' > /sys/block/zram0/disksize
 
-	mkswap /dev/zram0 >/dev/null 2>&1
-	swapon /dev/zram0
-	echo "/dev/zram0  swap         swap    defaults,noauto   0       0" >> /etc/fstab # Lets swapoff -a work
-fi
+#	mkswap /dev/zram0 >/dev/null 2>&1
+#	swapon /dev/zram0
+#	echo "/dev/zram0  swap         swap    defaults,noauto   0       0" >> /etc/fstab # Lets swapoff -a work
+#fi
 
-if [ -n "$NOFSTAB" ]; then
-	echo "${BLUE}Skipping /etc/fstab creation as requested from the boot command line.${NORMAL}"
-else
-	echo "${BLUE}Scanning hard disk partitions to create ${YELLOW}/etc/fstab ${NORMAL}"
-	/usr/sbin/rebuildfstab & fstab_pid=$!
-	mv /tmp/98-tc.rules /etc/udev/rules.d/. 2>/dev/null
-	/sbin/udevadm control --reload-rules &
-fi
+echo "${BLUE}Scanning hard disk partitions to create ${YELLOW}/etc/fstab ${NORMAL}"
+/usr/sbin/rebuildfstab & fstab_pid=$!
+mv /tmp/98-tc.rules /etc/udev/rules.d/. 2>/dev/null
+/sbin/udevadm control --reload-rules &
 
 if [ -n "$SYSLOG" ]; then
 	 [ -z "$RSYSLOG" ] || SOPTS=" -L -R $RSYSLOG "
@@ -204,7 +186,7 @@ if [ -n "$STATICIPADDRESS" ]; then
 fi
 
 wait4Server() {
-        log_msg "dhcp.sh runs udhcpc async, so it exits before network is up"
+  log_msg "dhcp.sh runs udhcpc async, so it exits before network is up"
 	/etc/init.d/dhcp.sh
 	SERVER=$1 ; NOPING=$2 ; CNT=0
 	if [ "$NOPING" == "1" ] ; then
@@ -369,49 +351,10 @@ if [ -n "$LAPTOP" ]; then
 	echo "${GREEN}Laptop options enabled (AC, Battery and PCMCIA).${NORMAL}"
 fi
 
-if [ -n "$NOSWAP" ]; then
-	echo "${BLUE}Ignoring swap partition(s) seek as requested.${NORMAL}"
-else
-	wait $fstab_pid
-	/sbin/swapon -a 2>/dev/null
-	if [ "$?" == 0 ]; then echo "${GREEN}Possible swap partition(s) enabled.${NORMAL}"; fi
-fi
+wait $fstab_pid
+/sbin/swapon -a 2>/dev/null
+if [ "$?" == 0 ]; then echo "${GREEN}Possible swap partition(s) enabled.${NORMAL}"; fi
 
-
-if [ -n "$RESUME" ]; then
-	rm -f /etc/sysconfig/tc.resume 2>/dev/null
-	RESUME=`basename $RESUME`
-	SWAP_SIZE=$(cat /proc/swaps | grep "$RESUME" | awk '{print $3}')
-	[ -z "$SWAP_SIZE" ] && /sbin/swapon /dev/"$RESUME" &&  SWAP_SIZE=$(cat /proc/swaps | grep "$RESUME" | awk '{print $3}')
-	[ -z "$SWAP_SIZE" ] && exit 1
-	MEM_SIZE=$(cat /proc/meminfo | awk '/MemTotal/{print $2}')
-	if [ $SWAP_SIZE -gt $MEM_SIZE ]; then
-		grep -q disk /sys/power/state &&  echo "disk" > /etc/sysconfig/tc.resume
-	fi
-fi
-
-#wait $fstab_pid
-#MSSG="${BLUE}Loading extensions...${NORMAL}"
-#if [ -n "$SHOWAPPS" ]; then
-# touch /etc/sysconfig/showapps
-#	echo "$MSSG"
-#	/usr/bin/tce-setup "booting"
-#	[ -n "$ISOFILE" ] && /usr/bin/fromISOfile "$ISOFILE"
-#	rm /etc/sysconfig/showapps
-#	echo "${GREEN} Done.${NORMAL}"
-#else
-#	echo -n "$MSSG"
-#	/usr/bin/tce-setup "booting" > /dev/null 2>&1 &
-#	rotdash $!
-#	[ -n "$ISOFILE" ] && /usr/bin/fromISOfile "$ISOFILE" > /dev/null 2>&1 &
-#	rotdash $!
-#	echo "${GREEN} Done.${NORMAL}"
-#	if [ -s /tmp/aberr ]; then
-#		echo "${RED}Warning! Errors occured during the loading of the extensions.${YELLOW}"
-#		cat /tmp/aberr
-#		echo -n "${RED}Press Enter key.${NORMAL}"; read ans
-#	fi
-#fi
 
 [ -n "$KEYMAP" ] || KEYMAP="us"
 if [ -f "/usr/share/kmap/$KEYMAP.kmap" ]; then
@@ -421,14 +364,8 @@ if [ -f "/usr/share/kmap/$KEYMAP.kmap" ]; then
 	echo "${GREEN} Done.${NORMAL}"
 fi
 
-if [ -n "$SECURE" ]; then
+if [ -n "$ROOT_PASSWORD" ]; then
 	echo "root:$ROOT_PASSWORD" | chpasswd -m
-fi
-
-if [ -n "$PROTECT" ]; then
-	echo "$ROOT_PASSWORD" > /etc/sysconfig/bfe
-	chown docker:root /etc/sysconfig/bfe
-	chmod 600 /etc/sysconfig/bfe
 fi
 
 [ -n "$XVESA" ]  && sed -i 's/1024x768x32/'"$XVESA"'/' /home/docker/.xsession 2>/dev/null
@@ -440,12 +377,6 @@ else
 	[ -s /etc/sysconfig/ntpserver ] && NTPSERVER=`cat /etc/sysconfig/ntpserver`
 fi
 
-log_msg "If restore then also pass TCE directory: $MYDATA for quick look of mydata.tgz backupfile"
-if [ -n "$MYDATA" ]; then
-	echo "$MYDATA" > /etc/sysconfig/mydata
-else
-	echo "mydata" > /etc/sysconfig/mydata
-fi
 if [ -n "$NORESTORE" ]; then
 	echo "${GREEN}Skipping restore as requested from the command line.${NORMAL}"
 else
@@ -468,17 +399,11 @@ fi
 [ -n "$NOAUTOLOGIN" ] && echo "booting" > /etc/sysconfig/noautologin
 
 
-#if [ -n "$PAUSE" ]; then
-#	echo -n "${BLUE}Boot time configuration completed. Press <Enter> to continue.${NORMAL}"
-#	read junk
-#fi
-
 log_msg "setup /home/docker for mountOnGreen"
 DOCKER_HOME_DIR=/home/docker
 
 if ( ! mountedOnGreen docker_home ); then
         log_msg "mount zfs /home/docker"
-
 				[ -d ${DOCKER_HOME_DIR} ] && mv ${DOCKER_HOME_DIR} ${DOCKER_HOME_DIR}.tmp
 				mkdir -p ${DOCKER_HOME_DIR}
 	      zfs mount green/docker_home -o mountpoint ${DOCKER_HOME_DIR}

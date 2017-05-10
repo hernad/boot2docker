@@ -1,13 +1,10 @@
 #!/bin/sh
 
 . /etc/green_common
-. /etc/init.d/tc-functions
 
-set_path_ld_library
 export PATH
 export LD_LIBRARY_PATH
 export TERM=linux
-
 
 echo -e
 echo_line " Application versions: "
