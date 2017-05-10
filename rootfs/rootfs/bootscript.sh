@@ -57,18 +57,6 @@ log_msg "automount GREEN_volumes"
 
 set_log_file
 
-#[ -d $BOOT_DIR/certs ] || mkdir -p $BOOT_DIR/certs
-#if [ -d /usr/local/etc/ssl/certs ]
-#then
-#  mv /usr/local/etc/ssl/certs/* $BOOT_DIR/certs/
-#  rm -r -f /usr/local/etc/ssl/certs
-#fi
-#ln -s $BOOT_DIR/certs /usr/local/etc/ssl/certs
-
-# http://serverfault.com/questions/151157/ubuntu-10-04-curl-how-do-i-fix-update-the-ca-bundle
-#CA_BUNDLE=/usr/local/etc/ssl/certs/ca-certificates.crt
-#[ -f $CA_BUNDLE ] || wget http://curl.haxx.se/ca/cacert.pem -O $CA_BUNDLE
-
 
 log_msg "mount cgroups hierarchy"
 /etc/rc.d/cgroupfs-mount
@@ -109,14 +97,10 @@ fi
 [ -d /root ] && mv /root /root.orig
 ln -s $BOOT_DIR/root /root && mv /root.orig/* /root/ && rm -rf /root.orig
 
-#[ -f  $BOOT_DIR/root/.password ] && change_user_password root `cat $BOOT_DIR/root/.password` && log_msg "log_msg change root user password"
-#[ -f  /home/docker/.password ] && change_user_password docker `cat /home/docker/.password` && log_msg "log_msg change docker user password"
-
 echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 
-/etc/rc.d/tce-loader
 /etc/rc.d/acpid
-/etc/rc.d/sshd
+/etc/rc.d/sshd start
 /etc/rc.d/server_scaleway
 /etc/rc.d/server_vultr
 /etc/rc.d/vbox_kernel

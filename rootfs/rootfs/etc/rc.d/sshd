@@ -1,8 +1,12 @@
 #!/bin/sh
-
 . /etc/green_common
 
-if ps ax | grep -q bin/sshd$ ; then
+CMD=$1
+if [ -z "$CMD" ]; then
+  CMD=start
+fi
+
+if [ "$CMD" == "start" ] && ps ax | grep -q bin/sshd$ ; then
    echo sshd already launched
    exit 0
 fi
