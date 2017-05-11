@@ -136,7 +136,6 @@ RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
 #    cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh /opt/apps/green/bin/zfs-auto-snapshot
 
 
-
 # === tmux & libevent install =====
 RUN curl -LO  https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz &&\
     tar xvf libevent-2.0.22-stable.tar.gz &&\
@@ -154,6 +153,15 @@ RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev 
      cd / ; git clone https://github.com/ggreer/the_silver_searcher.git &&\
      cd the_silver_searcher && export LDFLAGS="-static" && ./build.sh --prefix=/opt/apps/green &&\
      make install
+
+RUN git clone https://github.com/stedolan/jq.git &&\
+   cd jq &&\
+   autoreconf -i  &&\
+   ./configure --prefix=/opt/apps/green &&\
+   make check &&\
+   make LDFLAGS=-all-static &&\
+   ls -l &&\
+   chmod +x jq && cp jq /opt/apps/green/bin
 
 
 # ==== mbuffer =========
@@ -375,7 +383,6 @@ RUN mkdir -p /opt/apps/green/bin ;\
     cp -av /opt/apps/green/usr/local/lib/* /opt/apps/green/lib/ &&\
     cp -av /opt/apps/green/usr/local/share/* /opt/apps/green/share/ &&\
     rm -rf /opt/apps/green/usr
-
 
 
 RUN rm -rf /opt/apps/green/bin/git-cvsserver &&\
