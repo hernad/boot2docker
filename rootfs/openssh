@@ -11,7 +11,7 @@ SSH_CONFIG_DIR=/usr/local/etc/ssh
 
 start(){
    [ -f $SSH_CONFIG_DIR/sshd_config ] || { log_msg "Config file $SSH_CONFIG_DIR/sshdd_config not found"; exit 1; }
-
+   [ -d /var/lib/sshd ] || mkdir -p /var/lib/sshd
    if [ ! -e $SSH_CONFIG_DIR/ssh_host_rsa_key ]
    then
       log_msg "no ssh cache - ssh-keygen !"
