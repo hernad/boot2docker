@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 . /etc/green_common
 
@@ -17,10 +17,35 @@ else
  SWAP_VOL_SIZE=24G
 fi
 
+MEMKB=`cat /proc/meminfo | grep MemTotal.*kB | awk '{print $2}'`
+
+echo "Memory in kB: $MEMKB"
+
+if [ -n "$MEMKB" ] ; then
+  if [ $MEMKB -ge 1000000 ]; then
+      SWAP_VOL_SIZE=2G
+  fi
+  if [ $MEMKB -ge 2000000 ]; then
+      SWAP_VOL_SIZE=4G
+  fi
+  if [ $MEMKB -ge 4000000 ]; then
+      SWAP_VOL_SIZE=8G
+  fi
+  if [ $MEMKB -ge 8000000 ]; then
+      SWAP_VOL_SIZE=16G
+  fi
+  if [ $MEMKB -ge 16000000 ]; then
+      SWAP_VOL_SIZE=32G
+  fi
+  if [ $MEMKB -ge 32000000 ]; then
+      SWAP_VOL_SIZE=48G
+  fi
+  if [ $MEMKB -ge 64000000 ]; then
+      SWAP_VOL_SIZE=96G
+  fi
+fi
 
 POOL=green
-
-
 
 if ( ! zpool list $POOL )
 then

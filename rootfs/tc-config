@@ -67,10 +67,7 @@ for i in `cat /proc/cmdline`; do
 				syslog) SYSLOG=1 ;;
 				noutc) NOUTC=1 ;;
 				nodhcp) NODHCP=1 ;;
-				text) TEXT=1 ;;
-				xonly) XONLY=1 ;;
 				superuser) SUPERUSER=1 ;;
-				xsetup) XSETUP=1 ;;
 				laptop) LAPTOP=1 ;;
 				base) ONLYBASE=1 ;;
 				showapps) SHOWAPPS=1 ;;
@@ -119,19 +116,9 @@ echo "${GREEN} Done.${NORMAL}"
 modprobe loop 2>/dev/null
 modprobe ohci_hcd
 
+#echo "${BLUE}Scanning hard disk partitions to create ${YELLOW}/etc/fstab ${NORMAL}"
+#/usr/sbin/rebuildfstab & fstab_pid=$!
 
-#modprobe -q zram
-#modprobe -q zcache
-#while [ ! -e /dev/zram0 ]; do usleep 50000; done
-#	grep MemFree /proc/meminfo | awk '{print $2/4 "K"}' > /sys/block/zram0/disksize
-
-#	mkswap /dev/zram0 >/dev/null 2>&1
-#	swapon /dev/zram0
-#	echo "/dev/zram0  swap         swap    defaults,noauto   0       0" >> /etc/fstab # Lets swapoff -a work
-#fi
-
-echo "${BLUE}Scanning hard disk partitions to create ${YELLOW}/etc/fstab ${NORMAL}"
-/usr/sbin/rebuildfstab & fstab_pid=$!
 mv /tmp/98-tc.rules /etc/udev/rules.d/. 2>/dev/null
 /sbin/udevadm control --reload-rules &
 
@@ -307,7 +294,8 @@ if [ -n "$NFSMOUNT" ]; then
 	OPTS=$(   echo $NFSMOUNT | awk -F: '{ print $3 }')
 	[ "$OPTS" == "no-ping" ] && NOPING=1 || NOPING=0
 	[ -z "$DHCP_RAN" ] && wait4Server $SERVER $NOPING
-	wait $fstab_pid
+
+	#wait $fstab_pid
 	if [ -x /usr/local/etc/init.d/nfs-client ] ; then
 	   /usr/local/etc/init.d/nfs-client start
 	   NOLOCK="";
@@ -339,11 +327,6 @@ if grep -q "^/dev/root" /proc/mounts; then
 	echo "${RED}Detected Traditional Hard drive installation.${NORMAL}"
 fi
 
-[ -n "$TEXT" ] && touch /etc/sysconfig/text
-[ -n "$XONLY" ] && touch /etc/sysconfig/xonly
-
-[ -n "$XSETUP" ] && touch /tmp/xsetup_requested
-
 if [ -n "$LAPTOP" ]; then
 	modprobe ac && modprobe battery 2>/dev/null
 	modprobe yenta_socket >/dev/null 2>&1 || modprobe i82365 >/dev/null 2>&1
@@ -351,9 +334,9 @@ if [ -n "$LAPTOP" ]; then
 	echo "${GREEN}Laptop options enabled (AC, Battery and PCMCIA).${NORMAL}"
 fi
 
-wait $fstab_pid
-/sbin/swapon -a 2>/dev/null
-if [ "$?" == 0 ]; then echo "${GREEN}Possible swap partition(s) enabled.${NORMAL}"; fi
+#wait $fstab_pid
+#/sbin/swapon -a 2>/dev/null
+#if [ "$?" == 0 ]; then echo "${GREEN}Possible swap partition(s) enabled.${NORMAL}"; fi
 
 
 [ -n "$KEYMAP" ] || KEYMAP="us"
