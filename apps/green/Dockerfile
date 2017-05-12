@@ -158,7 +158,6 @@ RUN git clone https://github.com/stedolan/jq.git &&\
    cd jq &&\
    autoreconf -i  &&\
    ./configure --prefix=/opt/apps/green &&\
-   make check &&\
    make LDFLAGS=-all-static &&\
    ls -l &&\
    chmod +x jq && cp jq /opt/apps/green/bin
