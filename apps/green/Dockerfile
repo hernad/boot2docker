@@ -156,8 +156,10 @@ RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev 
 
 RUN git clone https://github.com/stedolan/jq.git &&\
    cd jq &&\
+   git submodule update --init &&\
    autoreconf -i  &&\
    ./configure --prefix=/opt/apps/green &&\
+   make check &&\
    make LDFLAGS=-all-static &&\
    ls -l &&\
    chmod +x jq && cp jq /opt/apps/green/bin
