@@ -159,9 +159,8 @@ RUN apt-get build-dep -y jq &&\
    cd jq &&\
    git submodule update --init &&\
    autoreconf -i  &&\
-   ./configure --prefix=/opt/apps/green &&\
-   make check &&\
-   make LDFLAGS=-all-static &&\
+   ./configure --prefix=/opt/apps/green   --disable-valgrind --enable-all-static  --disable-docs   &&\
+   make &&\
    ls -l &&\
    chmod +x jq && cp jq /opt/apps/green/bin
 
@@ -331,7 +330,7 @@ RUN  curl -LO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
 RUN apt-get -y install libgnutls28-dev bzip2 make gettext texinfo gnutls-bin &&\
     gpg --recv-keys --keyserver pgp.mit.edu  0x4F25E3B6 0xE0856959 0x33BD3F06 0x7EFD60D9 0xF7E48EDB
 
-ENV PATH="/opt/apps/green/bin:$PATH"
+ENV PATH="/opt/apps/green/bin:/usr/local/bin:/bin:/usr/bin"
 
 RUN wget -c ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.26.tar.gz && \
     wget -c ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.26.tar.gz.sig && \

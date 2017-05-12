@@ -221,6 +221,17 @@ RUN cd /vboxguest && mkdir -p $ROOTFS/sbin && \
     cp amd64/bin/VBoxClient amd64/bin/VBoxControl $ROOTFS/bin/
 
 
+RUN curl -LO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-0.0.20170421.tar.xz &&\
+    tar xvf WireGuard*xz && rm WireGuard*xz &&\
+    cd WireGuard/src &&\
+    make &&\
+    make tools &&\
+    make -C tools install &&\
+    ls -lr &&\
+    mkdir -p $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/wg &&\
+    cp *.ko $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/wg/
+
+
 # http://zfsonlinux.org/
 # https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.8/spl-0.6.5.8.tar.gz
 #ENV ZFS_VER 0.6.5.9
