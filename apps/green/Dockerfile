@@ -154,7 +154,7 @@ RUN  apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev 
      cd the_silver_searcher && export LDFLAGS="-static" && ./build.sh --prefix=/opt/apps/green &&\
      make install
 
-RUN apt-get build-dep jq &&\
+RUN apt-get build-dep -y jq &&\
     git clone https://github.com/stedolan/jq.git &&\
    cd jq &&\
    git submodule update --init &&\
