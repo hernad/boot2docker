@@ -163,8 +163,13 @@ download_app() {
            return 127
         fi
 
+        if [ "$app" == "docker" ] ; then
+           log_msg "DOCKER STOP BEFORE_NEW_VER: ${ver} /etc/init.d/docker stop" >> $LOG_FILE
+           /etc/init.d/docker stop
+        fi
         umount_opt ${app}
         cd $APPS_HOME
+
         rm -rf ${app} # delete old version
 	      if tar xf ${app}_${ver}.tar.${ext} 2>&1 | tee -a $LOG_FILE ; then
               log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.${ext}"
@@ -175,9 +180,7 @@ download_app() {
               mount_bind_opt_apps ${app}
               [ "$app" == "VirtualBox" ] && vbox_fix_permissions
               if [ "$app" == "docker" ] ; then
-                 echo "DOCKER NEW_VER: ${ver} /etc/init.d/docker stop, start" >> $LOG_FILE
-
-                 /etc/init.d/docker stop
+                 log_msg "DOCKER NEW_VER: ${ver} /etc/init.d/docker start" >> $LOG_FILE
                  /etc/init.d/docker start
               fi
               ldcache_update

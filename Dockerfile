@@ -223,7 +223,7 @@ RUN cd /vboxguest && mkdir -p $ROOTFS/sbin && \
 
 RUN curl -LO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-0.0.20170421.tar.xz &&\
     tar xvf WireGuard*xz && rm WireGuard*xz &&\
-    cd WireGuard/src &&\
+    cd WireGuard*/src &&\
     make &&\
     make tools &&\
     make -C tools install &&\
