@@ -194,7 +194,7 @@ RUN ls -l $ROOTFS/usr/local/tce.installed
 # Extract ca-certificates
 RUN set -x &&\
 #  TCL changed something such that these need to be extracted post-install
-#	chroot "$ROOTFS" sh -xc 'ldconfig && /usr/local/tce.installed/openssl' &&\
+ 	chroot "$ROOTFS" sh -xc 'ldconfig && /usr/local/tce.installed/openssl' &&\
 #  Docker looks for them in /etc/ssl
 #	ln -sT ../usr/local/etc/ssl "$ROOTFS/etc/ssl" &&\
 #  chroot "$ROOTFS" ls -l /usr/local/etc/ssl/certs &&\
