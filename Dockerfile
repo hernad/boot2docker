@@ -44,7 +44,7 @@ ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
 # Fetch the kernel sources
 RUN mkdir -p /usr/src && \
     echo "https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz" &&\
-    curl --retry 10 https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
+    curl -s --retry 10 https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
     mv /linux-$KERNEL_VERSION_DOWNLOAD $LINUX_KERNEL_SOURCE
 
 COPY kernel_config $LINUX_KERNEL_SOURCE/.config
@@ -69,7 +69,7 @@ RUN curl -s -LO http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/Virtua
         bash VirtualBox-$VBOX_VERSION-$VBOX_BUILD-Linux_amd64.run
 
 RUN cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
-        cd / && curl -LO http://download.virtualbox.org/virtualbox/$VBOX_VERSION/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VERSION.vbox-extpack &&\
+        cd / && curl -sLO http://download.virtualbox.org/virtualbox/$VBOX_VERSION/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VERSION.vbox-extpack &&\
         echo y | /opt/VirtualBox/VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VERSION.vbox-extpack
 
 
@@ -125,7 +125,7 @@ RUN cd $ROOTFS/lib/modules && \
     rm -rf ./*/kernel/net/wireless/*
 
 # Install libcap
-RUN curl -L http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.orig.tar.gz | tar -C / -xz && \
+RUN curl -sL http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.orig.tar.gz | tar -C / -xz && \
     cd /libcap-2.22 && \
     sed -i 's/LIBATTR := yes/LIBATTR := no/' Make.Rules && \
     sed -i 's/\(^CFLAGS := .*\)/\1 '"$GCC_M"'/' Make.Rules && \
@@ -161,7 +161,7 @@ ENV TCZ_DEPS_0      iptables \
 # Install the base tiny linux dependencies
 RUN for dep in $TCZ_DEPS_0 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
-        curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
+        curl -sL -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
         if [ ! -s /tmp/$dep.tcz ] ; then \
           echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
           exit 1 ;\
@@ -212,7 +212,8 @@ RUN export SYSLINUX_VER=6.04 && export SYSLINUX_PRE=pre1 &&\
    tar xf syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE}.tar.xz && cd syslinux-${SYSLINUX_VER}-${SYSLINUX_PRE} && make install
 
 # uses bootscript to detect VirtualBox session - has to be firmware!
-RUN  cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
+RUN  apt-get build-dep -y lshw &&\
+     cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
      make && make DESTDIR=$ROOTFS install
 
 
@@ -230,12 +231,12 @@ RUN cd /vboxguest && mkdir -p $ROOTFS/sbin && \
     cp amd64/bin/VBoxClient amd64/bin/VBoxControl $ROOTFS/bin/
 
 
-RUN curl -LO https://www.netfilter.org/projects/libmnl/files/libmnl-1.0.4.tar.bz2 &&\
+RUN curl -sLO https://www.netfilter.org/projects/libmnl/files/libmnl-1.0.4.tar.bz2 &&\
     tar xf libmnl*.bz2 && rm libmnl*.bz2 &&\
     cd libmnl* &&\
     ./configure && make && make install
 
-RUN curl -LO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-0.0.20170421.tar.xz &&\
+RUN curl -sLO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-0.0.20170421.tar.xz &&\
     tar xvf WireGuard*xz && rm WireGuard*xz &&\
     cd WireGuard*/src &&\
     make &&\
@@ -250,7 +251,7 @@ RUN curl -LO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-0.0.20170421.tar
 # https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.8/spl-0.6.5.8.tar.gz
 #ENV ZFS_VER 0.6.5.9
 ENV ZFS_VER 0.7.0-rc4
-RUN mkdir /zfs && cd /zfs && curl -LO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/spl-$ZFS_VER.tar.gz &&\
+RUN mkdir /zfs && cd /zfs && curl -sLO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/spl-$ZFS_VER.tar.gz &&\
     cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-* &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install
 
@@ -268,7 +269,7 @@ RUN cd /lib/x86_64-linux-gnu && ls librt-2*.so && cp librt-2.19.so $ROOTFS/lib/ 
 RUN apt-get install -y libblkid-dev libattr1-dev
 
 # build zfs from tar
-RUN cd /zfs && curl -LO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/zfs-$ZFS_VER.tar.gz &&\
+RUN cd /zfs && curl -sLO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/zfs-$ZFS_VER.tar.gz &&\
     cd /zfs && tar xf zfs-$ZFS_VER.tar.gz && cd zfs-* &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make &&\
     DESTDIR=$ROOTFS make install
@@ -294,7 +295,7 @@ ENV TCZ_DEPS_X    Xorg-7.7-bin libpng libXau libXaw  libXext libxcb libXdmcp lib
 
 RUN for dep in $TCZ_DEPS_X ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
-        curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
+        curl -sL -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
         if [ ! -s /tmp/$dep.tcz ] ; then \
           echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
           exit 1 ;\
@@ -311,7 +312,7 @@ ENV TCZ_DEPS_1 getlocale glibc_i18n_locale glibc_apps glibc_gconv
 
 RUN for dep in $TCZ_DEPS_1 ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
-        curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
+        curl -sL -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
         if [ ! -s /tmp/$dep.tcz ] ; then \
           echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
           exit 1 ;\
@@ -330,9 +331,9 @@ COPY DOCKER_VERSION $ROOTFS/etc/sysconfig/docker
 
 # get generate_cert
 RUN mkdir -p /opt/apps/docker/bin &&\
-      curl -fL -o /opt/apps/docker/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/0.2/generate_cert-0.2-linux-amd64
+      curl -fsL -o /opt/apps/docker/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/0.2/generate_cert-0.2-linux-amd64
 
-RUN curl -L  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/sysconfig/docker).tgz | tar -C / -xz && \
+RUN curl -sL  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/sysconfig/docker).tgz | tar -C / -xz && \
     mv /docker/* /opt/apps/docker/bin/ &&\
     chmod +x /opt/apps/docker/bin/*
 
@@ -405,7 +406,7 @@ RUN cd $ROOTFS/usr/local/bin &&\
     cd $ROOTFS/usr/local/sbin && mv zdb zed ztest /opt/apps/green/sbin &&\
     rm -r -f $ROOTFS/usr/local/sbin/tce*
 
-RUN cd / && curl -LO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
+RUN cd / && curl -sLO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
    ( [ -d /opt/apps/x11/bin ] || mkdir -p /opt/apps/x11/bin ) &&\
    ( [ -d /opt/apps/x11/lib ] || mkdir -p /opt/apps/x11/lib ) &&\
    while read FILE ; do case $FILE in \
