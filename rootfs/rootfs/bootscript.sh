@@ -70,7 +70,6 @@ fi
 
 set_log_file
 
-
 log_msg "mount cgroups hierarchy"
 /etc/rc.d/cgroupfs-mount
 # see https://github.com/tianon/cgroupfs-mount
