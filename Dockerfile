@@ -61,9 +61,9 @@ RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.confi
 
 # http://download.virtualbox.org/virtualbox/5.1.8/
 ENV VBOX_VERSION=5.1.22 VBOX_BUILD=115126
-ENV VBOX_ISO_SHA256 8f1aa5ffda9f9cfb1dd5faa1fafd909763a1f6204cce2045e0912a2583ba75e9
+ENV VBOX_ISO_SHA256 54df14f234b6aa484b94939ab0f435b5dd859417612b65a399ecc34a62060380
 
-RUN curl -LO http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VirtualBox-$VBOX_VERSION-$VBOX_BUILD-Linux_amd64.run &&\
+RUN curl -s -LO http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VirtualBox-$VBOX_VERSION-$VBOX_BUILD-Linux_amd64.run &&\
         mkdir -p /lib ;\
         ln -s $ROOTFS/lib/modules /lib/modules ;\
         bash VirtualBox-$VBOX_VERSION-$VBOX_BUILD-Linux_amd64.run
@@ -79,7 +79,7 @@ RUN set -x && \
     mkdir -p /vboxguest && \
     cd /vboxguest && \
     \
-    curl -fL -o vboxguest.iso http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VBoxGuestAdditions_${VBOX_VERSION}.iso && \
+    curl -sfL -o vboxguest.iso http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VBoxGuestAdditions_${VBOX_VERSION}.iso && \
     echo "${VBOX_ISO_SHA256} *vboxguest.iso" | sha256sum -c - && \
     7z x vboxguest.iso -ir'!VBoxLinuxAdditions.run' && \
     rm vboxguest.iso && \
