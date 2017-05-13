@@ -2,14 +2,20 @@
 
 . /etc/green_common
 
-if ( is_vbox ) || ( ! scaleway_virtual_server ) || ( ! vultr_server )
-then
- log_msg "virtual server vbox, scaleway, vultr - NO virtualbox host server"
- exit 0
-fi
+#if ( is_vbox ) || ( scaleway_virtual_server ) || ( vultr_server )
+#then
+# log_msg "virtual server vbox, scaleway, vultr - NO virtualbox host server"
+# exit 0
+#fi
+# http://www.linux-kvm.org/page/Processor_support
 
-log_msg "Loading virtualbox host server kernel drivers"
-modprobe vboxdrv
-modprobe vboxnetadp
-modprobe vboxnetflt
-modprobe vboxpci
+if cat /proc/cpuinfo  | grep  -q vmx  || cat /proc/cpuinfo  | grep  -q svm
+then
+ log_msg "Loading virtualbox host server kernel drivers"
+ modprobe vboxdrv
+ modprobe vboxnetadp
+ modprobe vboxnetflt
+ modprobe vboxpci
+else
+ log_msg "NO VTX support - vbox host drivers not loaded"  
+fi

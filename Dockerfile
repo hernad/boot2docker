@@ -150,7 +150,8 @@ ENV TCZ_DEPS_0      iptables \
                     tar e2fsprogs \
                     gcc_libs \
                     acpid \
-                     xz liblzma \
+                    ca-certificates \
+                    xz liblzma \
                     libgpg-error libgcrypt libssh2 \
                     curl acl attr ntpclient \
                     bash readline ncurses \
@@ -186,7 +187,6 @@ RUN ls -l $ROOTFS/usr/local/tce.installed
 #lrwxrwxrwx 1 root root   25 May 12 17:54 ca-bundle.crt -> certs/ca-certificates.crt
 #drwxr-xr-x 2 root root 6.9K May 12 17:54 certs
 #...
-#drwxr-xr-x 2 root root   40 May  9 14:25 private
 #-rw-r--r-- 1 root root    3 May  9 14:25 serial
 
 # /usr/local/share/ca-certificates/
@@ -196,7 +196,7 @@ RUN set -x &&\
 #  TCL changed something such that these need to be extracted post-install
 	chroot "$ROOTFS" sh -xc 'ldconfig && /usr/local/tce.installed/openssl' &&\
 #  Docker looks for them in /etc/ssl
-	ln -sT ../usr/local/etc/ssl "$ROOTFS/usr/local/etc/ssl" &&\
+	ln -sT ../usr/local/etc/ssl "$ROOTFS/etc/ssl" &&\
   chroot "$ROOTFS" ls -l /usr/local/etc/ssl/certs &&\
 #  a little testing is always prudent
 	cp "$ROOTFS/etc/resolv.conf" resolv.conf.bak &&\
