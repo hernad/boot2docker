@@ -48,7 +48,7 @@ ENV MAKE_VER=4.2.1
 
 
 ENV ROOTFS=/opt/apps/developer
-ENV TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
+ENV TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
 ENV TCZ_DEPS_DEVELOER  \
     binutils \
     compiletc gcc make \

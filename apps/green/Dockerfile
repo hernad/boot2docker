@@ -245,7 +245,7 @@ RUN  curl -LO https://github.com/fatedier/frp/releases/download/v${FRP_VER}/frp_
      mv frps frpc /opt/apps/green/bin/
 
 
-ENV TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
+ENV TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
 ENV TCZ_DEPS_DEV    curl-dev \
                     openssl-dev \
                     ncurses-dev \
@@ -271,7 +271,7 @@ done
 
 
 ENV ROOTFS=/opt/apps/green
-ENV TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
+ENV TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
 ENV TCZ_DEPS_GREEN  \
                     nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     htop ncurses-utils ncurses-terminfo \

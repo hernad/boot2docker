@@ -8,7 +8,7 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
  && echo "Acquire::HTTP::Proxy \"http://$DOCKER_PROXY:3142\";" > /etc/apt/apt.conf.d/01proxy \
  && echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
 
-RUN date
+ENV TINYCORE_VER=8.x
 RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
                         xz-utils \
                         curl \
@@ -33,15 +33,13 @@ RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
                         p7zip-full
 
 # tiny core rootfs location
-#ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/7.x/x86_64
-ENV ROOTFS=/rootfs TCL_REPO_BASE=http://distro.ibiblio.org/tinycorelinux/7.x/x86_64
+#ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
+ENV ROOTFS=/rootfs TCL_REPO_BASE=http://distro.ibiblio.org/tinycorelinux/${TINYCORE_VER}/x86_64
 ENV GCC_M -m64
 # https://www.kernel.org/pub/linux/kernel/v4.x/
 
-
 ENV KERNEL_MAJOR=4 KERNEL_VERSION_DOWNLOAD=$KERNEL_VERSION
 ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
-
 
 # Fetch the kernel sources
 RUN mkdir -p /usr/src && \
@@ -100,7 +98,7 @@ RUN set -x && \
 
 # =======================  tiny core =====================================================
 # The post kernel build process
-# list tczs: http://distro.ibiblio.org/tinycorelinux/7.x/x86/tcz/
+# list tczs: http://distro.ibiblio.org/tinycorelinux/${TINYCORE_VER}/x86/tcz/
 
 
 # Make the ROOTFS
