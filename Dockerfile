@@ -223,7 +223,7 @@ RUN cd /vboxguest && mkdir -p $ROOTFS/sbin && \
 
 RUN curl -LO https://www.netfilter.org/projects/libmnl/files/libmnl-1.0.4.tar.bz2 &&\
     tar xf libmnl*.bz2 && rm libmnl*.bz2 &&\
-    cd libmnl* && sh autogen.sh &&\
+    cd libmnl* &&\
     ./configure && make && make install
 
 RUN curl -LO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-0.0.20170421.tar.xz &&\
