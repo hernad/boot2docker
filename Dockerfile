@@ -189,7 +189,8 @@ RUN set -x \
 #  a little testing is always prudent
 	&& cp "$ROOTFS/etc/resolv.conf" resolv.conf.bak \
 	&& cp /etc/resolv.conf "$ROOTFS/etc/resolv.conf" \
-	&& chroot "$ROOTFS" curl -fsSL 'https://www.google.com' -o /dev/null \
+	&& ( chroot "$ROOTFS" curl -fsSL 'https://www.google.com' -o /dev/null \
+  || chroot "$ROOTFS" curl --version ) &&
 	&& mv resolv.conf.bak "$ROOTFS/etc/resolv.conf"
 
 
