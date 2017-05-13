@@ -56,9 +56,6 @@ log_msg "automount GREEN_volumes"
 [ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
 if [ ! -d $BOOT_DIR/ssl ] ; then
   mkdir -p $BOOT_DIR/ssl
-  [ -d /usr/local/etc/ssl ] && rm -f /usr/local/etc/ssl
-  ln -s $BOOT_DIR/ssl /usr/local/etc/ssl # /usr/local/bin/curl needs this location
-  ln -s $BOOT_DIR/ssl /etc/ssl # docker golang needs /etc/ssl
   log_msg "bootstrap ca-certs from etc_ssl.tar.xz"
   count=0
   cd $BOOT_DIR
