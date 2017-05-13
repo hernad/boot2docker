@@ -8,6 +8,9 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
  && echo "Acquire::HTTP::Proxy \"http://$DOCKER_PROXY:3142\";" > /etc/apt/apt.conf.d/01proxy \
  && echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
 
+RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list
+RUN apt-get update -y
+
 ENV TINYCORE_VER=8.x
 RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
                         xz-utils \
