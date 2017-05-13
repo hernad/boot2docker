@@ -4,6 +4,7 @@
 GREENBOX_VERSION=`cat /etc/sysconfig/greenbox`
 KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
 DOCKER_VERSION=`cat /etc/sysconfig/docker`
+DOWNLOAD_URL=${DOWNLOAD_URL:-https://dl.bintray.com/hernad/greenbox}
 
 GREEN_APPS_VER=___GREEN_APPS_VER___
 VBOX_VER=___VBOX_VER___

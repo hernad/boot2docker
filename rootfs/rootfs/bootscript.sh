@@ -54,6 +54,22 @@ log_msg "automount GREEN_volumes"
 
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
 [ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
+if [ ! -d $BOOT_DIR/ssl ] ; then
+  mkdir -p $BOOT_DIR/ssl
+  [ -d /usr/local/etc/ssl ] && rm -f /usr/local/etc/ssl
+  ln -s $BOOT_DIR/ssl /usr/local/etc/ssl # /usr/local/bin/curl needs this location
+  ln -s $BOOT_DIR/ssl /etc/ssl # docker golang needs /etc/ssl
+  log_msg "bootstrap ca-certs from etc_ssl.tar.xz"
+  count=0
+  cd $BOOT_DIR
+  while ! curl -skLO ${DOWNLOAD_URL}/etc_ssl.tar.xz && [ $count -lt 10 ]
+  do
+    sleep 5
+    let count=count+1
+  done
+  tar xf etc_ssl.tar.xz
+  rm etc_ssl.tar.xz
+fi
 
 set_log_file
 
@@ -104,6 +120,7 @@ echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 /etc/rc.d/server_scaleway
 /etc/rc.d/server_vultr
 /etc/rc.d/vbox_kernel
+/etc/rc.d/tce_postinstall
 
 log_msg "locale-archive localedef start"
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then

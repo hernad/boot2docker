@@ -2,7 +2,6 @@
 
 . /etc/green_common
 
-
 APPS_HOME=/opt/apps
 
 [ ! -d $APPS_HOME ] &&  echo "$APPS_HOME not exists !?" && exit 1
@@ -51,8 +50,6 @@ case "$1" in
      ;;
 
 esac
-
-GREEN_BINTRAY=${GREEN_BINTRAY:-https://dl.bintray.com/hernad/greenbox}
 
 
 if [ "$INSTALL_SET" == "9" ] ; then
@@ -109,7 +106,7 @@ else
   fi
   echo "environment vars:"
   echo "-------------------------------------------------------------"
-  echo "GREEN_BINTRAY: $GREEN_BINTRAY"
+  echo "DOWNLOAD_URL: $DOWNLOAD_URL"
   echo "${IND1}   GREEN_APPS: ${GREEN_APPS}${NORMAL}"
   echo "${IND2} GREEN_APPS_2: ${GREEN_APPS_2}${NORMAL}"
   echo "${IND3} GREEN_APPS_3: ${GREEN_APPS_3}${NORMAL}"
@@ -146,14 +143,14 @@ download_app() {
       log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.${ext} ..."
       cp $LOCAL_MEDIA $APPS_HOME/
    else
-      echo "downloading: $GREEN_BINTRAY/${app}_${ver}.tar.${ext} ..."
-      log_msg "START: curl $GREEN_BINTRAY/${app}_${ver}.tar.${ext}"
+      echo "downloading: $DOWNLOAD_URL/${app}_${ver}.tar.${ext} ..."
+      log_msg "START: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
       cd $APPS_HOME
-      curl -s -LO $GREEN_BINTRAY/${app}_${ver}.tar.${ext}
+      curl -s -LO $DOWNLOAD_URL/${app}_${ver}.tar.${ext}
    fi
 
    if [ $? -ne 0 ] ; then
-        log_msg "ERROR: curl $GREEN_BINTRAY/${app}_${ver}.tar.${ext}"
+        log_msg "ERROR: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
         return 127
    else
         if ! tar -tf ${app}_${ver}.tar.${ext} > /dev/null 2>&1
@@ -172,7 +169,7 @@ download_app() {
 
         rm -rf ${app} # delete old version
 	      if tar xf ${app}_${ver}.tar.${ext} 2>&1 | tee -a $LOG_FILE ; then
-              log_msg "SUCCESS: curl $GREEN_BINTRAY/${app}_${ver}.tar.${ext}"
+              log_msg "SUCCESS: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
               rm ${app}_${ver}.tar.${ext}
               chown -R root:root ${app}
               echo ${ver} > /opt/apps/${app}/VERSION
@@ -185,7 +182,7 @@ download_app() {
               fi
               ldcache_update
         else
-              log_msg "ERROR: curl=> $GREEN_BINTRAY/${app}_${ver}.tar.${ext}, error tar tf $APPS_HOME/${app}_${ver}.tar.${ext} (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
+              log_msg "ERROR: curl=> $DOWNLOAD_URL/${app}_${ver}.tar.${ext}, error tar tf $APPS_HOME/${app}_${ver}.tar.${ext} (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
         fi
    fi
 
