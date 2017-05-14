@@ -40,8 +40,8 @@ ln -fs /opt/green/bin/logrotate $ROOTFS/usr/bin/
 
 [ -d $ROOTFS/usr/local/etc/ssl ] && rm -rf $ROOTFS/usr/local/etc/ssl
 [ -d $ROOTFS/etc/ssl ] && rm -rf $ROOTFS/etc/ssl
-ln -fs /opt/boot/ssl $ROOTFS/usr/local/etc/ssl # /usr/local/bin/curl needs this location
-ln -fs /opt/boot/ssl $ROOTFS/etc/ssl # docker golang needs /etc/ssl
+ln -fs /opt/boot/etc/ssl $ROOTFS/usr/local/etc/ssl # /usr/local/bin/curl needs this location
+ln -fs /opt/boot/etc/ssl $ROOTFS/etc/ssl # docker golang needs /etc/ssl
 
 ln -fs /opt/x11/bin/xauth $ROOTFS/usr/bin/
 ln -fs /opt/x11/share $ROOTFS/usr/share/X11

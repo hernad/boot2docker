@@ -54,11 +54,11 @@ log_msg "automount GREEN_volumes"
 
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
 [ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
-if [ ! -d $BOOT_DIR/ssl ] ; then
-  mkdir -p $BOOT_DIR/ssl
+if [ ! -d $BOOT_DIR/etc/ssl ] ; then
+  mkdir -p $BOOT_DIR/etc/ssl
   log_msg "bootstrap ca-certs from etc_ssl.tar.xz"
   count=0
-  cd $BOOT_DIR
+  cd $BOOT_DIR/etc
   while ! curl -skLO ${DOWNLOAD_URL}/etc_ssl.tar.xz && [ $count -lt 10 ]
   do
     sleep 5
@@ -66,6 +66,8 @@ if [ ! -d $BOOT_DIR/ssl ] ; then
   done
   tar xf etc_ssl.tar.xz
   rm etc_ssl.tar.xz
+  ln -s $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/cacert.pem
+  ln -s $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/ca-bundle.crt
 fi
 
 set_log_file
