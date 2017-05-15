@@ -45,4 +45,4 @@ RUN cd $K8S_HOME/bin &&\
 
 RUN curl -sLO https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz &&\
     tar -xvf helm-v${HELM_VERSION}-linux-amd64.tar.gz &&\
-    mv helm-v${ETCD_VERSION}-linux-amd64/helm* $K8S_HOME/bin/
+    mv helm-v${HELM_VERSION}-linux-amd64/helm* $K8S_HOME/bin/
