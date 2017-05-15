@@ -290,7 +290,7 @@ ENV TCZ_DEPS_GREEN  \
                     groff \
                     iftop util-linux \
                     icu icu-bin \
-                    man-pages man-db \
+                    #man-db \
                     coreutils
 
 #nss,nspr,sqlite3,libnotify - deps for electron applications ( atom, code )
@@ -412,6 +412,8 @@ RUN rm -rf /opt/apps/green/man /opt/apps/green/share/doc /opt/apps/green/share/m
 
 RUN ls -ld /opt/apps/green/* ; ls -l /opt/apps/green/bin/ ; ls -l /opt/apps/green/lib/
 # collect shared libraries needed for green apps execution
+
+#RUN mv /opt/apps/lib/man-db/*.so /opt/apps/lib ; rm -rf /opt/apps/lib/man-db
 
 
 COPY extract_so_deps_green.sh /

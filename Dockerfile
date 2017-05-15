@@ -446,7 +446,7 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
 RUN rm $ROOTFS/usr/local/lib/*.a &&\
     rm $ROOTFS/usr/local/lib/*.la
     # rm man files
-    #rm $ROOTFS/usr/local/share/man/*.8
+    rm -rf $ROOTFS/usr/local/share/man/*
 
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
 RUN rm $ROOTFS/usr/local/etc/ssh/*.orig
