@@ -129,6 +129,7 @@ fi
 
 download_app() {
 
+  EXIT_CODE=0
   app=$1
   ver=$2
 
@@ -143,24 +144,28 @@ download_app() {
       log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.${ext} ..."
       cp $LOCAL_MEDIA $APPS_HOME/
    else
-      if [ -f $DOWNLOAD_URL/${app}_${ver}.tar.${ext} ] ; then
+      if [ -f $DOWNLOAD_URL/${app}_${ver}.tar.${ext}.download ] ; then
         log_msg "CANCEL: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}, another download in progress"
         exit 1
       fi
       echo "downloading: $DOWNLOAD_URL/${app}_${ver}.tar.${ext} ..."
       log_msg "START: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
       cd $APPS_HOME
+      touch $DOWNLOAD_URL/${app}_${ver}.tar.${ext}.download
       curl -s -LO $DOWNLOAD_URL/${app}_${ver}.tar.${ext}
    fi
 
    if [ $? -ne 0 ] ; then
-        log_msg "ERROR: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
+        log_msg "ERROR: CURL: $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
+        rm $DOWNLOAD_URL/${app}_${ver}.tar.${ext}
+        rm $DOWNLOAD_URL/${app}_${ver}.tar.${ext}.download
         return 127
    else
         if ! tar -tf ${app}_${ver}.tar.${ext} > /dev/null 2>&1
         then
            log_msg "${app}_${ver}.tar.${ext} is not valid tar"
            rm ${app}_${ver}.tar.${ext}
+           rm ${app}_${ver}.tar.${ext}.download
            return 127
         fi
 
@@ -174,7 +179,6 @@ download_app() {
         rm -rf ${app} # delete old version
 	      if tar xf ${app}_${ver}.tar.${ext} 2>&1 | tee -a $LOG_FILE ; then
               log_msg "SUCCESS: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
-              rm ${app}_${ver}.tar.${ext}
               chown -R root:root ${app}
               echo ${ver} > /opt/apps/${app}/VERSION
               log_msg "mount_bind_opt_apps ${app}"
@@ -185,9 +189,15 @@ download_app() {
                  /etc/init.d/docker start
               fi
               ldcache_update
+              EXIT_CODE=0
         else
-              log_msg "ERROR: curl=> $DOWNLOAD_URL/${app}_${ver}.tar.${ext}, error tar tf $APPS_HOME/${app}_${ver}.tar.${ext} (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
+              log_msg "ERROR: TARXF: curl=> $DOWNLOAD_URL/${app}_${ver}.tar.${ext}, error tar tf $APPS_HOME/${app}_${ver}.tar.${ext} (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
+              EXIT_CODE=132
         fi
+        rm ${app}_${ver}.tar.${ext}
+        rm ${app}_${ver}.tar.${ext}.download
+        return $EXIT_CODE
+
    fi
 
 }
