@@ -24,7 +24,7 @@ ENV CPPFLAGS="-I/opt/apps/green/include" CFLAGS="-I/opt/apps/green/include" LDFL
 
 ENV XNBD_VER=0.4.0
 RUN apt-get build-dep -y xnbd && apt-get -y install libjansson-dev &&\
-    curl -LO https://bitbucket.org/hirofuchi/xnbd/downloads/xnbd-${XNBD_VER}.tgz &&\
+    curl -sLO https://bitbucket.org/hirofuchi/xnbd/downloads/xnbd-${XNBD_VER}.tgz &&\
     tar xf xnbd-${XNBD_VER}.tgz &&\
     cd xnbd-${XNBD_VER}/trunk &&\
     ls -l * && autoreconf -i &&\
@@ -32,7 +32,7 @@ RUN apt-get build-dep -y xnbd && apt-get -y install libjansson-dev &&\
     make
 
 
-RUN curl -LO http://downloads.es.net/pub/iperf/iperf-3-current.tar.gz &&\
+RUN curl -sLO http://downloads.es.net/pub/iperf/iperf-3-current.tar.gz &&\
     tar xf iperf-3*.tar.gz && rm iperf-3*.tar.gz && cd iperf* &&\
     ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
     make &&\
@@ -40,7 +40,7 @@ RUN curl -LO http://downloads.es.net/pub/iperf/iperf-3-current.tar.gz &&\
 
 
 # == qperf 0.4.9, 2012-11-07 ===
-RUN cd /tmp && curl -LO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz &&\
+RUN cd /tmp && curl -sLO https://www.openfabrics.org/downloads/qperf/qperf-0.4.9.tar.gz &&\
         tar xvf qperf-0.4.9.tar.gz &&\
         cd /tmp/qperf-0.4.9 && sh autogen.sh && \
         ./configure && make && /usr/bin/install -c src/qperf /opt/apps/green/bin &&\
@@ -54,7 +54,7 @@ RUN git clone git://git.kernel.dk/fio.git &&\
       make install
 
 
-RUN curl -LO http://linux-pam.org/library/Linux-PAM-1.3.0.tar.bz2 &&\
+RUN curl -sLO http://linux-pam.org/library/Linux-PAM-1.3.0.tar.bz2 &&\
     tar xf Linux-PAM*.bz2 && cd Linux-PAM* &&\
     ./configure CFLAGS="-I/opt/apps/green/include" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green &&\
     make &&\
@@ -78,7 +78,7 @@ RUN apt-get build-dep libpam-google-authenticator -y &&\
 
 # openvpn trazi 1.0.x https://community.openvpn.net/openvpn/ticket/802
 
-RUN curl -LO https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.5.2.tar.gz &&\
+RUN curl -sLO https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.5.2.tar.gz &&\
     tar xvf libressl-* && cd libressl-* &&\
     ./config --prefix=/opt/apps/green &&\
     make install
@@ -93,10 +93,10 @@ RUN curl -LO https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.5.2.tar.gz 
 ENV OPENVPN_VER=2.4.1
 
 RUN apt-get build-dep openvpn -y && apt-get install net-tools -y &&\
-    curl -LO http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz &&\
+    curl -sLO http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz &&\
     tar xvf lzo-2.10.tar.gz && cd lzo-* && ./configure --prefix=/opt/apps/green &&\
     make install &&\
-    curl -L -o openvpn-${OPENVPN_VER}.tar.gz https://github.com/OpenVPN/openvpn/archive/v${OPENVPN_VER}.tar.gz  &&\
+    curl -sL -o openvpn-${OPENVPN_VER}.tar.gz https://github.com/OpenVPN/openvpn/archive/v${OPENVPN_VER}.tar.gz  &&\
     tar -xf openvpn-${OPENVPN_VER}.tar.gz &&\
     cd openvpn-${OPENVPN_VER} &&\
     libtoolize --force && aclocal && autoheader && automake --force-missing --add-missing &&\
@@ -109,7 +109,7 @@ RUN apt-get build-dep openvpn -y && apt-get install net-tools -y &&\
 # == logrotate ==
 ENV LOGROTATE_VER=3.11.0
 RUN apt-get install -y libpopt-dev
-RUN curl -k -LO https://github.com/logrotate/logrotate/releases/download/$LOGROTATE_VER/logrotate-$LOGROTATE_VER.tar.gz &&\
+RUN curl -k -sLO https://github.com/logrotate/logrotate/releases/download/$LOGROTATE_VER/logrotate-$LOGROTATE_VER.tar.gz &&\
    tar xvf logrotate-$LOGROTATE_VER.tar.gz &&\
    cd /logrotate-$LOGROTATE_VER &&\
    export LDFLAGS="-static" && ./configure --prefix=/opt/apps/green &&\
@@ -126,7 +126,7 @@ RUN mkdir -p /opt/apps/green/bin &&\
 
 # Pipe Viewer - is a terminal-based tool for monitoring the progress of data through a pipeline.
 # pv 1.6.0, 15 Mar 2015
-RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
+RUN curl -sLO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
     tar xvf pv-1.6.0.tar.gz  &&\
     cd /pv-1.6.0 && ./configure && make && /usr/bin/install -c pv /opt/apps/green/bin
 
@@ -137,7 +137,7 @@ RUN curl -LO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
 
 
 # === tmux & libevent install =====
-RUN curl -LO  https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz &&\
+RUN curl -sLO  https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz &&\
     tar xvf libevent-2.0.22-stable.tar.gz &&\
     cd /libevent-2.0.22-stable && sh autogen.sh && ./configure && make install &&\
     ( [  -d /opt/apps/green/lib ] || mkdir -p /opt/apps/green/lib ) &&\
@@ -174,32 +174,32 @@ RUN export MBUFFER_VER="20161115" && echo "mbuffer ver: $MBUFFER_VER" && curl -L
     cd / && tar xvf mbuffer-${MBUFFER_VER}.tgz && cd mbuffer-${MBUFFER_VER} && ./configure --prefix=/opt/apps/green &&\
     make install
 
-RUN  export LZO_VER=2.09 && curl -LO http://www.oberhumer.com/opensource/lzo/download/lzo-${LZO_VER}.tar.gz &&\
+RUN  export LZO_VER=2.09 && curl -sLO http://www.oberhumer.com/opensource/lzo/download/lzo-${LZO_VER}.tar.gz &&\
      tar xvf lzo-${LZO_VER}.tar.gz && cd lzo-${LZO_VER} && ./configure --prefix=/opt/apps/green &&\
      make install && ls -lr /opt/apps/green
 
 RUN  export LD_LIBRARY_PATH=/opt/apps/green/lib &&\
      export CPPFLAGS="-I/opt/apps/green/include -L/opt/apps/green/lib" &&\
      export LDFLAGS="-L/opt/apps/green/lib" &&\
-     export LZOP_VER=1.03 && cd / && curl -LO http://www.lzop.org/download/lzop-${LZOP_VER}.tar.gz &&\
+     export LZOP_VER=1.03 && cd / && curl -sLO http://www.lzop.org/download/lzop-${LZOP_VER}.tar.gz &&\
      tar xvf lzop-${LZOP_VER}.tar.gz && cd lzop-${LZOP_VER} &&\
      ./configure --prefix=/opt/apps/green && make install
 
 
 # perl-5.24.1.tar.xz	14-Jan-2017 12:05	11M
-RUN export PERL_VER=5.24.1 && cd / && curl -LO http://www.cpan.org/src/5.0/perl-${PERL_VER}.tar.xz &&\
+RUN export PERL_VER=5.24.1 && cd / && curl -sLO http://www.cpan.org/src/5.0/perl-${PERL_VER}.tar.xz &&\
     tar xf perl-${PERL_VER}.tar.xz &&  cd perl-${PERL_VER} &&\
     ./Configure -des -Dprefix=/opt/apps/perl && make install
 
-RUN  export PCIUTILS_VER=3.4.0 && cd / && curl -LO ftp://atrey.karlin.mff.cuni.cz/pub/linux/pci/pciutils-${PCIUTILS_VER}.tar.gz &&\
+RUN  export PCIUTILS_VER=3.4.0 && cd / && curl -sLO ftp://atrey.karlin.mff.cuni.cz/pub/linux/pci/pciutils-${PCIUTILS_VER}.tar.gz &&\
     tar xvf pciutils-${PCIUTILS_VER}.tar.gz && cd pciutils-${PCIUTILS_VER} &&\
     make && make PREFIX= DESTDIR=/opt/apps/green  install
 
 
 #http://libguestfs.org/download/1.31-development/libguestfs-1.31.30.tar.gz
 
-RUN     apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev1 libudev-dev &&\
-        git clone https://github.com/gregkh/usbutils.git &&\
+RUN   apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev1 libudev-dev &&\
+      git clone https://github.com/gregkh/usbutils.git &&\
         cp /usr/lib/x86_64-linux-gnu/libusb*.so /opt/apps/green/lib &&\
         cp /usr/lib/x86_64-linux-gnu/libudev*.so /opt/apps/green/lib &&\
 	      cd usbutils && git submodule init && git submodule update &&\
@@ -211,7 +211,7 @@ RUN  apt-get update -y &&\
      ln -s /opt/apps/python2 /opt/python2
 
 # ==== pipework in green ====
-RUN  cd /opt/apps/green/bin &&  curl -LO https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework &&\
+RUN  cd /opt/apps/green/bin &&  curl -sLO https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework &&\
      chmod +x pipework
 
 #RUN  apt-get update -y && apt-get install -y bridge-utils openvswitch-switch &&\
@@ -232,13 +232,13 @@ RUN  cd /opt/apps/green/bin &&  curl -LO https://raw.githubusercontent.com/jpeta
 #    mv dbxcli-linux-amd64 /opt/apps/green/bin/dbxcli && chmod +x /opt/apps/green/bin/dbxcli
 
 
-RUN  curl -LO https://github.com/ncw/rclone/releases/download/v1.36/rclone-v1.36-linux-amd64.zip &&\
+RUN  curl -sLO https://github.com/ncw/rclone/releases/download/v1.36/rclone-v1.36-linux-amd64.zip &&\
      unzip rclone-v*-linux-amd64.zip &&\
      chmod +x rclone-*linux-amd64/rclone &&\
      mv rclone*-linux-amd64/rclone /opt/apps/green/bin/
 
 ENV FRP_VER 0.9.3
-RUN  curl -LO https://github.com/fatedier/frp/releases/download/v${FRP_VER}/frp_${FRP_VER}_linux_amd64.tar.gz &&\
+RUN  curl -sLO https://github.com/fatedier/frp/releases/download/v${FRP_VER}/frp_${FRP_VER}_linux_amd64.tar.gz &&\
      tar xf frp*.tar.gz &&\
      cd frp_*linux_amd64/ &&\
      chmod +x frps frpc &&\
@@ -259,7 +259,7 @@ ENV ROOTFS=/
 # Install the base tiny linux build
 RUN for dep in $TCZ_DEPS_DEV ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
-        curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
+        curl -sL -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
         if [ ! -s /tmp/$dep.tcz ] ; then \
             echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
             exit 1 ;\
@@ -299,7 +299,7 @@ ENV TCZ_DEPS_GREEN  \
 # Install the base tiny linux build
 RUN for dep in $TCZ_DEPS_GREEN ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
-        curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
+        curl -sL -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
         if [ ! -s /tmp/$dep.tcz ] ; then \
             echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
             exit 1 ;\
@@ -321,7 +321,7 @@ RUN git clone https://github.com/relan/exfat.git &&\
 
 
 
-RUN  curl -LO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
+RUN  curl -sLO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
       tar xf autossh-1.4e.tgz &&\
       cd autossh-1.4e &&\
       ./configure --prefix=/opt/apps/green &&\
@@ -333,45 +333,45 @@ RUN apt-get -y install libgnutls28-dev bzip2 make gettext texinfo gnutls-bin &&\
 
 ENV PATH=/usr/local/bin:/bin:/usr/bin:/opt/apps/green/bin
 
-RUN wget -c ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.26.tar.gz && \
-    wget -c ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.26.tar.gz.sig && \
+RUN curl -sLO ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.26.tar.gz && \
+    curl -sLO ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.26.tar.gz.sig && \
     gpg --verify libgpg-error-1.26.tar.gz.sig && tar -xzf libgpg-error-1.26.tar.gz && \
     cd libgpg-error-1.26/ && ./configure --prefix=/opt/apps/green && make && make install
 
 RUN ls /opt/apps/green/lib ; ls /opt/apps/green/include &&\
-    wget -c ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.7.6.tar.gz && \
-    wget -c ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.7.6.tar.gz.sig && \
+    curl -sLO ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.7.6.tar.gz && \
+    curl -sLO ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.7.6.tar.gz.sig && \
     gpg --verify libgcrypt-1.7.6.tar.gz.sig && tar -xzf libgcrypt-1.7.6.tar.gz && \
     cd libgcrypt-1.7.6 && ./configure CFLAGS="-I/opt/apps/green/include" LD_LIBRARY_PATH="/opt/apps/green/lib:$LD_LIBRARY_PATH" LDFLAGS="-L/opt/apps/green/lib" --prefix=/opt/apps/green  && make && make install
 
-RUN wget -c ftp://ftp.gnupg.org/gcrypt/libassuan/libassuan-2.4.3.tar.bz2 && \
-    wget -c ftp://ftp.gnupg.org/gcrypt/libassuan/libassuan-2.4.3.tar.bz2.sig && \
+RUN curl -sLO ftp://ftp.gnupg.org/gcrypt/libassuan/libassuan-2.4.3.tar.bz2 && \
+    curl -sLO ftp://ftp.gnupg.org/gcrypt/libassuan/libassuan-2.4.3.tar.bz2.sig && \
     gpg --verify libassuan-2.4.3.tar.bz2.sig && tar -xjf libassuan-2.4.3.tar.bz2 && \
     cd libassuan-2.4.3 && ./configure --prefix=/opt/apps/green && make && make install
 
-RUN wget -c  ftp://ftp.gnupg.org/gcrypt/libksba/libksba-1.3.5.tar.bz2 && \
-    wget -c ftp://ftp.gnupg.org/gcrypt/libksba/libksba-1.3.5.tar.bz2.sig && \
+RUN curl -sLO ftp://ftp.gnupg.org/gcrypt/libksba/libksba-1.3.5.tar.bz2 && \
+    curl -sLO ftp://ftp.gnupg.org/gcrypt/libksba/libksba-1.3.5.tar.bz2.sig && \
     gpg --verify libksba-1.3.5.tar.bz2.sig && tar -xjf libksba-1.3.5.tar.bz2 && \
     cd libksba-1.3.5 && ./configure --prefix=/opt/apps/green && make && make install
 
-RUN wget -c ftp://ftp.gnupg.org/gcrypt/npth/npth-1.3.tar.bz2 && \
-    wget -c ftp://ftp.gnupg.org/gcrypt/npth/npth-1.3.tar.bz2.sig && \
+RUN curl -sLO ftp://ftp.gnupg.org/gcrypt/npth/npth-1.3.tar.bz2 && \
+    curl -sLO ftp://ftp.gnupg.org/gcrypt/npth/npth-1.3.tar.bz2.sig && \
     gpg --verify npth-1.3.tar.bz2.sig && tar -xjf npth-1.3.tar.bz2 && \
     cd npth-1.3 && ./configure --prefix=/opt/apps/green && make && make install
 
-RUN wget -c ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz && \
-    wget -c ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz.sig && \
+RUN curl -sLO ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz && \
+    curl -sLO ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz.sig && \
     gpg --verify ncurses-6.0.tar.gz.sig && tar -xzf ncurses-6.0.tar.gz && \
     cd ncurses-6.0 && export CPPFLAGS="$CPPFLAGS -P" && ./configure --prefix=/opt/apps/green && make && make install
 
-RUN wget -c ftp://ftp.gnupg.org/gcrypt/pinentry/pinentry-1.0.0.tar.bz2 && \
-   wget -c ftp://ftp.gnupg.org/gcrypt/pinentry/pinentry-1.0.0.tar.bz2.sig && \
+RUN curl -sLO ftp://ftp.gnupg.org/gcrypt/pinentry/pinentry-1.0.0.tar.bz2 && \
+   curl -sLO ftp://ftp.gnupg.org/gcrypt/pinentry/pinentry-1.0.0.tar.bz2.sig && \
    gpg --verify pinentry-1.0.0.tar.bz2.sig && tar -xjf pinentry-1.0.0.tar.bz2 && \
    cd pinentry-1.0.0 && ./configure --prefix=/opt/apps/green  --enable-pinentry-curses --disable-pinentry-qt4 && \
    make && make install
 
-RUN wget -c ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-2.1.18.tar.bz2 && \
-    wget -c ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-2.1.18.tar.bz2.sig && \
+RUN curl -sLO ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-2.1.18.tar.bz2 && \
+    curl -sLO ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-2.1.18.tar.bz2.sig && \
     gpg --verify gnupg-2.1.18.tar.bz2.sig && tar -xjf gnupg-2.1.18.tar.bz2 && \
     cd gnupg-2.1.18 && ./configure --prefix=/opt/apps/green  && make && make install
 
@@ -384,10 +384,9 @@ RUN mkdir -p /opt/apps/green/bin ;\
     cp -av /opt/apps/green/usr/local/sbin/* /opt/apps/green/bin/ &&\
     cp -av /opt/apps/green/usr/local/lib/* /opt/apps/green/lib/ &&\
     cp -av /opt/apps/green/usr/local/share/* /opt/apps/green/share/ &&\
-    rm -rf /opt/apps/green/usr
-
-
-RUN rm -rf /opt/apps/green/bin/git-cvsserver &&\
+    rm -rf /opt/apps/green/usr &&\
+    # git out
+    rm -rf /opt/apps/green/bin/git-cvsserver &&\
     rm -rf /opt/apps/green/lib/git-core/git-cvs* &&\
     rm -rf /opt/apps/green/lib/git-core/git-svn* &&\
     rm -rf /opt/apps/green/lib/git-core/git-web--browse* &&\
@@ -398,24 +397,21 @@ RUN rm -rf /opt/apps/green/bin/git-cvsserver &&\
     rm /opt/apps/green/lib/*.la && echo green_apps removing static libraries &&\
     rm -rf /opt/apps/green/include/ ; echo green_apps removing include files &&\
     rm -rf /opt/apps/green/share/terminfo /opt/apps/green/share/git-gui /opt/apps/green/share/applications &&\
-    mv /opt/apps/green/sbin/* /opt/apps/green/bin/ ; rmdir /opt/apps/green/sbin
-
-RUN rm -rf /opt/apps/go/test ; echo rm golang test directory &&\
-   # manuals out
-   rm -rf /opt/apps/green/man /opt/apps/green/share/doc /opt/apps/green/share/man ;\
+    mv /opt/apps/green/sbin/* /opt/apps/green/bin/ ; rmdir /opt/apps/green/sbin &&\
+    rm -rf /opt/apps/go/test ; echo rm golang test directory &&\
+    # manuals out
+    rm -rf /opt/apps/green/man /opt/apps/green/share/doc /opt/apps/green/share/man ;\
     rm -rf /opt/apps/green/usr /opt/apps/green/var &&\
     rm -rf /opt/apps/green/share/gnupg/*.txt && rm -rf /opt/apps/green/share/gitweb  /opt/apps/green/share/pixmaps &&\
     # rm locales exept bs
     mkdir -p /tmp/locale && mv /opt/apps/green/share/locale/bs /tmp/locale/ && rm -rf /opt/apps/green/share/locale/* &&\
-    mv /tmp/locale/bs /opt/apps/green/share/locale/
-
-RUN rm -f '/opt/apps/green/share/]'
+    mv /tmp/locale/bs /opt/apps/green/share/locale/ &&\
+    rm -f '/opt/apps/green/share/]'
 
 #RUN ls -ld /opt/apps/green/* ; ls -l /opt/apps/green/bin/ ; ls -l /opt/apps/green/lib/
 # collect shared libraries needed for green apps execution
 
 #RUN mv /opt/apps/lib/man-db/*.so /opt/apps/lib ; rm -rf /opt/apps/lib/man-db
-
 
 COPY extract_so_deps_green.sh /
 RUN bash  /extract_so_deps_green.sh
