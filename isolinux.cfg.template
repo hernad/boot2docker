@@ -1,11 +1,13 @@
 serial 0 115200
-display boot.msg
+display f1
+
 default {{ISO_DEFAULT}}
 label rack
   menu label greenbox rack
 	kernel /boot/vmlinuz64 console=ttyS0,115200n8
 	initrd /boot/initrd.img console=ttyS0,115200n8
-        {{ISO_APPEND}} console=ttyS0,115200n8
+  {{ISO_APPEND}} console=ttyS0,115200n8
+
 label vbox
   menu label greenbox vga
 	kernel /boot/vmlinuz64
