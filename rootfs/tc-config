@@ -30,7 +30,7 @@ addUser() {
 # Main
 
 clear
-echo "${GREEN}Booting green-box ${YELLOW}Core $VERSION ${NORMAL}"
+echo "${GREEN}Booting greenbox ${YELLOW}Core $VERSION ${NORMAL}"
 echo "${GREEN}Running Linux Kernel ${YELLOW}$KERNEL${GREEN}.${NORMAL}"
 
 log_msg "set PATH /usr/local/sbin,bin etc ..."

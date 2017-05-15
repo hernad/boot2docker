@@ -42,39 +42,39 @@ if [ ! -f $FILE ] ; then
            find VirtualBox -name "*.o" -exec rm {} \; &&\
            find VirtualBox -name "*.c" -exec rm {} \; || exit 1
            ;;
-      ruby|green|docker|vagrant|developer|python2|k8s)
+      ruby|green|docker|vagrant|developer|python2|k8s|x11)
            CT=greenbox_app_${GREEN_APP}
            CT_VER=${GREEN_APP_VER}
            docker rm -f $CT
-	   echo "source docker image $CT:$CT_VER"
+	         echo "source docker image $CT:$CT_VER"
            docker run --name $CT $CT:$CT_VER ls -l /opt/apps/${GREEN_APP}
            docker cp $CT:/opt/apps/${GREEN_APP} ${GREEN_APP} || exit 1
-           [ ! -d ${GREEN_APP}/sbin ] ||  mv ${GREEN_APP}/sbin/*  ${GREEN_APP}/bin/ 
+           [ ! -d ${GREEN_APP}/sbin ] ||  mv ${GREEN_APP}/sbin/*  ${GREEN_APP}/bin/
            if  [ -d bins/${GREEN_APP} ]
            then
              echo "bins/${GREEN_APP}"
-             cp bins/${GREEN_APP}/* ${GREEN_APP}/bin/  
+             cp bins/${GREEN_APP}/* ${GREEN_APP}/bin/
            else
              echo "NO bins/${GREEN_APP}"
            fi
            ;;
- 
 
-      *) 
+
+      *)
            CT=greenbox_apps
            docker rm -f $CT
            docker run --name $CT $CT:$GREENBOX_VERSION ls -l /opt/apps/${GREEN_APP}
            docker cp $CT:/opt/apps/${GREEN_APP} ${GREEN_APP} || exit 1
-           [ ! -d ${GREEN_APP}/sbin ] ||  mv ${GREEN_APP}/sbin/*  ${GREEN_APP}/bin/ 
+           [ ! -d ${GREEN_APP}/sbin ] ||  mv ${GREEN_APP}/sbin/*  ${GREEN_APP}/bin/
            if  [ -d bins/${GREEN_APP} ]
            then
              echo "bins/${GREEN_APP}"
-             cp bins/${GREEN_APP}/* ${GREEN_APP}/bin/  
+             cp bins/${GREEN_APP}/* ${GREEN_APP}/bin/
            else
              echo "NO bins/${GREEN_APP}"
            fi
            ;;
-   esac 
+   esac
    echo "tar cv${COMPRESSION}f $FILE ${GREEN_APP}"
    tar cv${COMPRESSION}f $FILE ${GREEN_APP}
    rm -r -f ${GREEN_APP}
@@ -91,5 +91,3 @@ curl -s -T $FILE \
 
 curl -s -u hernad:$BINTRAY_API_KEY \
    -X POST https://api.bintray.com/content/hernad/greenbox/$GREEN_APP/$GREEN_APP_VER/publish
-
-

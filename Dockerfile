@@ -207,6 +207,8 @@ RUN ls -l $ROOTFS/usr/local/tce.installed
 
 # update-ca-certificates is executed in crontab
 RUN rm $ROOTFS/usr/local/tce.installed/ca-certificates
+#RUN rm $ROOTFS/usr/local/tce.installed/fontconfig
+#RUN rm $ROOTFS/usr/local/tce.installed/aterm
 
 # /usr/local/tce.installed/ca-certificates # perl must be installed!
 #!/bin/sh
@@ -314,22 +316,7 @@ RUN echo root > $ROOTFS/etc/sysconfig/superuser
 
 RUN rm -r -f $ROOTFS/opt/VirtualBox
 
-ENV TCZ_DEPS_X    Xorg-7.7-bin libpng libXau libXaw  libXext libxcb libXdmcp libX11 libICE libXt libSM libXmu aterm \
-                  libXcursor libXrender libXinerama libGL libXdamage libXfixes libXxf86vm libxshmfence libdrm \
-                  libXfont freetype harfbuzz fontconfig Xorg-fonts dbus
 
-RUN for dep in $TCZ_DEPS_X ; do \
-        echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
-        curl -sL -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
-        if [ ! -s /tmp/$dep.tcz ] ; then \
-          echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
-          exit 1 ;\
-        else \
-          unsquashfs -i -f -d $ROOTFS /tmp/$dep.tcz && \
-          rm -f /tmp/$dep.tcz ;\
-          if [ "$?" != "0" ] ; then exit 1 ; fi ;\
-        fi ;\
-    done
 
 # glibc_apps: /usr/bin/localedef
 

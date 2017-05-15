@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 # docker daemon start script
 [ $(id -u) = 0 ] || { echo 'must be root' ; exit 1; }
 
@@ -49,7 +50,15 @@ fi
 : ${DOCKER_LOGFILE:=$BOOT_DIR/log/docker.log}
 
 : ${CERT_DIR:=$BOOT_DIR/tls/}
-: ${CERT_INTERFACES:='eth0 eth1'}
+
+if [ -z $CERT_INTERFACES ] ; then
+ CERT_INTERFACES="lo"
+ IFACES=`ifconfig | grep " Link" | grep eth | awk '{print $1}'`
+ for iface in $IFACES ; do
+   CERT_INTERFACES+="$iface "
+ done
+fi
+
 : ${CACERT:="${CERT_DIR}ca.pem"}
 : ${CAKEY:="${CERT_DIR}cakey.pem"}
 : ${SERVERCERT:="${CERT_DIR}server.pem"}
@@ -61,7 +70,7 @@ fi
 
 
 check_docker_installed() {
- 
+
   CNT=1
   while [ ! -f /opt/docker/bin/dockerd  ] ; do
     log_msg "waiting install /tmp/dockerd $CNT ..."

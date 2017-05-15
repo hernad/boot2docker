@@ -137,12 +137,11 @@ vbox_fix_permissions
 install_green_apps &
 
 if [ -d /opt/apps ] && [ ! -f /opt/apps/docker/VERSION ] ; then
-   log_msg "docker is not installed, wait 60sec ..."
-   sleep 60
+   log_msg "docker is not installed, wait 90sec ..."
+   sleep 90
+   # if there are errors during first install, try again
+   install_green_apps &
 fi
-
-# if there are errors during first install, try again
-install_green_apps &
 
 /etc/rc.d/start_docker_then_opt_boot_init_d_scripts &
 

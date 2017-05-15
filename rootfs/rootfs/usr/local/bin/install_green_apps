@@ -111,7 +111,7 @@ else
   echo "${IND2} GREEN_APPS_2: ${GREEN_APPS_2}${NORMAL}"
   echo "${IND3} GREEN_APPS_3: ${GREEN_APPS_3}${NORMAL}"
   echo "${IND4} GREEN_APPS_4: ${GREEN_APPS_4}${NORMAL}"
-  echo "${IND9} GREEN_APPS_9: ${GREEN_APPS_4}${NORMAL}"
+  echo "${IND9} GREEN_APPS_9: ${GREEN_APPS_9}${NORMAL}"
 fi
 
 echo ===== download_green_apps start: $(date) ====== >> $LOG_FILE
