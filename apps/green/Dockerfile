@@ -405,10 +405,17 @@ RUN mv /opt/apps/green/sbin/* /opt/apps/green/bin/ ; rmdir /opt/apps/green/sbin
 RUN echo "/opt/apps/green:" && ls -l /opt/apps/green
 RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
 
-
 # manuals out
 RUN rm -rf /opt/apps/green/man /opt/apps/green/share/doc /opt/apps/green/share/man ;\
     rm -rf /opt/apps/green/usr /opt/apps/green/var
+
+
+RUN rm -rf /opt/apps/green/share/gnupg/*.txt
+RUN rm -rf /opt/apps/green/share/gitweb  /opt/apps/green/share/pixmaps
+# rm locales exept bs
+RUN mkdir -p /tmp/locale && mv /opt/apps/share/locale/bs /tmp/locale/ && rm -rf /opt/apps/share/locale/* &&\
+   mv /tmp/locale/bs /opt/apps/share/locale/
+
 
 RUN ls -ld /opt/apps/green/* ; ls -l /opt/apps/green/bin/ ; ls -l /opt/apps/green/lib/
 # collect shared libraries needed for green apps execution
