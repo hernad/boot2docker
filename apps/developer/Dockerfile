@@ -92,8 +92,8 @@ RUN mkdir -p /opt/apps/developer/bin ;\
 
 ENV CPPFLAGS="-I/opt/apps/python2/include" CFLAGS="-I/opt/apps/python2/include" LDFLAGS="-L/opt/apps/python2/lib"
 
-RUN curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
-    cd /opt/apps &&\
+RUN cd /opt/apps &&\
+    curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
     tar xvf python2_2.7.13.tar.xz
 
 ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
