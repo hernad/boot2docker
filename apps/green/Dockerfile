@@ -250,6 +250,7 @@ ENV TCZ_DEPS_DEV    curl-dev \
                     openssl-dev \
                     ncurses-dev \
                     ncurses \
+                    ncurses5 \
                     expat2-dev \
                     readline-dev \
                     libxml2-dev
