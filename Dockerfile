@@ -263,10 +263,14 @@ RUN curl -sLO https://www.netfilter.org/projects/libmnl/files/libmnl-1.0.4.tar.b
     cd libmnl* &&\
     ./configure && make && make install
 
-RUN curl -sLO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-0.0.20170421.tar.xz &&\
+# https://git.zx2c4.com/WireGuard/refs/
+
+ENV WIRE_GUARD_VER=0.0.20170421
+RUN curl -sLO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-${WIRE_GUARD_VER}.tar.xz &&\
     tar xvf WireGuard*xz && rm WireGuard*xz &&\
     cd WireGuard*/src &&\
-    make &&\
+    #make -C /lib/modules/4.10.15-greenbox/build M=/WireGuard-0.0.20170421/src modules
+    make -C /lib/modules/$KERNEL_VERSION-$LINUX_BRAND M=/WireGuard-${WIRE_GUARD_VER}/src modules &&\
     make tools &&\
     make -C tools install &&\
     ls -lr &&\
