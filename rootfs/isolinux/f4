@@ -10,9 +10,7 @@
  desktop=yyy                Specify alternate window manager
  laptop                     Force load laptop related modules
  noembed                    Unpack initramfs to tmpfs 
- nozswap                    Skip compressed swap in ram
  xvesa=800x600x32           Set Xvesa default screen resolution
  mydata=yyy                 Specify alternate backup file name.
  blacklist=ssb              Blacklist a single module
  multivt                    Allows for multiple virtual terminals
- 

@@ -4,8 +4,8 @@ default {{ISO_DEFAULT}}
 label rack
         menu label green-box
 	kernel /boot/vmlinuz64 console=ttyS0,115200n8
-	initrd /boot/initrd.img console=ttyS0,115200n8 
-        {{ISO_APPEND}} console=ttyS0,115200n8 
+	initrd /boot/initrd.img console=ttyS0,115200n8
+        {{ISO_APPEND}} console=ttyS0,115200n8
 label vbox
         menu label green-box vga
 	kernel /boot/vmlinuz64
@@ -22,7 +22,7 @@ timeout 50
 TOTALTIMEOUT 3000
 
 # Displays the indicated file on the screen when a function key is pressed at the boot: prompt. This can be used to implement pre-boot online help (presumably for the kernel command line options).
-F1 boot.msg
+F1 f1
 F2 f2
 F3 f3
 F4 f4
