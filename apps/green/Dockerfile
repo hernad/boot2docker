@@ -390,31 +390,24 @@ RUN mkdir -p /opt/apps/green/bin ;\
 RUN rm -rf /opt/apps/green/bin/git-cvsserver &&\
     rm -rf /opt/apps/green/lib/git-core/git-cvs* &&\
     rm -rf /opt/apps/green/lib/git-core/git-svn* &&\
-    rm -rf /opt/apps/green/lib/git-core/git-web--browse*
+    rm -rf /opt/apps/green/lib/git-core/git-web--browse* &&\
+    # erase tcpdump.4.8.1
+    rm -rf /opt/apps/green/bin/tcpdump.* &&\
+    # erase static libraries, includes in /opt/apps/green
+    rm /opt/apps/green/lib/*.a &&\
+    rm /opt/apps/green/lib/*.la && echo green_apps removing static libraries &&\
+    rm -rf /opt/apps/green/include/ ; echo green_apps removing include files &&\
+    rm -rf /opt/apps/green/share/terminfo /opt/apps/green/share/git-gui /opt/apps/green/share/applications &&\
+    mv /opt/apps/green/sbin/* /opt/apps/green/bin/ ; rmdir /opt/apps/green/sbin
 
-# erase tcpdump.4.8.1
-RUN rm -rf /opt/apps/green/bin/tcpdump.*
-
-# erase static libraries, includes in /opt/apps/green
-RUN rm /opt/apps/green/lib/*.a &&\
-    rm /opt/apps/green/lib/*.la && echo green_apps removing static libraries
-RUN rm -rf /opt/apps/green/include/ ; echo green_apps removing include files
-
-RUN rm -rf /opt/apps/green/share/terminfo /opt/apps/green/share/git-gui /opt/apps/green/share/applications
-RUN mv /opt/apps/green/sbin/* /opt/apps/green/bin/ ; rmdir /opt/apps/green/sbin
-RUN echo "/opt/apps/green:" && ls -l /opt/apps/green
-RUN rm -rf /opt/apps/go/test ; echo rm golang test directory
-
-# manuals out
-RUN rm -rf /opt/apps/green/man /opt/apps/green/share/doc /opt/apps/green/share/man ;\
-    rm -rf /opt/apps/green/usr /opt/apps/green/var
-
-
-RUN rm -rf /opt/apps/green/share/gnupg/*.txt
-RUN rm -rf /opt/apps/green/share/gitweb  /opt/apps/green/share/pixmaps
-# rm locales exept bs
-RUN mkdir -p /tmp/locale && mv /opt/apps/green/share/locale/bs /tmp/locale/ && rm -rf /opt/apps/green/share/locale/* &&\
-   mv /tmp/locale/bs /opt/apps/green/share/locale/
+RUN rm -rf /opt/apps/go/test ; echo rm golang test directory &&\
+   # manuals out
+   rm -rf /opt/apps/green/man /opt/apps/green/share/doc /opt/apps/green/share/man ;\
+    rm -rf /opt/apps/green/usr /opt/apps/green/var &&\
+    rm -rf /opt/apps/green/share/gnupg/*.txt && rm -rf /opt/apps/green/share/gitweb  /opt/apps/green/share/pixmaps &&\
+    # rm locales exept bs
+    mkdir -p /tmp/locale && mv /opt/apps/green/share/locale/bs /tmp/locale/ && rm -rf /opt/apps/green/share/locale/* &&\
+    mv /tmp/locale/bs /opt/apps/green/share/locale/
 
 RUN rm -f '/opt/apps/green/share/]'
 
