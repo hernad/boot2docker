@@ -27,6 +27,17 @@ RUN for dep in $TCZ_DEPS_X ; do \
     done
 
 
+RUN cd / && curl -sLO $TCL_REPO_BASE/tcz/Xorg-7.7-bin.tcz.list &&\
+       ( [ -d /opt/apps/x11/bin ] || mkdir -p /opt/apps/x11/bin ) &&\
+       ( [ -d /opt/apps/x11/lib ] || mkdir -p /opt/apps/x11/lib ) &&\
+       while read FILE ; do case $FILE in \
+                              *\/bin\/*) mv $ROOTFS/$FILE /opt/apps/x11/bin ;; \
+                              *\/lib\/*) mv $ROOTFS/$FILE /opt/apps/x11/lib ;; \
+    		   esac ; done < Xorg-7.7-bin.tcz.list &&\
+       cd $ROOTFS/usr/local/lib && \
+       mv libpng* libXau* libxcb* libXdmcp* libX11* libICE* libXt* libSM* libXmu* libXcursor* libdrm* libXfont* \
+             /opt/apps/x11/lib
+             
 # /opt/apps/x11/share/{xcb,locale}
 RUN echo "X11 `ls -ld /usr/share/X11/*`"  && mkdir -p /opt/apps/x11/share ; cp -av /usr/share/X11/* /opt/apps/x11/share/ &&\
    rm -rf $ROOTFS/usr/local/share/X11  &&\
