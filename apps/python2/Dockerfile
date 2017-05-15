@@ -23,7 +23,7 @@ ENV CPPFLAGS="-I/opt/apps/python2/include" CFLAGS="-I/opt/apps/python2/include" 
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG=C.UTF-8 PYTHON_VERSION=2.7.13 PYTHON_PIP_VERSION=9.0.1
 
-ENV PATH  /opt/apps/python2/bin:$PATH
+ENV PATH=/opt/apps/python2/bin:/usr/local/bin:/bin:/usr/bin
 
 #RUN apt-get purge -y python.*
 RUN apt-get install -y python-dev libffi-dev libssl-dev bzip2 libbz2-dev

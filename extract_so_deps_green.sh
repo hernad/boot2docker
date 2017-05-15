@@ -1,11 +1,11 @@
 #!/bin/bash
 
+PATH=/usr/local/bin:/bin:/usr/bin:/opt/apps/green/bin
 
 GREEN_LIB=/opt/apps/green/lib/
 [ -d $GREEN_LIB ] || mkdir $GREEN_LIB
 
 LDD_CHECK="/opt/apps/green/bin/rsync"
-
 
 for ldd_f in $LDD_CHECK ; do
 
