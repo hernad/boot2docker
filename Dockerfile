@@ -261,7 +261,9 @@ RUN cd /vboxguest && mkdir -p $ROOTFS/sbin && \
 RUN curl -sLO https://www.netfilter.org/projects/libmnl/files/libmnl-1.0.4.tar.bz2 &&\
     tar xf libmnl*.bz2 && rm libmnl*.bz2 &&\
     cd libmnl* &&\
-    ./configure && make && make DESTDIR=$ROOTFS install
+    ./configure && make install &&\
+    # first install is for next build, second install is for iso rootfs/usr/lib/
+    make DESTDIR=$ROOTFS install
 
 # https://git.zx2c4.com/WireGuard/refs/
 
