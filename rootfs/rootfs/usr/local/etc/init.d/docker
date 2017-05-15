@@ -55,7 +55,7 @@ if [ -z $CERT_INTERFACES ] ; then
  CERT_INTERFACES="lo"
  IFACES=`ifconfig | grep " Link" | grep eth | awk '{print $1}'`
  for iface in $IFACES ; do
-   CERT_INTERFACES+="$iface "
+   CERT_INTERFACES+=" $iface"
  done
 fi
 
