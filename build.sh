@@ -51,7 +51,7 @@ DATE=$(date) && \
 echo "${GIT_BRANCH} : ${GITSHA1} - ${DATE}" > GREENBOX_BUILD
 
 
-ISO_APPEND="append loglevel=3"
+ISO_APPEND="loglevel=3"
 
 if [ -f docker_password ] ; then ## if file docker_password exists set dockerpwd
     DOCKER_PASSWORD=`cat docker_password`
