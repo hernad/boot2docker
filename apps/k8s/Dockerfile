@@ -20,26 +20,26 @@ ENV K8S_HOME=/opt/apps/k8s K8S_VERSION=1.6.3 ETCD_VERSION=3.1.7 HELM_VERSION=2.4
 
 RUN mkdir -p $K8S_HOME/bin
 
-RUN cd $K8S_HOME/bin && curl -LO https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 &&\
+RUN cd $K8S_HOME/bin && curl -sLO https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 &&\
    chmod +x cfssl_linux-amd64 &&\
    mv cfssl_linux-amd64 cfssl
 
 
-RUN cd $K8S_HOME/bin && curl -LO https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 &&\
+RUN cd $K8S_HOME/bin && curl -sLO https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 &&\
      chmod +x cfssljson_linux-amd64 &&\
      mv cfssljson_linux-amd64 cfssljson
 
 
-RUN curl -LO https://github.com/coreos/etcd/releases/download/v${ETCD_VERSION}/etcd-v${ETCD_VERSION}-linux-amd64.tar.gz &&\
+RUN curl -sLO https://github.com/coreos/etcd/releases/download/v${ETCD_VERSION}/etcd-v${ETCD_VERSION}-linux-amd64.tar.gz &&\
    tar -xvf etcd-v${ETCD_VERSION}-linux-amd64.tar.gz &&\
    mv etcd-v${ETCD_VERSION}-linux-amd64/etcd* $K8S_HOME/bin/
 
 
 RUN cd $K8S_HOME/bin &&\
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kube-apiserver  &&\
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kube-controller-manager &&\
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kube-scheduler &&\
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kubectl &&\
+    curl -sLO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kube-apiserver  &&\
+    curl -sLO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kube-controller-manager &&\
+    curl -sLO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kube-scheduler &&\
+    curl -sLO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kubectl &&\
     chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 
 
