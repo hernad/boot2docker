@@ -16,22 +16,6 @@ DOCKER_PID=/var/run/docker.pid
 
 PATH=:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/docker/bin
 
-CNT=1
-while [ ! -f /opt/docker/bin/dockerd  ] ; do
-  log_msg "waiting install /tmp/dockerd $CNT ..."
-  sleep 30
-  let CNT=$CNT+1
-
-  if [ $CNT -eq 3  ] || [ $CNT -eq 6 ]  || [ $CNT -eq 10 ] ; then
-    install_green_apps &
-  fi
-
-  if [ $CNT -eq 20  ] ; then
-     log_msg "docker wait timeout 10 minutes"
-     exit 1
-  fi
-done
-
 
 if [ ! -e $BOOT_DIR/etc/profile ]
 then
@@ -74,6 +58,27 @@ fi
 # client certificates
 : ${CERT:="${CERT_DIR}cert.pem"}
 : ${KEY:="${CERT_DIR}key.pem"}
+
+
+check_docker_installed() {
+ 
+  CNT=1
+  while [ ! -f /opt/docker/bin/dockerd  ] ; do
+    log_msg "waiting install /tmp/dockerd $CNT ..."
+    sleep 30
+    let CNT=$CNT+1
+
+    if [ $CNT -eq 3  ] || [ $CNT -eq 6 ]  || [ $CNT -eq 10 ] ; then
+      install_green_apps &
+    fi
+
+    if [ $CNT -eq 20  ] ; then
+       log_msg "docker wait timeout 10 minutes"
+       exit 1
+    fi
+  done
+
+}
 
 start() {
     # Not enabling Docker daemon TLS by default.
@@ -162,6 +167,7 @@ restart() {
            echo restart ERROR
         fi
     else
+        check_docker_installed
         start
     fi
 }
@@ -185,9 +191,15 @@ status() {
 }
 
 case $1 in
-    start) start;;
-    stop) stop;;
-    restart) restart;;
-    status) status;;
-    *) echo "Usage $0 {start|stop|restart|status}"; exit 1
+    start)
+        check_docker_installed
+        start;;
+    stop)
+        stop;;
+    restart)
+        restart;;
+    status)
+        status;;
+    *)
+        echo "Usage $0 {start|stop|restart|status}"; exit 1
 esac
