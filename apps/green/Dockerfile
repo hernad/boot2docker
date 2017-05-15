@@ -416,8 +416,9 @@ RUN rm -rf /opt/apps/green/share/gitweb  /opt/apps/green/share/pixmaps
 RUN mkdir -p /tmp/locale && mv /opt/apps/green/share/locale/bs /tmp/locale/ && rm -rf /opt/apps/green/share/locale/* &&\
    mv /tmp/locale/bs /opt/apps/green/share/locale/
 
+RUN rm -f '/opt/apps/green/share/]'
 
-RUN ls -ld /opt/apps/green/* ; ls -l /opt/apps/green/bin/ ; ls -l /opt/apps/green/lib/
+#RUN ls -ld /opt/apps/green/* ; ls -l /opt/apps/green/bin/ ; ls -l /opt/apps/green/lib/
 # collect shared libraries needed for green apps execution
 
 #RUN mv /opt/apps/lib/man-db/*.so /opt/apps/lib ; rm -rf /opt/apps/lib/man-db
