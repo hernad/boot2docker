@@ -345,8 +345,9 @@ RUN for dep in $TCZ_DEPS_1 ; do \
 COPY DOCKER_VERSION $ROOTFS/etc/sysconfig/docker
 
 # get generate_cert
+ENV GENERATE_CERT_VER=0.3
 RUN mkdir -p /opt/apps/docker/bin &&\
-      curl -fsL -o /opt/apps/docker/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/0.2/generate_cert-0.2-linux-amd64
+      curl -fsL -o /opt/apps/docker/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/${GENERATE_CERT_VER}/generate_cert-${GENERATE_CERT_VER}-linux-amd64
 
 RUN curl -sL  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/sysconfig/docker).tgz | tar -C / -xz && \
     mv /docker/* /opt/apps/docker/bin/ &&\
