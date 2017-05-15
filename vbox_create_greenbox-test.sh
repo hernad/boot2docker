@@ -103,3 +103,5 @@ VBoxManage storageattach $VBOX_NAME \
 		--device 0 \
 		--type hdd \
 		--medium $(pwd)/${VBOX_NAME}.vdi
+
+VBoxManage startvm ${VBOX_NAME}
