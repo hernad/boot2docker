@@ -159,10 +159,10 @@ start() {
 }
 
 stop() {
-    kill $(cat $DOCKER_PID)
-    killall dockerd
-    killall dockerd
-    killall dockerd
+    [ -f $DOCKER_PID ] && kill $(cat $DOCKER_PID)
+    ps ax  | grep dockerd | grep -v grep
+    ps ax  | grep dockerd | grep -v grep  && killall dockerd
+    ps ax  | grep dockerd | grep -v grep  && killall dockerd
 }
 
 restart() {

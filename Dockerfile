@@ -261,7 +261,7 @@ RUN cd /vboxguest && mkdir -p $ROOTFS/sbin && \
 RUN curl -sLO https://www.netfilter.org/projects/libmnl/files/libmnl-1.0.4.tar.bz2 &&\
     tar xf libmnl*.bz2 && rm libmnl*.bz2 &&\
     cd libmnl* &&\
-    ./configure && make && make install
+    ./configure && make && make DESTDIR=$ROOTFS install
 
 # https://git.zx2c4.com/WireGuard/refs/
 
@@ -272,11 +272,10 @@ RUN curl -sLO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-${WIRE_GUARD_VE
     #make -C /lib/modules/4.10.15-greenbox/build M=/WireGuard-0.0.20170421/src modules
     KERNELDIR=$LINUX_KERNEL_SOURCE make &&\
     make tools &&\
-    make -C tools install &&\
+    make -C tools DESTDIR=$ROOTFS install &&\
     ls -lr &&\
     mkdir -p $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/wg &&\
     cp *.ko $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/wg/
-
 
 # http://zfsonlinux.org/
 # https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.8/spl-0.6.5.8.tar.gz
@@ -444,7 +443,9 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/fs/btrfs
 
 RUN rm $ROOTFS/usr/local/lib/*.a &&\
-    rm $ROOTFS/usr/local/lib/*.la
+    rm $ROOTFS/usr/local/lib/*.la &&\
+    # rm man files
+    rm $ROOTFS/usr/local/bin/*.8
 
 RUN rm $ROOTFS/opt/bootlocal.sh && rm $ROOTFS/opt/bootsync.sh
 RUN rm $ROOTFS/usr/local/etc/ssh/*.orig
