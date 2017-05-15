@@ -270,7 +270,7 @@ RUN curl -sLO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-${WIRE_GUARD_VE
     tar xvf WireGuard*xz && rm WireGuard*xz &&\
     cd WireGuard*/src &&\
     #make -C /lib/modules/4.10.15-greenbox/build M=/WireGuard-0.0.20170421/src modules
-    make -C /lib/modules/$KERNEL_VERSION-$LINUX_BRAND M=/WireGuard-${WIRE_GUARD_VER}/src &&\
+    make -C $ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND M=/WireGuard-${WIRE_GUARD_VER}/src modules &&\
     make tools &&\
     make -C tools install &&\
     ls -lr &&\
@@ -319,7 +319,6 @@ RUN cd $ROOTFS && ln -s lib lib64
 RUN echo root > $ROOTFS/etc/sysconfig/superuser
 
 RUN rm -r -f $ROOTFS/opt/VirtualBox
-
 
 
 # glibc_apps: /usr/bin/localedef
