@@ -151,7 +151,7 @@ download_app() {
       echo "downloading: $DOWNLOAD_URL/${app}_${ver}.tar.${ext} ..."
       log_msg "START: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
       cd $APPS_HOME
-      touch $DOWNLOAD_URL/${app}_${ver}.tar.${ext}.download
+      touch ${app}_${ver}.tar.${ext}.download
       curl -s -LO $DOWNLOAD_URL/${app}_${ver}.tar.${ext}
    fi
 

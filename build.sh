@@ -59,7 +59,7 @@ if [ -f docker_password ] ; then ## if file docker_password exists set dockerpwd
 fi
 
 # lang=bs_BA.UTF-8"
-# ISO_APPEND+=" secure rootpwd=root01"
+# ISO_APPEND+=" rootpwd=root01"
 ISO_APPEND+=" tz=CET-1CEST,M3.5.0,M10.5.0\/3"
 ISO_APPEND+=" noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD"
 
