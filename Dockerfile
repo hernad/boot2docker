@@ -270,7 +270,7 @@ RUN curl -sLO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-${WIRE_GUARD_VE
     tar xvf WireGuard*xz && rm WireGuard*xz &&\
     cd WireGuard*/src &&\
     #make -C /lib/modules/4.10.15-greenbox/build M=/WireGuard-0.0.20170421/src modules
-    KERNELDIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND make &&\
+    KERNELDIR=$LINUX_KERNEL_SOURCE make &&\
     make tools &&\
     make -C tools install &&\
     ls -lr &&\
