@@ -1,0 +1,5 @@
+greenbox server boot
+========================================
+
+rack - boot messages to serial console
+vbox - boot messages to vga console
