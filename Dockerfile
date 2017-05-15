@@ -444,7 +444,7 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/fs/btrfs
 
 RUN rm $ROOTFS/usr/local/lib/*.a &&\
-    rm $ROOTFS/usr/local/lib/*.la
+    rm $ROOTFS/usr/local/lib/*.la &&\
     # rm man files
     rm -rf $ROOTFS/usr/local/share/man/*
 
