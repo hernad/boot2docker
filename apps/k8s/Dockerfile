@@ -14,8 +14,9 @@ RUN apt-get update -y
 
 ENV CPPFLAGS="-I/opt/apps/k8s/include" CFLAGS="-I/opt/apps/k8s/include" LDFLAGS="-L/opt/apps/k8s/lib"
 
-
-ENV K8S_HOME=/opt/apps/k8s K8S_VERSION=1.6.2 ETCD_VERSION=3.1.4
+#https://github.com/kubernetes/kubernetes/releases
+# https://github.com/coreos/etcd/releases/
+ENV K8S_HOME=/opt/apps/k8s K8S_VERSION=1.6.3 ETCD_VERSION=3.1.7 HELM_VERSION=2.4.1
 
 RUN mkdir -p $K8S_HOME/bin
 
@@ -40,3 +41,8 @@ RUN cd $K8S_HOME/bin &&\
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kube-scheduler &&\
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kubectl &&\
     chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
+
+
+RUN curl -sLO https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz &&\
+    tar -xvf helm-v${HELM_VERSION}-linux-amd64.tar.gz &&\
+    mv helm-v${ETCD_VERSION}-linux-amd64/helm* $K8S_HOME/bin/
