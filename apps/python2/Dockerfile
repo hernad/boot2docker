@@ -12,7 +12,6 @@ RUN apt-get update -y
 
 # ================= /opt/apps/python2 =========================================================
 
-
 ENV CPPFLAGS="-I/opt/apps/python2/include" CFLAGS="-I/opt/apps/python2/include" LDFLAGS="-L/opt/apps/python2/lib"
 
 # ====== python2 ==============
@@ -48,6 +47,5 @@ RUN     curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
                 -exec rm -rf '{}' + \
         && rm -rf /usr/src/python \
         && pip install --no-cache-dir virtualenv readline
-
 
 RUN    rm  -rf /opt/apps/python2/lib/python2.7/test /opt/apps/python2/lib/python2.7/json/tests /opt/apps/python2/lib/python2.7/ctypes/test

@@ -12,7 +12,6 @@ RUN apt-get update -y
 
 # ================= /opt/apps/green =========================================================
 
-
 RUN apt-get build-dep libpam-google-authenticator -y
 ENV CPPFLAGS="-I/opt/apps/developer/include" CFLAGS="-I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib"
 
@@ -85,5 +84,24 @@ RUN mkdir -p /opt/apps/developer/bin ;\
         cp -av /opt/apps/developer/usr/local/share/*    /opt/apps/developer/share/ &&\
         cp -av /opt/apps/developer/usr/lib/*            /opt/apps/developer/lib/ &&\
         cp -av /opt/apps/developer/usr/include/*        /opt/apps/developer/include/ &&\
-
         rm -rf /opt/apps/developer/usr/local
+
+
+
+# ================= /opt/apps/python2 =========================================================
+
+ENV CPPFLAGS="-I/opt/apps/python2/include" CFLAGS="-I/opt/apps/python2/include" LDFLAGS="-L/opt/apps/python2/lib"
+
+RUN curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
+    cd /opt/apps &&\
+    tar xvf python2_2.7.13.tar.xz
+
+ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
+RUN curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
+                && pip install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
+                && find /usr/local \
+                        \( -type d -a -name test -o -name tests \) \
+                        -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+                        -exec rm -rf '{}' + \
+                && rm -rf /usr/src/python \
+                && pip install --no-cache-dir ansible
