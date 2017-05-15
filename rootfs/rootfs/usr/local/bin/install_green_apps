@@ -143,6 +143,10 @@ download_app() {
       log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.${ext} ..."
       cp $LOCAL_MEDIA $APPS_HOME/
    else
+      if [ -f $DOWNLOAD_URL/${app}_${ver}.tar.${ext} ] ; then
+        log_msg "CANCEL: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}, another download in progress"
+        exit 1
+      fi
       echo "downloading: $DOWNLOAD_URL/${app}_${ver}.tar.${ext} ..."
       log_msg "START: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
       cd $APPS_HOME
