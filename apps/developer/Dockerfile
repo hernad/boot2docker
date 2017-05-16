@@ -101,8 +101,6 @@ RUN mkdir -p  /opt/apps/developer/include/linux/x86/include/ &&\
 #RUN cd / ; find -name "libpthread*so*"
 #RUN cd / ; find -name "libc*"
 
-#RUN rm /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /opt/apps/developer/lib/libc.a
-
 
 # ================= /opt/apps/python2 =========================================================
 
@@ -125,6 +123,8 @@ ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/
     CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/x86/include/generated -I/opt/apps/developer/include/linux/x86/include/uapi  -I/opt/apps/developer/include/linux/x86/include/generated/uapi -I/opt/apps/developer/include/linux/include -I/opt/apps/developer/include/linux/include/uapi" \
     LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib"
 
+
+RUN rm /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /opt/apps/developer/lib/libc.a
 
 #    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -nodefaultlibs -Wl,-rpath,/rootfs/lib64 -Wl,-dynamic-linker,/rootfs/lib/lib64/libc-2.24.so -Wl,-dynamic-linker,/rootfs/lib64/libpthread-2.24.so"
 
