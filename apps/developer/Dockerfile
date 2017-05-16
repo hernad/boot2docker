@@ -98,10 +98,6 @@ RUN mkdir -p /opt/apps/developer/bin ;\
 
 # ================= /opt/apps/python2 =========================================================
 
-ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
-    CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
-    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -L/rootfs/lib -nodefaultlibs -l/rootfs/lib/libc.so.6 -l/rootfs/lib/libpthread-2.24.so"
-
 RUN cd /opt/apps &&\
     curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
     tar xf python2_2.7.13.tar.xz && rm python2_2.7.13.tar.xz
@@ -109,6 +105,11 @@ RUN cd /opt/apps &&\
 RUN cd /opt/apps &&\
     curl -sLO https://dl.bintray.com/hernad/greenbox/green_4.1.2.tar.xz &&\
     tar xf green_4.1.2.tar.xz && rm green_4.1.2.tar.xz
+
+
+ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
+    CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
+    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -nodefaultlibs -l/opt/apps/developer/lib/libc.a -l /opt/apps/developer/lib/libpthread.a"
 
 RUN cd / ; find -name "libpthread*so*"
 
