@@ -90,7 +90,17 @@ zfs_up() {
 }
 
 is_vbox () {
-  lshw | grep -q "product: VirtualBox"
+  if [ ! -f /etc/sysconfig/vbox ]
+    if lshw | grep -q "product: VirtualBox" ; then
+       echo yes > /etc/sysconfig/vbox
+       return 0
+    else
+       echo no > /etc/sysconfig/vbox
+       return 1
+    fi
+  else
+    cat /etc/sysconfig/vbox | grep -q yes
+  fi
 }
 
 
