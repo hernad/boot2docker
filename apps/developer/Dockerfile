@@ -100,7 +100,7 @@ RUN cd /opt/apps &&\
     tar xf python2_2.7.13.tar.xz
 
 # ansible build dependencies libpthread.so.0
-RUN cp -av /rootfs/lib/libpthread*so* /opt/apps/python2/lib/
+RUN cp -av /rootfs/lib/*so* /opt/apps/python2/lib/
 
 ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
