@@ -112,7 +112,7 @@ RUN cd / ; find -name "/rootfs/lib/libc*so*"
 
 ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
     CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
-    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -Wl,-rpath,/rootfs/lib -Wl,-dynamic-linker,/rootfs/lib/libc.so -Wl,-dynamic-linker,/rootfs/lib/libpthread.so"
+    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -Wl,-rpath,/rootfs/lib -Wl,-dynamic-linker,/rootfs/lib/libc.so.6 -Wl,-dynamic-linker,/rootfs/lib/libpthread.so.0"
 
 
 
