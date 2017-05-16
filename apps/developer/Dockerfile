@@ -90,10 +90,11 @@ RUN mkdir -p /opt/apps/developer/bin ;\
         rm -rf /opt/apps/developer/usr/local &&\
         rm -rf /opt/apps/developer/usr
 
-        
-# linux x86 includes
-RUN cp -av /usr/src/linux/arch/x86/include/* /opt/apps/developer/include/
 
+# linux x86 includes
+RUN cp -av /usr/src/linux/arch/x86/include/* /opt/apps/developer/include/ &&\
+    mv /opt/apps/developer/include/generated/asm/* /opt/apps/developer/include/asm/ &&\
+    mv /opt/apps/developer/include/generated/uapi/asm/* /opt/apps/developer/include/uapi/asm/
 
 #RUN cd / ; find -name "libpthread*so*"
 #RUN cd / ; find -name "libc*"
