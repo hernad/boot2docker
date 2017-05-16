@@ -57,10 +57,12 @@ mount_bind_opt_apps() {
 
 if [ -d /opt/apps/$1 ] ; then
   if ! $(grep -q \/opt\/$1 /proc/mounts) ; then
-    echo mkdir, mount /opt/apps/$1 ...
-    sudo mkdir -p /opt/$1
-    sudo mount --bind /opt/apps/$1 /opt/$1 >> $LOG_FILE
-    log_msg "/opt/$1 bind mounted"
+    echo "mkdir /opt/$1, mount /opt/apps/$1 ..."
+    mkdir -p /opt/$1
+    /bin/mount --bind /opt/apps/$1 /opt/$1 >> $LOG_FILE
+    log_msg "/opt/$1 bind mounted ($?)"
+  else
+    log_msg "/opt/$1 already mounted"
   fi
 fi
 
@@ -70,7 +72,10 @@ umount_opt() {
 
 if [ -d /opt/apps/$1 ] ; then
   if  $(grep -q \/opt\/$1 /proc/mounts) ; then
-    sudo umount -f -l /opt/$1 >> $LOG_FILE
+    /bin/umount -f -l /opt/$1 >> $LOG_FILE
+    log_msg "/opt/$1 umounted ($?)"
+  else
+    log_msg "not mounted /opt/$1"
   fi
 fi
 
@@ -166,20 +171,20 @@ setup_symlinks_and_commands() {
 DIR=/opt/green
 SRC_LINK=/opt/green/lib/git-core
 LINK=/usr/local/lib/git-core
-[ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
+[ -d $DIR ] && [ ! -h $LINK ] && ln -s $SRC_LINK $LINK
 
 SRC_LINK=/opt/green/share/git-core
 LINK=/usr/local/share/git-core
-[ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
+[ -d $DIR ] && [ ! -h $LINK ] && ln -s $SRC_LINK $LINK
 
 # jenkins ssh agent needs  java + git in /usr/bin or /usr/local/bin
 SRC_LINK=/opt/green/bin/git
 LINK=/usr/local/bin/git
-[ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
+[ -d $DIR ] && [ ! -h $LINK ] && ln -s $SRC_LINK $LINK
 
 SRC_LINK=/opt/java/bin/java
 LINK=/usr/local/bin/java
-[ -d $DIR ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
+[ -d $DIR ] && [ ! -h $LINK ] && ln -s $SRC_LINK $LINK
 
 # setup idea run script
 [ -d /opt/idea ] && [ ! -f $BOOT_DIR/bin/idea ] &&  (cat > $BOOT_DIR/bin/idea <<- EOF
@@ -200,7 +205,7 @@ EOF
 # vi -> vim
 LINK=/usr/local/bin/vi
 SRC_LINK=/opt/vim/bin/vim
-[ -d /opt/vim ] && [ ! -h $LINK ] && sudo ln -s $SRC_LINK $LINK
+[ -d /opt/vim ] && [ ! -h $LINK ] && ln -s $SRC_LINK $LINK
 
 }
 

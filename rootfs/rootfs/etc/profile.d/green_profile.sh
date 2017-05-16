@@ -1,6 +1,8 @@
 #!/bin/sh
-
 . /etc/green_common
+
+sudo su -c ". /etc/green_common ; mount_all_apps ; setup_symlinks_and_commands"
+set_path_ld_library
 
 export PATH
 export LD_LIBRARY_PATH
@@ -45,5 +47,3 @@ PCOLOR=$GREEN
 
 #http://unix.stackexchange.com/questions/105958/terminal-prompt-not-wrapping-correctly
 PS1="[\[$PCOLOR\]\u@\h\[$NOCOLOR\] \W]\\$ " # prompt
-
-setup_symlinks_and_commands

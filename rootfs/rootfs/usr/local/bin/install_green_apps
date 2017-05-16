@@ -174,13 +174,11 @@ download_app() {
         fi
         umount_opt ${app}
         cd $APPS_HOME
-
         rm -rf ${app} # delete old version
 	      if tar xf ${app}_${ver}.tar.${ext} 2>&1 | tee -a $LOG_FILE ; then
               log_msg "SUCCESS: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
               chown -R root:root ${app}
               echo ${ver} > /opt/apps/${app}/VERSION
-              log_msg "mount_bind_opt_apps ${app}"
               mount_bind_opt_apps ${app}
               [ "$app" == "VirtualBox" ] && vbox_fix_permissions
               if [ "$app" == "docker" ] ; then
@@ -193,6 +191,7 @@ download_app() {
               log_msg "ERROR: TARXF: curl=> $DOWNLOAD_URL/${app}_${ver}.tar.${ext}, error tar tf $APPS_HOME/${app}_${ver}.tar.${ext} (PATH: $PATH, LD_LIBRARY_PATH: $LD_LIBRARY_PATH)"
               EXIT_CODE=132
         fi
+        cd $APPS_HOME
         rm ${app}_${ver}.tar.${ext}
         rm ${app}_${ver}.tar.${ext}.download
         return $EXIT_CODE
