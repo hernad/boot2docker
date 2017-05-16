@@ -76,6 +76,10 @@ RUN for dep in $TCZ_DEPS_DEVELOER ; do \
     done
 
 
+# linux asm sources
+RUN cp -av /usr/src/linux/arch/x86/include/asm /opt/apps/developer/include/
+
+
 RUN mkdir -p /opt/apps/developer/bin ;\
     mkdir -p /opt/apps/developer/lib ;\
     mkdir -p /opt/apps/developer/include ;\
