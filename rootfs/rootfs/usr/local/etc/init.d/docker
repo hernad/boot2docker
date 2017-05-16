@@ -152,9 +152,6 @@ start() {
         DOCKER_OPTS="$DOCKER_OPTS --storage-driver=$DOCKER_STORAGE"
     fi
 
-    # Increasing the number of open files and processes by docker
-    ulimit -n $DOCKER_ULIMITS
-    ulimit -p $DOCKER_ULIMITS
 
     echo dockerd --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
     dockerd --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &

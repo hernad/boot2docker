@@ -164,7 +164,6 @@ done
 
 sed -i  's/^\(tc.*\)\/bin\/sh$/\1\/bin\/false/'  $BOOT_DIR/etc/passwd # disable_tc_login
 
-
 [ -d $BOOT_DIR/etc/sysconfig ] || mkdir -p $BOOT_DIR/etc/sysconfig
 #[ -f $BOOT_DIR/etc/sysconfig/docker ] || mv /etc/sysconfig/docker $BOOT_DIR/etc/sysconfig/ # permanent docker version
 #[ -f /etc/sysconfig/docker ] && rm /etc/sysconfig/docker
@@ -188,3 +187,13 @@ EOF
 [ -d $BOOT_DIR/bin ] || mkdir -p $BOOT_DIR/bin
 
 setup_symlinks_and_commands
+
+#https://www.tecmint.com/increase-set-open-file-limits-in-linux/
+
+# Increasing the number of open files and processes by docker
+
+ulimit -n $DOCKER_ULIMITS
+log_msg "ulimit -p $DOCKER_ULIMITS ($?)  NEW ulimit -n: `ulimit -n`)"
+
+ulimit -p $DOCKER_ULIMITS
+log_msg "ulimit -p $DOCKER_ULIMITS ($?) NEW ulimit -p: `ulimit -p`"
