@@ -130,7 +130,7 @@ RUN rm /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /op
 #RUN cp -av /rootfs/lib/*so* /opt/apps/python2/lib/
 #RUN apt-get build-dep -y ansible
 
-ENV LD_LIBRARY_PATH="/opt/apps/python2/lib:/opt/apps/green/lib" PATH="/opt/apps/python2/bin:/opt/apps/green/bin:/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin"
+ENV LD_LIBRARY_PATH="/opt/apps/python2/lib" PATH="/opt/apps/python2/bin:/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin"
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
 
 
