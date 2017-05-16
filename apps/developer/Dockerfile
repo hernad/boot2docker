@@ -9,8 +9,7 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
 RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list
 RUN apt-get update -y
 
-
-# ================= /opt/apps/green =========================================================
+# ================= /opt/apps/developer =========================================================
 
 RUN apt-get build-dep libpam-google-authenticator -y
 ENV CPPFLAGS="-I/opt/apps/developer/include" CFLAGS="-I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib"
@@ -60,7 +59,8 @@ ENV TCZ_DEPS_DEVELOER  \
     zlib_base-dev util-linux_base-dev e2fsprogs_base-dev \
     # ansible deps
     libffi-dev libffi \
-    openssl-dev gmp-dev
+    openssl-dev \
+    gmp gmp-dev
 
 
 RUN for dep in $TCZ_DEPS_DEVELOER ; do \
@@ -77,7 +77,6 @@ RUN for dep in $TCZ_DEPS_DEVELOER ; do \
     done
 
 
-
 RUN mkdir -p /opt/apps/developer/bin ;\
     mkdir -p /opt/apps/developer/lib ;\
     mkdir -p /opt/apps/developer/include ;\
@@ -91,7 +90,6 @@ RUN mkdir -p /opt/apps/developer/bin ;\
         rm -rf /opt/apps/developer/usr/local &&\
         rm -rf /opt/apps/developer/usr
 
-
 # linux x86 includes
 RUN mkdir -p  /opt/apps/developer/include/linux/x86/include/ &&\
     cp -av /usr/src/linux/arch/x86/include/* /opt/apps/developer/include/linux/x86/include/ &&\
@@ -104,7 +102,6 @@ RUN mkdir -p  /opt/apps/developer/include/linux/x86/include/ &&\
 
 
 # ================= /opt/apps/python2 =========================================================
-
 RUN cd /opt/apps &&\
     curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
     tar xf python2_2.7.13.tar.xz && rm python2_2.7.13.tar.xz
@@ -114,8 +111,8 @@ RUN cd /opt/apps &&\
     tar xf green_4.1.2.tar.xz && rm green_4.1.2.tar.xz
 
 
-RUN cd / ; find -name "/rootfs/libpthread*so*"
-RUN cd / ; find -name "/rootfs/lib/libc*so*"
+#RUN cd / ; find -name "/rootfs/libpthread*so*"
+#RUN cd / ; find -name "/rootfs/lib/libc*so*"
 
 RUN mv /usr/include /usr/include.orig
 
@@ -129,13 +126,9 @@ RUN rm /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /op
 
 #    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -nodefaultlibs -Wl,-rpath,/rootfs/lib64 -Wl,-dynamic-linker,/rootfs/lib/lib64/libc-2.24.so -Wl,-dynamic-linker,/rootfs/lib64/libpthread-2.24.so"
 
-
-
 # ansible build dependencies libpthread.so.0
 #RUN cp -av /rootfs/lib/*so* /opt/apps/python2/lib/
 #RUN apt-get build-dep -y ansible
 
-
-
-ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
+ENV LD_LIBRARY_PATH=/opt/apps/python2/lib:/opt/apps/green/lib PATH=/opt/apps/python2/bin:/opt/apps/green/bin:/usr/bin:/bin:/usr/sbin:/sbin
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible

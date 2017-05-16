@@ -49,3 +49,7 @@ RUN     curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
         && pip install --no-cache-dir virtualenv readline
 
 RUN    rm  -rf /opt/apps/python2/lib/python2.7/test /opt/apps/python2/lib/python2.7/json/tests /opt/apps/python2/lib/python2.7/ctypes/test
+
+# developer packages (ansible)
+# http://stackoverflow.com/questions/7901373/configuring-python-to-use-additional-locations-for-site-packages
+RUN   echo "/opt/apps/developer/lib/python2.7/site-packages" > /opt/apps/python2/lib/python2.7/site-packages/usrlocal.pth
