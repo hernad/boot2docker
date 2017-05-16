@@ -107,7 +107,9 @@ start() {
         if [ ! -f "$CACERT" ] || [ ! -f "$CAKEY" ]; then
             echo "Generating CA cert"
             generate_cert --cert="$CACERT" --key="$CAKEY"
-            rm "$SERVERCERT" "$SERVERKEY" "$CERT" "$KEY" "$CERT_DIR/hostnames"
+            for f in "$SERVERCERT" "$SERVERKEY" "$CERT" "$KEY" "$CERT_DIR/hostnames" ; do
+              [ -f $f ] && rm $f
+            done
         fi
 
         CERTSEXISTFOR=$(cat "$CERT_DIR/hostnames" 2>/dev/null)

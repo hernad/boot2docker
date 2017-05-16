@@ -22,5 +22,3 @@ curl -s http://$SCALEWAY_SIG_SERVER/conf -X GET > /run/scw-metadata.cache
 
 echo "${GREEN}===== SCALEWAY /run/scw-metadata.cache =====${NORMAL}"
 cat /run/scw-metadata.cache
-
-disable_tc_login

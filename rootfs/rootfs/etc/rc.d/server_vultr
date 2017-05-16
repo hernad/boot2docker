@@ -8,5 +8,3 @@ then
    echo "this is not vultr server"
    exit 0
 fi
-
-disable_tc_login

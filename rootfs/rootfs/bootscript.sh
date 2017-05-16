@@ -137,11 +137,11 @@ vbox_fix_permissions
 
 install_green_apps &
 
+
 if [ -d /opt/apps ] && [ ! -f /opt/apps/docker/VERSION ] ; then
    log_msg "docker is not installed, wait 90sec ..."
    sleep 90
-   # if there are errors during first install, try again
-   install_green_apps &
+   install_green_apps & # if there are errors during first install, try again
 fi
 
 /etc/rc.d/start_docker_then_opt_boot_init_d_scripts &
@@ -161,6 +161,8 @@ for f in passwd shadow shadow- ; do
  ln -s $BOOT_DIR/etc/$f /etc/$f
  chown root:root $BOOT_DIR/etc/$f # permanent passwd
 done
+
+sed -i  's/^\(tc.*\)\/bin\/sh$/\1\/bin\/false/'  $BOOT_DIR/etc/passwd # disable_tc_login
 
 
 [ -d $BOOT_DIR/etc/sysconfig ] || mkdir -p $BOOT_DIR/etc/sysconfig

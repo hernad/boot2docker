@@ -191,11 +191,12 @@ wait4Server() {
 	DHCP_RAN=1
 }
 
-if ! grep "^docker" /etc/passwd >/dev/null; then addUser; fi
+
+if ! grep -q "^docker" /etc/passwd &>/dev/null; then addUser; fi
 
 echo "docker" > /etc/sysconfig/tcuser
 mkdir -p /home/docker
-disable_tc_login
+
 
 if [ -n "$SUPERUSER" ]; then
 	touch /etc/sysconfig/superuser
@@ -375,7 +376,6 @@ else
 	[ -z "$DHCP_RAN" ] && /etc/init.d/dhcp.sh &
 	[ -z "$NORTC" ] || /etc/init.d/settime.sh &
 fi
-
 
 /sbin/loadcpufreq 2>/dev/null &
 
