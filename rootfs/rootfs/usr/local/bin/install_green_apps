@@ -5,7 +5,6 @@
 APPS_HOME=/opt/apps
 
 [ ! -d $APPS_HOME ] &&  echo "$APPS_HOME not exists !?" && exit 1
-
 [ `whoami` != root ] && echo "you have to be root user !" && exit 1
 
 case "$1" in
@@ -48,9 +47,7 @@ case "$1" in
      IND4="[ ]${RED}"
      IND9="[ ]${RED}"
      ;;
-
 esac
-
 
 if [ "$INSTALL_SET" == "9" ] ; then
      shift
@@ -114,7 +111,7 @@ else
   echo "${IND9} GREEN_APPS_9: ${GREEN_APPS_9}${NORMAL}"
 fi
 
-echo ===== download_green_apps start: $(date) ====== >> $LOG_FILE
+log_msg "===== download_green_apps start: $(date) ======"
 
 [ "$INSTALL_SET" == "2" ] && GREEN_APPS="${GREEN_APPS_2}"  # install GREEN_APPS_2
 [ "$INSTALL_SET" == "3" ] && GREEN_APPS="${GREEN_APPS_3}"
@@ -122,7 +119,7 @@ echo ===== download_green_apps start: $(date) ====== >> $LOG_FILE
 [ "$INSTALL_SET" == "9" ] && GREEN_APPS="${GREEN_APPS_9}"  # install GREEN_APPS_9
 
 if [ ! -d /opt/apps ] ; then
-  log_msg "/opt/apps doesn't exists"
+  log_msg "/opt/apps doesn't exists" "${RED}"
   exit 1
 fi
 
@@ -138,16 +135,16 @@ download_app() {
   ext="xz"  # ext="gz"
 
   if [ -f ${app}_${ver}.tar.${ext}.download ] ; then
-    log_msg "CANCEL: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}, another download in progress"
+    log_msg "CANCEL: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}, another download in progress" "${RED}"
     exit 1
   fi
 
    LOCAL_MEDIA=/media/GREEN_INIT/apps/${app}_${ver}.tar.${ext}
    if [ -f $LOCAL_MEDIA ] ; then
-      log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.${ext} ..."
+      log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.${ext} ..." "${BLUE}"
       cp $LOCAL_MEDIA $APPS_HOME/
    else
-      echo "downloading: $DOWNLOAD_URL/${app}_${ver}.tar.${ext} ..."
+      echo "downloading: $DOWNLOAD_URL/${app}_${ver}.tar.${ext} ..." "${GREEN}"
       log_msg "START: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}"
       cd $APPS_HOME
       touch ${app}_${ver}.tar.${ext}.download

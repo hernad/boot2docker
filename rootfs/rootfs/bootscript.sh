@@ -138,9 +138,7 @@ fi
 mount_all_apps
 ldcache_update
 vbox_fix_permissions
-
 install_green_apps &
-
 
 if [ -d /opt/apps ] && [ ! -f /opt/apps/docker/VERSION ] ; then
    log_msg "docker is not installed, wait 90sec ..."

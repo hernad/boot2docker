@@ -28,9 +28,6 @@ AWS_VER=1.11.13
 BOOT_DIR=/opt/boot
 SCALEWAY_SIG_SERVER="169.254.42.42"
 
-# http://www.thegeekstuff.com/2008/09/bash-shell-ps1-10-examples-to-make-your-linux-prompt-like-angelina-jolie/
-NOCOLOR="\033[0;0;0m"      # no color or formatting
-
 [ -f /opt/boot/etc/profile ] && source /opt/boot/etc/profile
 
 set_log_file() {

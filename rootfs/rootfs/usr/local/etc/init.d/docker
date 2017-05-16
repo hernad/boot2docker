@@ -79,7 +79,6 @@ check_docker_installed() {
     if [ $CNT -eq 3  ] || [ $CNT -eq 6 ]  || [ $CNT -eq 10 ] ; then
       install_green_apps &
     fi
-
     if [ $CNT -eq 20  ] ; then
        log_msg "docker wait timeout 10 minutes"
        exit 1
