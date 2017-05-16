@@ -94,7 +94,7 @@ ENV CPPFLAGS="-I/opt/apps/python2/include" CFLAGS="-I/opt/apps/python2/include" 
 
 RUN cd /opt/apps &&\
     curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
-    tar xvf python2_2.7.13.tar.xz
+    tar xf python2_2.7.13.tar.xz
 
 ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
-RUN pip install --install-option /opt/developer --no-cache-dir ansible
+RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
