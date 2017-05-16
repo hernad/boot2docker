@@ -394,6 +394,29 @@ if ( ! mountedOnGreen docker_home ); then
 	      zfs mount green/docker_home -o mountpoint ${DOCKER_HOME_DIR}
 
         chown -R docker:docker ${DOCKER_HOME_DIR}
+
+				if [ ! -f ${DOCKER_HOME_DIR}/.profile ] ; then
+					cat > ${DOCKER_HOME_DIR}/.profile <<EOF
+# ~/.profile: Executed by Bourne-compatible login SHells.
+export PATH=$HOME/.local/bin:$PATH"
+[ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"
+export PATH=$HOME/.local/bin:$PATH
+
+PAGER='less -EM'
+MANPAGER='less -isR'
+EDITOR=vim
+if [ -f "$HOME/.ashrc" ]; then
+		export ENV="$HOME/.ashrc"
+		. "$HOME/.ashrc"
+fi
+TERMTYPE=`/usr/bin/tty`
+[ ${TERMTYPE:5:3} == "tty" ] && (
+	[ ! -f /etc/sysconfig/Xserver ] ||
+	[ -f /etc/sysconfig/text ] ||
+	[ -e /tmp/.X11-unix/X0 ] || startx
+)
+EOF
+				fi
 				[ -d ${DOCKER_HOME_DIR}.tmp ] && rm -rf /tmp/${DOCKER_HOME_DIR}.tmp
 
         if ( mountedOnGreen docker_home ) ; then
