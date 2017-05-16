@@ -14,7 +14,7 @@ start(){
    [ -d /var/lib/sshd ] || mkdir -p /var/lib/sshd
    if [ ! -e $SSH_CONFIG_DIR/ssh_host_rsa_key ]
    then
-      log_msg "no ssh cache - ssh-keygen !"
+      log_msg "no ssh cache - ssh-keygen !" "${GREEN}"
       keygen
    fi
 

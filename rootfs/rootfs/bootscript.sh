@@ -4,7 +4,7 @@
 
 : ${SYSTEM_ULIMITS:=1048576}
 
-log_msg "== bootscript.sh: $(date) ===="
+log_msg "== bootscript.sh: $(date) ====" "${GREEN}"
 
 log_msg "configure sysctl"
 /etc/rc.d/sysctl
