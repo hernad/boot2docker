@@ -89,7 +89,7 @@ RUN mkdir -p /opt/apps/developer/bin ;\
         rm -rf /opt/apps/developer/usr
 
 
-RUN rm /opt/apps/developer/lib/libpthread.so
+RUN rm /opt/apps/developer/lib/libpthread.*
 
 
 # ================= /opt/apps/python2 =========================================================
