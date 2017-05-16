@@ -39,6 +39,8 @@ echo -e
 
 [ -d /opt/green ] && git config --global core.pager 'more'  # git diff
 
+# http://www.thegeekstuff.com/2008/09/bash-shell-ps1-10-examples-to-make-your-linux-prompt-like-angelina-jolie/
+NOCOLOR="\033[0;0;0m"      # no color or formatting
 PCOLOR=${GREEN}
 [ $(id -u) = 0 ] && PCOLOR=$RED # root user
 
