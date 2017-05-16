@@ -90,8 +90,8 @@ RUN mkdir -p /opt/apps/developer/bin ;\
         rm -rf /opt/apps/developer/usr
 
 
-RUN cd / ; find -name "libpthread*so*"
-RUN cd / ; find -name "libc*"
+#RUN cd / ; find -name "libpthread*so*"
+#RUN cd / ; find -name "libc*"
 
 #RUN rm /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /opt/apps/developer/lib/libc.a
 
@@ -100,7 +100,7 @@ RUN cd / ; find -name "libc*"
 
 ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
     CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
-    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -nodefaultlibs -l/rootfs/lib/libc.so.6 -l/rootfs/lib/libpthread-2.24.so"
+    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -L/rootfs/lib -nodefaultlibs -l/rootfs/lib/libc.so.6 -l/rootfs/lib/libpthread-2.24.so"
 
 RUN cd /opt/apps &&\
     curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
