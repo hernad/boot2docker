@@ -109,7 +109,7 @@ RUN cd /opt/apps &&\
 
 ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
     CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
-    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -nodefaultlibs -l/opt/apps/developer/lib/libc.a -l /opt/apps/developer/lib/libpthread.a"
+    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib Wl,-rpath-link,/rootfs/lib"
 
 RUN cd / ; find -name "libpthread*so*"
 
