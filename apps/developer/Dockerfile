@@ -134,7 +134,7 @@ ENV LD_LIBRARY_PATH="/opt/apps/python2/lib:/opt/apps/green/lib" PATH="/opt/apps/
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
 
 
-RUN cat > /opt/apps/developer/bin/set_developer_envars.sh <<EOF
+RUN cat > /opt/apps/developer/bin/set_developer_envars.sh <<EOF\
 #!/bin/bash\
 \
 CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include"\
