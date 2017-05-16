@@ -44,9 +44,9 @@ ENV MAKE_VER=4.2.1
 #    make &&\
 #    make make install-strip
 
-
-
+# install -> /opt/apps/developer
 ENV ROOTFS=/opt/apps/developer
+
 ENV TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
 ENV TCZ_DEPS_DEVELOER  \
     binutils \
@@ -63,7 +63,7 @@ ENV TCZ_DEPS_DEVELOER  \
 
 RUN for dep in $TCZ_DEPS_DEVELOER ; do \
         echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
-        curl -L -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
+        curl -sL -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
         if [ ! -s /tmp/$dep.tcz ] ; then \
             echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
             exit 1 ;\
@@ -98,6 +98,8 @@ ENV CPPFLAGS="-I/opt/apps/python2/include -I/opt/apps/developer/include" \
 RUN cd /opt/apps &&\
     curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
     tar xf python2_2.7.13.tar.xz
+
+RUN cp -av $ROOTFS/libpthread*so* /opt/apps/python2/lib/
 
 ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
