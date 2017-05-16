@@ -57,7 +57,8 @@ ENV TCZ_DEPS_DEVELOER  \
     gawk patch sed m4 grep bison flex pkg-config \
     acl attr \
     gcc_libs gcc_libs-dev glibc_base-dev glibc_add_lib \
-    zlib_base-dev util-linux_base-dev e2fsprogs_base-dev
+    zlib_base-dev util-linux_base-dev e2fsprogs_base-dev \
+    libffi-dev libffi
 
 
 RUN for dep in $TCZ_DEPS_DEVELOER ; do \
@@ -90,7 +91,9 @@ RUN mkdir -p /opt/apps/developer/bin ;\
 
 # ================= /opt/apps/python2 =========================================================
 
-ENV CPPFLAGS="-I/opt/apps/python2/include" CFLAGS="-I/opt/apps/python2/include" LDFLAGS="-L/opt/apps/python2/lib"
+ENV CPPFLAGS="-I/opt/apps/python2/include -I/opt/apps/developer/include" \
+    CFLAGS="-I/opt/apps/python2/include -I/opt/apps/developer/include" \
+    LDFLAGS="-L/opt/apps/python2/lib -L/opt/apps/developer/lib"
 
 RUN cd /opt/apps &&\
     curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
