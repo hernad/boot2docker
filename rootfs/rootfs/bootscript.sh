@@ -53,7 +53,8 @@ log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
 
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
-[ -f $BOOT_DIR/log/udhcp.log ] || rm $BOOT_DIR/log/udhcp.log
+[ -f $BOOT_DIR/log/udhcp.log ] && rm $BOOT_DIR/log/udhcp.log
+
 if [ ! -d $BOOT_DIR/etc/ssl ] ; then
   mkdir -p $BOOT_DIR/etc/ssl
   log_msg "bootstrap ca-certs from etc_ssl.tar.xz"
@@ -154,10 +155,13 @@ fi
 for f in passwd shadow shadow- ; do
  if [ ! -f $BOOT_DIR/etc/$f ] ; then
     [ -d $BOOT_DIR/etc ] || mkdir -p $BOOT_DIR/etc
-    mv /etc/$f $BOOT_DIR/etc/$f # ram -> BOOT_DIR
+    [ -f /etc/$f ] && mv /etc/$f $BOOT_DIR/etc/$f # ram -> BOOT_DIR
  fi
- rm /etc/$f  ; ln -s $BOOT_DIR/etc/$f /etc/$f ; chown root:root $BOOT_DIR/etc/$f # permanent passwd
+ [ -f /etc/$f ] && rm /etc/$f
+ ln -s $BOOT_DIR/etc/$f /etc/$f
+ chown root:root $BOOT_DIR/etc/$f # permanent passwd
 done
+
 
 [ -d $BOOT_DIR/etc/sysconfig ] || mkdir -p $BOOT_DIR/etc/sysconfig
 #[ -f $BOOT_DIR/etc/sysconfig/docker ] || mv /etc/sysconfig/docker $BOOT_DIR/etc/sysconfig/ # permanent docker version

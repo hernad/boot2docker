@@ -195,6 +195,7 @@ if ! grep "^docker" /etc/passwd >/dev/null; then addUser; fi
 
 echo "docker" > /etc/sysconfig/tcuser
 mkdir -p /home/docker
+disable_tc_login
 
 if [ -n "$SUPERUSER" ]; then
 	touch /etc/sysconfig/superuser
