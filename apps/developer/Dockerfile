@@ -129,4 +129,4 @@ ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/
 
 
 ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
-RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
+#RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
