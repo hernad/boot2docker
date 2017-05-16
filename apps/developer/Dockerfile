@@ -93,8 +93,10 @@ RUN mkdir -p /opt/apps/developer/bin ;\
 
 # linux x86 includes
 RUN cp -av /usr/src/linux/arch/x86/include/* /opt/apps/developer/include/ &&\
-    mv /opt/apps/developer/include/generated/asm/* /opt/apps/developer/include/asm/ &&\
-    mv /opt/apps/developer/include/generated/uapi/asm/* /opt/apps/developer/include/uapi/asm/
+    cp -av /usr/src/linux/include/linux /opt/apps/developer/include/
+#    mv /opt/apps/developer/include/generated/asm/* /opt/apps/developer/include/asm/ &&\
+#    mv /opt/apps/developer/include/generated/uapi/asm/* /opt/apps/developer/include/uapi/asm/ &&\
+
 
 #RUN cd / ; find -name "libpthread*so*"
 #RUN cd / ; find -name "libc*"
@@ -116,6 +118,7 @@ RUN cd /opt/apps &&\
 RUN cd / ; find -name "/rootfs/libpthread*so*"
 RUN cd / ; find -name "/rootfs/lib/libc*so*"
 
+RUN mv /usr/include /usr/include.orig
 
 ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
     CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
@@ -127,7 +130,7 @@ ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/
 #RUN cp -av /rootfs/lib/*so* /opt/apps/python2/lib/
 #RUN apt-get build-dep -y ansible
 
-RUN mv /usr/include /usr/include.orig
+
 
 ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
