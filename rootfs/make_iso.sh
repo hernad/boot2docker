@@ -83,7 +83,10 @@ cd $ROOTFS
 #$ find . | cpio -H newc -o | gzip -9 > ../initrd.img-`uname -r`-custom
 
 #find | ( set -x; cpio -o -H newc | xz -9 --format=lzma --verbose --verbose ) > /tmp/iso/boot/initrd.img
-find | ( set -x; cpio -o -H newc | gzip -9 ) > /tmp/iso/boot/initrd.img
+#find | ( set -x; cpio -o -H newc | gzip -9 ) > /tmp/iso/boot/initrd.img
+
+find | ( set -x; cpio -o -H newc | lz4 ) > /tmp/iso/boot/initrd.img
+
 cd -
 
 

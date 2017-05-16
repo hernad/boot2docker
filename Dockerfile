@@ -154,7 +154,7 @@ ENV TCZ_DEPS_0      iptables \
                     gcc_libs \
                     acpid \
                     ca-certificates \
-                    xz liblzma \
+                    liblz4-tool xz liblzma \
                     libgpg-error libgcrypt libssh2 \
                     curl acl attr ntpclient \
                     bash readline ncurses \
