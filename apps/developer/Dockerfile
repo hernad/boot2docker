@@ -97,11 +97,4 @@ RUN cd /opt/apps &&\
     tar xvf python2_2.7.13.tar.xz
 
 ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
-RUN curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
-                && pip install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
-                && find /usr/local \
-                        \( -type d -a -name test -o -name tests \) \
-                        -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-                        -exec rm -rf '{}' + \
-                && rm -rf /usr/src/python \
-                && pip install --no-cache-dir ansible
+RUN pip install --install-option /opt/developer --no-cache-dir ansible
