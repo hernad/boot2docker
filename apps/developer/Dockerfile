@@ -110,7 +110,7 @@ RUN cd /opt/apps &&\
 RUN cd / ; find -name "/rootfs/libpthread*so*"
 RUN cd / ; find -name "/rootfs/lib/libc*so*"
 
-RUN mv /lib /lib.orig && ln -s /rootfs/lib /lib
+RUN mv /lib /lib.orig && /bin/ln -s /rootfs/lib /lib
 ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
     CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
     LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -Wl,-rpath,/rootfs/lib -Wl,-dynamic-linker,/rootfs/lib/libc.so.6 -Wl,-dynamic-linker,/rootfs/lib/libpthread.so.0"
