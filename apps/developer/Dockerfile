@@ -93,14 +93,14 @@ RUN mkdir -p /opt/apps/developer/bin ;\
 RUN cd / ; find -name "libpthread*so*"
 RUN cd / ; find -name "libc*"
 
-RUN rm /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /opt/apps/developer/lib/libc.a
+#RUN rm /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /opt/apps/developer/lib/libc.a
 
 
 # ================= /opt/apps/python2 =========================================================
 
 ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
     CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
-    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib"
+    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -defaultlibs -l/opt/apps/developer/lib/libc.so -l/opt/apps/developer/lib/libpthread.so"
 
 RUN cd /opt/apps &&\
     curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
@@ -116,8 +116,6 @@ RUN cd / ; find -name "libpthread*so*"
 #RUN cp -av /rootfs/lib/*so* /opt/apps/python2/lib/
 #RUN apt-get build-dep -y ansible
 
-#RUN cp -av /usr/include/x86_64-linux-gnu/bits/syscall.h
-RUN cp -av /opt/apps/developer/include/* /usr/include/x86_64-linux-gnu/
 
 ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
