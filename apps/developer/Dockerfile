@@ -121,8 +121,8 @@ RUN cd / ; find -name "/rootfs/lib/libc*so*"
 RUN mv /usr/include /usr/include.orig
 
 #The uapi folder is supposed to contain the user space API of the kernel.
-ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/x86/include/uapi -I/opt/apps/developer/include/linux/x86/include/generated/uapi -I/opt/apps/developer/include/linux/include -I/opt/apps/developer/include/linux/include/uapi" \
-    CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/x86/include/uapi  -I/opt/apps/developer/include/linux/x86/include/generated/uapi -I/opt/apps/developer/include/linux/include -I/opt/apps/developer/include/linux/include/uapi" \
+ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/x86/include/generated -I/opt/apps/developer/include/linux/x86/include/uapi -I/opt/apps/developer/include/linux/x86/include/generated/uapi -I/opt/apps/developer/include/linux/include -I/opt/apps/developer/include/linux/include/uapi" \
+    CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/x86/include/generated -I/opt/apps/developer/include/linux/x86/include/uapi  -I/opt/apps/developer/include/linux/x86/include/generated/uapi -I/opt/apps/developer/include/linux/include -I/opt/apps/developer/include/linux/include/uapi" \
     LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -nodefaultlibs -Wl,-rpath,/rootfs/lib64 -Wl,-dynamic-linker,/rootfs/lib/lib64/libc-2.24.so -Wl,-dynamic-linker,/rootfs/lib64/libpthread-2.24.so"
 
 
