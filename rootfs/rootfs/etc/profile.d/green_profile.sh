@@ -37,12 +37,9 @@ echo -e
 [ "`cat /etc/passwd | grep "^tc:" |  awk -F: '{print $7}'`" != "/bin/false" ] && \
    echo -e "${RED}SECURITY hole (tc_login_open) !\nRUN ${GREEN}# disable_tc_login\n${NORMAL}"
 
-
 [ -d /opt/green ] && git config --global core.pager 'more'  # git diff
-#http://www.thegeekstuff.com/2008/09/bash-shell-ps1-10-examples-to-make-your-linux-prompt-like-angelina-jolie/
-NOCOLOR="\033[0;0;0m"      # no color or formatting
 
-PCOLOR=$GREEN
+PCOLOR=${GREEN}
 [ $(id -u) = 0 ] && PCOLOR=$RED # root user
 
 #http://unix.stackexchange.com/questions/105958/terminal-prompt-not-wrapping-correctly

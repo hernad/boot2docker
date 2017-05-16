@@ -17,7 +17,6 @@ start(){
       log_msg "no ssh cache - ssh-keygen !" "${GREEN}"
       keygen
    fi
-
    /usr/local/sbin/sshd
 }
 

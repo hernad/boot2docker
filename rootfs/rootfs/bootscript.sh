@@ -29,7 +29,6 @@ vbox_create_pool.sh
 cloud_vda_create_pool.sh
 green_create_zfs.sh
 
-
 let count=0
 log_msg "setup $BOOT_DIR for mountOnGreen"
 [ ! -d $BOOT_DIR ] &&  mkdir -p $BOOT_DIR
