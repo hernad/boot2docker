@@ -33,7 +33,8 @@ RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
                         libfuse-dev \
                         libtirpc-dev \
                         gettext \
-                        p7zip-full
+                        p7zip-full \
+                        liblz4-tool
 
 # tiny core rootfs location
 #ENV ROOTFS=/rootfs TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
@@ -154,7 +155,7 @@ ENV TCZ_DEPS_0      iptables \
                     gcc_libs \
                     acpid \
                     ca-certificates \
-                    liblz4-tool xz liblzma \
+                    xz liblzma \
                     libgpg-error libgcrypt libssh2 \
                     curl acl attr ntpclient \
                     bash readline ncurses \
