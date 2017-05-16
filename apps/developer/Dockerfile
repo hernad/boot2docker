@@ -99,6 +99,8 @@ RUN cd /opt/apps &&\
     curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
     tar xf python2_2.7.13.tar.xz
 
+RUN cd / ; find libpthread*so*
+
 # ansible build dependencies libpthread.so.0
 #RUN cp -av /rootfs/lib/*so* /opt/apps/python2/lib/
 RUN apt-get build-dep -y ansible
