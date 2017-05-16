@@ -46,7 +46,6 @@ if [ -z "$DOCKER_STORAGE" ] ; then
 fi
 
 : ${DOCKER_DIR:=/var/lib/docker}
-: ${DOCKER_ULIMITS:=1048576}
 : ${DOCKER_LOGFILE:=$BOOT_DIR/log/docker.log}
 
 : ${CERT_DIR:=$BOOT_DIR/tls/}

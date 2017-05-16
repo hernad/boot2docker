@@ -2,6 +2,8 @@
 
 . /etc/green_common
 
+: ${SYSTEM_ULIMITS:=1048576}
+
 log_msg "== bootscript.sh: $(date) ===="
 
 log_msg "configure sysctl"
@@ -31,23 +33,26 @@ green_create_zfs.sh
 let count=0
 log_msg "setup $BOOT_DIR for mountOnGreen"
 [ ! -d $BOOT_DIR ] &&  mkdir -p $BOOT_DIR
-if ( ! mountedOnGreen opt_boot ); then
-     [ -d $BOOT_DIR ] && mv $BOOT_DIR ${BOOT_DIR}.tmp
-     mkdir -p $BOOT_DIR
-fi
+
+#if ( ! mountedOnGreen opt_boot ); then
+     #[ -d $BOOT_DIR ] && mv $BOOT_DIR ${BOOT_DIR}.tmp
+     #mkdir -p $BOOT_DIR
+#fi
 
 while ( ! mountedOnGreen opt_boot ) && [ $count -lt 10 ]
 do
    zfs_up
-   sleep 1
+   sleep 3
    zfs mount -o mountpoint=$BOOT_DIR green/opt_boot
    log_msg "waiting for mount zfs $BOOT_DIR"
    sleep 1
    let count=count+1
 done
 
-[ -d ${BOOT_DIR}.tmp ] && mv ${BOOT_DIR}.tmp/* ${BOOT_DIR}/
-[ -d ${BOOT_DIR}.tmp ] && rm -f ${BOOT_DIR}.tmp
+#if [ -d ${BOOT_DIR}.tmp ] ; then
+#    mv ${BOOT_DIR}.tmp/* ${BOOT_DIR}/
+#    rm -f ${BOOT_DIR}.tmp
+#fi
 
 log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
@@ -192,8 +197,8 @@ setup_symlinks_and_commands
 
 # Increasing the number of open files and processes by docker
 
-ulimit -n $DOCKER_ULIMITS
-log_msg "ulimit -p $DOCKER_ULIMITS ($?)  NEW ulimit -n: `ulimit -n`)"
+ulimit -n $SYSTEM_ULIMITS
+log_msg "ulimit -p $SYSTEM_ULIMITS ($?)  NEW ulimit -n: `ulimit -n`)"
 
-ulimit -p $DOCKER_ULIMITS
-log_msg "ulimit -p $DOCKER_ULIMITS ($?) NEW ulimit -p: `ulimit -p`"
+ulimit -p $SYSTEM_ULIMITS
+log_msg "ulimit -p $SYSTEM_ULIMITS ($?) NEW ulimit -p: `ulimit -p`"
