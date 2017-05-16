@@ -135,17 +135,17 @@ RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir a
 
 
 RUN cat > /opt/apps/developer/bin/set_developer_envars.sh <<EOF
-#!/bin/bash
-
-CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include"
-CFLAGS+=" -I/opt/apps/developer/include "
-#linucx includes
-CFLAGS+=" -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/x86/include/generated"
-CFLAGS+=" -I/opt/apps/developer/include/linux/x86/include/uapi -I/opt/apps/developer/include/linux/x86/include/generated/uapi"
-CFLAGS+=" -I/opt/apps/developer/include/linux/include -I/opt/apps/developer/include/linux/include/uapi"
-
-CPPFLAGS="$CFLAGS"
-LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib"
-
-export CFLAGS CPPFLAGS LDFLAGS
+#!/bin/bash\
+\
+CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include"\
+CFLAGS+=" -I/opt/apps/developer/include "\
+#linux includes\
+CFLAGS+=" -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/x86/include/generated"\
+CFLAGS+=" -I/opt/apps/developer/include/linux/x86/include/uapi -I/opt/apps/developer/include/linux/x86/include/generated/uapi"\
+CFLAGS+=" -I/opt/apps/developer/include/linux/include -I/opt/apps/developer/include/linux/include/uapi"\
+\
+CPPFLAGS="$CFLAGS"\
+LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib"\
+\
+export CFLAGS CPPFLAGS LDFLAGS\
 EOF && echo chmod +x /opt/apps/developer/bin/set_developer_envars.sh
