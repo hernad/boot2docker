@@ -89,7 +89,10 @@ RUN mkdir -p /opt/apps/developer/bin ;\
         rm -rf /opt/apps/developer/usr
 
 
-RUN rm /opt/apps/developer/lib/libpthread.*
+RUN cd / ; find -name "libpthread*so*"
+RUN cd / ; find -name "libc*"
+
+RUN rm /opt/apps/developer/lib/libpthread.* rm /opt/apps/developer/lib/libc.*so*
 
 
 # ================= /opt/apps/python2 =========================================================
@@ -106,7 +109,7 @@ RUN cd / ; find -name "libpthread*so*"
 
 # ansible build dependencies libpthread.so.0
 #RUN cp -av /rootfs/lib/*so* /opt/apps/python2/lib/
-RUN apt-get build-dep -y ansible
+#RUN apt-get build-dep -y ansible
 
 ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
