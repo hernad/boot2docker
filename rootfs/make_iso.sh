@@ -79,10 +79,10 @@ EOOS
 rm -rf $ROOTFS/usr/share/doc
 rm -rf $ROOTFS/usr/share/man
 
-mv $ROOTFS/usr/share/i18n/charmaps/UTF-8 /tmp
+mv $ROOTFS/usr/share/i18n/charmaps/UTF-8.gz /tmp
 rm -rf $ROOTFS/usr/share/i18n
 mkdir -p $ROOTFS/usr/share/i18n/charmaps
-mv /tmp/UTF-8 $ROOTFS/usr/share/i18n/charmaps/
+mv /tmp/UTF-8.gz $ROOTFS/usr/share/i18n/charmaps/
 
 rm -rf $ROOTFS/usr/share/locale
 rm -rf $ROOTFS/usr/share/syslinux
