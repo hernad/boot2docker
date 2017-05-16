@@ -85,8 +85,12 @@ RUN mkdir -p /opt/apps/developer/bin ;\
         cp -av /opt/apps/developer/usr/local/share/*    /opt/apps/developer/share/ &&\
         cp -av /opt/apps/developer/usr/lib/*            /opt/apps/developer/lib/ &&\
         cp -av /opt/apps/developer/usr/include/*        /opt/apps/developer/include/ &&\
-        rm -rf /opt/apps/developer/usr/local
+        rm -rf /opt/apps/developer/usr/local &&\
+        rm /opt/apps/developer/usr/local/lib &&\
+        rm /opt/apps/developer/usr/lib &&\
 
+
+RUN /opt/apps/developer/lib/libpthread.so
 
 
 # ================= /opt/apps/python2 =========================================================
