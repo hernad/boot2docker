@@ -93,9 +93,9 @@ RUN mkdir -p /opt/apps/developer/bin ;\
 
 # linux x86 includes
 RUN cp -av /usr/src/linux/arch/x86/include/* /opt/apps/developer/include/ &&\
-    cp -av /usr/src/linux/include/* /opt/apps/developer/include/
-#    mv /opt/apps/developer/include/generated/asm/* /opt/apps/developer/include/asm/ &&\
-#    mv /opt/apps/developer/include/generated/uapi/asm/* /opt/apps/developer/include/uapi/asm/ &&\
+    mv /opt/apps/developer/include/generated/asm/* /opt/apps/developer/include/asm/ &&\
+    mv /opt/apps/developer/include/generated/uapi/asm/* /opt/apps/developer/include/uapi/asm/ &&\
+    cp -av /usr/src/linux/include/uapi/* /opt/apps/developer/include/
 
 
 #RUN cd / ; find -name "libpthread*so*"
