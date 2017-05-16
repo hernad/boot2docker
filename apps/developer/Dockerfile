@@ -92,10 +92,10 @@ RUN mkdir -p /opt/apps/developer/bin ;\
 
 
 # linux x86 includes
-RUN cp -av /usr/src/linux/arch/x86/include/* /opt/apps/developer/include/ &&\
-    mv /opt/apps/developer/include/generated/asm/* /opt/apps/developer/include/asm/ &&\
-    mv /opt/apps/developer/include/generated/uapi/asm/* /opt/apps/developer/include/uapi/asm/ &&\
-    cp -av /usr/src/linux/include/uapi/* /opt/apps/developer/include/
+RUN mkdir -p  /opt/apps/developer/include/linux/x86/include/ &&\
+    cp -av /usr/src/linux/arch/x86/include/* /opt/apps/developer/include/linux/x86/include/ &&\
+    mkdir -p /opt/apps/developer/include/linux/include/ &&\
+    cp -av /usr/src/linux/include/* /opt/apps/developer/include/linux/include/
 
 
 #RUN cd / ; find -name "libpthread*so*"
@@ -120,8 +120,8 @@ RUN cd / ; find -name "/rootfs/lib/libc*so*"
 
 RUN mv /usr/include /usr/include.orig
 
-ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
-    CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
+ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/include" \
+    CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/include" \
     LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -nodefaultlibs -Wl,-rpath,/rootfs/lib64 -Wl,-dynamic-linker,/rootfs/lib/lib64/libc-2.24.so -Wl,-dynamic-linker,/rootfs/lib64/libpthread-2.24.so"
 
 
