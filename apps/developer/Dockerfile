@@ -107,11 +107,14 @@ RUN cd /opt/apps &&\
     tar xf green_4.1.2.tar.xz && rm green_4.1.2.tar.xz
 
 
+RUN cd / ; find -name "/rootfs/libpthread*so*"
+RUN cd / ; find -name "/rootfs/lib/libc*so*"
+
 ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
     CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include" \
     LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -Wl,-rpath,/rootfs/lib -Wl,-dynamic-linker,/rootfs/lib/libc.so -Wl,-dynamic-linker,/rootfs/lib/libpthread.so"
 
-RUN cd / ; find -name "libpthread*so*"
+
 
 # ansible build dependencies libpthread.so.0
 #RUN cp -av /rootfs/lib/*so* /opt/apps/python2/lib/
