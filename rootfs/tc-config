@@ -20,7 +20,7 @@ KERNEL="$(uname -r)"
 
 addUser() {
 	echo "${GREEN}Adding user ${YELLOW}docker ${NORMAL}"
-	/bin/adduser -s /bin/sh -G staff -D docker
+	/bin/adduser -s /bin/bash -G staff -D docker
 	[ -n "$DOCKER_PASSWORD" ] && change_user_password docker $DOCKER_PASSWORD
 	echo -e "docker\tALL=NOPASSWD: ALL" >> /etc/sudoers
 }
@@ -197,7 +197,6 @@ if ! grep -q "^docker" /etc/passwd &>/dev/null; then addUser; fi
 echo "docker" > /etc/sysconfig/tcuser
 mkdir -p /home/docker
 
-
 if [ -n "$SUPERUSER" ]; then
 	touch /etc/sysconfig/superuser
 fi
@@ -362,12 +361,12 @@ else
 	[ -s /etc/sysconfig/ntpserver ] && NTPSERVER=`cat /etc/sysconfig/ntpserver`
 fi
 
-if [ -n "$NORESTORE" ]; then
-	echo "${GREEN}Skipping restore as requested from the command line.${NORMAL}"
-else
-	TCEDIR=`readlink /etc/sysconfig/tcedir`
-	/etc/init.d/tc-restore.sh "$TCEDIR"
-fi
+#if [ -n "$NORESTORE" ]; then
+#	echo "${GREEN}Skipping restore as requested from the command line.${NORMAL}"
+#else
+#	TCEDIR=`readlink /etc/sysconfig/tcedir`
+#	/etc/init.d/tc-restore.sh "$TCEDIR"
+#fi
 
 # After restore items
 if [ -n "$NODHCP" ]; then
@@ -387,7 +386,7 @@ log_msg "setup /home/docker for mountOnGreen"
 DOCKER_HOME_DIR=/home/docker
 
 if ( ! mountedOnGreen docker_home ); then
-        log_msg "mount zfs /home/docker"
+        log_msg "mount zfs /home/docker" "${GREEN}"
 				if [ -d ${DOCKER_HOME_DIR} ] ; then
 				   mv ${DOCKER_HOME_DIR} /tmp/${DOCKER_HOME_DIR}.tmp
 				fi

@@ -76,6 +76,19 @@ SUPPORT_URL="https://github.com/hernad/greenbox"
 BUG_REPORT_URL="https://github.com/hernad/greenbox/issues"
 EOOS
 
+rm -rf $ROOTFS/usr/share/doc
+rm -rf $ROOTFS/usr/share/man
+rm -rf $ROOTFS/usr/share/i18n
+rm -rf $ROOTFS/usr/share/locale
+rm -rf $ROOTFS/usr/share/syslinux
+rm -rf $ROOTFS/usr/share/tabeset
+rm -rf $ROOTFS/usr/local/src
+rm -rf $ROOTFS/usr/local/share/common-lisp
+rm -rf $ROOTFS/usr/local/share/man
+rm -rf $ROOTFS/usr/local/share/zfs
+rm -rf $ROOTFS/usr/local/share/licenses
+rm -rf $ROOTFS/usr/local/share/pkgconfig
+rm -rf $ROOTFS/usr/local/share
 # Pack the rootfs
 cd $ROOTFS
 
