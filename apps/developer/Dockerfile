@@ -92,7 +92,7 @@ RUN mkdir -p /opt/apps/developer/bin ;\
 RUN cd / ; find -name "libpthread*so*"
 RUN cd / ; find -name "libc*"
 
-RUN rm /opt/apps/developer/lib/libpthread.* rm /opt/apps/developer/lib/libc.so  /opt/apps/developer/lib/libc.a
+RUN rm /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /opt/apps/developer/lib/libc.a
 
 
 # ================= /opt/apps/python2 =========================================================
