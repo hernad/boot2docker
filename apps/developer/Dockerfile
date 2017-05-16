@@ -58,6 +58,7 @@ ENV TCZ_DEPS_DEVELOER  \
     acl attr \
     gcc_libs gcc_libs-dev glibc_base-dev glibc_add_lib \
     zlib_base-dev util-linux_base-dev e2fsprogs_base-dev \
+    # ansible deps
     libffi-dev libffi \
     openssl-dev gmp-dev
 
