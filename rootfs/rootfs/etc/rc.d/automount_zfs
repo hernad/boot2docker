@@ -34,7 +34,7 @@ if [ -e /dev/zvol/green/swap ] ; then
   mkswap /dev/zvol/green/swap
   swapon  /dev/zvol/green/swap >> $LOG_FILE
   swapon -a >> $LOG_FILE
-if
+fi
 
 zpool status -v >> $LOG_FILE 2>&1
 zfs list >> $LOG_FILE 2>&1
