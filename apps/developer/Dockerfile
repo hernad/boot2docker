@@ -116,5 +116,8 @@ RUN cd / ; find -name "libpthread*so*"
 #RUN cp -av /rootfs/lib/*so* /opt/apps/python2/lib/
 #RUN apt-get build-dep -y ansible
 
+#RUN cp -av /usr/include/x86_64-linux-gnu/bits/syscall.h
+RUN cp -av /opt/apps/developer/include/* /usr/include/x86_64-linux-gnu/
+
 ENV LD_LIBRARY_PATH=/opt/apps/python2/lib PATH=/opt/apps/python2/bin:/usr/bin:/bin:/usr/sbin:/sbin
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
