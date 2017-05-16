@@ -36,8 +36,8 @@ fi
 
 # mount /sys/fs/cgroup if not already done
 if ! mountpoint -q /sys/fs/cgroup; then
-        log_msg  "mounting /sys/fs/cgroup"
-	mount -t tmpfs -o uid=0,gid=0,mode=0755 cgroup /sys/fs/cgroup
+	    /bin/mount -t tmpfs -o uid=0,gid=0,mode=0755 cgroup /sys/fs/cgroup
+			log_msg  "mounting /sys/fs/cgroup ($?)" ${GREEN}
 fi
 
 cd /sys/fs/cgroup
@@ -45,10 +45,12 @@ cd /sys/fs/cgroup
 for sys in $(awk '!/^#/ { if ($4 == 1) print $1 }' /proc/cgroups); do
 	mkdir -p $sys
 	if ! mountpoint -q $sys; then
-                log_msg "mounting cgroup controller $sys"
-		if ! mount -n -t cgroup -o $sys cgroup $sys; then
-			rmdir $sys || true
-		fi
+		  if ! /bin/mount -n -t cgroup -o $sys cgroup $sys; then
+				 log_msg "ERROR mounting cgroup controller $sys" ${RED}
+			   rmdir $sys || true
+      else
+				 log_msg "mounting cgroup controller $sys" ${GREEN}
+			fi
 	fi
 done
 

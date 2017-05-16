@@ -52,9 +52,9 @@ for i in `cat /proc/cmdline`; do
 				dockerpwd=*) DOCKER_PASSWORD=${i#*=} ;;
 				rootpwd=*) ROOT_PASSWORD=${i#*=} ;;
 				host=*) HOST=1 ;;
-				nfsmount=* ) NFSMOUNT=${i#*=} ;;
-				nbd=* ) NBD=${i#*=} ;;
-				pretce=* ) PRETCE=${i#*=} ;;
+				#nfsmount=* ) NFSMOUNT=${i#*=} ;;
+				#nbd=* ) NBD=${i#*=} ;;
+				#pretce=* ) PRETCE=${i#*=} ;;
 				xvesa=* ) XVESA=${i#*=} ;;
 				rsyslog=* ) RSYSLOG=${i#*=}; SYSLOG=1 ;;
 				blacklist=* ) BLACKLIST="$BLACKLIST ${i#*=}" ;;
@@ -68,7 +68,7 @@ for i in `cat /proc/cmdline`; do
 				noutc) NOUTC=1 ;;
 				nodhcp) NODHCP=1 ;;
 				superuser) SUPERUSER=1 ;;
-				laptop) LAPTOP=1 ;;
+				#laptop) LAPTOP=1 ;;
 				base) ONLYBASE=1 ;;
 				showapps) SHOWAPPS=1 ;;
 				norestore) NORESTORE=1 ;;
@@ -250,91 +250,91 @@ get_app() {
 	)
 }
 
-log_msg "Preload drivers needed for tce/opt/home on lvm/RAID etc"
-if [ -n "$PRETCE" ]; then
-	PKG=optional ; LOADER="tce-load -i" ; LIST=onboot.lst
-	RAM=/tmp/tce
-	CPTOFS=""
-	if [ "$PRETCE" == "RAM" ] ; then
-		SRC=$RAM
-		[ -f $SRC/copy2fs.flg ] && CPTOFS=1
-	else
-		PPATH=${PRETCE%%/*}
-		mkdir -p /mnt/$PPATH
-		mount /dev/$PPATH /mnt/$PPATH
-		SRC=/mnt/$PRETCE
-		[ -x $SRC/onpre.sh ] && cp $SRC/onpre.sh /tmp
-		[ -f $SRC/copy2fs.flg ] && CPTOFS=1
-		if [ $CPTOFS ] ; then
-			cp $SRC/$PKG/* $RAM/$PKG/
-			cp $SRC/$LIST $RAM/
-			SRC=$RAM
-			umount /mnt/$PPATH 2>/dev/null
-		fi
-	fi
-	MNT=""
-	while read NAME OPT
-	do
-		[ $CPTOFS ] || grep -q $NAME $SRC/copy2fs.lst 2>/dev/null && FL="-c" || FL=''
-		[ $FL ] || MNT=1
-		su docker -c "/usr/bin/$LOADER $SRC/$PKG/$NAME"
-		[ "$SRC" == "$RAM" ] && [ "$FL" == "-c" ] && rm $RAM/$PKG/$NAME
-	done < $SRC/$LIST
-	[ "$SRC" != "$RAM" ] && [ $MNT ] || umount /mnt/$PPATH 2>/dev/null
-	rm $RAM/copy2fs.flg $RAM/copy2fs.lst 2>/dev/null
-	[ -x /tmp/onpre.sh ] && /tmp/onpre.sh
-fi
+#log_msg "Preload drivers needed for tce/opt/home on lvm/RAID etc"
+#if [ -n "$PRETCE" ]; then
+#	PKG=optional ; LOADER="tce-load -i" ; LIST=onboot.lst
+#	RAM=/tmp/tce
+#	CPTOFS=""
+#	if [ "$PRETCE" == "RAM" ] ; then
+#		SRC=$RAM
+#		[ -f $SRC/copy2fs.flg ] && CPTOFS=1
+#	else
+#		PPATH=${PRETCE%%/*}
+#		mkdir -p /mnt/$PPATH
+#		mount /dev/$PPATH /mnt/$PPATH
+#		SRC=/mnt/$PRETCE
+#		[ -x $SRC/onpre.sh ] && cp $SRC/onpre.sh /tmp
+#		[ -f $SRC/copy2fs.flg ] && CPTOFS=1
+#		if [ $CPTOFS ] ; then
+#			cp $SRC/$PKG/* $RAM/$PKG/
+#			cp $SRC/$LIST $RAM/
+#			SRC=$RAM
+#			umount /mnt/$PPATH 2>/dev/null
+#		fi
+#	fi
+#	MNT=""
+#	while read NAME OPT
+#	do
+#		[ $CPTOFS ] || grep -q $NAME $SRC/copy2fs.lst 2>/dev/null && FL="-c" || FL=''
+#		[ $FL ] || MNT=1
+#		su docker -c "/usr/bin/$LOADER $SRC/$PKG/$NAME"
+#		[ "$SRC" == "$RAM" ] && [ "$FL" == "-c" ] && rm $RAM/$PKG/$NAME
+#	done < $SRC/$LIST
+#	[ "$SRC" != "$RAM" ] && [ $MNT ] || umount /mnt/$PPATH 2>/dev/null
+#	rm $RAM/copy2fs.flg $RAM/copy2fs.lst 2>/dev/null
+#	[ -x /tmp/onpre.sh ] && /tmp/onpre.sh
+#fi
 
 #log_msg "squashfs: First process tftp and http entries"
 #modprobe -q squashfs 2>/dev/null
 #[ -n "$TFTPLIST" ] && get_app "TFTP" $TFTPLIST
 #[ -n "$HTTPLIST" ] && get_app "HTTP" $HTTPLIST
 
-if [ -n "$NFSMOUNT" ]; then
-	SERVER=$( echo $NFSMOUNT | awk -F: '{ print $1 }')
-	DIR=$(    echo $NFSMOUNT | awk -F: '{ print $2 }')
-	OPTS=$(   echo $NFSMOUNT | awk -F: '{ print $3 }')
-	[ "$OPTS" == "no-ping" ] && NOPING=1 || NOPING=0
-	[ -z "$DHCP_RAN" ] && wait4Server $SERVER $NOPING
+#if [ -n "$NFSMOUNT" ]; then
+#	SERVER=$( echo $NFSMOUNT | awk -F: '{ print $1 }')
+#	DIR=$(    echo $NFSMOUNT | awk -F: '{ print $2 }')
+#	OPTS=$(   echo $NFSMOUNT | awk -F: '{ print $3 }')
+#	[ "$OPTS" == "no-ping" ] && NOPING=1 || NOPING=0
+#	[ -z "$DHCP_RAN" ] && wait4Server $SERVER $NOPING
+#
+#	#wait $fstab_pid
+#	if [ -x /usr/local/etc/init.d/nfs-client ] ; then
+#	   /usr/local/etc/init.d/nfs-client start
+#	   NOLOCK="";
+#	else
+#	   NOLOCK=",nolock"
+#	fi
+#	echo "${SERVER}:${DIR} /mnt/nfs nfs defaults${NOLOCK} 0 0" >> /etc/fstab
+#	[ $SHOWAPPS ] && echo "Mounting ${SERVER}:${DIR}"
+#	mkdir /mnt/nfs
+#	mount /mnt/nfs >/dev/null 2>&1
+#fi
 
-	#wait $fstab_pid
-	if [ -x /usr/local/etc/init.d/nfs-client ] ; then
-	   /usr/local/etc/init.d/nfs-client start
-	   NOLOCK="";
-	else
-	   NOLOCK=",nolock"
-	fi
-	echo "${SERVER}:${DIR} /mnt/nfs nfs defaults${NOLOCK} 0 0" >> /etc/fstab
-	[ $SHOWAPPS ] && echo "Mounting ${SERVER}:${DIR}"
-	mkdir /mnt/nfs
-	mount /mnt/nfs >/dev/null 2>&1
-fi
+#touch /var/tmp/k5_skip
+#if [ -n "$NBD" ]; then
+#	modprobe -q nbd
+#	SERVER=$( echo $NBD | awk -F: '{ print $1 }')
+#	PORT=$(    echo $NBD | awk -F: '{ print $2 }')
+#	OPTS=$(   echo $NBD | awk -F: '{ print $3 }')
+#	[ "$OPTS" == "no-ping" ] && NOPING=1 || NOPING=0
+#	[ -z "$DHCP_RAN" ] && wait4Server $SERVER $NOPING
+#	nbd-client $SERVER $PORT /dev/nbd0
+#	mkdir /mnt/nbd0
+#	mount /dev/nbd0 /mnt/nbd0 2>&1
+#	pidof nbd-client nbd0 >> /var/tmp/k5_skip
+#fi
 
-touch /var/tmp/k5_skip
-if [ -n "$NBD" ]; then
-	modprobe -q nbd
-	SERVER=$( echo $NBD | awk -F: '{ print $1 }')
-	PORT=$(    echo $NBD | awk -F: '{ print $2 }')
-	OPTS=$(   echo $NBD | awk -F: '{ print $3 }')
-	[ "$OPTS" == "no-ping" ] && NOPING=1 || NOPING=0
-	[ -z "$DHCP_RAN" ] && wait4Server $SERVER $NOPING
-	nbd-client $SERVER $PORT /dev/nbd0
-	mkdir /mnt/nbd0
-	mount /dev/nbd0 /mnt/nbd0 2>&1
-	pidof nbd-client nbd0 >> /var/tmp/k5_skip
-fi
+#if grep -q "^/dev/root" /proc/mounts; then
+#	INSTALLED=1
+#	echo "${RED}Detected Traditional Hard drive installation.${NORMAL}"
+#fi
 
-if grep -q "^/dev/root" /proc/mounts; then
-	INSTALLED=1
-	echo "${RED}Detected Traditional Hard drive installation.${NORMAL}"
-fi
-
-if [ -n "$LAPTOP" ]; then
-	modprobe ac && modprobe battery 2>/dev/null
-	modprobe yenta_socket >/dev/null 2>&1 || modprobe i82365 >/dev/null 2>&1
-	/sbin/udevadm trigger 2>/dev/null >/dev/null &
-	echo "${GREEN}Laptop options enabled (AC, Battery and PCMCIA).${NORMAL}"
-fi
+#if [ -n "$LAPTOP" ]; then
+#	modprobe ac && modprobe battery 2>/dev/null
+#	modprobe yenta_socket >/dev/null 2>&1 || modprobe i82365 >/dev/null 2>&1
+#	/sbin/udevadm trigger 2>/dev/null >/dev/null &
+#	echo "${GREEN}Laptop options enabled (AC, Battery and PCMCIA).${NORMAL}"
+#fi
 
 #wait $fstab_pid
 #/sbin/swapon -a 2>/dev/null

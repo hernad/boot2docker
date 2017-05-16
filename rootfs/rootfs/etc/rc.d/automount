@@ -8,7 +8,7 @@ if [ -e /dev/disk/by-label/GREEN_INIT ]
 then
   log_msg "automount GREEN_INIT"
   mkdir /media/GREEN_INIT
-  mount /dev/disk/by-label/GREEN_INIT /media/GREEN_INIT
+  /bin/mount /dev/disk/by-label/GREEN_INIT /media/GREEN_INIT
   echo "GREEN_INIT mounted"
   [ "$GREEN_DEBUG" == "1" ] && find /media/GREEN_INIT
 else

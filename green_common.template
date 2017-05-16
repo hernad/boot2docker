@@ -42,6 +42,9 @@ export LOG_FILE
 
 
 log_msg() {
+  if [ -n "$2" ] ; then
+     echo "${2} `date +'%Y%m%d %T'`: ${1}${NORMAL}"
+  fi
   echo "$0 `date +'%Y%m%d %T'`: $1" >> $LOG_FILE
 }
 
