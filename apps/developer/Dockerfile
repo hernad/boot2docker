@@ -86,8 +86,7 @@ RUN mkdir -p /opt/apps/developer/bin ;\
         cp -av /opt/apps/developer/usr/lib/*            /opt/apps/developer/lib/ &&\
         cp -av /opt/apps/developer/usr/include/*        /opt/apps/developer/include/ &&\
         rm -rf /opt/apps/developer/usr/local &&\
-        rm /opt/apps/developer/usr/local/lib &&\
-        rm /opt/apps/developer/usr/lib &&\
+        rm -rf /opt/apps/developer/usr
 
 
 RUN /opt/apps/developer/lib/libpthread.so
