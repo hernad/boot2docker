@@ -2,8 +2,6 @@
 
 . /etc/green_common
 
-: ${DOCKER_ULIMITS:=65536}
-
 log_msg "== bootscript.sh: $(date) ====" G
 
 log_msg "configure sysctl"

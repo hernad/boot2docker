@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#: ${DOCKER_ULIMITS:=65536}
+
 # docker daemon start script
 [ $(id -u) = 0 ] || { echo 'must be root' ; exit 1; }
 
@@ -26,7 +28,6 @@ fi
 # Increasing the number of open files and processes by docker
 ulimit -n $DOCKER_ULIMITS
 log_msg "DOCKER ulimit -p $DOCKER_ULIMITS ($?)  NEW ulimit -n: `ulimit -n`" Y
-
 ulimit -p $DOCKER_ULIMITS
 log_msg "DOCKER ulimit -p $DOCKER_ULIMITS ($?) NEW ulimit -p: `ulimit -p`" Y
 
