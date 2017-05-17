@@ -55,20 +55,20 @@ fi
 
 ZFS_VOL=opt_boot
 MOUNT_DIR=$BOOT_DIR
-if [ -n $MOUNT_DIR ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
+if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
    rm -r -f $MOUNT_DIR
    mkdir -p $MOUNT_DIR
    zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
    if [ $? == 0 ] ; then
-     log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+     log_msg "zfs $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
    else
-      log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+      log_msg "zfs $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
     fi
-if
+fi
 
 ZFS_VOL=opt_apps
 MOUNT_DIR=/opt/apps
-if [ -n $MOUNT_DIR ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
+if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
    rm -r -f $MOUNT_DIR
    mkdir -p $MOUNT_DIR
    zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
@@ -81,7 +81,7 @@ fi
 
 ZFS_VOL=home_docker
 MOUNT_DIR=${DOCKER_HOME_DIR}
-if [ -n $MOUNT_DIR ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
+if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
     rm -r -f $MOUNT_DIR
     mkdir -p $MOUNT_DIR
     zfs create -o quota=$HOME_QUOTA -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
@@ -94,7 +94,7 @@ fi
 
 ZFS_VOL=build
 MOUNT_DIR=/build
-if [ -n $MOUNT_DIR ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
+if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
   rm -r -f $MOUNT_DIR
   mkdir -p $MOUNT_DIR
   zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL

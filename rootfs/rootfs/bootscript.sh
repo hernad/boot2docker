@@ -9,7 +9,6 @@ log_msg "== bootscript.sh: $(date) ====" G
 log_msg "configure sysctl"
 /etc/rc.d/sysctl
 
-log_msg "automount_zfs"
 /etc/rc.d/automount_zfs
 
 sleep 3
@@ -186,7 +185,7 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
      ln -s $BOOT_DIR/locale /usr/lib/locale
      ln -s $BOOT_DIR/locale/i18n /usr/share/i18n
    fi
-   if localedef -i en_US -f UTF-8 en_US && localedef -i bs_BA -f UTF-8 bs_BA ) ; then
+   if localedef -i en_US -f UTF-8 en_US && localedef -i bs_BA -f UTF-8 bs_BA ; then
      log_msg "localedef $BOOT_DIR/locale/locale-archive" G
    else
      log_msg "localedef $BOOT_DIR/locale/locale-archive NOT CREATED" G
