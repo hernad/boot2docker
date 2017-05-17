@@ -265,7 +265,9 @@ RUN mkdir -p ${APPS_DIR}/bin ;\
     # rm locales except bs
     mkdir -p /tmp/locale && mv ${APPS_DIR}/share/locale/bs /tmp/locale/ && rm -rf ${APPS_DIR}/share/locale/* &&\
     mv /tmp/locale/bs ${APPS_DIR}/share/locale/ &&\
-    rm -f '${APPS_DIR}/share/]'
+    rm -f '${APPS_DIR}/share/]' &&\
+    rm ${APPS_DIR}/bin/tcpdump.*
+
 
 #RUN ls -ld ${APPS_DIR}/* ; ls -l ${APPS_DIR}/bin/ ; ls -l ${APPS_DIR}/lib/
 # collect shared libraries needed for green apps execution
