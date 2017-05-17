@@ -3,13 +3,33 @@
 . /etc/green_common
 
 : ${DOCKER_ULIMIT_N:=65536}
-: ${DOCKER_ULIMIT_P:=8192}
+# http://answers.google.com/answers/threadview?id=311442
+
+# http://answers.google.com/answers/threadview?id=311442
+# PIPE SIZE - when two Unix processes communicate via a pipe or FIFO
+#(first in first out) buffer, as in the simple case of paging through a
+#directory listing with the command "ls | more", the output of the
+#first command is buffered before transmission to the second. The size
+#of this buffer, in bytes, is the pipe size. This
+
+# http://linux.derkeiler.com/Newsgroups/comp.os.linux.development.apps/2004-01/0371.html
+#There is no way to do this with a standard kernel (the bash man page
+#explicitly notes that you can't set this limit). There are patches
+#around that allow you to rebuild the kernel with a different value for
+#this limit. However, doing this is almost certainly a bad idea: an
+#application built with such a kernel dependency won't be portable.
+#Furthermore, looking for this facility is usually an indicator of bad
+#application design: In general, an application should never need to be
+#concerned with exactly what the capacity of a pipe is -- if we want to
+# prevent the writer process from blocking, the process reading from the
+#pipe should be designed to read data as soon as it available.
+
+#: ${DOCKER_ULIMIT_P:=8192}
 
 # docker daemon start script
 [ $(id -u) = 0 ] || { echo 'must be root' ; exit 1; }
 
-log_msg "====== dockerd: $1 ======="
-
+log_msg "====== dockerd: $1 =======" B
 
 # docker-machine generated profile, /opt/boot = /var/lib/boot2docker
 BOOT2DOCKER_PROFILE=/var/lib/boot2docker/profile
@@ -99,8 +119,8 @@ start() {
    # Increasing the number of open files and processes by docker
    ulimit -n $DOCKER_ULIMIT_N
    log_msg "DOCKER ulimit -n file descriptors $DOCKER_ULIMIT_N ($?)  NEW: `ulimit -n`" Y
-   ulimit -p $DOCKER_ULIMIT_P
-   log_msg "DOCKER ulimit -p processes $DOCKER_ULIMIT_P ($?) NEW: `ulimit -p`" Y
+   #ulimit -p $DOCKER_ULIMIT_P
+   #log_msg "DOCKER ulimit -p processes $DOCKER_ULIMIT_P ($?) NEW: `ulimit -p`" Y
 
     # Not enabling Docker daemon TLS by default.
     if [ "$DOCKER_TLS" != "no" ]; then
@@ -203,6 +223,7 @@ check() {
 status() {
     if check; then
         echo 'Docker daemon is running'
+        cat /proc/`cat $DOCKER_PID`/limits
         exit 0
     else
         echo 'Docker daemon is not running'
