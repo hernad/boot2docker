@@ -22,9 +22,6 @@ MEMKB=`cat /proc/meminfo | grep MemTotal.*kB | awk '{print $2}'`
 echo "Memory in kB: $MEMKB"
 
 if [ -n "$MEMKB" ] ; then
-  if [ $MEMKB -ge 1000000 ]; then
-      SWAP_VOL_SIZE=2G
-  fi
   if [ $MEMKB -ge 2000000 ]; then
       SWAP_VOL_SIZE=4G
   fi
@@ -56,52 +53,72 @@ fi
 ZFS_VOL=opt_boot
 MOUNT_DIR=$BOOT_DIR
 if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
-   rm -r -f $MOUNT_DIR
-   mkdir -p $MOUNT_DIR
-   zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
-   if [ $? == 0 ] ; then
-     log_msg "zfs $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+   if ! volumeExistsOnGreen $ZFS_VOL ; then
+     rm -r -f $MOUNT_DIR
+     mkdir -p $MOUNT_DIR
+     zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
+     if [ $? == 0 ] ; then
+       log_msg "zfs $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+     else
+        log_msg "zfs $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+     fi
    else
-      log_msg "zfs $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
-    fi
+      zfs mount green/$ZFS_VOL
+      if [ $? != 0 ] ;then log_msg "zfs mount green/$ZFS_VOL ERROR" R ;else log_msg "zfs mount green/$ZFS_VOL OK" G ; fi 
+   fi
 fi
 
 ZFS_VOL=opt_apps
 MOUNT_DIR=/opt/apps
 if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
-   rm -r -f $MOUNT_DIR
-   mkdir -p $MOUNT_DIR
-   zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
-   if [ $? == 0 ] ; then
-     log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+   if ! volumeExistsOnGreen $ZFS_VOL ; then
+     rm -r -f $MOUNT_DIR
+     mkdir -p $MOUNT_DIR
+     zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
+     if [ $? == 0 ] ; then
+       log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+     else
+       log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+     fi
    else
-     log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+      zfs mount green/$ZFS_VOL
+      if [ $? != 0 ] ;then log_msg "zfs mount green/$ZFS_VOL ERROR" R ;else log_msg "zfs mount green/$ZFS_VOL OK" G ; fi
    fi
 fi
 
 ZFS_VOL=home_docker
 MOUNT_DIR=${DOCKER_HOME_DIR}
 if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
-    rm -r -f $MOUNT_DIR
-    mkdir -p $MOUNT_DIR
-    zfs create -o quota=$HOME_QUOTA -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
-    if [ $? == 0 ] ; then
-       log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+   if ! volumeExistsOnGreen $ZFS_VOL ; then
+      rm -r -f $MOUNT_DIR
+      mkdir -p $MOUNT_DIR
+      zfs create -o quota=$HOME_QUOTA -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
+      if [ $? == 0 ] ; then
+         log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+      else
+        log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+      fi
     else
-      log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+      zfs mount green/$ZFS_VOL
+      if [ $? != 0 ] ;then log_msg "zfs mount green/$ZFS_VOL ERROR" R ;else log_msg "zfs mount green/$ZFS_VOL OK" G ; fi
     fi
 fi
 
 ZFS_VOL=build
 MOUNT_DIR=/build
-if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
-  rm -r -f $MOUNT_DIR
-  mkdir -p $MOUNT_DIR
-  zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
-  if [ $? == 0 ] ; then
-     log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+if [ -n "$MOUNT_DIR" ] && zfs_up ( ! mountedOnGreen $ZFS_VOL ) ; then
+  if ! volumeExistsOnGreen $ZFS_VOL ; then
+    rm -r -f $MOUNT_DIR
+    mkdir -p $MOUNT_DIR
+    zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
+    if [ $? == 0 ] ; then
+       log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+    else
+       log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+    fi
   else
-     log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+    zfs mount green/$ZFS_VOL
+    if [ $? != 0 ] ;then log_msg "zfs mount green/$ZFS_VOL ERROR" R ;else log_msg "zfs mount green/$ZFS_VOL OK" G ; fi
   fi
 fi
 

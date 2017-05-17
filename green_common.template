@@ -58,9 +58,14 @@ log_msg() {
   fi
 }
 
+volumeExistsOnGreen() {
+  zfs get mounted green/$1 2>/dev/null | grep green/$1 | awk '{print $3}' | grep -q -E 'yes|no'
+}
+
 mountedOnGreen() {
   #
-  cat /proc/mounts | grep -q "^green/$1"
+  #cat /proc/mounts | grep -q "^green/$1"
+  zfs get mounted green/$1 | grep green/$1 | awk '{print $3}' | grep -q yes
 }
 
 mountedApp() {

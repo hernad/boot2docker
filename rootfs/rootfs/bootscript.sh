@@ -18,7 +18,7 @@ ip a >> $LOG_FILE
 let count=0
 while ( ! zfs_up ) && [ $count -lt 10 ]
 do
-  log_msg "cekam zfs_up"
+  log_msg "waiting zfs_up ..." B
   sleep 1
   let count=count+1
 done
@@ -185,10 +185,12 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
      ln -s $BOOT_DIR/locale /usr/lib/locale
      ln -s $BOOT_DIR/locale/i18n /usr/share/i18n
    fi
-   if localedef -i en_US -f UTF-8 en_US && localedef -i bs_BA -f UTF-8 bs_BA ; then
+   localedef --force -i en_US -f UTF-8 en_US.UTF-8 >> LOG_FILE 2>&1
+   localedef --force -i bs_BA -f UTF-8 bs_BA.UTF-8 >> LOG_FILE 2>&1
+   if [ -f $BOOT_DIR/locale/locale-archive ] ; then
      log_msg "localedef $BOOT_DIR/locale/locale-archive" G
    else
-     log_msg "localedef $BOOT_DIR/locale/locale-archive NOT CREATED" G
+     log_msg "localedef $BOOT_DIR/locale/locale-archive NOT CREATED" R
    fi
 fi
 [ -L /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
