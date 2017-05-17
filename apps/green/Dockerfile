@@ -262,7 +262,7 @@ RUN mkdir -p ${APPS_DIR}/bin ;\
     rm -rf ${APPS_DIR}/man ${APPS_DIR}/share/doc ${APPS_DIR}/share/man ;\
     rm -rf ${APPS_DIR}/usr ${APPS_DIR}/var &&\
     rm -rf ${APPS_DIR}/share/gnupg/*.txt && rm -rf ${APPS_DIR}/share/gitweb  ${APPS_DIR}/share/pixmaps &&\
-    # rm locales exept bs
+    # rm locales except bs
     mkdir -p /tmp/locale && mv ${APPS_DIR}/share/locale/bs /tmp/locale/ && rm -rf ${APPS_DIR}/share/locale/* &&\
     mv /tmp/locale/bs ${APPS_DIR}/share/locale/ &&\
     rm -f '${APPS_DIR}/share/]'

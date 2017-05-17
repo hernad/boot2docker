@@ -45,4 +45,4 @@ PCOLOR=${GREEN}
 [ $(id -u) = 0 ] && PCOLOR=$RED # root user
 
 #http://unix.stackexchange.com/questions/105958/terminal-prompt-not-wrapping-correctly
-PS1="[\[$PCOLOR\]\u@\h\[$NOCOLOR\] \W]\\$ " # prompt
+PS1="[\[${PCOLOR}\]\u@\h\[${NOCOLOR}\] \W]\\$ " # prompt
