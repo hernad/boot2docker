@@ -2,23 +2,21 @@
 
 . /etc/green_common
 
-log_msg "zfs_automount START"
+log_msg "zfs automounting START" B
 
-if ! ( /sbin/lsmod | grep -q nfs )
+if ! ( /sbin/lsmod | grep -q zfs )
 then
-
    /sbin/modprobe zfs >> $LOG_FILE 2>&1
-
+   sleep 5
    for i in 1 2 3 4
    do
-     echo "/dev/zfs try: $i"
+     log_msg "/dev/zfs try: $i" B
      if [ -e /dev/zfs ] ; then
         break
      else
         sleep 1
      fi
    done
-
 fi
 
 mkdir -p /home
@@ -38,4 +36,4 @@ fi
 
 zpool status -v >> $LOG_FILE 2>&1
 zfs list >> $LOG_FILE 2>&1
-log_msg "zfs_automount END"
+log_msg "zfs_automount END" G

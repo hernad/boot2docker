@@ -50,6 +50,45 @@ do
    let count=count+1
 done
 
+if ( ! mountedOnGreen docker_home ); then
+        log_msg "mount zfs ${DOCKER_HOME_DIR}" B
+				if [ -d ${DOCKER_HOME_DIR} ] ; then
+				   mv ${DOCKER_HOME_DIR} /tmp/${DOCKER_HOME_DIR}.tmp
+				fi
+				mkdir -p ${DOCKER_HOME_DIR}
+	      zfs mount green/docker_home -o mountpoint ${DOCKER_HOME_DIR}
+
+        #chown -R docker:docker ${DOCKER_HOME_DIR}
+
+				if [ ! -d ${DOCKER_HOME_DIR}/.config ] ; then
+				  mkdir -p ${DOCKER_HOME_DIR}/.config
+					cat > ${DOCKER_HOME_DIR}/.profile <<EOF
+# ~/.profile: Executed by BASH.
+export PATH=\$HOME/.local/bin:\$PATH
+[ -d "\$HOME/.local/bin" ] || mkdir -p "\$HOME/.local/bin"
+export PATH=\$HOME/.local/bin:\$PATH
+
+#PAGER='less -EM'
+#MANPAGER='less -isR'
+EDITOR=vim
+#TERMTYPE=`/usr/bin/tty`
+#[ "${TERMTYPE:5:3}" == "tty" ] && (
+#	[ ! -f /etc/sysconfig/Xserver ] ||
+#	[ -f /etc/sysconfig/text ] ||
+#	[ -e /tmp/.X11-unix/X0 ] || startx
+#)
+EOF
+          chown -R docker:docker ${DOCKER_HOME_DIR}
+				fi
+				[ -d ${DOCKER_HOME_DIR}.tmp ] && rm -rf /tmp/${DOCKER_HOME_DIR}.tmp
+
+        if ( mountedOnGreen docker_home ) ; then
+	          echo "${GREEN}Docker zfs home mount SUCCESS.${NORMAL}"
+        else
+	          echo "${RED}Docker zfs home mount ERROR!${NORMAL}"
+        fi
+fi
+
 #if [ -d ${BOOT_DIR}.tmp ] ; then
 #    mv ${BOOT_DIR}.tmp/* ${BOOT_DIR}/
 #    rm -f ${BOOT_DIR}.tmp

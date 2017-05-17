@@ -49,55 +49,60 @@ POOL=green
 
 if ( ! zpool list $POOL )
 then
-   log_msg "zpool $POOL doesn't exists"
+   log_msg "zpool $POOL doesn't exists" R
+   exit 1
 fi
-
 
 ZFS_VOL=opt_boot
 MOUNT_DIR=$BOOT_DIR
-if zfs_up && ( ! mountedOnGreen $ZFS_VOL )
-then
-    rm -r -f $MOUNT_DIR
-    mkdir -p $MOUNT_DIR
-fi
-( zfs list $POOL/$ZFS_VOL ) || ( zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL )
-if [ $? == 0 ] ; then
-  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
-else
-  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
-fi
+if [ -n $MOUNT_DIR ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
+   rm -r -f $MOUNT_DIR
+   mkdir -p $MOUNT_DIR
+   zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
+   if [ $? == 0 ] ; then
+     log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+   else
+      log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+    fi
+if
 
 ZFS_VOL=opt_apps
 MOUNT_DIR=/opt/apps
-( zfs list $POOL/$ZFS_VOL ) || ( zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL )
-if [ $? == 0 ] ; then
-  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
-else
-  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+if [ -n $MOUNT_DIR ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
+   rm -r -f $MOUNT_DIR
+   mkdir -p $MOUNT_DIR
+   zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
+   if [ $? == 0 ] ; then
+     log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+   else
+     log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+   fi
 fi
-
 
 ZFS_VOL=home_docker
 MOUNT_DIR=${DOCKER_HOME_DIR}
-if zfs_up && ( ! mountedOnGreen $ZFS_VOL )
-then
+if [ -n $MOUNT_DIR ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
     rm -r -f $MOUNT_DIR
     mkdir -p $MOUNT_DIR
-fi
-( zfs list $POOL/$ZFS_VOL ) || ( zfs create -o quota=$HOME_QUOTA -o mountpoint=$MOUNT_DIR green/$ZFS_VOL )
-if [ $? == 0 ] ; then
-  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
-else
-  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+    zfs create -o quota=$HOME_QUOTA -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
+    if [ $? == 0 ] ; then
+       log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+    else
+      log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+    fi
 fi
 
 ZFS_VOL=build
 MOUNT_DIR=/build
-( zfs list $POOL/$ZFS_VOL ) || ( zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL )
-if [ $? == 0 ] ; then
-  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
-else
-  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+if [ -n $MOUNT_DIR ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
+  rm -r -f $MOUNT_DIR
+  mkdir -p $MOUNT_DIR
+  zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
+  if [ $? == 0 ] ; then
+     log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+  else
+     log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+  fi
 fi
 
 if ( is_vbox )
