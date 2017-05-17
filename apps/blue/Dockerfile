@@ -85,8 +85,6 @@ RUN curl -sLO http://www.ivarch.com/programs/sources/pv-1.6.0.tar.gz  &&\
 #    cd zfs-auto-snapshot-master && /usr/bin/install src/zfs-auto-snapshot.sh ${APPS_DIR}/bin/zfs-auto-snapshot
 
 
-
-
 RUN git clone https://github.com/relan/exfat.git &&\
     cd exfat && autoreconf --install &&\
     ./configure --prefix=${APPS_DIR} &&\
@@ -143,6 +141,36 @@ RUN curl -sLO ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-2.1.18.tar.bz2 && \
     gpg --verify gnupg-2.1.18.tar.bz2.sig && tar -xjf gnupg-2.1.18.tar.bz2 && \
     cd gnupg-2.1.18 && ./configure --prefix=${APPS_DIR}  && make && make install
 
+
+ENV ROOTFS=${APPS_DIR}
+ENV TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
+ENV TCZ_DEPS_GREEN  \
+         strace glib2 libtirpc \
+         nfs-utils tcp_wrappers portmap rpcbind libtirpc \
+         libpcap libnl tcpdump \
+         #nss,nspr,sqlite3,libnotify - deps for electron applications ( atom, code )
+         nss nspr sqlite3 libnotify \
+         #groff - aws deps
+         groff \
+         iftop util-linux \
+         icu icu-bin \
+         coreutils
+
+#man-db
+
+# Install the base tiny linux build
+RUN for dep in $TCZ_DEPS_GREEN ; do \
+            echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
+            curl -sL -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
+            if [ ! -s /tmp/$dep.tcz ] ; then \
+                echo "$TCL_REPO_BASE/tcz/$dep.tcz size is zero 0 - error !" && \
+                exit 1 ;\
+            else \
+                unsquashfs -i -f -d $ROOTFS /tmp/$dep.tcz && \
+                rm -f /tmp/$dep.tcz ;\
+                if [ "$?" != "0" ] ; then exit 1 ; fi ;\
+            fi ;\
+    done
 
 
 

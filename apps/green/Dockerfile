@@ -202,27 +202,15 @@ done
 ENV ROOTFS=${APPS_DIR}
 ENV TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
 ENV TCZ_DEPS_GREEN  \
-                    nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     htop ncurses-utils ncurses-terminfo \
                     git expat2 \
                     patch pcre \
                     parted liblvm2 \
-                    strace glib2 libtirpc \
                     procps \
-                    nfs-utils tcp_wrappers portmap rpcbind libtirpc \
                     bind-utilities libxml2 \
-                    libpcap libnl tcpdump \
                     cifs-utils \
-                    fuse libffi \
-                    nss nspr sqlite3 libnotify \
-                    groff \
-                    iftop util-linux \
-                    icu icu-bin \
-                    #man-db \
-                    coreutils
+                    fuse libffi
 
-#nss,nspr,sqlite3,libnotify - deps for electron applications ( atom, code )
-#groff - aws deps
 
 # Install the base tiny linux build
 RUN for dep in $TCZ_DEPS_GREEN ; do \
