@@ -334,7 +334,7 @@ COPY rootfs/sshrc $ROOTFS/usr/local/etc/ssh/sshrc
 COPY rootfs/green_common $ROOTFS/etc/green_common
 COPY rootfs/green_service_common $ROOTFS/etc/green_service_common
 COPY rootfs/sudo_x /usr/local/bin
-COPY rootfs/rootfs/update-ca-certificates $ROOTFS/usr/local/sbin/update-ca-certificates
+COPY rootfs/update-ca-certificates $ROOTFS/usr/local/sbin/update-ca-certificates
 # Copy boot params
 COPY rootfs/isolinux /tmp/iso/boot/isolinux
 COPY rootfs/make_iso.sh /
