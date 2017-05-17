@@ -5,8 +5,6 @@
 log_msg "== bootscript.sh: $(date) ====" G
 
 log_msg "configure sysctl"
-/etc/rc.d/sysctl
-
 /etc/rc.d/automount_zfs
 
 sleep 3
@@ -151,6 +149,7 @@ ln -s $BOOT_DIR/root /root && mv /root.orig/* /root/ && rm -rf /root.orig
 
 echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 
+/etc/rc.d/sysctl
 /etc/rc.d/acpid
 /etc/rc.d/sshd start
 /etc/rc.d/server_scaleway

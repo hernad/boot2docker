@@ -1,10 +1,15 @@
 #!/bin/bash
 
+. /etc/green_common
+
 : ${DOCKER_ULIMIT_N:=65536}
-: ${DOCKER_ULIMIT_P:=32768}
+: ${DOCKER_ULIMIT_P:=8192}
 
 # docker daemon start script
 [ $(id -u) = 0 ] || { echo 'must be root' ; exit 1; }
+
+log_msg "====== dockerd: $1 ======="
+
 
 # docker-machine generated profile, /opt/boot = /var/lib/boot2docker
 BOOT2DOCKER_PROFILE=/var/lib/boot2docker/profile
@@ -14,23 +19,14 @@ if [ -f $BOOT2DOCKER_PROFILE ] ; then
   unset DOCKER_STORAGE DOCKER_HOST
 fi
 
-. /etc/green_common
-
 DOCKER_PID=/var/run/docker.pid
 
-PATH=:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/docker/bin
+#PATH=:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/docker/bin
 
 if [ ! -e $BOOT_DIR/etc/profile ]
 then
   echo "# put envars  e.g. GREEN_APPS, HTTP_PROXY, HTTPS_PROXY, DOCKER_OPTS, DOCKER_STORAGE, DOCKER_LOGFILE, CERT_INTERFACES, CERT_DIR" > $BOOT_DIR/etc/profile
 fi
-
-#https://www.tecmint.com/increase-set-open-file-limits-in-linux/
-# Increasing the number of open files and processes by docker
-ulimit -n $DOCKER_ULIMIT_N
-log_msg "DOCKER ulimit -n file descriptors $DOCKER_ULIMIT_N ($?)  NEW: `ulimit -n`" Y
-ulimit -p $DOCKER_ULIMIT_P
-log_msg "DOCKER ulimit -p processes $DOCKER_ULIMIT_P ($?) NEW: `ulimit -p`" Y
 
 . $BOOT_DIR/etc/profile
 
@@ -94,9 +90,18 @@ check_docker_installed() {
     fi
   done
 
+
 }
 
 start() {
+
+   #https://www.tecmint.com/increase-set-open-file-limits-in-linux/
+   # Increasing the number of open files and processes by docker
+   ulimit -n $DOCKER_ULIMIT_N
+   log_msg "DOCKER ulimit -n file descriptors $DOCKER_ULIMIT_N ($?)  NEW: `ulimit -n`" Y
+   ulimit -p $DOCKER_ULIMIT_P
+   log_msg "DOCKER ulimit -p processes $DOCKER_ULIMIT_P ($?) NEW: `ulimit -p`" Y
+
     # Not enabling Docker daemon TLS by default.
     if [ "$DOCKER_TLS" != "no" ]; then
         CERTHOSTNAMES="$(hostname -s),$(hostname -i)"
