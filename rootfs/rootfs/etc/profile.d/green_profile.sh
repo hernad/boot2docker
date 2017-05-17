@@ -15,7 +15,7 @@ echo_line " Application versions: "
 [ -e /usr/bin/perl ] && echo "`perl -v | sed -n '/This is perl/,2p'`"
 [ -e /opt/VirtualBox/VirtualBox ] && echo "VirtualBox: `VBoxManage --version`"
 [ -d /opt/go ] && export GOROOT=/opt/go
-[ -n "$GOROOT" ] && export GOPATH=/home/docker/go && mkdir -p $GOPATH && echo "GOPATH=$GOPATH, `/opt/go/bin/go version`"
+[ -n "$GOROOT" ] && export GOPATH=${DOCKER_HOME_DIR}/go && mkdir -p $GOPATH && echo "GOPATH=$GOPATH, `/opt/go/bin/go version`"
 [ -n "`which npm`" ] && echo nodejs/npm: `npm version | tr  -d '\n' | sed -e 's/,[[:space:]]\+/, /g' | sed -e 's/:[[:space:]]\+/: /g' | tr -d "'"`
 [ -d /opt/java ] && export JAVA_HOME=/opt/java
 [ -n "$JAVA_HOME" ] && echo "JAVA_HOME=$JAVA_HOME", `/opt/java/bin/java -version 2>&1 | xargs echo`

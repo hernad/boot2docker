@@ -101,14 +101,14 @@ if grep -q '^docker:' /etc/passwd; then
 
     #preload data from grenbox-cli
     if [ -e "/userdata.tar" ]; then
-        tar xf /userdata.tar -C /home/docker/ >> $LOG_FILE  2>&1
-        rm -f "/home/docker/greenbox, please format-me"
-        chown -R docker:docker /home/docker
+        tar xf /userdata.tar -C ${DOCKER_HOME_DIR}/ >> $LOG_FILE  2>&1
+        rm -f "${DOCKER_HOME_DIR}/greenbox, please format-me"
+        chown -R docker:docker ${DOCKER_HOME_DIR}
     fi
 
-    if ls -ld /home/docker | grep -q root
+    if ls -ld ${DOCKER_HOME_DIR} | grep -q root
     then
-       chown -R docker:docker /home/docker
+       chown -R docker:docker ${DOCKER_HOME_DIR}
     fi
 fi
 

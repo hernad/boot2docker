@@ -20,25 +20,25 @@ PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 # ldd fake
 #
-which ldd > /dev/null || alias ldd=LD_TRACE_LOADED_OBJECTS=1
+#which ldd > /dev/null || alias ldd=LD_TRACE_LOADED_OBJECTS=1
 
 # Export all variables definied above and set mask.
 #
-export PATH LD_LIBRARY_PATH PS1 G_FILENAME_ENCODING ignoreeof
-umask 022
+#export PATH LD_LIBRARY_PATH PS1 G_FILENAME_ENCODING ignoreeof
+#umask 022
 
-if [ -f /etc/sysconfig/language ]; then
-. /etc/sysconfig/language
-export LANG LC_ALL
-fi
+#if [ -f /etc/sysconfig/language ]; then
+#. /etc/sysconfig/language
+#export LANG LC_ALL
+#fi
 
-if [ -f /etc/sysconfig/timezone ]; then
-. /etc/sysconfig/timezone
-export TZ
-fi
+#if [ -f /etc/sysconfig/timezone ]; then
+#. /etc/sysconfig/timezone
+#export TZ
+#fi
 
-for i in /etc/profile.d/*.sh ; do
- if [ -r "$i" ]; then
-   . $i
- fi
-done
+#for i in /etc/profile.d/*.sh ; do
+# if [ -r "$i" ]; then
+#   . $i
+# fi
+#done

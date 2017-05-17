@@ -195,7 +195,7 @@ wait4Server() {
 if ! grep -q "^docker" /etc/passwd &>/dev/null; then addUser; fi
 
 echo "docker" > /etc/sysconfig/tcuser
-mkdir -p /home/docker
+mkdir -p ${DOCKER_HOME_DIR}
 
 if [ -n "$SUPERUSER" ]; then
 	touch /etc/sysconfig/superuser
@@ -352,7 +352,7 @@ if [ -n "$ROOT_PASSWORD" ]; then
 	echo "root:$ROOT_PASSWORD" | chpasswd -m
 fi
 
-[ -n "$XVESA" ]  && sed -i 's/1024x768x32/'"$XVESA"'/' /home/docker/.xsession 2>/dev/null
+[ -n "$XVESA" ]  && sed -i 's/1024x768x32/'"$XVESA"'/' ${DOCKER_HOME_DIR}/.xsession 2>/dev/null
 
 log_msg "If ntpserver: $NTPSERVER is specified use that"
 if [ -n "$NTPSERVER" ]; then
@@ -382,40 +382,36 @@ fi
 [ -n "$NOAUTOLOGIN" ] && echo "booting" > /etc/sysconfig/noautologin
 
 
-log_msg "setup /home/docker for mountOnGreen"
-DOCKER_HOME_DIR=/home/docker
+log_msg "setup ${DOCKER_HOME_DIR} for mountOnGreen"
+
 
 if ( ! mountedOnGreen docker_home ); then
-        log_msg "mount zfs /home/docker" "${GREEN}"
+        log_msg "mount zfs ${DOCKER_HOME_DIR}" "${GREEN}"
 				if [ -d ${DOCKER_HOME_DIR} ] ; then
 				   mv ${DOCKER_HOME_DIR} /tmp/${DOCKER_HOME_DIR}.tmp
 				fi
 				mkdir -p ${DOCKER_HOME_DIR}
 	      zfs mount green/docker_home -o mountpoint ${DOCKER_HOME_DIR}
 
-        chown -R docker:docker ${DOCKER_HOME_DIR}
+        #chown -R docker:docker ${DOCKER_HOME_DIR}
 
 				if [ ! -d ${DOCKER_HOME_DIR}/.config ] ; then
 				  mkdir -p ${DOCKER_HOME_DIR}/.config
 					cat > ${DOCKER_HOME_DIR}/.profile <<EOF
-# ~/.profile: Executed by Bourne-compatible login SHells.
+# ~/.profile: Executed by BASH.
 export PATH=\$HOME/.local/bin:\$PATH"
 [ -d "\$HOME/.local/bin" ] || mkdir -p "\$HOME/.local/bin"
 export PATH=\$HOME/.local/bin:\$PATH
 
-PAGER='less -EM'
-MANPAGER='less -isR'
+#PAGER='less -EM'
+#MANPAGER='less -isR'
 EDITOR=vim
-if [ -f "$HOME/.ashrc" ]; then
-		export ENV="\$HOME/.ashrc"
-		. "\$HOME/.ashrc"
-fi
-TERMTYPE=`/usr/bin/tty`
-[ ${TERMTYPE:5:3} == "tty" ] && (
-	[ ! -f /etc/sysconfig/Xserver ] ||
-	[ -f /etc/sysconfig/text ] ||
-	[ -e /tmp/.X11-unix/X0 ] || startx
-)
+#TERMTYPE=`/usr/bin/tty`
+#[ "${TERMTYPE:5:3}" == "tty" ] && (
+#	[ ! -f /etc/sysconfig/Xserver ] ||
+#	[ -f /etc/sysconfig/text ] ||
+#	[ -e /tmp/.X11-unix/X0 ] || startx
+#)
 EOF
           chown -R docker:docker ${DOCKER_HOME_DIR}
 				fi

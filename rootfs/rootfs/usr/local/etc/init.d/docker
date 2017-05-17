@@ -134,13 +134,13 @@ start() {
         #fi
 
         # now make the client certificates available to the docker user
-        #USERCFG="/home/docker/.docker"
+        #USERCFG="${DOCKER_HOME_DIR}/.docker"
         #mkdir -p "$USERCFG"
         #chmod 700 "$USERCFG"
         #cp "$CACERT" "$USERCFG"
         #cp "$CERT" "$USERCFG"
         #cp "$KEY" "$USERCFG"
-        #chown -R docker:docker /home/docker
+        #chown -R docker:docker ${DOCKER_HOME_DIR}
     fi
 
     mkdir -p "$DOCKER_DIR"
