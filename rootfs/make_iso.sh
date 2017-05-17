@@ -42,6 +42,8 @@ ln -fs /opt/green/bin/logrotate $ROOTFS/usr/bin/
 [ -d $ROOTFS/etc/ssl ] && rm -rf $ROOTFS/etc/ssl
 ln -fs /opt/boot/etc/ssl $ROOTFS/usr/local/etc/ssl # /usr/local/bin/curl needs this location
 ln -fs /opt/boot/etc/ssl $ROOTFS/etc/ssl # docker golang needs /etc/ssl
+# mozilla ca-certificates
+ln -fs /opt/boot/etc/ssl/ca-certificates $ROOTFS/usr/local/share/ca-certificates
 
 ln -fs /opt/x11/bin/xauth $ROOTFS/usr/bin/
 ln -fs /opt/x11/share $ROOTFS/usr/share/X11
@@ -98,14 +100,14 @@ rm -rf $ROOTFS/usr/local/share/man
 rm -rf $ROOTFS/usr/local/share/zfs
 rm -rf $ROOTFS/usr/local/share/licenses
 rm -rf $ROOTFS/usr/local/share/pkgconfig
-
+rm -rf $ROOTFS/usr/local/share/initramfs-tools
 # Pack the rootfs
 cd $ROOTFS
 
 #http://nairobi-embedded.org/initramfs_tutorial.html
 #$ find . | cpio -H newc -o | gzip -9 > ../initrd.img-`uname -r`-custom
 
-find | ( set -x; cpio -o -H newc | xz -4 --format=lzma --verbose ) > /tmp/iso/boot/initrd.img
+find | ( set -x; cpio -o -H newc | xz -4 --format=lzma --verbose --verbose ) > /tmp/iso/boot/initrd.img
 #find | ( set -x; cpio -o -H newc | gzip -9 ) > /tmp/iso/boot/initrd.img
 
 #find | ( set -x; cpio -o -H newc | lz4 -c -l -9 -f ) > /tmp/iso/boot/initrd.img

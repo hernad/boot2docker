@@ -4,7 +4,7 @@
 APPS_HOME=/opt/apps
 
 [ ! -d $APPS_HOME ] &&  echo "$APPS_HOME not exists !?" && exit 1
-[ `whoami` != root ] && echo "you have to be root user !" && exit 1
+[ `whoami` != root ] && log_msg "install_green_apps you have to be root user !" E && exit 1
 
 case "$1" in
   2) echo "install GREEN_APPS_2"
@@ -79,6 +79,9 @@ if [ "$INSTALL_SET" == "9" ] ; then
            python2)
              GREEN_APPS_9+=" python2_${PYTHON2_VER}"
              ;;
+           perl)
+               GREEN_APPS_9+=" perl_${PERL_VER}"
+               ;;
            idea)
              GREEN_APPS_9+=" idea_${IDEA_VER}"
              ;;

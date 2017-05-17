@@ -71,9 +71,11 @@ if [ ! -d $BOOT_DIR/etc/ssl ] ; then
   done
   tar xf etc_ssl.tar.xz
   rm etc_ssl.tar.xz
-  ln -s $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/cacert.pem
-  ln -s $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/ca-bundle.crt
+
+  ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/cacert.pem
+  ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/ca-bundle.crt
 fi
+
 
 set_log_file
 
