@@ -98,7 +98,7 @@ rm -rf $ROOTFS/usr/local/share/man
 rm -rf $ROOTFS/usr/local/share/zfs
 rm -rf $ROOTFS/usr/local/share/licenses
 rm -rf $ROOTFS/usr/local/share/pkgconfig
-rm -rf $ROOTFS/usr/local/share
+
 # Pack the rootfs
 cd $ROOTFS
 

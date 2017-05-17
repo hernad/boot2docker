@@ -32,13 +32,13 @@ PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 #export LANG LC_ALL
 #fi
 
-#if [ -f /etc/sysconfig/timezone ]; then
-#. /etc/sysconfig/timezone
-#export TZ
-#fi
+if [ -f /etc/sysconfig/timezone ]; then
+. /etc/sysconfig/timezone
+export TZ
+fi
 
-#for i in /etc/profile.d/*.sh ; do
-# if [ -r "$i" ]; then
-#   . $i
-# fi
-#done
+for i in /etc/profile.d/*.sh ; do
+ if [ -r "$i" ]; then
+   . $i
+ fi
+done
