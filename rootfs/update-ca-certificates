@@ -31,6 +31,7 @@ if ! which perl ; then
   export PATH=/opt/apps/perl/bin:$PATH
   if ! which perl ; then
      log_msg "perl install unsuccessfull !" E
+     exit 1
   fi
 fi
 

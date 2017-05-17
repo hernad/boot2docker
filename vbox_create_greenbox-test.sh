@@ -53,7 +53,7 @@ then
   VBoxManage modifyvm $VBOX_NAME \
 	--nic1 nat \
         --nictype1 virtio \
-        --cableconnected1 on 
+        --cableconnected1 on
 
   VBoxManage storagectl $VBOX_NAME \
 	--name  SATA \
@@ -87,7 +87,7 @@ VBoxManage storageattach $VBOX_NAME \
 if [ -f $(pwd)/${VBOX_NAME}.vdi ]
 then
   echo " $VBOX_NAME 5) close medium $VBOX_NAME.vdi"
-  VBoxManage closemedium $(pwd)/${VBOX_NAME}.vdi --delete 
+  VBoxManage closemedium $(pwd)/${VBOX_NAME}.vdi --delete
 fi
 
 echo " $VBOX_NAME 6) create medium disk $VBOX_NAME.vdi"
@@ -103,5 +103,7 @@ VBoxManage storageattach $VBOX_NAME \
 		--device 0 \
 		--type hdd \
 		--medium $(pwd)/${VBOX_NAME}.vdi
+
+VBoxManage modifyvm ${VBOX_NAME} --natpf1 "ssh,tcp,,2222,,22"
 
 VBoxManage startvm ${VBOX_NAME}

@@ -2,7 +2,7 @@
 
 . /etc/green_common
 
-: ${SYSTEM_ULIMITS:=1048576}
+: ${DOCKER_ULIMITS:=65536}
 
 log_msg "== bootscript.sh: $(date) ====" G
 
@@ -49,16 +49,7 @@ do
    let count=count+1
 done
 
-if ( ! mountedOnGreen docker_home ); then
-        log_msg "mount zfs ${DOCKER_HOME_DIR}" B
-				if [ -d ${DOCKER_HOME_DIR} ] ; then
-				   mv ${DOCKER_HOME_DIR} /tmp/${DOCKER_HOME_DIR}.tmp
-				fi
-				mkdir -p ${DOCKER_HOME_DIR}
-	      zfs mount green/docker_home -o mountpoint ${DOCKER_HOME_DIR}
-
-        #chown -R docker:docker ${DOCKER_HOME_DIR}
-
+if ( mountedOnGreen docker_home ); then
 				if [ ! -d ${DOCKER_HOME_DIR}/.config ] ; then
 				  mkdir -p ${DOCKER_HOME_DIR}/.config
 					cat > ${DOCKER_HOME_DIR}/.profile <<EOF
@@ -77,15 +68,12 @@ EDITOR=vim
 #	[ -e /tmp/.X11-unix/X0 ] || startx
 #)
 EOF
-          chown -R docker:docker ${DOCKER_HOME_DIR}
+          chown -R docker:docker ${DOCKER_HOME_DIR}/.profile
 				fi
-				[ -d ${DOCKER_HOME_DIR}.tmp ] && rm -rf /tmp/${DOCKER_HOME_DIR}.tmp
+else
 
-        if ( mountedOnGreen docker_home ) ; then
-	          echo "${GREEN}Docker zfs home mount SUCCESS.${NORMAL}"
-        else
-	          echo "${RED}Docker zfs home mount ERROR!${NORMAL}"
-        fi
+	    echo "${RED}Docker home not mounted ERROR!${NORMAL}"
+
 fi
 
 #if [ -d ${BOOT_DIR}.tmp ] ; then
@@ -255,13 +243,3 @@ EOF
 [ -d $BOOT_DIR/bin ] || mkdir -p $BOOT_DIR/bin
 
 setup_symlinks_and_commands
-
-#https://www.tecmint.com/increase-set-open-file-limits-in-linux/
-
-# Increasing the number of open files and processes by docker
-
-ulimit -n $SYSTEM_ULIMITS
-log_msg "ulimit -p $SYSTEM_ULIMITS ($?)  NEW ulimit -n: `ulimit -n`)"
-
-ulimit -p $SYSTEM_ULIMITS
-log_msg "ulimit -p $SYSTEM_ULIMITS ($?) NEW ulimit -p: `ulimit -p`"

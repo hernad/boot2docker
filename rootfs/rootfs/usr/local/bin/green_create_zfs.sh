@@ -147,6 +147,8 @@ then
    zfs create  -V $SWAP_VOL_SIZE \
       -b $(getconf PAGESIZE) -o primarycache=metadata -o com.sun:auto-snapshot=false -o sync=disabled -s $POOL/swap
    wait_zvol_up $POOL swap
+
+   cat /proc/swaps | grep zd
    mkswap  /dev/zvol/$POOL/swap
    swapon /dev/zvol/$POOL/swap
 fi
@@ -155,6 +157,6 @@ fi
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
 [ -d $BOOT_DIR/zfs ] || mkdir -p $BOOT_DIR/zfs
 
-ln -s $BOOT_DIR/zfs /etc/zfs
+[ -e /etc/zfs ] || ln -s $BOOT_DIR/zfs /etc/zfs
 
-zpool set cachefile=/etc/zfs/zpool.cache green
+[ -f /etc/zfs/zpool.cache ] || zpool set cachefile=/etc/zfs/zpool.cache green

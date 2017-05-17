@@ -35,10 +35,13 @@ if [ -e /dev/zvol/green/docker_vol ] ; then
 fi
 
 if [ -e /dev/zvol/green/swap ] ; then
-  mkswap /dev/zvol/green/swap
-  swapon  /dev/zvol/green/swap >> $LOG_FILE
-  log_msg "/dev/zvol/green/swap ON" B
-  swapon -a >> $LOG_FILE
+  if ! cat /proc/swaps | grep -q zd ; then
+    mkswap /dev/zvol/green/swap
+    swapon  /dev/zvol/green/swap >> $LOG_FILE
+    log_msg "/dev/zvol/green/swap ON" B
+  else
+    log_msg "swap zd already ON" Y
+  fi
 fi
 
 zpool status -v >> $LOG_FILE 2>&1

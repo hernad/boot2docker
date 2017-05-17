@@ -6,5 +6,8 @@
 */30 * * * * /etc/rc.d/sshd
 
 # sunday, wednesday
-* * * * 0,3  /etc/init.d/logrotate.sh
-* * * * 0,3  /usr/local/sbin/update-ca-certificates
+0 0 * * 0,3,6  /etc/init.d/logrotate.sh
+0 0 * * 0,3,6  /usr/local/sbin/update-ca-certificates
+
+
+http://www.adminschoice.com/crontab-quick-reference
