@@ -101,7 +101,7 @@ log_msg "automount GREEN_volumes"
 
 if [ ! -d $BOOT_DIR/etc/ssl ] ; then
   mkdir -p $BOOT_DIR/etc/ssl
-  log_msg "bootstrap ca-certs from etc_ssl.tar.xz"
+  log_msg "bootstrap ca-certs from etc_ssl.tar.xz" B
   count=0
   cd $BOOT_DIR/etc
   while ! curl -skLO ${DOWNLOAD_URL}/etc_ssl.tar.xz && [ $count -lt 10 ]
@@ -112,6 +112,8 @@ if [ ! -d $BOOT_DIR/etc/ssl ] ; then
   done
   if [ $count -ge 9 ] ; then
     log_msg "curl ${DOWNLOAD_URL}/etc_ssl.tar.xz CANNOT BE DOWNLOADED" R
+  else
+    log_msg "curl ${DOWNLOAD_URL}/etc_ssl.tar.xz DOWNLOADED" G
   fi
   tar xf etc_ssl.tar.xz
   rm etc_ssl.tar.xz
@@ -180,7 +182,9 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
       log_msg "curl ${DOWNLOAD_URL}/usr_share_i18n.tar.xz ERROR" R
    else
      tar xf usr_share_i18n.tar.xz
-     log_msg "curl ${DOWNLOAD_URL}/usr_share_i18n.tar.xz ERROR OK" G
+     if [ $? -eq 0 ] ; then
+       log_msg "curl ${DOWNLOAD_URL}/usr_share_i18n.tar.xz OK" G
+     fi
      rm usr_share_i18n.tar.xz
      ln -s $BOOT_DIR/locale /usr/lib/locale
      ln -s $BOOT_DIR/locale/i18n /usr/share/i18n

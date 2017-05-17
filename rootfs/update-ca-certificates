@@ -34,6 +34,7 @@ if ! which perl ; then
   fi
 fi
 
+log_msg "update-ca-certificates start"
 
 verbose=0
 fresh=0
