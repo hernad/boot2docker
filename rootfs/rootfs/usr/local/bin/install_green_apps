@@ -52,6 +52,12 @@ if [ "$INSTALL_SET" == "9" ] ; then
      shift
      for app in $@ ; do
          case $app in
+           green)
+             GREEN_APPS_9+=" green_${GREEN_APPS_VER}"
+             ;;
+           blue)
+               GREEN_APPS_9+=" blue_${BLUE_APPS_VER}"
+               ;;
            k8s)
              GREEN_APPS_9+=" k8s_${K8S_VER}"
              ;;
