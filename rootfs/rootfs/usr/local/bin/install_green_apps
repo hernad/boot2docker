@@ -79,27 +79,40 @@ if [ "$INSTALL_SET" == "9" ] ; then
            python2)
              GREEN_APPS_9+=" python2_${PYTHON2_VER}"
              ;;
+           idea)
+             GREEN_APPS_9+=" idea_${IDEA_VER}"
+             ;;
+           code)
+             GREEN_APPS_9+=" code_${CODE_VER}"
+              ;;
+           atom)
+              GREEN_APPS_9+=" atom_${ATOM_VER}"
+              ;;
+           aws)
+              GREEN_APPS_9+=" aws_${AWS_VER}"
+              ;;
          esac
      done
 
 else
+
   if [ -z "$GREEN_APPS" ] ; then
-    GREEN_APPS="docker_$DOCKER_VERSION green_$GREEN_APPS_VER"
+    GREEN_APPS="docker_$DOCKER_VERSION green_${GREEN_APPS_VER}"
     GREEN_APPS+=" python2_$PYTHON2_VER vim_$VIM_VER"
   fi
   if [ -z "$GREEN_APPS_2" ] ; then
-    GREEN_APPS_2="x11_${X11_APPS_VER} VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER"
-    GREEN_APPS_2+=" perl_$PERL_VER ruby_$RUBY_VER java_${JAVA_VER} go_${GO_VER} node_${NODE_VER}"
+    GREEN_APPS_2="blue_${BLUE_APPS_VER}"
+    GREEN_APPS_2+=" perl_$PERL_VER java_${JAVA_VER}"
   fi
-
   if [ -z "$GREEN_APPS_3" ] ; then
-    GREEN_APPS_3="aws_${AWS_VER} "
-    GREEN_APPS_3+=" idea_${IDEA_VER} atom_${ATOM_VER} code_${CODE_VER}"
+    GREEN_APPS_3="VirtualBox_$VBOX_VER vagrant_$VAGRANT_VER"
+  fi
+  #aws_${AWS_VER}
+  #idea_${IDEA_VER} atom_${ATOM_VER} code_${CODE_VER}
+  if [ -z "$GREEN_APPS_4" ] ; then
+    GREEN_APPS_4="x11_${X11_APPS_VER} ruby_$RUBY_VER go_${GO_VER} node_${NODE_VER} developer_${DEVELOPER_VER} "
   fi
 
-  if [ -z "$GREEN_APPS_4" ] ; then
-    GREEN_APPS_4="developer_${DEVELOPER_VER} "
-  fi
   echo "environment vars:"
   echo "-------------------------------------------------------------"
   echo "DOWNLOAD_URL: $DOWNLOAD_URL"
