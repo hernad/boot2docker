@@ -185,11 +185,12 @@ start() {
     fi
 
 
-    echo dockerd --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
-    dockerd --debug=false --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
+    #echo dockerd --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
+    dockerd --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
 }
 
 stop() {
+    log_msg "$DOCKER_PID stop" B
     [ -f $DOCKER_PID ] && kill $(cat $DOCKER_PID)
     ps ax  | grep dockerd | grep -v grep
     ps ax  | grep dockerd | grep -v grep  && killall dockerd
@@ -213,11 +214,13 @@ restart() {
 }
 
 check() {
-
-    [ ! -f $DOCKER_PID ] &&  return 1
+    count=0
+    while [ ! -f $DOCKER_PID ] && [ $count -lt 10 ] ; do
+      sleep 1
+      let count=count+1
+    done
     ps $(cat $DOCKER_PID)  | grep -v grep | grep -q dockerd
     return $?
-
 }
 
 status() {
