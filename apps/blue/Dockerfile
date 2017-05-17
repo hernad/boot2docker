@@ -14,7 +14,6 @@ ENV CPPFLAGS="-I${APPS_DIR}/include" CFLAGS="-I${APPS_DIR}/include" LDFLAGS="-L$
 
 # ================= /opt/apps/blue =========================================================
 
-
 ENV XNBD_VER=0.4.0
 RUN apt-get build-dep -y xnbd && apt-get -y install libjansson-dev &&\
     curl -sLO https://bitbucket.org/hirofuchi/xnbd/downloads/xnbd-${XNBD_VER}.tgz &&\
@@ -144,7 +143,7 @@ RUN curl -sLO ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-2.1.18.tar.bz2 && \
 
 ENV ROOTFS=${APPS_DIR}
 ENV TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
-ENV TCZ_DEPS_GREEN  \
+ENV TCZ_DEPS_BLUE  \
          strace glib2 libtirpc \
          nfs-utils tcp_wrappers portmap rpcbind libtirpc \
          libpcap libnl tcpdump \
@@ -159,7 +158,7 @@ ENV TCZ_DEPS_GREEN  \
 #man-db
 
 # Install the base tiny linux build
-RUN for dep in $TCZ_DEPS_GREEN ; do \
+RUN for dep in $TCZ_DEPS_BLUE ; do \
             echo "Download $TCL_REPO_BASE/tcz/$dep.tcz"  && \
             curl -sL -o /tmp/$dep.tcz $TCL_REPO_BASE/tcz/$dep.tcz && \
             if [ ! -s /tmp/$dep.tcz ] ; then \
@@ -171,7 +170,6 @@ RUN for dep in $TCZ_DEPS_GREEN ; do \
                 if [ "$?" != "0" ] ; then exit 1 ; fi ;\
             fi ;\
     done
-
 
 
 # ====================================== remove what we don't need  ==============================

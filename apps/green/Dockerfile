@@ -234,7 +234,6 @@ RUN  curl -sLO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
       make && make install
 
 
-
 # ====================================== remove what we don't need  ==============================
 
 RUN mkdir -p ${APPS_DIR}/bin ;\
