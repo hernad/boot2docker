@@ -208,8 +208,7 @@ RUN ls -l $ROOTFS/usr/local/tce.installed
 
 # update-ca-certificates is executed in crontab
 RUN rm $ROOTFS/usr/local/tce.installed/ca-certificates \
-    rm $ROOTFS/usr/local/tce.installed/getlocale \
-    rm $ROOTFS/usr/local/bin/getlocale.sh
+
 
 
 #RUN rm $ROOTFS/usr/local/tce.installed/fontconfig
