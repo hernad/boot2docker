@@ -399,16 +399,16 @@ if ( ! mountedOnGreen docker_home ); then
 				  mkdir -p ${DOCKER_HOME_DIR}/.config
 					cat > ${DOCKER_HOME_DIR}/.profile <<EOF
 # ~/.profile: Executed by Bourne-compatible login SHells.
-export PATH=$HOME/.local/bin:$PATH"
-[ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"
-export PATH=$HOME/.local/bin:$PATH
+export PATH=\$HOME/.local/bin:\$PATH"
+[ -d "\$HOME/.local/bin" ] || mkdir -p "\$HOME/.local/bin"
+export PATH=\$HOME/.local/bin:\$PATH
 
 PAGER='less -EM'
 MANPAGER='less -isR'
 EDITOR=vim
 if [ -f "$HOME/.ashrc" ]; then
-		export ENV="$HOME/.ashrc"
-		. "$HOME/.ashrc"
+		export ENV="\$HOME/.ashrc"
+		. "\$HOME/.ashrc"
 fi
 TERMTYPE=`/usr/bin/tty`
 [ ${TERMTYPE:5:3} == "tty" ] && (
