@@ -84,15 +84,16 @@ rm -rf $ROOTFS/usr/share/doc
 rm -rf $ROOTFS/usr/share/man
 
 mv $ROOTFS/usr/share/i18n/charmaps/UTF-8.gz /tmp
-rm -rf $ROOTFS/usr/share/i18n
+rm -rf $ROOTFS/usr/share/i18n/charmaps
 mkdir -p $ROOTFS/usr/share/i18n/charmaps
 mv /tmp/UTF-8.gz $ROOTFS/usr/share/i18n/charmaps/
 
 echo === $ROOTFS/usr/share =====
+rm -rf $ROOTFS/usr/share/locale
 find $ROOTFS/usr/share
 
-echo === $ROOTFS/usr/share/locales =====
-find $ROOTFS/usr/share/locales
+echo === $ROOTFS/usr/share/i18n/locales =====
+find $ROOTFS/usr/share/i18n/locales
 mv $ROOTFS/usr/share/i18n/locales/bs_BA /tmp
 mv $ROOTFS/usr/share/i18n/locales/en_US /tmp
 rm -rf $ROOTFS/usr/share/locales
