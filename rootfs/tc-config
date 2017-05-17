@@ -386,7 +386,7 @@ log_msg "setup ${DOCKER_HOME_DIR} for mountOnGreen"
 
 
 if ( ! mountedOnGreen docker_home ); then
-        log_msg "mount zfs ${DOCKER_HOME_DIR}" "${GREEN}"
+        log_msg "mount zfs ${DOCKER_HOME_DIR}" G
 				if [ -d ${DOCKER_HOME_DIR} ] ; then
 				   mv ${DOCKER_HOME_DIR} /tmp/${DOCKER_HOME_DIR}.tmp
 				fi
@@ -399,7 +399,7 @@ if ( ! mountedOnGreen docker_home ); then
 				  mkdir -p ${DOCKER_HOME_DIR}/.config
 					cat > ${DOCKER_HOME_DIR}/.profile <<EOF
 # ~/.profile: Executed by BASH.
-export PATH=\$HOME/.local/bin:\$PATH"
+export PATH=\$HOME/.local/bin:\$PATH
 [ -d "\$HOME/.local/bin" ] || mkdir -p "\$HOME/.local/bin"
 export PATH=\$HOME/.local/bin:\$PATH
 

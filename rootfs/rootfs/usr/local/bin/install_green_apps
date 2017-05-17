@@ -131,7 +131,7 @@ log_msg "===== download_green_apps start: $(date) ======"
 [ "$INSTALL_SET" == "9" ] && GREEN_APPS="${GREEN_APPS_9}"  # install GREEN_APPS_9
 
 if [ ! -d /opt/apps ] ; then
-  log_msg "/opt/apps doesn't exists" "${RED}"
+  log_msg "/opt/apps doesn't exists" R
   exit 1
 fi
 
@@ -146,23 +146,23 @@ download_app() {
   ext="xz"  # ext="gz"
 
   if [ -f ${app}_${ver}.tar.${ext}.download ] ; then
-    log_msg "CANCEL: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}, another download in progress" "${RED}"
+    log_msg "CANCEL: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}, another download in progress" Y
     exit 1
   fi
 
    LOCAL_MEDIA=/media/GREEN_INIT/apps/${app}_${ver}.tar.${ext}
    if [ -f $LOCAL_MEDIA ] ; then
-      log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.${ext} ..." "${BLUE}"
+      log_msg "getting from /media/GREEN_INIT/apps/${app}_${ver}.tar.${ext} ..." B
       cp $LOCAL_MEDIA $APPS_HOME/
    else
-      log_msg "START: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}" "${BLUE}"
+      log_msg "START: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}" B
       cd $APPS_HOME
       touch ${app}_${ver}.tar.${ext}.download
       curl -s -LO $DOWNLOAD_URL/${app}_${ver}.tar.${ext}
    fi
 
    if [ $? -ne 0 ] ; then
-        log_msg "ERROR: CURL: $DOWNLOAD_URL/${app}_${ver}.tar.${ext}" "${RED}"
+        log_msg "ERROR: CURL: $DOWNLOAD_URL/${app}_${ver}.tar.${ext}" R
         rm $DOWNLOAD_URL/${app}_${ver}.tar.${ext}
         rm ${app}_${ver}.tar.${ext}.download
         return 127
@@ -183,13 +183,13 @@ download_app() {
         cd $APPS_HOME
         rm -rf ${app} # delete old version
 	      if tar xf ${app}_${ver}.tar.${ext} 2>&1 | tee -a $LOG_FILE ; then
-              log_msg "SUCCESS: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}" "${GREEN}"
+              log_msg "SUCCESS: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}" G
               chown -R root:root ${app}
               echo ${ver} > /opt/apps/${app}/VERSION
               mount_bind_opt_apps ${app}
               [ "$app" == "VirtualBox" ] && vbox_fix_permissions
               if [ "$app" == "docker" ] ; then
-                 log_msg "DOCKER NEW_VER: ${ver} /etc/init.d/docker start" "${GREEN}"
+                 log_msg "DOCKER NEW_VER: ${ver} /etc/init.d/docker start" G
                  /etc/init.d/docker start
               fi
               ldcache_update
