@@ -52,28 +52,57 @@ then
    log_msg "zpool $POOL doesn't exists"
 fi
 
-if zfs_up && ( ! mountedOnGreen opt_boot )
+
+ZFS_VOL=opt_boot
+MOUNT_DIR=$BOOT_DIR
+if zfs_up && ( ! mountedOnGreen $ZFS_VOL )
 then
-    mkdir -p $BOOT_DIR
-    rm -r -f $BOOT_DIR/*
+    rm -r -f $MOUNT_DIR
+    mkdir -p $MOUNT_DIR
+fi
+( zfs list $POOL/$ZFS_VOL ) || ( zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL )
+if [ $? == 0 ] ; then
+  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+else
+  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
 fi
 
-log_msg "zfs opt_boot, opt_apps"
-( zfs list $POOL/opt_boot ) || ( zfs create -o mountpoint=$BOOT_DIR green/opt_boot )
-( zfs list $POOL/opt_apps ) || ( zfs create -o mountpoint=/opt/apps green/opt_apps )
+ZFS_VOL=opt_apps
+MOUNT_DIR=/opt/apps
+( zfs list $POOL/$ZFS_VOL ) || ( zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL )
+if [ $? == 0 ] ; then
+  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+else
+  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+fi
 
-log_msg "zfs docker_home"
-( zfs list $POOL/docker_home) || \
-   ( zfs create -o mountpoint=${DOCKER_HOME_DIR} -o quota=$HOME_QUOTA green/docker_home )
 
+ZFS_VOL=home_docker
+MOUNT_DIR=${DOCKER_HOME_DIR}
+if zfs_up && ( ! mountedOnGreen $ZFS_VOL )
+then
+    rm -r -f $MOUNT_DIR
+    mkdir -p $MOUNT_DIR
+fi
+( zfs list $POOL/$ZFS_VOL ) || ( zfs create -o quota=$HOME_QUOTA -o mountpoint=$MOUNT_DIR green/$ZFS_VOL )
+if [ $? == 0 ] ; then
+  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+else
+  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+fi
 
-log_msg "zfs build"
-( zfs list $POOL/build )      || ( zfs create -o mountpoint=/build -o quota=$BUILD_QUOTA green/build )
+ZFS_VOL=build
+MOUNT_DIR=/build
+( zfs list $POOL/$ZFS_VOL ) || ( zfs create -o mountpoint=$MOUNT_DIR green/$ZFS_VOL )
+if [ $? == 0 ] ; then
+  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR up :)" G
+else
+  log_msg "zfs  $POOL/$ZFS_VOL ; mounted on $MOUNT_DIR DOWN :(" R
+fi
 
 if ( is_vbox )
 then
-  # vbox host, zfs storage
-  zfs create green/docker
+  zfs create green/docker # vbox host, zfs storage
 else
   # NOT vbox host, overlay2 storage
   if ( ! zfs list $POOL/docker_vol )

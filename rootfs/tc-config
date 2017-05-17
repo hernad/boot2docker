@@ -386,7 +386,7 @@ log_msg "setup ${DOCKER_HOME_DIR} for mountOnGreen"
 
 
 if ( ! mountedOnGreen docker_home ); then
-        log_msg "mount zfs ${DOCKER_HOME_DIR}" G
+        log_msg "mount zfs ${DOCKER_HOME_DIR}" B
 				if [ -d ${DOCKER_HOME_DIR} ] ; then
 				   mv ${DOCKER_HOME_DIR} /tmp/${DOCKER_HOME_DIR}.tmp
 				fi

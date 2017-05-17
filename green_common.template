@@ -59,11 +59,13 @@ log_msg() {
 }
 
 mountedOnGreen() {
-  (cat /proc/mounts | grep -q "^green/$1")
+  #
+  cat /proc/mounts | grep -q "^green/$1"
 }
 
 mountedApp() {
-  (cat /proc/mounts | grep -q "opt_apps /opt/$1")
+  #green/opt_apps /opt/vim zfs, rw,xattr,noacl 0 0
+  cat /proc/mounts | grep -q "opt_apps /opt/$1"
 }
 
 mount_bind_opt_apps() {

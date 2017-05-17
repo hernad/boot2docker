@@ -418,7 +418,6 @@ RUN ls -l $ROOTFS/usr/local/tce.installed
 RUN rm $ROOTFS/usr/local/tce.installed/ca-certificates
 
 
-
 RUN /make_iso.sh
 
 CMD ["cat", "greenbox.iso"]
