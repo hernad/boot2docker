@@ -183,58 +183,6 @@ RUN curl -L -o /tcl_rootfs.gz $TCL_REPO_BASE/release/distribution_files/rootfs64
 # Install Tiny Core Linux rootfs
 RUN cd $ROOTFS && zcat /tcl_rootfs.gz | cpio -f -i -H newc -d --no-absolute-filenames
 
-RUN ls -l $ROOTFS/usr/local/tce.installed
-
-#[docker@greenbox-2 ~]$ ls -l /etc/ssl
-#lrwxrwxrwx 1 root root 18 May 13 21:32 /etc/ssl -> /usr/local/etc/ssl
-#[docker@greenbox-2 ~]$ ls /etc/ssl/certs/
-#02265526.0
-#024dc131.0
-# ...
-#ls /etc/ssl/certs/ | wc -l   #output: 348
-
-
-
-#/usr/local/sbin/update-ca-certificates
-
-
-#[docker@greenbox-5 ~]$ ls -lh /usr/local/etc/ssl
-#total 20K
-#lrwxrwxrwx 1 root root   25 May 12 17:54 ca-bundle.crt -> certs/ca-certificates.crt
-#drwxr-xr-x 2 root root 6.9K May 12 17:54 certs
-#...
-#-rw-r--r-- 1 root root    3 May  9 14:25 serial
-
-
-# update-ca-certificates is executed in crontab
-RUN rm $ROOTFS/usr/local/tce.installed/ca-certificates \
-
-
-
-#RUN rm $ROOTFS/usr/local/tce.installed/fontconfig
-#RUN rm $ROOTFS/usr/local/tce.installed/aterm
-
-# /usr/local/tce.installed/ca-certificates # perl must be installed!
-#!/bin/sh
-#update-ca-certificates
-#ln -s /usr/local/etc/ssl/certs/ca-certificates.crt /usr/local/etc/ssl/cacert.pem
-#ln -s /usr/local/etc/ssl/certs/ca-certificates.crt /usr/local/etc/ssl/ca-bundle.crt
-
-# /usr/local/share/ca-certificates/
-
-# Extract ca-certificates
-#RUN set -x &&\
-#  TCL changed something such that these need to be extracted post-install
-# 	chroot "$ROOTFS" sh -xc 'ldconfig && /usr/local/tce.installed/openssl' &&\
-#  Docker looks for them in /etc/ssl
-#	ln -sT ../usr/local/etc/ssl "$ROOTFS/etc/ssl" &&\
-#  chroot "$ROOTFS" ls -l /usr/local/etc/ssl/certs &&\
-#  a little testing is always prudent
-#	cp "$ROOTFS/etc/resolv.conf" resolv.conf.bak &&\
-#	cp /etc/resolv.conf "$ROOTFS/etc/resolv.conf" &&\
-#	chroot "$ROOTFS" ls /usr/local/etc/ssl && curl -fsSL 'https://www.google.com' -o /dev/null &&\
-#	mv resolv.conf.bak "$ROOTFS/etc/resolv.conf"
-
 
 # debian jessie no /usr/lib/syslinux/isohdpfx.bin
 # get syslinux 6.04 from source https://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/
@@ -324,9 +272,7 @@ RUN echo root > $ROOTFS/etc/sysconfig/superuser
 
 RUN rm -r -f $ROOTFS/opt/VirtualBox
 
-
 # glibc_apps: /usr/bin/localedef
-
 ENV TCZ_DEPS_1 getlocale glibc_i18n_locale glibc_apps glibc_gconv
 
 RUN for dep in $TCZ_DEPS_1 ; do \
@@ -463,6 +409,15 @@ RUN cp -av /lib/x86_64-linux-gnu/libtirpc.so.1* $ROOTFS/usr/local/lib/ &&\
     cp -av /usr/lib/x86_64-linux-gnu/libgssapi_krb5* $ROOTFS/usr/local/lib/ &&\
     cp -av /usr/lib/x86_64-linux-gnu/libkrb5* $ROOTFS/usr/local/lib/ &&\
     cp -av /lib/x86_64-linux-gnu/libkeyutils* $ROOTFS/usr/local/lib/
+
+
+RUN ls -l $ROOTFS/usr/local/tce.installed
+
+# /opt/boot/etc/ssl -> /usr/local/etc/ssl, /usr/etc/ssl
+# /opt/boot/etc/ssl/ca-certificates -> /usr/local/share/ca-certificates
+RUN rm $ROOTFS/usr/local/tce.installed/ca-certificates
+
+
 
 RUN /make_iso.sh
 
