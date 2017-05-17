@@ -395,7 +395,8 @@ if ( ! mountedOnGreen docker_home ); then
 
         chown -R docker:docker ${DOCKER_HOME_DIR}
 
-				if [ ! -f ${DOCKER_HOME_DIR}/.profile ] ; then
+				if [ ! -d ${DOCKER_HOME_DIR}/.config ] ; then
+				  mkdir -p ${DOCKER_HOME_DIR}/.config
 					cat > ${DOCKER_HOME_DIR}/.profile <<EOF
 # ~/.profile: Executed by Bourne-compatible login SHells.
 export PATH=$HOME/.local/bin:$PATH"
@@ -416,6 +417,7 @@ TERMTYPE=`/usr/bin/tty`
 	[ -e /tmp/.X11-unix/X0 ] || startx
 )
 EOF
+          chown -R docker:docker ${DOCKER_HOME_DIR}
 				fi
 				[ -d ${DOCKER_HOME_DIR}.tmp ] && rm -rf /tmp/${DOCKER_HOME_DIR}.tmp
 
