@@ -25,10 +25,10 @@ fi
 #https://www.tecmint.com/increase-set-open-file-limits-in-linux/
 # Increasing the number of open files and processes by docker
 ulimit -n $DOCKER_ULIMITS
-log_msg "ulimit -p $DOCKER_ULIMITS ($?)  NEW ulimit -n: `ulimit -n`)"
+log_msg "DOCKER ulimit -p $DOCKER_ULIMITS ($?)  NEW ulimit -n: `ulimit -n`" Y
 
 ulimit -p $DOCKER_ULIMITS
-log_msg "ulimit -p $DOCKER_ULIMITS ($?) NEW ulimit -p: `ulimit -p`"
+log_msg "DOCKER ulimit -p $DOCKER_ULIMITS ($?) NEW ulimit -p: `ulimit -p`" Y
 
 . $BOOT_DIR/etc/profile
 
