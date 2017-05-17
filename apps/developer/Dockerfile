@@ -132,7 +132,7 @@ ENV LD_LIBRARY_PATH="/opt/apps/python2/lib" PATH="/opt/apps/python2/bin:/usr/bin
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
 
 # vrati libc, libpthread
-RUN mkdir /tmp/libs/*  /opt/apps/developer/lib/
+RUN cp -av /tmp/libs/*  /opt/apps/developer/lib/
 
 COPY apps/developer/set_developer_envars.sh /opt/apps/developer/bin/
 RUN chmod +x /opt/apps/developer/bin/set_developer_envars.sh
