@@ -132,16 +132,30 @@ echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 /etc/rc.d/vbox_kernel
 /etc/rc.d/tce_postinstall
 
+
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
+   # http://manpages.ubuntu.com/manpages/trusty/man1/localedef.1.html
    log_msg "locale-archive localedef start" B
    mkdir -p $BOOT_DIR/locale
-   ln -s $BOOT_DIR/locale /usr/lib/locale
-   localedef -i en_US -f UTF-8 en_US
-   if ! localedef -i bs_BA -f UTF-8 bs_BA ; then
-     log_msg "$BOOT_DIR/locale/locale-archive needed for tmux cannot be created, look at /usr/share/i18n/locales/bs_BA, en_US" R
+   cd $BOOT_DIR/locale
+   if ! curl -skLO ${DOWNLOAD_URL}/usr_share_i18n.tar.xz ; then
+      log_msg "curl ${DOWNLOAD_URL}/usr_share_i18n.tar.xz ERROR" R
+   else
+     tar xf usr_share_i18n.tar.xz
+     log_msg "curl ${DOWNLOAD_URL}/usr_share_i18n.tar.xz ERROR OK" G
+     rm usr_share_i18n.tar.xz
+     ln -s $BOOT_DIR/locale /usr/lib/locale
+     ln -s $BOOT_DIR/locale/i18n /usr/share/i18n
+   fi
+   if localedef -i en_US -f UTF-8 en_US && localedef -i bs_BA -f UTF-8 bs_BA ) ; then
+     log_msg "localedef $BOOT_DIR/locale/locale-archive" G
+   else
+     log_msg "localedef $BOOT_DIR/locale/locale-archive NOT CREATED" G
    fi
 fi
 [ -L /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
+[ -L /usr/share/i18n ] || ln -s $BOOT_DIR/locale/i18n /usr/share/i18n
+
 
 mount_all_apps
 ldcache_update

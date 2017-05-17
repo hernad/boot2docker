@@ -51,8 +51,8 @@ log_msg() {
      case "$2" in
        G) START="${GREEN}";;
        B) START="${BLUE}";;
-       R) START="{RED}";;
-       Y) START="{YELLOW}";;
+       R) START="${RED}";;
+       Y) START="${YELLOW}";;
      esac
      echo "${START} `date +'%Y%m%d %T'`: ${1}${NORMAL}"
   fi

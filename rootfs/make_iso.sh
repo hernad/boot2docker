@@ -83,10 +83,9 @@ EOOS
 rm -rf $ROOTFS/usr/share/doc
 rm -rf $ROOTFS/usr/share/man
 
-mv $ROOTFS/usr/share/i18n/charmaps/UTF-8.gz /tmp
-rm -rf $ROOTFS/usr/share/i18n/charmaps
-mkdir -p $ROOTFS/usr/share/i18n/charmaps
-mv /tmp/UTF-8.gz $ROOTFS/usr/share/i18n/charmaps/
+
+rm -rf $ROOTFS/usr/share/i18n
+
 
 #echo === $ROOTFS/usr/share =====
 #find $ROOTFS/usr/share
@@ -94,11 +93,7 @@ rm -rf $ROOTFS/usr/share/locale
 
 #echo === $ROOTFS/usr/share/i18n/locales =====
 #find $ROOTFS/usr/share/i18n/locales
-mv $ROOTFS/usr/share/i18n/locales/bs_BA /tmp
-mv $ROOTFS/usr/share/i18n/locales/en_US /tmp
-rm -rf $ROOTFS/usr/share/i18n/locales
-mkdir -p $ROOTFS/usr/share/i18n/locales
-mv /tmp/en_US /tmp/bs_BA $ROOTFS/usr/share/i18n/locales/
+
 
 rm -rf $ROOTFS/usr/share/syslinux
 #rm -rf $ROOTFS/usr/share/tabeset
