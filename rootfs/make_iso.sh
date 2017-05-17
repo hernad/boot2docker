@@ -88,11 +88,11 @@ rm -rf $ROOTFS/usr/share/i18n
 mkdir -p $ROOTFS/usr/share/i18n/charmaps
 mv /tmp/UTF-8.gz $ROOTFS/usr/share/i18n/charmaps/
 
-#mv $ROOTFS/usr/share/locale/en_US /tmp/
-#mv $ROOTFS/usr/share/locale/bs_BA /tmp/
-rm -rf $ROOTFS/usr/share/locale
-#mkdir -p $ROOTFS/usr/share/locale
-#mv /tmp/en_US /tmp/bs_BA $ROOTFS/usr/share/locale/
+mv $ROOTFS/usr/share/i18n/locales/bs_BA /tmp
+mv $ROOTFS/usr/share/i18n/locales/en_US /tmp
+rm -rf $ROOTFS/usr/share/locales
+mkdir -p $ROOTFS/usr/share/locales
+mv /tmp/en_US /tmp/bs_BA $ROOTFS/usr/share/locales/
 
 rm -rf $ROOTFS/usr/share/syslinux
 #rm -rf $ROOTFS/usr/share/tabeset

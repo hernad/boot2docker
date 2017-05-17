@@ -40,11 +40,13 @@ log_msg "setup $BOOT_DIR for mountOnGreen"
 
 while ( ! mountedOnGreen opt_boot ) && [ $count -lt 10 ]
 do
-   zfs_up
    sleep 3
-   zfs mount -o mountpoint=$BOOT_DIR green/opt_boot
-   log_msg "waiting for mount zfs $BOOT_DIR"
-   sleep 1
+   if zfs_up ; then
+     zfs mount -o mountpoint=$BOOT_DIR green/opt_boot
+     sleep 1
+   else
+     log_msg "zfs is not up waiting ..." B
+   fi
    let count=count+1
 done
 
@@ -66,16 +68,19 @@ if [ ! -d $BOOT_DIR/etc/ssl ] ; then
   cd $BOOT_DIR/etc
   while ! curl -skLO ${DOWNLOAD_URL}/etc_ssl.tar.xz && [ $count -lt 10 ]
   do
+    log_msg "curl ${DOWNLOAD_URL}/etc_ssl.tar.xz ERROR ($count)" R
     sleep 5
     let count=count+1
   done
+  if [ $count -ge 9 ] ; then
+    log_msg "curl ${DOWNLOAD_URL}/etc_ssl.tar.xz CANNOT BE DOWNLOADED" R
+  fi
   tar xf etc_ssl.tar.xz
   rm etc_ssl.tar.xz
 
   ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/cacert.pem
   ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/ca-bundle.crt
 fi
-
 
 set_log_file
 
@@ -127,13 +132,14 @@ echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 /etc/rc.d/vbox_kernel
 /etc/rc.d/tce_postinstall
 
-log_msg "locale-archive localedef start"
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
-   echo -n "${BLUE}localedef en_US.UTF-8 bs_BA.UTF-8${NORMAL}"
+   log_msg "locale-archive localedef start" B
    mkdir -p $BOOT_DIR/locale
    ln -s $BOOT_DIR/locale /usr/lib/locale
    localedef -i en_US -f UTF-8 en_US
-   localedef -i bs_BA -f UTF-8 bs_BA
+   if ! localedef -i bs_BA -f UTF-8 bs_BA ; then
+     log_msg "$BOOT_DIR/locale/locale-archive needed for tmux cannot be created, look at /usr/share/i18n/locales/bs_BA, en_US" R
+   fi
 fi
 [ -L /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
 
