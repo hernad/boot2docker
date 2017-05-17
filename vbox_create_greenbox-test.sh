@@ -105,5 +105,7 @@ VBoxManage storageattach $VBOX_NAME \
 		--medium $(pwd)/${VBOX_NAME}.vdi
 
 VBoxManage modifyvm ${VBOX_NAME} --natpf1 "ssh,tcp,,2222,,22"
+VBoxManage modifyvm ${VBOX_NAME} --natpf1 "ssh,tcp,,8080,,80"
+VBoxManage modifyvm ${VBOX_NAME} --natpf1 "ssh,tcp,,4430,,443"
 
 VBoxManage startvm ${VBOX_NAME}
