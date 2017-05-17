@@ -97,10 +97,6 @@ RUN mkdir -p  /opt/apps/developer/include/linux/x86/include/ &&\
     cp -av /usr/src/linux/include/* /opt/apps/developer/include/linux/include/
 
 
-#RUN cd / ; find -name "libpthread*so*"
-#RUN cd / ; find -name "libc*"
-
-
 # ================= /opt/apps/python2 =========================================================
 RUN cd /opt/apps &&\
     curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
@@ -121,8 +117,10 @@ ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/
     CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/x86/include/generated -I/opt/apps/developer/include/linux/x86/include/uapi  -I/opt/apps/developer/include/linux/x86/include/generated/uapi -I/opt/apps/developer/include/linux/include -I/opt/apps/developer/include/linux/include/uapi" \
     LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib"
 
+# skloniti libc.so, libpthread.so prave probleme kod ansible builda u unutar docker sesije
+RUN mkdir /tmp/libs && \
+    mv /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /opt/apps/developer/lib/libc.a /tmp/libs/
 
-RUN rm /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /opt/apps/developer/lib/libc.a
 
 #    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -nodefaultlibs -Wl,-rpath,/rootfs/lib64 -Wl,-dynamic-linker,/rootfs/lib/lib64/libc-2.24.so -Wl,-dynamic-linker,/rootfs/lib64/libpthread-2.24.so"
 
@@ -133,6 +131,8 @@ RUN rm /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /op
 ENV LD_LIBRARY_PATH="/opt/apps/python2/lib" PATH="/opt/apps/python2/bin:/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin"
 RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
 
+# vrati libc, libpthread
+RUN mkdir /tmp/libs/*  /opt/apps/developer/lib/
 
 COPY apps/developer/set_developer_envars.sh /opt/apps/developer/bin/
 RUN chmod +x /opt/apps/developer/bin/set_developer_envars.sh
