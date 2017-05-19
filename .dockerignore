@@ -11,3 +11,5 @@ GREEN_INIT
 .git
 idea/
 x11/
+*.vdi
+*.vmdk
