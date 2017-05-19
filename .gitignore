@@ -28,3 +28,6 @@ nbproject
 /bintray_api_key
 *.vdi
 *.vmdk
+greenbox-test/
+node_modules/
+
