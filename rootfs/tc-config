@@ -6,7 +6,7 @@
 
 . /etc/green_common
 
-log_msg "start $(date), called by /etc/init.d/rcS"
+log_msg "==== start $0, called by /etc/init.d/rcS =====" B
 
 useBusybox
 

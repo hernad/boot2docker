@@ -86,7 +86,7 @@ if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
    fi
 fi
 
-ZFS_VOL=home_docker
+ZFS_VOL=docker_home
 MOUNT_DIR=${DOCKER_HOME_DIR}
 if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
    #rm -r -f $MOUNT_DIR
