@@ -21,7 +21,15 @@ fi
 
 mkdir -p /home
 mkdir -p /opt
-zpool import green >> $LOG_FILE 2>&1
+
+if ! zpool import | grep green >> $LOG_FILE 2>&1
+then
+  log_msg "there is zpool green" R
+else
+   zpool import green >> $LOG_FILE 2>&1
+fi
+
+zpool status green -v >> $LOG_FILE 2>&1
 
 if [ -e /dev/zvol/green/docker_vol ] ; then
    log_msg "mounting zfs blok device /dev/zvol/green/docker_vol" B

@@ -63,7 +63,6 @@ volumeExistsOnGreen() {
 }
 
 mountedOnGreen() {
-  #
   #cat /proc/mounts | grep -q "^green/$1"
   zfs get mounted green/$1 | grep green/$1 | awk '{print $3}' | grep -q yes
 }

@@ -6,8 +6,7 @@ log_msg "== bootscript.sh: $(date) ====" G
 
 log_msg "configure sysctl"
 /etc/rc.d/automount_zfs
-
-sleep 3
+sleep 2
 date
 ip a >> $LOG_FILE
 
