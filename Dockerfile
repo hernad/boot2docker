@@ -219,7 +219,7 @@ RUN curl -sLO https://www.netfilter.org/projects/libmnl/files/libmnl-1.0.4.tar.b
 
 # https://git.zx2c4.com/WireGuard/refs/
 
-ENV WIRE_GUARD_VER=0.0.20170421
+ENV WIRE_GUARD_VER=0.0.20170517
 RUN curl -sLO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-${WIRE_GUARD_VER}.tar.xz &&\
     tar xvf WireGuard*xz && rm WireGuard*xz &&\
     cd WireGuard*/src &&\
