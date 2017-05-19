@@ -89,7 +89,7 @@ fi
 ZFS_VOL=docker_home
 MOUNT_DIR=${DOCKER_HOME_DIR}
 if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
-   #rm -r -f $MOUNT_DIR
+   rm -r -f $MOUNT_DIR/.* # .profile, .ashrc
    #mkdir -p $MOUNT_DIR
    if ! volumeExistsOnGreen $ZFS_VOL ; then
       zfs create -o quota=$HOME_QUOTA -o mountpoint=$MOUNT_DIR green/$ZFS_VOL
