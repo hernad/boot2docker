@@ -26,3 +26,5 @@ nbproject
 /keyrings/live/pubring.kbx~
 /keyrings/live/secring.gpg
 /bintray_api_key
+*.vdi
+*.vmdk
