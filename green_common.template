@@ -53,6 +53,7 @@ log_msg() {
        B) START="${BLUE}";;
        R) START="${RED}";;
        Y) START="${YELLOW}";;
+       M) START="${MAGENTA}";;
      esac
      echo "${START} `date +'%Y%m%d %T'`: ${1}${NORMAL}"
   fi

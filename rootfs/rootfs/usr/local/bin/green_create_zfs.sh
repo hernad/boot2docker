@@ -89,7 +89,7 @@ fi
 ZFS_VOL=docker_home
 MOUNT_DIR=${DOCKER_HOME_DIR}
 if [ -n "$MOUNT_DIR" ] && zfs_up && ( ! mountedOnGreen $ZFS_VOL ) ; then
-   log_msg "debug docker_home_dir"
+   log_msg "DEBUG docker_home_dir"
    ls $MOUNT_DIR/.* >> $LOG_FILE
    rm -f $MOUNT_DIR/.* # .profile, .ashrc
    #mkdir -p $MOUNT_DIR
