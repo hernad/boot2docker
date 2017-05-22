@@ -328,7 +328,9 @@ COPY rootfs/openssh $ROOTFS/usr/local/etc/init.d/openssh
 COPY rootfs/dhcp.sh $ROOTFS/usr/local/etc/init.d/dhcp.sh
 COPY rootfs/services/* $ROOTFS/etc/init.d/services/
 
+COPY rootfs/rcS $ROOTFS/etc/init.d/rcS
 COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
+
 COPY rootfs/environment $ROOTFS/etc/environment
 COPY rootfs/sshrc $ROOTFS/usr/local/etc/ssh/sshrc
 COPY rootfs/green_common $ROOTFS/etc/green_common

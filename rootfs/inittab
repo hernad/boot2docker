@@ -17,5 +17,3 @@ tty3::respawn:/sbin/getty 38400 tty3
 ::restart:/sbin/init
 ::ctrlaltdel:/sbin/reboot
 ::shutdown:/etc/init.d/rc.shutdown
-
-console:2345:respawn:/sbin/getty -L 38400 console vt100
