@@ -116,7 +116,6 @@ test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
 set_log_file
 
-log_msg "set the hostname"
 /etc/rc.d/hostname
 
 log_msg "sync the clock"

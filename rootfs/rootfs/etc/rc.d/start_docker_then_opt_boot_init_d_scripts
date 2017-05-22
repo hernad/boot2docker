@@ -16,7 +16,8 @@ log_msg "test service PATH: \$PATH, LD_LIBRARY_PATH: \$LD_LIBRARY_PATH  docker: 
 
 set | grep _VER | xargs echo | tee -a \$LOG_FILE
 
-#docker_run "-p 8080:80 -d nginx:alpine"
+#docker rm -f test-00
+#docker_run "--name test-00 -p 8080:80 -d nginx:alpine"
 EOF
 ) && chmod +x $BOOT_DIR/init.d/00_test.sh
 

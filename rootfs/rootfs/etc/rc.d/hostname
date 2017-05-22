@@ -6,4 +6,6 @@ if [ ! -e $BOOT_DIR/etc/hostname ]; then
     cp /usr/local/etc/hostname $BOOT_DIR/etc/hostname
 fi
 HOSTNAME=`cat $BOOT_DIR/etc/hostname`
+
+log_msg "set the hostname: $HOSTNAME" B
 /usr/bin/sethostname $HOSTNAME

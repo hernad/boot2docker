@@ -167,7 +167,7 @@ if [ -n "$STATICIPADDRESS" ]; then
         if [ -z "$STATICIFACE" ]; then
           STATICIFACE=eth0
         fi
-	ifconfig $STATICIFACE $STATICIPADDRESS up
+	      ifconfig $STATICIFACE $STATICIPADDRESS up
         NODHCP=1
 	echo "${BLUE} Static ip address: $STATICIFACE / $STATICIPADDRESS ${NORMAL}"
 fi
