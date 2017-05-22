@@ -335,7 +335,7 @@ COPY rootfs/green_common $ROOTFS/etc/green_common
 COPY rootfs/green_service_common $ROOTFS/etc/green_service_common
 COPY rootfs/sudo_x /usr/local/bin
 COPY rootfs/update-ca-certificates $ROOTFS/usr/local/sbin/update-ca-certificates
-COPY rootfs/logrotate $ROOTFS/usr/local/sbin/logrotate.sh
+COPY rootfs/logrotate.sh $ROOTFS/usr/local/sbin/logrotate.sh
 
 # Copy boot params
 COPY rootfs/isolinux /tmp/iso/boot/isolinux
