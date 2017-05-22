@@ -114,7 +114,7 @@ echo "${GREEN} Done.${NORMAL}"
 )
 
 modprobe loop 2>/dev/null
-modprobe ohci_hcd
+#modprobe ohci_hcd
 
 #echo "${BLUE}Scanning hard disk partitions to create ${YELLOW}/etc/fstab ${NORMAL}"
 #/usr/sbin/rebuildfstab & fstab_pid=$!

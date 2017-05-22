@@ -30,4 +30,4 @@ nbproject
 *.vmdk
 greenbox-test/
 node_modules/
-
+rootfs/green_common

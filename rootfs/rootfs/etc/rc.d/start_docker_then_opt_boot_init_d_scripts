@@ -7,17 +7,32 @@
 /usr/local/etc/init.d/docker start
 
 log_msg "starting $BOOT_DIR/init.d scripts ..."
-[ ! -d $BOOT_DIR/init.d ] && mkdir -p $BOOT_DIR/init.d &&\
-(cat  > $BOOT_DIR/init.d/00_test.sh <<EOF
+[ ! -d $BOOT_DIR/init.d ] && mkdir -p $BOOT_DIR/init.d
+
+[ -f $BOOT_DIR/init.d/00_test.sh ] ||  (cat  > $BOOT_DIR/init.d/00_test.sh <<EOF
 #!/bin/sh
 . /etc/green_service_common
 log_msg "test service PATH: \$PATH, LD_LIBRARY_PATH: \$LD_LIBRARY_PATH  docker: \`docker --version\`"
 
 set | grep _VER | xargs echo | tee -a \$LOG_FILE
 
-#docker_run "-p 8080:80 -d nginx"
+#docker_run "-p 8080:80 -d nginx:alpine"
 EOF
 ) && chmod +x $BOOT_DIR/init.d/00_test.sh
+
+
+[ -f $BOOT_DIR/init.d/00_vboxwebsrv.sh ] || (cat  > $BOOT_DIR/init.d/00_vboxwebsrv.sh <<EOF
+#!/bin/sh
+. /etc/green_service_common
+
+[ -z "\$VBOX_WEBSRV" ] && exit 0
+[ -z "\$VBOX_WEBSRV_HOST" ] && log_msg "VBOX_WEBSRV_HOST not defined!" && exit 1
+
+ps ax | grep -v grep |  grep vboxwebsrv && killall vboxwebsrv
+sudo -u docker /opt/VirtualBox/vboxwebsrv --host \${VBOX_WEBSRV_HOST} --logfile \${BOOT_DIR}/log/vboxwebsrv.log --background
+
+EOF
+) && chmod +x $BOOT_DIR/init.d/00_vboxwebsrv.sh
 
 
 cd $BOOT_DIR/init.d   && ls -1 *.sh | xargs -I %  sh -c "$BOOT_DIR/init.d/%&"
