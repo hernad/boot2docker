@@ -8,7 +8,7 @@ default {{ISO_DEFAULT}}
 LABEL rack
   MENU LABEL greenbox ttyS0 console
 	KERNEL /boot/vmlinuz64
-  APPEND initrd=/boot/initrd.img {{ISO_APPEND}} console=ttyS0,115200n8 loglevel=7
+  APPEND initrd=/boot/initrd.img {{ISO_APPEND}} console=ttyS0,38400n8 loglevel=7
 
 LABEL vbox
   MENU LABEL greenbox vga console
