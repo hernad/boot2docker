@@ -6,6 +6,6 @@
 /bin/mount -o remount,rw /
 
 # mount system devices from /etc/fstab
-#/bin/mount -a
+/bin/mount -a
 
 /etc/init.d/tc-config
