@@ -9,7 +9,13 @@ useBusybox
 HOSTNAME="$(getbootparam host 2>/dev/null)"
 [ -n "$HOSTNAME" ] || HOSTNAME="$1"
 [ -n "$HOSTNAME" ] || HOSTNAME="box"
-log_msg "Setting hostname to ${MAGENTA}$HOSTNAME" G
+
+if [ ! -e $BOOT_DIR/etc/hostname ]; then
+    cp /usr/local/etc/hostname $BOOT_DIR/etc/hostname
+fi
+HOSTNAME=`cat $BOOT_DIR/etc/hostname`
+
+log_msg "Setting hostname to $HOSTNAME" M
 
 rm -f /etc/hostname
 echo $HOSTNAME >/etc/hostname
