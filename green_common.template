@@ -270,7 +270,7 @@ wait4internet() {
   CNT=0
 	until ping -c 1 www.google.ba >/dev/null 2>&1
 	do
-      log_msg" $CNT ping www.google.ba ERROR" R
+      log_msg "$CNT ping www.google.ba ERROR" R
 		  [ $((CNT++)) -gt 60 ] && break || sleep 1
 	done
 }

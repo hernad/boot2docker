@@ -75,12 +75,6 @@ log_msg "mount cgroups hierarchy"
 /etc/rc.d/cgroupfs-mount
 # see https://github.com/tianon/cgroupfs-mount
 
-if cat /proc/cmdline | grep -q "console=ttyS0"
-then
-	log_msg "serial console"
-	/sbin/getty -L 115200 ttyS0 vt100
-fi
-
 log_msg "import settings from profile (or unset them) $BOOT_DIR/profile"
 test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
@@ -239,3 +233,10 @@ EOF
 [ -d $BOOT_DIR/bin ] || mkdir -p $BOOT_DIR/bin
 
 setup_symlinks_and_commands
+
+
+if cat /proc/cmdline | grep -q "console=ttyS0"
+then
+	log_msg "serial console"
+	/sbin/getty -L 115200 ttyS0 vt100
+fi
