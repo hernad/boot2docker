@@ -1,0 +1,247 @@
+#!/bin/bash
+
+. /etc/green_common
+
+: ${DOCKER_ULIMIT_N:=65536}
+# http://answers.google.com/answers/threadview?id=311442
+
+# http://answers.google.com/answers/threadview?id=311442
+# PIPE SIZE - when two Unix processes communicate via a pipe or FIFO
+#(first in first out) buffer, as in the simple case of paging through a
+#directory listing with the command "ls | more", the output of the
+#first command is buffered before transmission to the second. The size
+#of this buffer, in bytes, is the pipe size. This
+
+# http://linux.derkeiler.com/Newsgroups/comp.os.linux.development.apps/2004-01/0371.html
+#There is no way to do this with a standard kernel (the bash man page
+#explicitly notes that you can't set this limit). There are patches
+#around that allow you to rebuild the kernel with a different value for
+#this limit. However, doing this is almost certainly a bad idea: an
+#application built with such a kernel dependency won't be portable.
+#Furthermore, looking for this facility is usually an indicator of bad
+#application design: In general, an application should never need to be
+#concerned with exactly what the capacity of a pipe is -- if we want to
+# prevent the writer process from blocking, the process reading from the
+#pipe should be designed to read data as soon as it available.
+
+#: ${DOCKER_ULIMIT_P:=8192}
+
+# docker daemon start script
+[ $(id -u) = 0 ] || { echo 'must be root' ; exit 1; }
+
+log_msg "====== dockerd: $1 =======" B
+
+# docker-machine generated profile, /opt/boot = /var/lib/boot2docker
+BOOT2DOCKER_PROFILE=/var/lib/boot2docker/profile
+if [ -f $BOOT2DOCKER_PROFILE ] ; then
+  . $BOOT2DOCKER_PROFILE
+  # ignore docker-machine generated DOCKER_STORAGE
+  unset DOCKER_STORAGE DOCKER_HOST
+fi
+
+DOCKER_PID=/var/run/docker.pid
+
+#PATH=:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/docker/bin
+
+if [ ! -e $BOOT_DIR/etc/profile ]
+then
+  echo "# put envars  e.g. GREEN_APPS, HTTP_PROXY, HTTPS_PROXY, DOCKER_OPTS, DOCKER_STORAGE, DOCKER_LOGFILE, CERT_INTERFACES, CERT_DIR" > $BOOT_DIR/etc/profile
+fi
+
+. $BOOT_DIR/etc/profile
+
+: ${DOCKER_HOST:='-H tcp://0.0.0.0:2376'}
+: ${DOCKER_TLS:=auto}
+
+if [ -z "$DOCKER_STORAGE" ] ; then
+  if ( is_vbox ) ; then
+     DOCKER_STORAGE=zfs
+     DOCKER_DIR=/green/docker
+  else
+     if [ -e /dev/zvol/green/docker_vol ] ; then
+        if [ ! -d /var/lib/docker/overlay ] ; then
+          DOCKER_STORAGE=overlay2 # best choice!
+        else
+          DOCKER_STORAGE=overlay # legacy
+        fi
+     fi
+  fi
+fi
+
+: ${DOCKER_DIR:=/var/lib/docker}
+: ${DOCKER_LOGFILE:=$BOOT_DIR/log/docker.log}
+
+: ${CERT_DIR:=$BOOT_DIR/tls/}
+
+if [ -z $CERT_INTERFACES ] ; then
+ CERT_INTERFACES="lo"
+ IFACES=`ifconfig | grep " Link" | grep eth | awk '{print $1}'`
+ for iface in $IFACES ; do
+   CERT_INTERFACES+=" $iface"
+ done
+fi
+
+: ${CACERT:="${CERT_DIR}ca.pem"}
+: ${CAKEY:="${CERT_DIR}cakey.pem"}
+: ${SERVERCERT:="${CERT_DIR}server.pem"}
+: ${SERVERKEY:="${CERT_DIR}serverkey.pem"}
+
+# client certificates
+: ${CERT:="${CERT_DIR}cert.pem"}
+: ${KEY:="${CERT_DIR}key.pem"}
+
+
+check_docker_installed() {
+
+  CNT=1
+  while [ ! -f /opt/apps/docker/VERSION  ] ; do
+    log_msg "waiting install /opt/apps/docker/VERSION $CNT ..."
+    sleep 30
+    let CNT=$CNT+1
+
+    if [ $CNT -eq 3  ] || [ $CNT -eq 6 ]  || [ $CNT -eq 10 ] ; then
+      install_green_apps &
+    fi
+    if [ $CNT -eq 20  ] ; then
+       log_msg "docker wait timeout 10 minutes"
+       exit 1
+    fi
+  done
+
+
+}
+
+start() {
+
+   #https://www.tecmint.com/increase-set-open-file-limits-in-linux/
+   # Increasing the number of open files and processes by docker
+   ulimit -n $DOCKER_ULIMIT_N
+   log_msg "DOCKER ulimit -n file descriptors $DOCKER_ULIMIT_N ($?)  NEW: `ulimit -n`" Y
+   #ulimit -p $DOCKER_ULIMIT_P
+   #log_msg "DOCKER ulimit -p processes $DOCKER_ULIMIT_P ($?) NEW: `ulimit -p`" Y
+
+    # Not enabling Docker daemon TLS by default.
+    if [ "$DOCKER_TLS" != "no" ]; then
+        CERTHOSTNAMES="$(hostname -s),$(hostname -i)"
+        for interface in ${CERT_INTERFACES}; do
+          IP=$(ip addr show ${interface} |sed -nEe 's/^[ \t]*inet[ \t]*([0-9.]+)\/.*$/\1/p')
+          if [ "$IP" != "" ]; then
+            CERTHOSTNAMES="$CERTHOSTNAMES,$IP"
+          fi
+        done
+        echo "Need TLS certs for $CERTHOSTNAMES"
+        echo "-------------------"
+
+        mkdir -p "$CERT_DIR"
+        chmod 700 "$CERT_DIR"
+        if [ ! -f "$CACERT" ] || [ ! -f "$CAKEY" ]; then
+            echo "Generating CA cert"
+            generate_cert --cert="$CACERT" --key="$CAKEY"
+            for f in "$SERVERCERT" "$SERVERKEY" "$CERT" "$KEY" "$CERT_DIR/hostnames" ; do
+              [ -f $f ] && rm $f
+            done
+        fi
+
+        CERTSEXISTFOR=$(cat "$CERT_DIR/hostnames" 2>/dev/null)
+        if [ "$CERTHOSTNAMES" != "$CERTSEXISTFOR" ]; then
+            echo "Generate server cert"
+            log_msg generate_cert --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
+            generate_cert --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
+            echo "$CERTHOSTNAMES" > "$CERT_DIR/hostnames"
+        fi
+
+
+        if [ "$DOCKER_TLS" == "auto" ]; then
+            DOCKER_HOST='-H tcp://0.0.0.0:2376'
+            DOCKER_OPTS="$DOCKER_OPTS --tlsverify --tlscacert=$CACERT --tlscert=$SERVERCERT --tlskey=$SERVERKEY"
+        elif [ "$DOCKER_TLS" != "no" ]; then
+            DOCKER_OPTS="$DOCKER_OPTS $DOCKER_TLS --tlscacert=$CACERT --tlscert=$SERVERCERT --tlskey=$SERVERKEY"
+        fi
+
+        # client certificates are responsibility of docker-machine
+
+        #if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then
+        #    echo "Generating client cert"
+        #    generate_cert --ca="$CACERT" --ca-key="$CAKEY" --cert="$CERT" --key="$KEY"
+        #fi
+
+        # now make the client certificates available to the docker user
+        #USERCFG="${DOCKER_HOME_DIR}/.docker"
+        #mkdir -p "$USERCFG"
+        #chmod 700 "$USERCFG"
+        #cp "$CACERT" "$USERCFG"
+        #cp "$CERT" "$USERCFG"
+        #cp "$KEY" "$USERCFG"
+        #chown -R docker:docker ${DOCKER_HOME_DIR}
+    fi
+
+    mkdir -p "$DOCKER_DIR"
+
+    if [ "$DOCKER_STORAGE" != 'auto' ]; then
+        # in the general case, let's trust Docker to "do the right thing"
+        DOCKER_OPTS="$DOCKER_OPTS --storage-driver=$DOCKER_STORAGE"
+    fi
+
+
+    #echo dockerd --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
+    dockerd --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
+}
+
+stop() {
+    log_msg "$DOCKER_PID stop" B
+    [ -f $DOCKER_PID ] && kill $(cat $DOCKER_PID)
+    ps ax  | grep dockerd | grep -v grep
+    ps ax  | grep dockerd | grep -v grep  && killall dockerd
+    ps ax  | grep dockerd | grep -v grep  && killall dockerd
+}
+
+restart() {
+    if check
+    then
+        stop && sleep 1 && start
+        if check
+        then
+           echo restart SUCCESS
+        else
+           echo restart ERROR
+        fi
+    else
+        check_docker_installed
+        start
+    fi
+}
+
+check() {
+    count=0
+    while [ ! -f $DOCKER_PID ] && [ $count -lt 10 ] ; do
+      sleep 1
+      let count=count+1
+    done
+    ps $(cat $DOCKER_PID)  | grep -v grep | grep -q dockerd
+    return $?
+}
+
+status() {
+    if check; then
+        echo 'Docker daemon is running'
+        cat /proc/`cat $DOCKER_PID`/limits
+        exit 0
+    else
+        echo 'Docker daemon is not running'
+        exit 1
+    fi
+}
+
+case $1 in
+    start)
+        check_docker_installed
+        start;;
+    stop)
+        stop;;
+    restart)
+        restart;;
+    status)
+        status;;
+    *)
+        echo "Usage $0 {start|stop|restart|status}"; exit 1
+esac
