@@ -329,6 +329,7 @@ COPY rootfs/dhcp.sh $ROOTFS/usr/local/etc/init.d/dhcp.sh
 COPY rootfs/services/* $ROOTFS/etc/init.d/services/
 
 COPY rootfs/rcS $ROOTFS/etc/init.d/rcS
+COPY rootfs/sethostname $ROOTFS/usr/bin/sethostname
 COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
 
 COPY rootfs/environment $ROOTFS/etc/environment
