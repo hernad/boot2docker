@@ -183,14 +183,14 @@ mount_all_apps
 ldcache_update
 vbox_fix_permissions
 
-for f in ls `ls /opt/apps/*.xz*` ; do
+for f in `ls /opt/apps/*.xz*` ; do
    log_msg "rm $f" Y
    rm $f
 done
 install_green_apps &
 
 if [ -d /opt/apps ] && [ ! -f /opt/apps/docker/VERSION ] ; then
-   log_msg "docker is not installed, wait 90sec ..."
+   log_msg "docker is not installed, wait 90sec ..." Y
    sleep 90
    install_green_apps & # if there are errors during first install, try again
 fi
