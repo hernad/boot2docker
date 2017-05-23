@@ -147,8 +147,16 @@ if [ ! -d /opt/apps ] ; then
   exit 1
 fi
 
+download_app()  {
+  dcnt=1 # 4 tries
+  while ! download_app_exec $1 $2 && [ $dcnt -lt 5 ] ; do
+      let dcnt=dcnt+1
+      log_msg "download_app $1 $2  / try $dcnt"
+      sleep 1
+  done
+}
 
-download_app() {
+download_app_exec() {
 
   EXIT_CODE=0
   app=$1
@@ -175,7 +183,7 @@ download_app() {
 
    if [ $? -ne 0 ] ; then
         log_msg "ERROR: CURL: $DOWNLOAD_URL/${app}_${ver}.tar.${ext}" R
-        rm ${app}_${ver}.tar.${ext}
+        [ -f ${app}_${ver}.tar.${ext} ] && rm ${app}_${ver}.tar.${ext}
         rm ${app}_${ver}.tar.${ext}.download
         return 127
    else
