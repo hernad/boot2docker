@@ -18,7 +18,6 @@ do
   let count=count+1
 done
 
-log_msg "if VirtualBox create green pool"
 vbox_create_pool.sh
 cloud_vda_create_pool.sh
 green_create_zfs.sh
@@ -26,11 +25,6 @@ green_create_zfs.sh
 let count=0
 log_msg "setup $BOOT_DIR for mountOnGreen"
 [ ! -d $BOOT_DIR ] &&  mkdir -p $BOOT_DIR
-
-#if ( ! mountedOnGreen opt_boot ); then
-     #[ -d $BOOT_DIR ] && mv $BOOT_DIR ${BOOT_DIR}.tmp
-     #mkdir -p $BOOT_DIR
-#fi
 
 while ( ! mountedOnGreen opt_boot ) && [ $count -lt 10 ]
 do
@@ -68,17 +62,40 @@ EOF
 else
 
 	    echo "${RED}Docker home not mounted ERROR!${NORMAL}"
-
 fi
 
-#if [ -d ${BOOT_DIR}.tmp ] ; then
-#    mv ${BOOT_DIR}.tmp/* ${BOOT_DIR}/
-#    rm -f ${BOOT_DIR}.tmp
-#fi
 
 log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
 
+
+set_log_file
+
+log_msg "mount cgroups hierarchy"
+/etc/rc.d/cgroupfs-mount
+# see https://github.com/tianon/cgroupfs-mount
+
+if cat /proc/cmdline | grep -q "console=ttyS0"
+then
+	log_msg "serial console"
+	/sbin/getty -L 115200 ttyS0 vt100
+fi
+
+log_msg "import settings from profile (or unset them) $BOOT_DIR/profile"
+test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
+
+set_log_file
+
+STATICIP="$(getbootparam staticip 2>/dev/null)"
+
+if [ -n "$STATICIP" ]; then
+	log_msg "Skipping DHCP broadcast/network detection" B
+else
+	/etc/init.d/dhcp.sh &
+	/etc/init.d/settime.sh &
+fi
+
+wait4internet
 if [ ! -d $BOOT_DIR/etc/ssl ] ; then
   mkdir -p $BOOT_DIR/etc/ssl
   log_msg "bootstrap ca-certs from etc_ssl.tar.xz" B
@@ -100,34 +117,6 @@ if [ ! -d $BOOT_DIR/etc/ssl ] ; then
 
   ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/cacert.pem
   ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/ca-bundle.crt
-fi
-
-set_log_file
-
-log_msg "mount cgroups hierarchy"
-/etc/rc.d/cgroupfs-mount
-# see https://github.com/tianon/cgroupfs-mount
-
-if cat /proc/cmdline | grep -q "console=ttyS0"
-then
-	log_msg "serial console"
-	/sbin/getty -L 115200 ttyS0 vt100
-fi
-
-log_msg "import settings from profile (or unset them) $BOOT_DIR/profile"
-test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
-
-set_log_file
-
-#/etc/rc.d/hostname
-
-STATICIP="$(getbootparam staticip 2>/dev/null)"
-
-if [ -n "$STATICIP" ]; then
-	log_msg "Skipping DHCP broadcast/network detection" B
-else
-	/etc/init.d/dhcp.sh &
-	/etc/init.d/settime.sh &
 fi
 
 log_msg "setup docker user - docker group"
@@ -156,7 +145,7 @@ ln -s $BOOT_DIR/root /root
 
 echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 
-wait4internet
+
 /etc/rc.d/ntpd
 /etc/rc.d/crond start
 /etc/rc.d/sysctl

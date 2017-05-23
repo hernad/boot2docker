@@ -5,8 +5,6 @@ POOL=green
 
 . /etc/green_common
 
-echo "${GREEN}vbox create pool.sh start${NORMAL}"
-
 extract_userdata_tar() {
 
 # docker-machine creates this volume
@@ -49,6 +47,7 @@ then
    exit 1
 fi
 
+echo "${GREEN}vbox create pool.sh start${NORMAL}"
 if ( zpool list | grep -q $POOL )
 then
   echo "zpool green already exists"
