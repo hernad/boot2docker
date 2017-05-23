@@ -7,7 +7,7 @@ KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
 DOCKER_VERSION=`cat /etc/sysconfig/docker`
 DOWNLOAD_URL=${DOWNLOAD_URL:-https://dl.bintray.com/hernad/greenbox}
 DOCKER_HOME_DIR=/home/docker
-CURL_OPTS="--speed-limit 500 --speed-time 30"  # min 500 bytes per second are downloaded over a 30 second period
+CURL_OPTS="--speed-limit 500 --speed-time 30 --connect-timeout 7 --retry 3"  # min 500 bytes per second are downloaded over a 30 second period
 CURL="curl $CURL_OPTS"
 GREEN_APPS_VER=___GREEN_APPS_VER___
 BLUE_APPS_VER=___BLUE_APPS_VER___
@@ -277,7 +277,7 @@ wait4internet() {
 }
 
 docker_ping() {
-  $CURL -s --connect-timeout 10 --unix-socket /var/run/docker.sock http:/_ping | grep -q OK
+  $CURL -s --unix-socket /var/run/docker.sock http:/_ping | grep -q OK
 }
 
 GREEN_DEBUG=${GREEN_DEBUG:-1}
