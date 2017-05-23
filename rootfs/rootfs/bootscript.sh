@@ -173,7 +173,6 @@ ln -s $BOOT_DIR/root /root
 
 echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 
-
 /etc/rc.d/ntpd
 /etc/rc.d/crond start
 /etc/rc.d/sysctl
@@ -212,7 +211,6 @@ fi
 [ -L /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
 [ -L /usr/share/i18n ] || ln -s $BOOT_DIR/locale/i18n /usr/share/i18n
 
-
 mount_all_apps
 ldcache_update
 vbox_fix_permissions
@@ -223,7 +221,8 @@ if [ -d /opt/apps ] && [ ! -f /opt/apps/docker/VERSION ] ; then
    ( log_msg "docker is not installed, 2nd try after 90sec ..." Y  && sleep 90 && install_green_apps ) & # if there are errors during first install, try again
 fi
 
-/etc/rc.d/start_docker_then_opt_boot_init_d_scripts &
+/etc/init.d/docker start
+/etc/rc.d/opt_boot_init_d_scripts &
 
 log_msg "$BOOT_DIR/bootlocal.sh - run local customization commands"
 if [ -e $BOOT_DIR/bootlocal.sh ]; then

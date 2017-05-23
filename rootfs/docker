@@ -4,6 +4,7 @@
 
 DOCKER_APP_DIR=/opt/apps/docker
 GENERATE_CERT=$DOCKER_APP_DIR/bin/generate_cert
+DOCKERD=$DOCKER_APP_DIR/bin/dockerd
 
 : ${DOCKER_ULIMIT_N:=65536}
 # http://answers.google.com/answers/threadview?id=311442
@@ -94,24 +95,23 @@ fi
 : ${KEY:="${CERT_DIR}key.pem"}
 
 
-check_docker_installed() {
-
+pre_start() {
 
   /etc/rc.d/cgroupfs-mount   # see https://github.com/tianon/cgroupfs-mount
 
   CNT=1
   while [ ! -f $DOCKER_APP_DIR/VERSION  ] ; do
-    log_msg "waiting install $DOCKER_APP_DIR/VERSION $CNT ..."
+    log_msg "waiting install $DOCKER_APP_DIR/VERSION $CNT ..." M
     sleep 30
     let CNT=$CNT+1
 
-    if [ $CNT -eq 3  ] || [ $CNT -eq 6 ]  || [ $CNT -eq 10 ] ; then
-      install_green_apps &
-    fi
-    if [ $CNT -eq 20  ] ; then
-       log_msg "docker wait timeout 10 minutes"
-       exit 1
-    fi
+    #if [ $CNT -eq 3  ] || [ $CNT -eq 6 ]  || [ $CNT -eq 10 ] ; then
+    #  install_green_apps &
+    #fi
+    #if [ $CNT -eq 20  ] ; then
+    #   log_msg "docker wait timeout 10 minutes"
+    #   exit 1
+    #fi
   done
 
 
@@ -136,7 +136,7 @@ start() {
           fi
         done
         echo "Need TLS certs for $CERTHOSTNAMES"
-        echo "-------------------"
+        echo "---------------------------------------------------"
 
         mkdir -p "$CERT_DIR"
         chmod 700 "$CERT_DIR"
@@ -188,9 +188,8 @@ start() {
         DOCKER_OPTS="$DOCKER_OPTS --storage-driver=$DOCKER_STORAGE"
     fi
 
-
-    #echo dockerd --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
-    dockerd --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
+    echo $DOCKERD --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
+    $DOCKERD --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
 }
 
 stop() {
@@ -202,33 +201,40 @@ stop() {
 }
 
 restart() {
-    if check
+    if docker_started
     then
         stop && sleep 1 && start
-        if check
+        if docker_started
         then
            echo restart SUCCESS
         else
            echo restart ERROR
         fi
     else
-        check_docker_installed
+        pre_start
         start
+        docker_started
     fi
 }
 
-check() {
+docker_started() {
     count=0
     while [ ! -f $DOCKER_PID ] && [ $count -lt 10 ] ; do
       sleep 1
       let count=count+1
     done
     ps $(cat $DOCKER_PID)  | grep -v grep | grep -q dockerd
-    return $?
+    if [ $? != 0 ] ; then
+      log_msg "docker daemon not started ?!" R
+      return 1
+    else
+      log_msg "docker daemon started :)" G
+      return 0
+    fi
 }
 
 status() {
-    if check; then
+    if docker_started; then
         echo 'Docker daemon is running'
         cat /proc/`cat $DOCKER_PID`/limits
         exit 0
@@ -240,8 +246,9 @@ status() {
 
 case $1 in
     start)
-        check_docker_installed
-        start;;
+        pre_start
+        start
+        docker_started;;
     stop)
         stop;;
     restart)
