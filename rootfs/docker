@@ -202,11 +202,9 @@ stop() {
 }
 
 restart() {
-    if docker_started
-    then
+    if docker_started ; then
         stop && sleep 1 && start
-        if docker_started
-        then
+        if docker_started ; then
            echo restart SUCCESS
         else
            echo restart ERROR
@@ -255,6 +253,7 @@ case $1 in
         pre_start
         start
         if ! docker_started ; then
+          stop
           restart # second try
         fi
         ;;
