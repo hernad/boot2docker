@@ -2,6 +2,9 @@
 
 . /etc/green_common
 
+DOCKER_APP_DIR=/opt/apps/docker
+GENERATE_CERT=$DOCKER_APP_DIR/bin/generate_cert
+
 : ${DOCKER_ULIMIT_N:=65536}
 # http://answers.google.com/answers/threadview?id=311442
 
@@ -97,8 +100,8 @@ check_docker_installed() {
   /etc/rc.d/cgroupfs-mount   # see https://github.com/tianon/cgroupfs-mount
 
   CNT=1
-  while [ ! -f /opt/apps/docker/VERSION  ] ; do
-    log_msg "waiting install /opt/apps/docker/VERSION $CNT ..."
+  while [ ! -f $DOCKER_APP_DIR/VERSION  ] ; do
+    log_msg "waiting install $DOCKER_APP_DIR/VERSION $CNT ..."
     sleep 30
     let CNT=$CNT+1
 
@@ -139,7 +142,7 @@ start() {
         chmod 700 "$CERT_DIR"
         if [ ! -f "$CACERT" ] || [ ! -f "$CAKEY" ]; then
             echo "Generating CA cert"
-            generate_cert --cert="$CACERT" --key="$CAKEY"
+            $GENERATE_CERT --cert="$CACERT" --key="$CAKEY"
             for f in "$SERVERCERT" "$SERVERKEY" "$CERT" "$KEY" "$CERT_DIR/hostnames" ; do
               [ -f $f ] && rm $f
             done
@@ -148,8 +151,8 @@ start() {
         CERTSEXISTFOR=$(cat "$CERT_DIR/hostnames" 2>/dev/null)
         if [ "$CERTHOSTNAMES" != "$CERTSEXISTFOR" ]; then
             echo "Generate server cert"
-            log_msg generate_cert --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
-            generate_cert --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
+            log_msg $GENERATE_CERT --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
+            $GENERATE_CERT --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
             echo "$CERTHOSTNAMES" > "$CERT_DIR/hostnames"
         fi
 
@@ -165,7 +168,7 @@ start() {
 
         #if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then
         #    echo "Generating client cert"
-        #    generate_cert --ca="$CACERT" --ca-key="$CAKEY" --cert="$CERT" --key="$KEY"
+        #    $GENERATE_CERT --ca="$CACERT" --ca-key="$CAKEY" --cert="$CERT" --key="$KEY"
         #fi
 
         # now make the client certificates available to the docker user
