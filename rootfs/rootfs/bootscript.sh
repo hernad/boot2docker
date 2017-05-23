@@ -183,13 +183,10 @@ mount_all_apps
 ldcache_update
 vbox_fix_permissions
 
-
 install_green_apps &
 
 if [ -d /opt/apps ] && [ ! -f /opt/apps/docker/VERSION ] ; then
-   log_msg "docker is not installed, wait 90sec ..." Y
-   sleep 90
-   install_green_apps & # if there are errors during first install, try again
+   ( log_msg "docker is not installed, 2nd try after 90sec ..." Y  && sleep 90 && install_green_apps ) & # if there are errors during first install, try again
 fi
 
 /etc/rc.d/start_docker_then_opt_boot_init_d_scripts &
