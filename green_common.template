@@ -7,7 +7,8 @@ KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
 DOCKER_VERSION=`cat /etc/sysconfig/docker`
 DOWNLOAD_URL=${DOWNLOAD_URL:-https://dl.bintray.com/hernad/greenbox}
 DOCKER_HOME_DIR=/home/docker
-
+CURL_OPTS="--speed-limit 500 --speed-time 30"  # min 500 bytes per second are downloaded over a 30 second period
+CURL="curl $CURL_OPTS"
 GREEN_APPS_VER=___GREEN_APPS_VER___
 BLUE_APPS_VER=___BLUE_APPS_VER___
 VBOX_VER=___VBOX_VER___

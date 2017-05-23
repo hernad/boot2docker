@@ -3,7 +3,6 @@
 
 APPS_HOME=/opt/apps
 
-
 [ ! -d $APPS_HOME ] &&  echo "$APPS_HOME not exists !?" && exit 1
 [ `whoami` != root ] && log_msg "install_green_apps you have to be root user !" E && exit 1
 [ "`cat /etc/sysconfig/ssl`" != "yes" ] && log_msg "curl ssl /opt/boot/etc/ssl ERROR" E && exit 1
@@ -178,7 +177,7 @@ download_app_exec() {
       log_msg "START: curl $DOWNLOAD_URL/${app}_${ver}.tar.${ext}" B
       cd $APPS_HOME
       touch ${app}_${ver}.tar.${ext}.download
-      curl -s -LO $DOWNLOAD_URL/${app}_${ver}.tar.${ext}
+      $CURL -sLO $DOWNLOAD_URL/${app}_${ver}.tar.${ext}
    fi
 
    if [ $? -ne 0 ] ; then

@@ -20,7 +20,7 @@ download_etc_ssl() {
 
   count=0
   while [ $count -lt 10 ] ; do
-    curl -skLO ${DOWNLOAD_URL}/etc_ssl.tar.xz && [ $count -lt 10 ]
+    $CURL -skLO ${DOWNLOAD_URL}/etc_ssl.tar.xz && [ $count -lt 10 ]
     if [ $? -ne 0 ] ; then
        log_msg "ERROR: CURL: $DOWNLOAD_URL/etc_ssl.tar.xz" R
        rm etc_ssl.tar.xz
@@ -189,7 +189,7 @@ if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
    log_msg "locale-archive localedef start" B
    mkdir -p $BOOT_DIR/locale
    cd $BOOT_DIR/locale
-   if ! curl -skLO ${DOWNLOAD_URL}/usr_share_i18n.tar.xz ; then
+   if ! $CURL -skLO ${DOWNLOAD_URL}/usr_share_i18n.tar.xz ; then
       log_msg "curl ${DOWNLOAD_URL}/usr_share_i18n.tar.xz ERROR" R
    else
      tar xf usr_share_i18n.tar.xz
