@@ -5,11 +5,16 @@
 download_etc_ssl() {
 
  if [ -d $BOOT_DIR/etc/ssl ] ; then
-   return 0
- else
-   mkdir -p $BOOT_DIR/etc/ssl
+   # ssl test
+   curl https://www.google.ba 2>&1 | grep -q "error setting certificate verify locations"
+   if [ $? != 0 ] ; then
+       rm -rf $BOOT_DIR/etc/ssl
+   else
+       return 0
+   fi
  fi
 
+ mkdir -p $BOOT_DIR/etc/ssl
  log_msg "bootstrap ca-certs from etc_ssl.tar.xz" B
 
  cd $BOOT_DIR/etc
@@ -39,7 +44,9 @@ download_etc_ssl() {
     rm etc_ssl.tar.xz
     ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/cacert.pem
     ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/ca-bundle.crt
-    return 0
+
+    # final test
+    curl https://www.google.ba 2>&1 | grep -q "error setting certificate verify locations"
   else
     return 127
   fi

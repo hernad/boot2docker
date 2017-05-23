@@ -35,16 +35,16 @@ if ! which perl ; then
   fi
 fi
 
-log_msg "update-ca-certificates start"
+log_msg "update-ca-certificates start" B
 
 verbose=0
 fresh=0
 default=0
-CERTSCONF=/usr/local/etc/ca-certificates.conf
-CERTSDIR=/usr/local/share/ca-certificates  $BOOT_DIR/etc/ssl/
-LOCALCERTSDIR=/usr/local/share/ca-certificates
+CERTSCONF=$BOOT_DIR/etc/ssl/ca-certificates.conf
+CERTSDIR=/usr/local/share/ca-certificates
+LOCALCERTSDIR=$BOOT_DIR/etc/ssl/ca-certificates
 CERTBUNDLE=ca-certificates.crt
-ETCCERTSDIR=/usr/local/etc/ssl/certs
+ETCCERTSDIR=$BOOT_DIR/etc/ssl/certs
 HOOKSDIR=/usr/local/etc/ca-certificates/update.d
 
 while [ $# -gt 0 ];
