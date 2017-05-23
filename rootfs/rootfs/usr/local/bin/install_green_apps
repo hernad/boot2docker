@@ -6,8 +6,7 @@ APPS_HOME=/opt/apps
 
 [ ! -d $APPS_HOME ] &&  echo "$APPS_HOME not exists !?" && exit 1
 [ `whoami` != root ] && log_msg "install_green_apps you have to be root user !" E && exit 1
-
-cat /etc/sysconfig/ssl | grep -q yes || log_msg "curl ssl /opt/boot/ssl ERROR" E && exit 1
+[ "`cat /etc/sysconfig/ssl`" != "yes" ] && log_msg "curl ssl /opt/boot/ssl ERROR" E && exit 1
 
 
 case "$1" in
