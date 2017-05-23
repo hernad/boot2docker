@@ -182,6 +182,11 @@ fi
 mount_all_apps
 ldcache_update
 vbox_fix_permissions
+
+for f in ls `ls /opt/apps/*.xz*` ; do
+   log_msg "rm $f" Y
+   rm $f
+done
 install_green_apps &
 
 if [ -d /opt/apps ] && [ ! -f /opt/apps/docker/VERSION ] ; then
