@@ -2,6 +2,50 @@
 
 . /etc/green_common
 
+download_etc_ssl() {
+
+ if [ -d $BOOT_DIR/etc/ssl ] ; then
+   return 0
+ else
+   mkdir -p $BOOT_DIR/etc/ssl
+ fi
+
+ log_msg "bootstrap ca-certs from etc_ssl.tar.xz" B
+
+ cd $BOOT_DIR/etc
+
+  count=0
+  while [ $count -lt 10 ] ; do
+    curl -skLO ${DOWNLOAD_URL}/etc_ssl.tar.xz && [ $count -lt 10 ]
+    if [ $? -ne 0 ] ; then
+       log_msg "ERROR: CURL: $DOWNLOAD_URL/etc_ssl.tar.xz" R
+       rm etc_ssl.tar.xz
+       let count=count+1
+    else
+       if ! tar -tf etc_ssl.tar.xz > /dev/null 2>&1 ; then
+          SIZE=`ls -lh etc_ssl.tar.xz | awk '{print $5}'`
+          MD5SUM=`/usr/bin/md5sum etc_ssl.tar.xz | awk '{print $1}'`
+          log_msg "etc_ssl.tar.xz is not valid tar, size $SIZE, md5sum: $MD5SUM" R
+          rm etc_ssl.tar.xz
+          let count=count+1
+       else
+           let count=999 # download OK
+       fi
+     fi
+  done
+
+  if [ $count -eq 999 ] ; then
+    tar xf etc_ssl.tar.xz
+    rm etc_ssl.tar.xz
+    ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/cacert.pem
+    ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/ca-bundle.crt
+    return 0
+  else
+    return 127
+  fi
+}
+
+
 log_msg "== bootscript.sh: $(date) ====" G
 
 log_msg "configure sysctl"
@@ -64,7 +108,6 @@ else
 	    echo "${RED}Docker home not mounted ERROR!${NORMAL}"
 fi
 
-
 log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
 
@@ -90,27 +133,12 @@ else
 fi
 
 wait4internet
-if [ ! -d $BOOT_DIR/etc/ssl ] ; then
-  mkdir -p $BOOT_DIR/etc/ssl
-  log_msg "bootstrap ca-certs from etc_ssl.tar.xz" B
-  count=0
-  cd $BOOT_DIR/etc
-  while ! curl -skLO ${DOWNLOAD_URL}/etc_ssl.tar.xz && [ $count -lt 10 ]
-  do
-    log_msg "curl ${DOWNLOAD_URL}/etc_ssl.tar.xz ERROR ($count)" R
-    sleep 5
-    let count=count+1
-  done
-  if [ $count -ge 9 ] ; then
-    log_msg "curl ${DOWNLOAD_URL}/etc_ssl.tar.xz CANNOT BE DOWNLOADED" R
-  else
-    log_msg "curl ${DOWNLOAD_URL}/etc_ssl.tar.xz DOWNLOADED" G
-  fi
-  tar xf etc_ssl.tar.xz
-  rm etc_ssl.tar.xz
 
-  ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/cacert.pem
-  ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/ca-bundle.crt
+if ! download_etc_ssl ; then
+   echo ">>>>>>>>>> curl SSL cannot be set !? <<<<<<<<<<<<<<<<<<<" R
+   echo no > /etc/sysconfig/ssl
+else
+   echo yes > /etc/sysconfig/ssl
 fi
 
 log_msg "setup docker user - docker group"
