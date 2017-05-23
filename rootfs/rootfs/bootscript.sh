@@ -79,9 +79,6 @@ fi
 log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
 
-[ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
-[ -f $BOOT_DIR/log/udhcp.log ] && rm $BOOT_DIR/log/udhcp.log
-
 if [ ! -d $BOOT_DIR/etc/ssl ] ; then
   mkdir -p $BOOT_DIR/etc/ssl
   log_msg "bootstrap ca-certs from etc_ssl.tar.xz" B
@@ -116,11 +113,16 @@ test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
 set_log_file
 
-/etc/rc.d/hostname
+#/etc/rc.d/hostname
 
-log_msg "sync the clock"
-/etc/rc.d/ntpd &
-/etc/rc.d/crond start
+STATICIP="$(getbootparam staticip 2>/dev/null)"
+
+if [ -n "$STATICIP" ]; then
+	log_msg "Skipping DHCP broadcast/network detection" B
+else
+	/etc/init.d/dhcp.sh &
+	/etc/init.d/settime.sh &
+fi
 
 log_msg "setup docker user - docker group"
 
@@ -148,6 +150,8 @@ ln -s $BOOT_DIR/root /root
 
 echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 
+/etc/rc.d/ntpd
+/etc/rc.d/crond start
 /etc/rc.d/sysctl
 /etc/rc.d/acpid
 /etc/rc.d/sshd start

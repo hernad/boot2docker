@@ -48,6 +48,7 @@ for i in `cat /proc/cmdline`; do
 				tz=*) TZ=${i#*=} ;;
 				staticip=*) STATICIPADDRESS=${i#*=} ;;
 				staticiface=*) STATICIFACE=${i#*=} ;;
+				staticgateway=*) STATICGATEWAY==${i#*=} ;;
 				ntpserver=*) NTPSERVER=${i#*=} ;;
 				dockerpwd=*) DOCKER_PASSWORD=${i#*=} ;;
 				rootpwd=*) ROOT_PASSWORD=${i#*=} ;;
@@ -150,7 +151,6 @@ else
 		hwclock -u -s &
 	fi
 fi
-
 
 
 log_msg "config 127.0.0.1"
