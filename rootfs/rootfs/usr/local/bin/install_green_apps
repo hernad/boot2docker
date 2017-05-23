@@ -178,7 +178,7 @@ download_app() {
    else
         if ! tar -tf ${app}_${ver}.tar.${ext} > /dev/null 2>&1
         then
-           log_msg "${app}_${ver}.tar.${ext} is not valid tar"
+           log_msg "${app}_${ver}.tar.${ext} is not valid tar" R
            rm ${app}_${ver}.tar.${ext}
            rm ${app}_${ver}.tar.${ext}.download
            return 127
