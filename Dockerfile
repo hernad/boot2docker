@@ -325,15 +325,20 @@ RUN  mkdir -p $ROOTFS/usr/local/etc/ssh   &&\
 COPY rootfs/sshd_config $ROOTFS/usr/local/etc/ssh/sshd_config
 
 COPY rootfs/openssh $ROOTFS/usr/local/etc/init.d/openssh
-COPY rootfs/dhcp.sh $ROOTFS/etc/init.d/dhcp.sh
+
 COPY rootfs/services/* $ROOTFS/etc/init.d/services/
 
+
+COPY rootfs/sethostname $ROOTFS/usr/bin/sethostname
+
 COPY rootfs/rcS $ROOTFS/etc/init.d/rcS
+COPY rootfs/dhcp.sh $ROOTFS/etc/init.d/dhcp.sh
 COPY rootfs/busybox-aliases $ROOTFS/etc/init.d/busybox-aliases
 COPY rootfs/tc-functions $ROOTFS/etc/init.d/tc-functions
 
-COPY rootfs/sethostname $ROOTFS/usr/bin/sethostname
+
 COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
+COPY rootfs/docker $ROOTFS/etc/init.d/docker
 
 COPY rootfs/environment $ROOTFS/etc/environment
 COPY rootfs/sshrc $ROOTFS/usr/local/etc/ssh/sshrc

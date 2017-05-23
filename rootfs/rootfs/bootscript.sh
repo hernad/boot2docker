@@ -240,7 +240,7 @@ EOF
 setup_symlinks_and_commands
 
 
-if cat /proc/cmdline | grep -q "console=ttyS0"
+if ( ! is_vbox ) && cat /proc/cmdline | grep -q "console=ttyS0"
 then
 	log_msg "serial console"
 	/sbin/getty -L 115200 ttyS0 vt100
