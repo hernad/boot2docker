@@ -110,8 +110,8 @@ cd $ROOTFS
 #http://nairobi-embedded.org/initramfs_tutorial.html
 #$ find . | cpio -H newc -o | gzip -9 > ../initrd.img-`uname -r`-custom
 
-find | ( set -x; cpio -o -H newc | xz -4 --format=lzma --verbose --verbose ) > /tmp/iso/boot/initrd.img
-#find | ( set -x; cpio -o -H newc | gzip -9 ) > /tmp/iso/boot/initrd.img
+#find | ( set -x; cpio -o -H newc | xz -4 --format=lzma --verbose --verbose ) > /tmp/iso/boot/initrd.img
+find | ( set -x; cpio -o -H newc | gzip -9 ) > /tmp/iso/boot/initrd.img
 
 #find | ( set -x; cpio -o -H newc | lz4 -c -l -9 -f ) > /tmp/iso/boot/initrd.img
 
