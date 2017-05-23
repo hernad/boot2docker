@@ -9,9 +9,9 @@ log_msg "dhcp - udhcpc start"
 
 /sbin/udevadm settle --timeout=5 # This waits until all devices have registered
 
-NETDEVICES="$(awk -F: '/eth.:|tr.:/{print $1}' /proc/net/dev 2>/dev/null)"
+NETDEVICES="$(awk -F: '/eth.:|tr.:/{print $1}' /proc/net/dev | sort 2>/dev/null)"
 HOSTNAME="$(/bin/hostname)"
-log_msg "HOSTNAME: $HOSTNAME network devices: $NETDEVICES" M
+log_msg "HOSTNAME: $HOSTNAME" M
 
 for DEVICE in $NETDEVICES; do
   ifconfig $DEVICE | grep -q "inet addr"

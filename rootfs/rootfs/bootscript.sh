@@ -108,6 +108,12 @@ log_msg "mount cgroups hierarchy"
 /etc/rc.d/cgroupfs-mount
 # see https://github.com/tianon/cgroupfs-mount
 
+if cat /proc/cmdline | grep -q "console=ttyS0"
+then
+	log_msg "serial console"
+	echo "ttyS0:2345:respawn:/sbin/getty -L 115200 ttyS0 vt100" >> /etc/inittab
+if
+
 log_msg "import settings from profile (or unset them) $BOOT_DIR/profile"
 test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
@@ -150,6 +156,7 @@ ln -s $BOOT_DIR/root /root
 
 echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 
+wait4internet
 /etc/rc.d/ntpd
 /etc/rc.d/crond start
 /etc/rc.d/sysctl

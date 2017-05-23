@@ -224,5 +224,10 @@ fi
 [ -n "$NODOCKERSTART" ] && touch $BOOT_DIR/init.d/nodockerstart
 [ -n "$NOAUTOLOGIN" ] && echo "booting" > /etc/sysconfig/noautologin
 
+if cat /proc/cmdline | grep -q "console=ttyS0"
+then
+	log_msg "serial console"
+	echo "ttyS0:2345:respawn:/sbin/getty -L 115200 ttyS0 vt100" >> /etc/inittab
+if
 
 /opt/bootscript.sh
