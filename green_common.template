@@ -276,6 +276,10 @@ wait4internet() {
 	done
 }
 
+docker_ping() {
+  $CURL -s --connect-timeout 10 --unix-socket /var/run/docker.sock http:/_ping | grep -q OK
+}
+
 GREEN_DEBUG=${GREEN_DEBUG:-1}
 set_log_file
 

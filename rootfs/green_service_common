@@ -4,7 +4,7 @@
 
 log_msg "START: $0"
 
-while ! curl -s --connect-timeout 10 --unix-socket /var/run/docker.sock http:/_ping | grep -q OK ; do
+while ! docker_ping ; do
    log_msg "waiting for dockerd"
    sleep 30
 done

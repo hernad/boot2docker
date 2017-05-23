@@ -229,8 +229,13 @@ docker_started() {
       log_msg "docker daemon not started ?!" R
       return 1
     else
-      log_msg "docker daemon started :)" G
-      return 0
+      if docker_ping ; then
+         log_msg "docker daemon started :)" G
+         return 0
+      else
+         log_msg "NO PING from docker daemon :(" R
+         return 64
+      fi
     fi
 }
 
@@ -240,7 +245,7 @@ status() {
         cat /proc/`cat $DOCKER_PID`/limits
         exit 0
     else
-        echo 'Docker daemon is not running'
+        echo 'Docker daemon no response'
         exit 1
     fi
 }
@@ -249,7 +254,10 @@ case $1 in
     start)
         pre_start
         start
-        docker_started;;
+        if ! docker_started ; then
+          restart # second try
+        fi
+        ;;
     stop)
         stop;;
     restart)
