@@ -71,9 +71,6 @@ log_msg "automount GREEN_volumes"
 
 set_log_file
 
-log_msg "mount cgroups hierarchy"
-/etc/rc.d/cgroupfs-mount
-# see https://github.com/tianon/cgroupfs-mount
 
 log_msg "import settings from profile (or unset them) $BOOT_DIR/profile"
 test -f $BOOT_DIR/profile && . $BOOT_DIR/profile

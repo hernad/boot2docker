@@ -93,6 +93,9 @@ fi
 
 check_docker_installed() {
 
+
+  /etc/rc.d/cgroupfs-mount   # see https://github.com/tianon/cgroupfs-mount
+
   CNT=1
   while [ ! -f /opt/apps/docker/VERSION  ] ; do
     log_msg "waiting install /opt/apps/docker/VERSION $CNT ..."

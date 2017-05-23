@@ -6,6 +6,8 @@
 
 . /etc/green_common
 
+log_msg "mount cgroups hierarchy"
+
 set -e
 
 # doh, TCL doesn't have "mountpoint"

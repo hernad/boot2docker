@@ -338,6 +338,7 @@ COPY rootfs/tc-functions $ROOTFS/etc/init.d/tc-functions
 
 
 COPY rootfs/tc-config $ROOTFS/etc/init.d/tc-config
+COPY rootfs/cgroupfs-mount $ROOTFS/etc/rc.d/cgroupfs-mount
 COPY rootfs/docker $ROOTFS/etc/init.d/docker
 
 COPY rootfs/environment $ROOTFS/etc/environment
