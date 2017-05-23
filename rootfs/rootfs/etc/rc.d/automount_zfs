@@ -24,7 +24,7 @@ mkdir -p /opt
 
 if ! zpool import | grep green >> $LOG_FILE 2>&1
 then
-  log_msg "there is zpool green" R
+  log_msg "there is NO zpool green" R
 else
    zpool import green >> $LOG_FILE 2>&1
 fi

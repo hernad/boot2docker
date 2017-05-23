@@ -143,6 +143,7 @@ start() {
         chmod 700 "$CERT_DIR"
         if [ ! -f "$CACERT" ] || [ ! -f "$CAKEY" ]; then
             echo "Generating CA cert"
+            log_msg "$GENERATE_CERT --cert=\"$CACERT\" --key=\"$CAKEY\"" M
             $GENERATE_CERT --cert="$CACERT" --key="$CAKEY"
             for f in "$SERVERCERT" "$SERVERKEY" "$CERT" "$KEY" "$CERT_DIR/hostnames" ; do
               [ -f $f ] && rm $f
@@ -152,11 +153,10 @@ start() {
         CERTSEXISTFOR=$(cat "$CERT_DIR/hostnames" 2>/dev/null)
         if [ "$CERTHOSTNAMES" != "$CERTSEXISTFOR" ]; then
             echo "Generate server cert"
-            log_msg $GENERATE_CERT --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
+            log_msg "$GENERATE_CERT --host=\"$CERTHOSTNAMES\" --ca=\"$CACERT\" --ca-key=\"$CAKEY\" --cert=\"$SERVERCERT\" --key=\"$SERVERKEY\"" M
             $GENERATE_CERT --host="$CERTHOSTNAMES" --ca="$CACERT" --ca-key="$CAKEY" --cert="$SERVERCERT" --key="$SERVERKEY"
             echo "$CERTHOSTNAMES" > "$CERT_DIR/hostnames"
         fi
-
 
         if [ "$DOCKER_TLS" == "auto" ]; then
             DOCKER_HOST='-H tcp://0.0.0.0:2376'
@@ -189,7 +189,7 @@ start() {
         DOCKER_OPTS="$DOCKER_OPTS --storage-driver=$DOCKER_STORAGE"
     fi
 
-    echo $DOCKERD --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS  >> $DOCKER_LOGFILE
+    log_msg "$DOCKERD --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS" M
     $DOCKERD --graph=$DOCKER_DIR -H unix:// $DOCKER_HOST $DOCKER_OPTS >> $DOCKER_LOGFILE 2>&1 &
 }
 
