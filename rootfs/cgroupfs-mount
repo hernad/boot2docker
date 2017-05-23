@@ -8,7 +8,7 @@
 
 log_msg "mount cgroups hierarchy"
 
-set -e
+#set -e
 
 # doh, TCL doesn't have "mountpoint"
 mountpoint() {
@@ -42,6 +42,10 @@ if ! mountpoint -q /sys/fs/cgroup; then
 	    /bin/mount -t tmpfs -o uid=0,gid=0,mode=0755 cgroup /sys/fs/cgroup
 			log_msg  "mounting /sys/fs/cgroup on tmpfs ($?)" G
 fi
+
+log_msg "----- /proc/cgroups: -----" M
+cat /proc/cgroups
+cat /proc/cgroups >> $LOG_FILE
 
 cd /sys/fs/cgroup
 for sys in $(/usr/bin/awk '!/^#/ { if ($4 == 1) print $1 }' /proc/cgroups); do
