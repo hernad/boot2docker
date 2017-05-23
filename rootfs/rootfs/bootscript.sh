@@ -68,9 +68,12 @@ fi
 log_msg "automount GREEN_volumes"
 /etc/rc.d/automount
 
+for f in `ls /opt/apps/*.xz*` ; do
+   log_msg "remove broken downloads: rm $f" Y
+   rm $f
+done
 
 set_log_file
-
 
 log_msg "import settings from profile (or unset them) $BOOT_DIR/profile"
 test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
@@ -180,10 +183,7 @@ mount_all_apps
 ldcache_update
 vbox_fix_permissions
 
-for f in `ls /opt/apps/*.xz*` ; do
-   log_msg "rm $f" Y
-   rm $f
-done
+
 install_green_apps &
 
 if [ -d /opt/apps ] && [ ! -f /opt/apps/docker/VERSION ] ; then

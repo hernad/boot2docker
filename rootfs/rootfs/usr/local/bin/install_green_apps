@@ -172,7 +172,7 @@ download_app() {
 
    if [ $? -ne 0 ] ; then
         log_msg "ERROR: CURL: $DOWNLOAD_URL/${app}_${ver}.tar.${ext}" R
-        rm $DOWNLOAD_URL/${app}_${ver}.tar.${ext}
+        rm ${app}_${ver}.tar.${ext}
         rm ${app}_${ver}.tar.${ext}.download
         return 127
    else
