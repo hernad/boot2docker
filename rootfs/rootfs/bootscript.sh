@@ -6,8 +6,7 @@ download_etc_ssl() {
 
  if [ -d $BOOT_DIR/etc/ssl ] ; then
    # ssl test
-   curl https://www.google.ba 2>&1 | grep -q "error setting certificate verify locations"
-   if [ $? != 0 ] ; then
+   if [ ! -f $BOOT_DIR/etc/ssl/certs/ca-certificates.crt ] ; then
        rm -rf $BOOT_DIR/etc/ssl
    else
        return 0
@@ -46,7 +45,8 @@ download_etc_ssl() {
     ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/ca-bundle.crt
 
     # final test
-    curl https://www.google.ba 2>&1 | grep -q "error setting certificate verify locations"
+    [ -f $BOOT_DIR/etc/ssl/certs/ca-certificates.crt ]
+
   else
     return 127
   fi
@@ -129,7 +129,6 @@ log_msg "import settings from profile (or unset them) $BOOT_DIR/profile"
 test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 
 set_log_file
-
 STATICIP="$(getbootparam staticip 2>/dev/null)"
 
 if [ -n "$STATICIP" ]; then
