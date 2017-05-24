@@ -5,6 +5,10 @@ if [ ! -f /opt/apps/green/bin/coredns ] ; then
   log_msg "no coredns execute" R
   exit 0
 fi
+if [ ! -f /etc/Corefil ] ; then
+  log_msg "no coredns config" R
+  exit 0
+fi
 
 if ps -ax | grep "coredns.*Corefile" | grep -v grep ; then
    killall coredns
