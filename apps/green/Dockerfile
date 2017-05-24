@@ -181,9 +181,9 @@ ENV TCZ_DEPS_DEV    curl-dev \
                     ncurses5 \
                     expat2-dev \
                     readline-dev \
-                    libxml2-dev \
+                    libxml2-dev
                     # fwknop
-                    libpcap-dev
+                    #libpcap-dev
 
 ENV ROOTFS=/
 # Install the base tiny linux build
@@ -210,9 +210,9 @@ ENV TCZ_DEPS_GREEN  \
                     parted liblvm2 \
                     procps \
                     bind-utilities libxml2 \
-                    fuse libffi \
+                    fuse libffi
                     #fwknop
-                    libpcap
+                    #libpcap
 
 
 # Install the base tiny linux build
@@ -236,6 +236,11 @@ RUN  curl -sLO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
       ./configure --prefix=${APPS_DIR} &&\
       make && make install
 
+
+RUN   curl -sLO  http://www.tcpdump.org/release/libpcap-1.8.1.tar.gz &&\
+      tar xf libpcap-*.tar.gz && rm libpca*.tar.gz && cd libpcap* &&\
+      ./configure CFLAGS="-I${APPS_DIR}/include" LDFLAGS="-L${APPS_DIR}/lib" --prefix=${APPS_DIR} &&\
+      make && make install
 
 RUN   curl $CURL_OPTS -sLO http://www.cipherdyne.org/fwknop/download/fwknop-2.6.9.tar.bz2 &&\
       tar xf fwknop-*.tar.bz2 && rm fw*.bz2 && cd fwknop* &&\
