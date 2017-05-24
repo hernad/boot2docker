@@ -1,0 +1,13 @@
+#!/bin/bash
+. /etc/green_common
+
+if ! which coredns ; then
+  log_msg "no coredns execute" R
+  exit 0
+fi
+
+if ps -ax | grep "coredns.*Corefile" | grep -v grep ; then
+   killall coredns
+fi
+
+coredns -conf /etc/Corefile &
