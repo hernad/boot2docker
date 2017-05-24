@@ -237,7 +237,7 @@ RUN  curl -sLO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
       make && make install
 
 
-RUN   curl -sLO  http://www.tcpdump.org/release/libpcap-1.8.1.tar.gz &&\
+RUN   apt-get install -y flex bison && curl -sLO  http://www.tcpdump.org/release/libpcap-1.8.1.tar.gz &&\
       tar xf libpcap-*.tar.gz && rm libpca*.tar.gz && cd libpcap* &&\
       ./configure CFLAGS="-I${APPS_DIR}/include" LDFLAGS="-L${APPS_DIR}/lib" --prefix=${APPS_DIR} &&\
       make && make install
