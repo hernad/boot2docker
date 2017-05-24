@@ -254,7 +254,7 @@ RUN   curl $CURL_OPTS -sLO https://releases.hashicorp.com/vault/0.7.2/vault_0.7.
 
 
 RUN   curl $CURL_OPTS -sLO https://github.com/coredns/coredns/releases/download/v007/coredns_007_linux_x86_64.tgz &&\
-      tar xz coredns*tgz && chmod +x coredns && mv coredns ${APPS_DIR}/bin/ && rm coredns*tgz
+      tar xf coredns*tgz && chmod +x coredns && mv coredns ${APPS_DIR}/bin/ && rm coredns*tgz
 
 # ====================================== remove what we don't need  ==============================
 
