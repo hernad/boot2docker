@@ -17,7 +17,7 @@ echo "command: $1 ==========  $(date) ========"  >> $DHCP_LOG
 #rootfs/usr/share/udhcpc/default.script
 # $router, $dns
 
-if which coredns ; then
+if [ -f /opt/apps/green/bin/coredns ]; then
 	# https://miek.nl/2016/April/20/caching-in-coredns/
 	echo ".:53 {"  > /etc/Corefile
 	for i in $dns ; do
