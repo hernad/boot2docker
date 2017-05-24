@@ -63,8 +63,8 @@ if [ "$INSTALL_SET" == "9" ] ; then
            k8s)
              GREEN_APPS_9+=" k8s_${K8S_VER}"
              ;;
-           virtualbox|vbox|vbox)
-             green_apps_9+=" virtualbox_${vbox_ver}"
+           virtualbox|VirtualBox|vbox)
+             green_apps_9+=" virtualbox_${VBOX_VER}"
              ;;
            vagrant)
              GREEN_APPS_9+=" vagrant_${VAGRANT_VER}"
