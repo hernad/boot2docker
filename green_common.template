@@ -6,6 +6,7 @@ GREENBOX_VERSION=`cat /etc/sysconfig/greenbox`
 KERNEL_VERSION=`uname -r | sed -e 's/-greenbox//'`
 DOCKER_VERSION=`cat /etc/sysconfig/docker`
 DOWNLOAD_URL=${DOWNLOAD_URL:-https://dl.bintray.com/hernad/greenbox}
+DOWNLOAD_ISO_URL=${DOWNLOAD_ISO_URL:-http://download.bring.out.ba}
 DOCKER_HOME_DIR=/home/docker
 CURL_OPTS="--speed-limit 500 --speed-time 30 --connect-timeout 7 --retry 3"  # min 500 bytes per second are downloaded over a 30 second period
 CURL="curl $CURL_OPTS"
@@ -129,6 +130,19 @@ is_vbox () {
   fi
 }
 
+is_x3x50M4_server() {
+  if [ ! -f /etc/sysconfig/rack ] ; then
+    if lshw | grep -E "product: .*System (x3550|x3650) M4.*(7915E3G|7914E1G)" ; then
+       echo x3x50M4 > /etc/sysconfig/rack
+       return 0
+    else
+       echo 0 > /etc/sysconfig/rack
+       return 1
+    fi
+  else
+    cat /etc/sysconfig/rack | grep -q x3x50M4
+  fi
+}
 
 wait_zvol_up () {
 

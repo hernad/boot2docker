@@ -28,7 +28,12 @@
 if ! which perl ; then
   log_msg "c_rehash needs perl! installing perl ..." B
   install_green_apps 9 perl
-  export PATH=/opt/apps/perl/bin:$PATH
+  cnt=0
+  while [ ! -d /opt/apps/perl ] && [ $cnt -gt 10 ]; do
+    let cnt=cnt+1
+    sleep 10
+  done
+  . /etc/green_common
   if ! which perl ; then
      log_msg "perl install unsuccessfull !" E
      exit 1
