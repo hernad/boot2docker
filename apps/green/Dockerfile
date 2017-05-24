@@ -181,7 +181,9 @@ ENV TCZ_DEPS_DEV    curl-dev \
                     ncurses5 \
                     expat2-dev \
                     readline-dev \
-                    libxml2-dev
+                    libxml2-dev \
+                    # fwknop
+                    libpcap-dev
 
 ENV ROOTFS=/
 # Install the base tiny linux build
@@ -208,8 +210,9 @@ ENV TCZ_DEPS_GREEN  \
                     parted liblvm2 \
                     procps \
                     bind-utilities libxml2 \
-                    cifs-utils \
-                    fuse libffi
+                    fuse libffi \
+                    #fwknop
+                    libpcap
 
 
 # Install the base tiny linux build

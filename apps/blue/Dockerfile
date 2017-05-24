@@ -146,14 +146,16 @@ ENV TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
 ENV TCZ_DEPS_BLUE  \
          strace glib2 libtirpc \
          nfs-utils tcp_wrappers portmap rpcbind libtirpc \
-         libpcap libnl tcpdump \
+         # libpcap ima u green
+         libnl tcpdump \
          #nss,nspr,sqlite3,libnotify - deps for electron applications ( atom, code )
          nss nspr sqlite3 libnotify \
          #groff - aws deps
          groff \
          iftop util-linux \
          icu icu-bin \
-         coreutils
+         coreutils \
+         cifs-utils
 
 #man-db
 
