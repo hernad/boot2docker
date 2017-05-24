@@ -183,6 +183,8 @@ RUN mkdir -p ${APPS_DIR}/bin ;\
         cp -av ${APPS_DIR}/usr/local/sbin/* ${APPS_DIR}/bin/ &&\
         cp -av ${APPS_DIR}/usr/local/lib/* ${APPS_DIR}/lib/ &&\
         cp -av ${APPS_DIR}/usr/local/share/* ${APPS_DIR}/share/ &&\
+        #/usr/local/etc/init.d/nfs-client /usr/local/etc/init.d/nfs-server
+        cp -av ${APPS_DIR}/usr/local/etc/init.d/* ${APPS_DIR}/bin/ &&\
         rm -rf ${APPS_DIR}/usr &&\
         # erase static libraries, includes in ${APPS_DIR}
         rm ${APPS_DIR}/lib/*.a &&\

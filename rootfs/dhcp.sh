@@ -36,7 +36,7 @@ for DEVICE in $NETDEVICES; do
     log_msg "Network device $DEVICE detected, DHCP broadcasting for IP"
     trap 2 3 11
     /sbin/udhcpc -b -i $DEVICE \
-       --fqdn NAME:$FQDN \
+       --fqdn $FQDN \
        -x hostname:$HOSTNAME \
        -s /usr/share/udhcpc/default.script \
        -p /var/run/udhcpc.$DEVICE.pid >/dev/null 2>&1 &
