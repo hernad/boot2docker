@@ -2,12 +2,10 @@
 
 # https://github.com/bjasko/docker_scripts/blob/master/greenbox_usb_update
 
-. /etc/green_common
-
 if [ $# -lt 1 ]
 then
-    echo "argumenti su: ./greenbox_usb_update  GREENBOX_VER"
-    echo " npr:   ./greenbox_usb_create 3.7.2"
+    echo "argumenti su: $0  <GREENBOX_VER> [ vga|serial ]"
+    echo " npr: $0 3.7.2 serial"
     exit 1
 fi
 
@@ -17,9 +15,18 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 GREENBOX_VERSION=$1
-GREEN_ISO=${DOWNLOAD_ISO_URL}/greenbox-${GREENBOX_VERSION}.iso
+case  "$2" in
+   serial)
+      CONSOLE_LINE="console=ttyS0,115200n8"
+      ;;
+   *)
+      CONSOLE_LINE=
+esac
+
+APPEND_LINE="loglevel=7 tz=CET-1CEST,M3.5.0,M10.5.0/3 noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD $CONSOLE_LINE"
+GREEN_ISO=http://download.bring.out.ba/greenbox-${GREENBOX_VERSION}.iso
 GREEN_CFG=/media/syslinux.cfg
-DEF_BOOT=`cat $GREEN_CFG | grep "^default boot" | awk '{print $2}'`
+DEFAULT_BOOT_LABEL=`cat $GREEN_CFG | grep -i "^default " | awk '{print $2}'`
 ISO_MNT=/tmp/${GREENBOX_VERSION}
 BOOT_PATH=/media/boot
 
@@ -31,36 +38,34 @@ then
     exit 1
 fi
 
-echo "default boot is $DEF_BOOT"
+echo "default boot is $DEFAULT_BOOT_LABEL"
 
 echo "mounting $ISO_MNT"
 [ -d $ISO_MNT ] || mkdir $ISO_MNT
 mount -o loop /root/greenbox-${GREENBOX_VERSION}.iso  $ISO_MNT
 
-#if [ -d "$BOOT_PATH/${GREENBOX_VERSION}" ]; then
-#    echo "$BOOT_PATH/${GREENBOX_VERSION} already exists"
-#    umount $ISO_MNT
-#else
-    mkdir -p $BOOT_PATH/${GREENBOX_VERSION}
-    cp -v $ISO_MNT/boot/initrd.img  $BOOT_PATH/${GREENBOX_VERSION}
-    cp -v $ISO_MNT/boot/vmlinuz64 $BOOT_PATH/${GREENBOX_VERSION}
-    umount $ISO_MNT
-    rm -rf $ISO_MNT
-#fi
+mkdir -p $BOOT_PATH/${GREENBOX_VERSION}
+cp -v $ISO_MNT/boot/initrd.img  $BOOT_PATH/${GREENBOX_VERSION}
+cp -v $ISO_MNT/boot/vmlinuz64 $BOOT_PATH/${GREENBOX_VERSION}
+umount $ISO_MNT
+rm -rf $ISO_MNT
 
-if [ "$DEF_BOOT" == "greenbox-${GREENBOX_VERSION}" ]; then
-    echo "$DEF_BOOT is already default boot ... STOP"
+if [ "$DEFAULT_BOOT_LABEL" == "greenbox-${GREENBOX_VERSION}" ]; then
+    echo "$DEFAULT_BOOT_LABEL is already default boot ... STOP"
     exit 1
 else
-    echo "label greenbox-${GREENBOX_VERSION}" >> $GREEN_CFG
-    echo "menu label greenbox-${GREENBOX_VERSION}" >> $GREEN_CFG
-    echo "kernel /boot/${GREENBOX_VERSION}/vmlinuz64"  >> $GREEN_CFG
-    echo "append initrd=/boot/${GREENBOX_VERSION}/initrd.img loglevel=3 tz=CET-1CEST,M3.5.0,M10.5.0/3 noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD console=ttyS0,115200n8"  >> $GREEN_CFG
-    echo ""  >> $GREEN_CFG
+    if ! grep "label greenbox-${GREENBOX_VERSION}" $GREEN_CFG ; then
+      echo -e  >> $GREEN_CFG
+      echo "label greenbox-${GREENBOX_VERSION}" >> $GREEN_CFG
+      echo "menu label greenbox-${GREENBOX_VERSION}" >> $GREEN_CFG
+      echo "kernel /boot/${GREENBOX_VERSION}/vmlinuz64"  >> $GREEN_CFG
+      echo "append initrd=/boot/${GREENBOX_VERSION}/initrd.img $APPEND_LINE"  >> $GREEN_CFG
+    else
+      echo "label greenbox-${GREENBOX_VERSION} already exists in $GREEN_CFG"
+    fi
 fi
 
-
-sed -i -e 's/default '"$DEF_BOOT"'/default greenbox-'"${GREENBOX_VERSION}"'/' $GREEN_CFG
+sed -i -e 's/^default '"$DEFAULT_BOOT_LABEL"'/default greenbox-'"${GREENBOX_VERSION}"'/' $GREEN_CFG
 echo "syncing file system ..."
 sync
 echo "default boot label is: greenbox-${GREENBOX_VERSION}"
