@@ -1,5 +1,4 @@
 #!/bin/sh
-
 . /etc/green_common
 
 # udhcpc script edited by Tim Riker <Tim@Rikers.org>
@@ -22,14 +21,16 @@ if which coredns ; then
 	# https://miek.nl/2016/April/20/caching-in-coredns/
 	echo ".:53 {"  > /etc/Corefile
 	for i in $dns ; do
-		  echo "  proxy . ${i}:53" >> /etc/Corefile
-			echo "$(date) adding dns ${i} to Corefile" >> $DHCP_LOG
+		echo "  proxy . ${i}:53" >> /etc/Corefile
+		echo "$(date) adding dns ${i} to Corefile" >> $DHCP_LOG
 	done
   #echo "  cache 10 bring.out.ba" >> /etc/Corefile # cache only bring.out.ba
   echo "  log $BOOT_DIR/log/coredns.log" >> /etc/Corefile
   echo "  errors $BOOT_DIR/log/coredns.log" >> /etc/Corefile
   echo "}" >> /etc/Corefile
 	dns="127.0.0.1" # redirecto to localhost dns server
+else
+	log_msg "no coredns in $PATH"
 fi
 
 case "$1" in

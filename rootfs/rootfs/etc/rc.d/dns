@@ -2,7 +2,7 @@
 . /etc/green_common
 
 if ! which coredns ; then
-  log_msg "no coredns execute" R
+  log_msg "no coredns execute $PATH" R
   exit 0
 fi
 

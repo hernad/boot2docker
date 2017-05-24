@@ -1,5 +1,4 @@
 #!/bin/sh
-
 . /etc/green_common
 
 download_etc_ssl() {
@@ -43,7 +42,6 @@ download_etc_ssl() {
     rm etc_ssl.tar.xz
     ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/cacert.pem
     ln -fs $BOOT_DIR/etc/ssl/certs/ca-certificates.crt $BOOT_DIR/etc/ssl/ca-bundle.crt
-
     # final test
     [ -f $BOOT_DIR/etc/ssl/certs/ca-certificates.crt ]
 
