@@ -48,7 +48,7 @@ ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
 # Fetch the kernel sources
 RUN mkdir -p /usr/src && \
     echo "https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz" &&\
-    curl $CURL_OPTS -s --retry 10 https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
+    curl $CURL_OPTS -s https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
     mv /linux-$KERNEL_VERSION_DOWNLOAD $LINUX_KERNEL_SOURCE
 
 COPY kernel_config $LINUX_KERNEL_SOURCE/.config
