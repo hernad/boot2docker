@@ -22,6 +22,7 @@ if [ -f /opt/apps/green/bin/coredns ]; then
 	echo ".:53 {"  > /etc/Corefile
 	for i in $dns ; do
 		echo "  proxy . ${i}:53" >> /etc/Corefile
+		echo "  cache 60" >> /etc/Corefile
 		echo "$(date) adding dns ${i} to Corefile" >> $DHCP_LOG
 	done
   #echo "  cache 10 bring.out.ba" >> /etc/Corefile # cache only bring.out.ba
