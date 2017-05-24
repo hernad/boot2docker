@@ -29,6 +29,7 @@ if [ -f /opt/apps/green/bin/coredns ]; then
   echo "  errors $BOOT_DIR/log/coredns.log" >> /etc/Corefile
   echo "}" >> /etc/Corefile
 	dns="127.0.0.1" # redirecto to localhost dns server
+  COREDNS=1
 else
 	log_msg "no coredns in $PATH"
 fi
@@ -75,4 +76,5 @@ case "$1" in
 			;;
 	esac
 
+[ -n "$COREDNS" ] ; /etc/rc.d/dns
 exit 0
