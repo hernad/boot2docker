@@ -9,7 +9,7 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
 RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list
 RUN apt-get update -y
 
-ENV APPS_DIR=/opt/apps/green
+ENV APPS_DIR=/opt/apps/green CURL_OPTS="--retry 4 --speed-limit 500 --speed-time 30"
 ENV CPPFLAGS="-I${APPS_DIR}/include" CFLAGS="-I${APPS_DIR}/include" LDFLAGS="-L${APPS_DIR}/lib"
 
 # ================= ${APPS_DIR} =========================================================
@@ -233,6 +233,19 @@ RUN  curl -sLO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
       ./configure --prefix=${APPS_DIR} &&\
       make && make install
 
+
+RUN   curl $CURL_OPTS -sLO http://www.cipherdyne.org/fwknop/download/fwknop-2.6.9.tar.bz2 &&\
+      tar xf fwknop-*.tar.bz2 && rm fw*.bz2 && cd fwknop* &&\
+      ./configure --prefix=${APPS_DIR} &&\
+      make && make install
+
+
+RUN   curl $CURL_OPTS -sLO https://releases.hashicorp.com/vault/0.7.2/vault_0.7.2_linux_amd64.zip &&\
+      unzip vault*.zip && chmod +x vault && mv vault ${APPS_DIR}/bin/ && rm vault*zip
+
+
+RUN   curl $CURL_OPTS -sLO https://github.com/coredns/coredns/releases/download/v007/coredns_007_linux_x86_64.tgz &&\
+      tar xz coredns*tgz && chmod +x coredns && mv coredns ${APPS_DIR}/bin/ && rm coredns*tgz
 
 # ====================================== remove what we don't need  ==============================
 

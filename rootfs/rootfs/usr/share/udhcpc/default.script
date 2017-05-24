@@ -31,7 +31,6 @@ if which coredns ; then
   echo "  errors $BOOT_DIR/log/coredns.log" >> /etc/Corefile
   echo "}" >> /etc/Corefile
 	dns="127.0.01" # redirecto to localhost dns server
-	
 fi
 
 case "$1" in

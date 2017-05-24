@@ -48,7 +48,7 @@ export LOG_FILE
 
 
 log_msg() {
-  echo "$0 `date +'%Y%m%d %T'`: $1" >> $LOG_FILE
+  [ -f $LOG_FILE ] && echo "$0 `date +'%Y%m%d %T'`: $1" >> $LOG_FILE
   if [ -n "$2" ] ; then
      case "$2" in
        G) START="${GREEN}";;

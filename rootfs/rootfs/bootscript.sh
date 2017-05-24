@@ -272,5 +272,9 @@ then
 	log_msg "start serial console"
 	/sbin/getty -L 115200 ttyS0 vt100 & ## moramo pustiti da se bootscript.sh zavrsi
   #$ ps ax | grep init | grep -v grep
-  #  1 ?        Ss     0:05 /sbin/init
+  #  1 ?        Ss     0:05 /sbin/init << ok
+  #$ ps ax | grep  init
+  #  1 ?        Ss     0:07 /sbin/init
+  #166 ?        Ss     0:00 /bin/sh /etc/init.d/rcS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  #170 ?        S      0:00 /bin/busybox ash /etc/init.d/tc-config <<<< problematic
 fi
