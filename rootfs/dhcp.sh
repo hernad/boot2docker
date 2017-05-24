@@ -11,7 +11,7 @@ log_msg "dhcp - udhcpc start"
 
 if is_x3x50M4_server ; then
   # eth0, eth1, eth2 bonding
-  NETDEVICES="bond0 eth3" 
+  NETDEVICES="bond0 eth3"
   modprobe bonding
   ifconfig bond0 up
   ifconfig eth0 down
@@ -26,8 +26,8 @@ else
   NETDEVICES="$(awk -F: '/eth.:|tr.:/{print $1}' /proc/net/dev | sort 2>/dev/null)"
 fi
 
-
-HOSTNAME="$(/bin/hostname)"
+FQDN="$(/bin/hostname)"
+HOSTNAME="$(/bin/hostname -s)"
 log_msg "HOSTNAME: $HOSTNAME" M
 
 for DEVICE in $NETDEVICES; do
@@ -35,7 +35,9 @@ for DEVICE in $NETDEVICES; do
   if [ "$?" != 0 ]; then
     log_msg "Network device $DEVICE detected, DHCP broadcasting for IP"
     trap 2 3 11
-    /sbin/udhcpc -b -i $DEVICE -x hostname:$HOSTNAME \
+    /sbin/udhcpc -b -i $DEVICE \
+       --fqdn NAME:$FQDN \
+       -x hostname:$HOSTNAME \
        -s /usr/share/udhcpc/default.script \
        -p /var/run/udhcpc.$DEVICE.pid >/dev/null 2>&1 &
     trap "" 2 3 11

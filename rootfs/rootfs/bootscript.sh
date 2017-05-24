@@ -269,6 +269,8 @@ setup_symlinks_and_commands
 
 if ( ! is_vbox ) && cat /proc/cmdline | grep -q "console=ttyS0"
 then
-	log_msg "serial console"
-	/sbin/getty -L 115200 ttyS0 vt100
+	log_msg "start serial console"
+	/sbin/getty -L 115200 ttyS0 vt100 & ## moramo pustiti da se bootscript.sh zavrsi
+  #$ ps ax | grep init | grep -v grep
+  #  1 ?        Ss     0:05 /sbin/init
 fi
