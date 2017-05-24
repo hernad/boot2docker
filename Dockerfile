@@ -332,6 +332,7 @@ COPY rootfs/services/* $ROOTFS/etc/init.d/services/
 COPY rootfs/sethostname $ROOTFS/usr/bin/sethostname
 
 COPY rootfs/rcS $ROOTFS/etc/init.d/rcS
+COPY rootfs/rc.shutdown $ROOTFS/etc/init.d/rc.shutdown
 COPY rootfs/dhcp.sh $ROOTFS/etc/init.d/dhcp.sh
 COPY rootfs/busybox-aliases $ROOTFS/etc/init.d/busybox-aliases
 COPY rootfs/tc-functions $ROOTFS/etc/init.d/tc-functions

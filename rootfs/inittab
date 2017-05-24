@@ -3,7 +3,6 @@
 #
 ::sysinit:/etc/init.d/rcS
 ::restart:/etc/init.d/rc.shutdown
-::restart:/sbin/init
 ::ctrlaltdel:/sbin/reboot
 ::shutdown:/etc/init.d/rc.shutdown
 
