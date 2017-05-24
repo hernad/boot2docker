@@ -6,19 +6,20 @@ RUN echo "docker proxy: $DOCKER_PROXY" \
  && echo "Acquire::HTTP::Proxy \"http://$DOCKER_PROXY:3142\";" > /etc/apt/apt.conf.d/01proxy \
  && echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
 
+ENV APPS_DIR=/opt/apps/developer
 RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list
 RUN apt-get update -y
 
 # ================= /opt/apps/developer =========================================================
 
 RUN apt-get build-dep libpam-google-authenticator -y
-ENV CPPFLAGS="-I/opt/apps/developer/include" CFLAGS="-I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib"
+ENV CPPFLAGS="-I$APPS_DIR/include" CFLAGS="-I$APPS_DIR/include" LDFLAGS="-L$APPS_DIR/lib"
 
 
 RUN curl -L https://sourceforge.net/projects/pamtester/files/latest/download?source=typ_redirect > pamtester.tar.gz &&\
     ls -lh pamtester.tar.gz &&\
     tar xf pamtester.tar.gz && cd pamtester* &&\
-    ./configure CFLAGS="-I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
+    ./configure CFLAGS="-I$APPS_DIR/include" LDFLAGS="-L$APPS_DIR/lib" --prefix=$APPS_DIR &&\
     make &&\
     make install
 
@@ -28,7 +29,7 @@ ENV MAKE_VER=4.2.1
 #RUN apt-get build-dep make -y
 #RUN curl -s -LO http://ftp.gnu.org/gnu/make/make-${MAKE_VER}.tar.gz &&\
 #    tar xf make-${MAKE_VER}.tar.gz && cd make-${MAKE_VER} &&\
-#    ./configure CFLAGS=" -I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
+#    ./configure CFLAGS=" -I$APPS_DIR/include" LDFLAGS="-L$APPS_DIR/lib" --prefix=$APPS_DIR &&\
 #    make &&\
 #    make install
 
@@ -39,12 +40,12 @@ ENV MAKE_VER=4.2.1
 #    ./configure \
 #       --disable-multilib \
 #       --enable-languages=c,c++ \
-#       CFLAGS=" -I/opt/apps/developer/include" LDFLAGS="-L/opt/apps/developer/lib" --prefix=/opt/apps/developer &&\
+#       CFLAGS=" -I$APPS_DIR/include" LDFLAGS="-L$APPS_DIR/lib" --prefix=$APPS_DIR &&\
 #    make &&\
 #    make make install-strip
 
-# install -> /opt/apps/developer
-ENV ROOTFS=/opt/apps/developer
+# install -> $APPS_DIR
+ENV ROOTFS=$APPS_DIR
 
 ENV TCL_REPO_BASE=http://tinycorelinux.net/${TINYCORE_VER}/x86_64
 ENV TCZ_DEPS_DEVELOER  \
@@ -78,24 +79,30 @@ RUN for dep in $TCZ_DEPS_DEVELOER ; do \
     done
 
 
-RUN mkdir -p /opt/apps/developer/bin ;\
-    mkdir -p /opt/apps/developer/lib ;\
-    mkdir -p /opt/apps/developer/include ;\
-    mkdir -p /opt/apps/developer/share ;\
-        cp -av /opt/apps/developer/usr/local/bin/*      /opt/apps/developer/bin/ &&\
-        cp -av /opt/apps/developer/usr/local/lib/*      /opt/apps/developer/lib/ &&\
-        cp -av /opt/apps/developer/usr/local/include/*  /opt/apps/developer/include/ &&\
-        cp -av /opt/apps/developer/usr/local/share/*    /opt/apps/developer/share/ &&\
-        cp -av /opt/apps/developer/usr/lib/*            /opt/apps/developer/lib/ &&\
-        cp -av /opt/apps/developer/usr/include/*        /opt/apps/developer/include/ &&\
-        rm -rf /opt/apps/developer/usr/local &&\
-        rm -rf /opt/apps/developer/usr
+RUN mkdir -p $APPS_DIR/bin ;\
+    mkdir -p $APPS_DIR/lib ;\
+    mkdir -p $APPS_DIR/include ;\
+    mkdir -p $APPS_DIR/share ;\
+      # postgresql 9.6
+      mv $APPS_DIR/usr/local/pgsql96/bin/*  $APPS_DIR/bin &&\
+      mv $APPS_DIR/usr/local/pgsql96/lib/*  $APPS_DIR/lib &&\
+        cp -av $APPS_DIR/usr/local/bin/*      $APPS_DIR/bin/ &&\
+        cp -av $APPS_DIR/usr/local/lib/*      $APPS_DIR/lib/ &&\
+        cp -av $APPS_DIR/usr/local/include/*  $APPS_DIR/include/ &&\
+        cp -av $APPS_DIR/usr/local/share/*    $APPS_DIR/share/ &&\
+        cp -av $APPS_DIR/usr/lib/*            $APPS_DIR/lib/ &&\
+        cp -av $APPS_DIR/usr/include/*        $APPS_DIR/include/ &&\
+        rm -rf $APPS_DIR/usr/local &&\
+        rm -rf $APPS_DIR/usr
+
+
+
 
 # linux x86 includes
-RUN mkdir -p  /opt/apps/developer/include/linux/x86/include/ &&\
-    cp -av /usr/src/linux/arch/x86/include/* /opt/apps/developer/include/linux/x86/include/ &&\
-    mkdir -p /opt/apps/developer/include/linux/include/ &&\
-    cp -av /usr/src/linux/include/* /opt/apps/developer/include/linux/include/
+RUN mkdir -p  $APPS_DIR/include/linux/x86/include/ &&\
+    cp -av /usr/src/linux/arch/x86/include/* $APPS_DIR/include/linux/x86/include/ &&\
+    mkdir -p $APPS_DIR/include/linux/include/ &&\
+    cp -av /usr/src/linux/include/* $APPS_DIR/include/linux/include/
 
 
 # ================= /opt/apps/python2 =========================================================
@@ -114,26 +121,26 @@ RUN cd /opt/apps &&\
 RUN mv /usr/include /usr/include.orig
 
 #The uapi folder is supposed to contain the user space API of the kernel.
-ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/x86/include/generated -I/opt/apps/developer/include/linux/x86/include/uapi -I/opt/apps/developer/include/linux/x86/include/generated/uapi -I/opt/apps/developer/include/linux/include -I/opt/apps/developer/include/linux/include/uapi" \
-    CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I/opt/apps/developer/include -I/opt/apps/developer/include/linux/x86/include -I/opt/apps/developer/include/linux/x86/include/generated -I/opt/apps/developer/include/linux/x86/include/uapi  -I/opt/apps/developer/include/linux/x86/include/generated/uapi -I/opt/apps/developer/include/linux/include -I/opt/apps/developer/include/linux/include/uapi" \
-    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib"
+ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I$APPS_DIR/include -I$APPS_DIR/include/linux/x86/include -I$APPS_DIR/include/linux/x86/include/generated -I$APPS_DIR/include/linux/x86/include/uapi -I$APPS_DIR/include/linux/x86/include/generated/uapi -I$APPS_DIR/include/linux/include -I$APPS_DIR/include/linux/include/uapi" \
+    CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I$APPS_DIR/include -I$APPS_DIR/include/linux/x86/include -I$APPS_DIR/include/linux/x86/include/generated -I$APPS_DIR/include/linux/x86/include/uapi  -I$APPS_DIR/include/linux/x86/include/generated/uapi -I$APPS_DIR/include/linux/include -I$APPS_DIR/include/linux/include/uapi" \
+    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L$APPS_DIR/lib"
 
 # skloniti libc.so, libpthread.so prave probleme kod ansible builda u unutar docker sesije
 RUN mkdir /tmp/libs && \
-    mv /opt/apps/developer/lib/libpthread.* /opt/apps/developer/lib/libc.so  /opt/apps/developer/lib/libc.a /tmp/libs/
+    mv $APPS_DIR/lib/libpthread.* $APPS_DIR/lib/libc.so  $APPS_DIR/lib/libc.a /tmp/libs/
 
 
-#    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L/opt/apps/developer/lib -nodefaultlibs -Wl,-rpath,/rootfs/lib64 -Wl,-dynamic-linker,/rootfs/lib/lib64/libc-2.24.so -Wl,-dynamic-linker,/rootfs/lib64/libpthread-2.24.so"
+#    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L$APPS_DIR/lib -nodefaultlibs -Wl,-rpath,/rootfs/lib64 -Wl,-dynamic-linker,/rootfs/lib/lib64/libc-2.24.so -Wl,-dynamic-linker,/rootfs/lib64/libpthread-2.24.so"
 
 # ansible build dependencies libpthread.so.0
 #RUN cp -av /rootfs/lib/*so* /opt/apps/python2/lib/
 #RUN apt-get build-dep -y ansible
 
 ENV LD_LIBRARY_PATH="/opt/apps/python2/lib" PATH="/opt/apps/python2/bin:/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin"
-RUN pip install --install-option="--prefix=/opt/apps/developer" --no-cache-dir ansible
+RUN pip install --install-option="--prefix=$APPS_DIR" --no-cache-dir ansible
 
 # vrati libc, libpthread
-RUN cp -av /tmp/libs/*  /opt/apps/developer/lib/
+RUN cp -av /tmp/libs/*  $APPS_DIR/lib/
 
-COPY apps/developer/set_developer_envars.sh /opt/apps/developer/bin/
-RUN chmod +x /opt/apps/developer/bin/set_developer_envars.sh
+COPY apps/developer/set_developer_envars.sh $APPS_DIR/bin/
+RUN chmod +x $APPS_DIR/bin/set_developer_envars.sh
