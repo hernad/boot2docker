@@ -239,7 +239,7 @@ RUN  curl -sLO http://www.harding.motd.ca/autossh/autossh-1.4e.tgz &&\
 
 RUN   curl $CURL_OPTS -sLO http://www.cipherdyne.org/fwknop/download/fwknop-2.6.9.tar.bz2 &&\
       tar xf fwknop-*.tar.bz2 && rm fw*.bz2 && cd fwknop* &&\
-      ./configure --prefix=${APPS_DIR} &&\
+      ./configure CFLAGS="-I${APPS_DIR}/include" LDFLAGS="-L${APPS_DIR}/lib" --prefix=${APPS_DIR} &&\
       make && make install
 
 
