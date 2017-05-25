@@ -17,14 +17,16 @@ echo "command: $1 ==========  $(date) ========"  >> $DHCP_LOG
 #rootfs/usr/share/udhcpc/default.script
 # $router, $dns
 
-if [ -f /opt/apps/green/bin/coredns ]; then
+if [ -n "$dns" ] && [ -f /opt/apps/green/bin/coredns ]; then
 	# https://miek.nl/2016/April/20/caching-in-coredns/
 	echo ".:53 {"  > /etc/Corefile
+	PROXIES=" proxy ."
 	for i in $dns ; do
-		echo "  proxy . ${i}:53" >> /etc/Corefile
-		echo "  cache 60" >> /etc/Corefile
-		echo "$(date) adding dns ${i} to Corefile" >> $DHCP_LOG
+		PROXIES+=" ${i}:53"
+		#echo "$(date) adding proxy ${i} to Corefile" >> $DHCP_LOG
 	done
+	echo "$PROXY" >> /etc/Corefile
+	echo "  cache 60" >> /etc/Corefile
   #echo "  cache 10 bring.out.ba" >> /etc/Corefile # cache only bring.out.ba
   echo "  log $BOOT_DIR/log/coredns.log" >> /etc/Corefile
   echo "  errors $BOOT_DIR/log/coredns.err.log" >> /etc/Corefile
@@ -73,10 +75,10 @@ case "$1" in
 				echo "$(date) adding dns $i" >> $DHCP_LOG
 				echo adding dns $i
 				echo nameserver $i >> $RESOLV_CONF
-			done
-			;;
+		done
+		;;
 	esac
 
-#wait4internet okida dns
+#wait4internet okida /etc/rc
 #[ -n "${LOCAL_DNS}" ] && /etc/rc.d/dns &
 exit 0
