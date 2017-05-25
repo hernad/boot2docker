@@ -165,9 +165,9 @@ if grep -q '^docker:' /etc/passwd; then
 fi
 
 [ -d $BOOT_DIR/root ] || mkdir -p $BOOT_DIR/root
-[ -d /root ] && mv /root /root.orig
+[ -d /root ] && mv /root /tmp/
 ln -s $BOOT_DIR/root /root
-[ -d /root.orig ] && mv /root.orig/* /root/ && rm -rf /root.orig
+#[ -d /root.orig ] && mv /root.orig/* /root/ && rm -rf /root.orig # nema nista u /root
 
 echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 
