@@ -242,11 +242,15 @@ RUN   apt-get install -y flex bison && curl -sLO  http://www.tcpdump.org/release
       ./configure CFLAGS="-I${APPS_DIR}/include" LDFLAGS="-L${APPS_DIR}/lib" --prefix=${APPS_DIR} &&\
       make && make install
 
-RUN   curl $CURL_OPTS -sLO http://www.cipherdyne.org/fwknop/download/fwknop-2.6.9.tar.bz2 &&\
-      tar xf fwknop-*.tar.bz2 && rm fw*.bz2 && cd fwknop* &&\
+#RUN   curl $CURL_OPTS -sLO http://www.cipherdyne.org/fwknop/download/fwknop-2.6.9.tar.bz2 &&\
+#      tar xf fwknop-*.tar.bz2 && rm fw*.bz2 && cd fwknop* &&\
+RUN   apt-get -y install texinfo &&\
+      git clone https:// https://github.com/hernad/fwknop.git && cd fwknop &&\
+      sh autogen.sh &&\
       ./configure CFLAGS="-I${APPS_DIR}/include" LDFLAGS="-L${APPS_DIR}/lib" --prefix=${APPS_DIR} \
         --with-iptables=/usr/local/sbin/iptables --with-firewalld=no &&\
-      make && make install
+      make && make install &&\
+      cp iptables_delete_rules_by_ip.sh ${APPS_DIR}/bin/
 
 
 RUN   curl $CURL_OPTS -sLO https://releases.hashicorp.com/vault/0.7.2/vault_0.7.2_linux_amd64.zip &&\
@@ -287,7 +291,7 @@ RUN mkdir -p ${APPS_DIR}/bin ;\
     # rm locales except bs
     mkdir -p /tmp/locale && mv ${APPS_DIR}/share/locale/bs /tmp/locale/ && rm -rf ${APPS_DIR}/share/locale/* &&\
     mv /tmp/locale/bs ${APPS_DIR}/share/locale/ &&\
-    rm -f '${APPS_DIR}/share/]' 
+    rm -f '${APPS_DIR}/share/]'
 
 
 #RUN ls -ld ${APPS_DIR}/* ; ls -l ${APPS_DIR}/bin/ ; ls -l ${APPS_DIR}/lib/
