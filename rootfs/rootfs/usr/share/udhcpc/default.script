@@ -27,7 +27,7 @@ if [ -f /opt/apps/green/bin/coredns ]; then
 	done
   #echo "  cache 10 bring.out.ba" >> /etc/Corefile # cache only bring.out.ba
   echo "  log $BOOT_DIR/log/coredns.log" >> /etc/Corefile
-  echo "  errors $BOOT_DIR/log/coredns.log" >> /etc/Corefile
+  echo "  errors $BOOT_DIR/log/coredns.err.log" >> /etc/Corefile
   echo "}" >> /etc/Corefile
 	dns="127.0.0.1" # redirect to localhost dns server
   LOCAL_DNS=1

@@ -62,7 +62,7 @@ ENV TCZ_DEPS_DEVELOER  \
     libffi-dev libffi \
     openssl-dev \
     gmp gmp-dev \
-    postgresql-9.6-client readline6 postgresql-dev
+    postgresql-9.6-client readline6 ncurses5 postgresql-dev
 
 
 RUN for dep in $TCZ_DEPS_DEVELOER ; do \
