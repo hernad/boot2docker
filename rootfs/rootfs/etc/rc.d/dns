@@ -16,11 +16,11 @@ fi
 
 if echo -e > $BOOT_DIR/log/coredns.log ; then
   # $BOOT_DIR/log not writeable
-  sed -i -e 's/ log / #log/' /etc/Corefile
-  sed -i -e 's/ log / #log/' /etc/Corefile
+  sed -i -e 's/ log / #log /' /etc/Corefile
+  sed -i -e 's/ error / #error /' /etc/Corefile
 else
-  sed -i -e 's/ #log / log/' /etc/Corefile
-  sed -i -e 's/ #log / log/' /etc/Corefile
+  sed -i -e 's/ #log / log /' /etc/Corefile
+  sed -i -e 's/ #error / error /' /etc/Corefile
 fi
 
 log_msg "start coredns /etc/Corefile" M
