@@ -12,17 +12,18 @@ log_msg "dhcp - udhcpc start"
 NETDEVICES="$(awk -F: '/eth.:|tr.:/{print $1}' /proc/net/dev | sort 2>/dev/null)"
 
 if is_x3x50M4_server ; then
-  # eth0, eth1, eth2 bonding
-  NETDEVICES="bond0"
   modprobe bonding
   ifconfig eth0 down
   ifconfig eth1 down
   ifconfig eth2 down
   ifconfig eth3 down
   ifconfig bond0 up
+  # eth0, eth1, eth2 bonding
   for i in $NETDEVICES ; do
+     log_msg "+$i /sys/class/net/bond0/bonding/slaves"
      echo "+${i}" > /sys/class/net/bond0/bonding/slaves
   done
+  NETDEVICES="bond0"
   log_msg "x3x50M4_server bond0 `cat /sys/class/net/bond0/bonding/mode`" M
 
 else
