@@ -9,6 +9,8 @@ log_msg "dhcp - udhcpc start"
 
 /sbin/udevadm settle --timeout=5 # This waits until all devices have registered
 
+NETDEVICES="$(awk -F: '/eth.:|tr.:/{print $1}' /proc/net/dev | sort 2>/dev/null)"
+
 if is_x3x50M4_server ; then
   # eth0, eth1, eth2 bonding
   NETDEVICES="bond0"
@@ -18,7 +20,9 @@ if is_x3x50M4_server ; then
   ifconfig eth2 down
   ifconfig eth3 down
   ifconfig bond0 up
-  echo "+eth0 +eth1 +eth2 +eth3" > /sys/class/net/bond0/bonding/slaves
+  for i in $NETDEVICES ; do
+     echo "+${i}" > /sys/class/net/bond0/bonding/slaves
+  done
   log_msg "x3x50M4_server bond0 `cat /sys/class/net/bond0/bonding/mode`" M
 
 else

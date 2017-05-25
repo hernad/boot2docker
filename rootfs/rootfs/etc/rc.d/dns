@@ -14,5 +14,14 @@ if ps -ax | grep "coredns.*Corefile" | grep -v grep ; then
    killall coredns
 fi
 
+if echo -e > $BOOT_DIR/log/coredns.log ; then
+  # $BOOT_DIR/log not writeable
+  sed -i -e 's/ log / #log/' /etc/Corefile
+  sed -i -e 's/ log / #log/' /etc/Corefile
+else
+  sed -i -e 's/ #log / log/' /etc/Corefile
+  sed -i -e 's/ #log / log/' /etc/Corefile
+fi
+
 log_msg "start coredns /etc/Corefile" M
 /opt/apps/green/bin/coredns -conf /etc/Corefile &
