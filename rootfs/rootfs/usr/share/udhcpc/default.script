@@ -77,5 +77,6 @@ case "$1" in
 			;;
 	esac
 
-[ -n "${LOCAL_DNS}" ] && /etc/rc.d/dns &
+#wait4internet okida dns
+#[ -n "${LOCAL_DNS}" ] && /etc/rc.d/dns &
 exit 0

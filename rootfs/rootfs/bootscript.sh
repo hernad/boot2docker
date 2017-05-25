@@ -180,7 +180,6 @@ echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 /etc/rc.d/server_vultr
 /etc/rc.d/vbox_kernel
 /etc/rc.d/tce_postinstall
-/etc/rc.d/dns
 
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
    # http://manpages.ubuntu.com/manpages/trusty/man1/localedef.1.html
