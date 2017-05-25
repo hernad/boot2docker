@@ -286,8 +286,10 @@ wait4internet() {
 	until ping -c 1 www.google.ba >/dev/null 2>&1
 	do
       log_msg "$CNT ping www.google.ba ERROR" R
-		  [ $((CNT++)) -gt 60 ] && break || sleep 1
-      [ $CNT -eq 2 ] && /etc/rc.d/dns
+		  [ $((CNT++)) -gt 30 ] && break || sleep 2
+      if [ $CNT -eq 2 ] || [ $CNT -eq 4 ] ; then
+        /etc/rc.d/dns
+      fi
 	done
 }
 
