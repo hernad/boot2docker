@@ -10,7 +10,7 @@ if [ ! -f /etc/Corefile ] ; then
   exit 0
 fi
 
-if ps -ax | grep "coredns.*Corefile" | grep -v grep ; then
+if /bin/ps ax | grep "coredns.*Corefile" | grep -v grep ; then
    killall coredns
 fi
 
