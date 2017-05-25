@@ -1,6 +1,5 @@
-#!/bin/sh
-# The DHCP portion is now separated out, in order to not slow the boot down
-# only to wait for slow network cards
+#!/bin/bash
+
 . /etc/green_common
 
 sethostname
@@ -35,11 +34,16 @@ log_msg "HOSTNAME: $HOSTNAME" M
 for DEVICE in $NETDEVICES; do
   ifconfig $DEVICE | grep -q "inet addr"
   if [ "$?" != 0 ]; then
+    #-x hostname:bbox - option 12
+    #-x lease:3600 - option 51 (lease time)
+    #-x 0x3d:0100BEEFC0FFEE - option 61 (client id)
+
     log_msg "Network device $DEVICE detected, DHCP broadcasting for IP"
     trap 2 3 11
     /sbin/udhcpc -b -i $DEVICE \
        --fqdn $FQDN \
-       -x hostname:$HOSTNAME \
+       -x "hostname:$HOSTNAME" \
+       -x "lease:3600" \ # 60 min
        -s /usr/share/udhcpc/default.script \
        -p /var/run/udhcpc.$DEVICE.pid >/dev/null 2>&1 &
     trap "" 2 3 11
