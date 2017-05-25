@@ -26,8 +26,6 @@ if is_x3x50M4_server ; then
   NETDEVICES="bond0"
   log_msg "x3x50M4_server bond0 `cat /sys/class/net/bond0/bonding/mode`" M
 
-else
-  NETDEVICES="$(awk -F: '/eth.:|tr.:/{print $1}' /proc/net/dev | sort 2>/dev/null)"
 fi
 
 FQDN="$(/bin/hostname)"
