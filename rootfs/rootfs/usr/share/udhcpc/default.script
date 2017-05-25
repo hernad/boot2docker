@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 . /etc/green_common
 
 # udhcpc script edited by Tim Riker <Tim@Rikers.org>
