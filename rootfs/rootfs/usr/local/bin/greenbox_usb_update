@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. /etc/green_common
+
 # https://github.com/bjasko/docker_scripts/blob/master/greenbox_usb_update
 
 if [ $# -lt 1 ]
