@@ -174,6 +174,35 @@ RUN for dep in $TCZ_DEPS_BLUE ; do \
     done
 
 
+
+# === python2 app install ===
+
+RUN cd /opt/apps &&\
+    curl -sLO https://dl.bintray.com/hernad/greenbox/python2_2.7.13.tar.xz &&\
+    tar xf python2_2.7.13.tar.xz && rm python2_2.7.13.tar.xz
+
+RUN cd /opt/apps &&\
+    curl -sLO https://dl.bintray.com/hernad/greenbox/green_4.1.2.tar.xz &&\
+    tar xf green_4.1.2.tar.xz && rm green_4.1.2.tar.xz
+
+RUN mv /usr/include /usr/include.orig
+
+#The uapi folder is supposed to contain the user space API of the kernel.
+ENV CPPFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I$APPS_DIR/include -I$APPS_DIR/include/linux/x86/include -I$APPS_DIR/include/linux/x86/include/generated -I$APPS_DIR/include/linux/x86/include/uapi -I$APPS_DIR/include/linux/x86/include/generated/uapi -I$APPS_DIR/include/linux/include -I$APPS_DIR/include/linux/include/uapi" \
+    CFLAGS="-I/opt/apps/green/include -I/opt/apps/python2/include -I$APPS_DIR/include -I$APPS_DIR/include/linux/x86/include -I$APPS_DIR/include/linux/x86/include/generated -I$APPS_DIR/include/linux/x86/include/uapi  -I$APPS_DIR/include/linux/x86/include/generated/uapi -I$APPS_DIR/include/linux/include -I$APPS_DIR/include/linux/include/uapi" \
+    LDFLAGS="-L/opt/apps/green/lib -L/opt/apps/python2/lib -L$APPS_DIR/lib"
+
+# skloniti libc.so, libpthread.so prave probleme kod ansible builda u unutar docker sesije
+# RUN mkdir /tmp/libs && \
+#    mv $APPS_DIR/lib/libpthread.* $APPS_DIR/lib/libc.so  $APPS_DIR/lib/libc.a /tmp/libs/
+
+ENV LD_LIBRARY_PATH="/opt/apps/python2/lib" PATH="/opt/apps/python2/bin:/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin"
+RUN pip install --install-option="--prefix=$APPS_DIR" --no-cache-dir speedtest-cli
+
+# vrati libc, libpthread
+# RUN cp -av /tmp/libs/*  $APPS_DIR/lib/
+
+
 # ====================================== remove what we don't need  ==============================
 
 RUN mkdir -p ${APPS_DIR}/bin ;\

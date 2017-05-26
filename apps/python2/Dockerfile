@@ -53,3 +53,4 @@ RUN    rm  -rf /opt/apps/python2/lib/python2.7/test /opt/apps/python2/lib/python
 # developer packages (ansible)
 # http://stackoverflow.com/questions/7901373/configuring-python-to-use-additional-locations-for-site-packages
 RUN   echo "/opt/apps/developer/lib/python2.7/site-packages" > /opt/apps/python2/lib/python2.7/site-packages/usrlocal.pth
+RUN   echo "/opt/apps/blue/lib/python2.7/site-packages" >> /opt/apps/python2/lib/python2.7/site-packages/usrlocal.pth
