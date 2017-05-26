@@ -160,13 +160,16 @@ RUN  cd ${APPS_DIR}/bin &&  curl -sLO https://raw.githubusercontent.com/jpetazzo
 #    mv dbxcli-linux-amd64 ${APPS_DIR}/bin/dbxcli && chmod +x ${APPS_DIR}/bin/dbxcli
 
 
-RUN  curl -sLO https://github.com/ncw/rclone/releases/download/v1.36/rclone-v1.36-linux-amd64.zip &&\
+RUN  curl $CURL_OPTS -sLO https://github.com/ncw/rclone/releases/download/v1.36/rclone-v1.36-linux-amd64.zip &&\
      unzip rclone-v*-linux-amd64.zip &&\
      chmod +x rclone-*linux-amd64/rclone &&\
      mv rclone*-linux-amd64/rclone ${APPS_DIR}/bin/
 
+RUN  curl $CURL_OPTS -sLO https://dl.minio.io/client/mc/release/linux-amd64/mc &&\
+     chmod +x mc && mv ${APPS_DIR}/bin/
+
 ENV FRP_VER 0.9.3
-RUN  curl -sLO https://github.com/fatedier/frp/releases/download/v${FRP_VER}/frp_${FRP_VER}_linux_amd64.tar.gz &&\
+RUN  curl $CURL_OPTS -sLO https://github.com/fatedier/frp/releases/download/v${FRP_VER}/frp_${FRP_VER}_linux_amd64.tar.gz &&\
      tar xf frp*.tar.gz &&\
      cd frp_*linux_amd64/ &&\
      chmod +x frps frpc &&\
