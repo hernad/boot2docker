@@ -175,6 +175,12 @@ RUN for dep in $TCZ_DEPS_BLUE ; do \
 
 
 
+RUN apt-get -y install cmake &&\
+        git clone https://github.com/draios/sysdig.git && cd sysdig &&\
+        mkdir build && cd build &&\
+        cmake -DCMAKE_INSTALL_PREFIX:PATH=${APPS_DIR} ..  &&\
+        make && make install
+
 # === python2 app install ===
 
 RUN cd /opt/apps &&\
@@ -202,12 +208,6 @@ RUN pip install --install-option="--prefix=$APPS_DIR" --no-cache-dir speedtest-c
 # vrati libc, libpthread
 # RUN cp -av /tmp/libs/*  $APPS_DIR/lib/
 
-
-RUN apt-get -y install cmake &&\
-    git clone https://github.com/draios/sysdig.git && cd sysdig &&\
-    mkdir build && cd build &&\
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=${APPS_DIR} ..  &&\
-    make && make install
 
 
 # ====================================== remove what we don't need  ==============================
