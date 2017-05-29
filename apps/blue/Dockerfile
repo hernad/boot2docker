@@ -174,7 +174,7 @@ RUN for dep in $TCZ_DEPS_BLUE ; do \
     done
 
 
-
+ENV PATH="/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin"
 RUN apt-get -y install cmake &&\
         git clone https://github.com/draios/sysdig.git && cd sysdig &&\
         mkdir build && cd build &&\
