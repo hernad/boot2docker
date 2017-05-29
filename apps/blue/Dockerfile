@@ -182,11 +182,11 @@ RUN apt-get -y install cmake &&\
         mkdir build && cd build &&\
         cmake -DCMAKE_INSTALL_PREFIX=${APPS_DIR} ..
 
-RUN     cd /sysdig/build &&\
-        make &&\
-        echo "================= make end ====================" &&\
-        make install &&\
-        cp driver/sysdig-probe.ko {APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND &&\
+#RUN     cd /sysdig/build &&\
+#        make &&\
+#        echo "================= make end ====================" &&\
+#        make install &&\
+#        cp driver/sysdig-probe.ko {APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND &&\
 
 
 # === python2 app install ===
