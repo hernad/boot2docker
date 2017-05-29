@@ -176,13 +176,14 @@ RUN for dep in $TCZ_DEPS_BLUE ; do \
 
 ENV PATH="/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin"
 RUN apt-get -y install cmake &&\
+        mkdir -p /lib/modules/$(uname -r)/build &&\
+        mkdir -p ${APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND &&\
         git clone https://github.com/draios/sysdig.git && cd sysdig &&\
         mkdir build && cd build &&\
-        mkdir -p ${APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND &&\
         cmake -DCMAKE_INSTALL_PREFIX:PATH=${APPS_DIR} ..  &&\
         make &&\
         cp driver/sysdig-probe.ko {APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND &&\
-        make MODULE_DIR=${APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND install
+        make install
 
 # === python2 app install ===
 
