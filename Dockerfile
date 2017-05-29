@@ -196,6 +196,7 @@ RUN  apt-get build-dep -y lshw &&\
      make && make DESTDIR=$ROOTFS install
 
 
+ENV KERNELDIR=/usr/src/linux
 # VirtualBox install kernel drivers
 #RUN echo ignoring depmod -a errors
 RUN cd /opt/VirtualBox/src/vboxhost && KERN_DIR=$LINUX_KERNEL_SOURCE make MODULE_DIR=$ROOTFS/lib/modules/$KERNEL_VERSION-$LINUX_BRAND/extra/vbox install || true
