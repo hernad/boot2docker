@@ -173,8 +173,9 @@ RUN for dep in $TCZ_DEPS_BLUE ; do \
             fi ;\
     done
 
+ENV KERNELDIR=/usr/src/linux KERNEL_VERSION=$(cat KERNEL_VERSION)
 
-ENV PATH="/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin" KERNELDIR=/usr/src/linux
+ENV PATH="/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin"
 RUN apt-get -y install cmake &&\
         mkdir -p /lib/modules/$(uname -r)/build &&\
         mkdir -p ${APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND &&\
