@@ -236,5 +236,5 @@ RUN mkdir -p ${APPS_DIR}/bin ;\
         rm -rf ${APPS_DIR}/usr ${APPS_DIR}/var &&\
         rm -rf ${APPS_DIR}/share/gnupg/*.txt ; rm -rf ${APPS_DIR}/share/gitweb  ${APPS_DIR}/share/pixmaps &&\
         rm -rf ${APPS_DIR}/share/locale/* &&\
-        rm -f '${APPS_DIR}/share/]' &&\
-        rm '${APPS_DIR}/bin/['
+        rm -f "${APPS_DIR}/share/]" &&\
+        rm -f "${APPS_DIR}/bin/["
