@@ -183,7 +183,7 @@ RUN apt-get -y install cmake &&\
         cmake -DCMAKE_INSTALL_PREFIX=${APPS_DIR} .. &&\
         make &&\
         make install &&\
-        cp driver/sysdig-probe.ko {APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND
+        cp driver/sysdig-probe.ko ${APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND
 
 
 # === python2 app install ===
