@@ -180,13 +180,10 @@ RUN apt-get -y install cmake &&\
         mkdir -p ${APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND &&\
         git clone https://github.com/draios/sysdig.git && cd sysdig &&\
         mkdir build && cd build &&\
-        cmake -DCMAKE_INSTALL_PREFIX=${APPS_DIR} ..
-
-#RUN     cd /sysdig/build &&\
-#        make &&\
-#        echo "================= make end ====================" &&\
-#        make install &&\
-#        cp driver/sysdig-probe.ko {APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND &&\
+        cmake -DCMAKE_INSTALL_PREFIX=${APPS_DIR} .. &&\
+        make &&\
+        make install &&\
+        cp driver/sysdig-probe.ko {APPS_DIR}/kernel/modules/$KERNEL_VERSION-$LINUX_BRAND
 
 
 # === python2 app install ===
@@ -239,4 +236,5 @@ RUN mkdir -p ${APPS_DIR}/bin ;\
         rm -rf ${APPS_DIR}/usr ${APPS_DIR}/var &&\
         rm -rf ${APPS_DIR}/share/gnupg/*.txt ; rm -rf ${APPS_DIR}/share/gitweb  ${APPS_DIR}/share/pixmaps &&\
         rm -rf ${APPS_DIR}/share/locale/* &&\
-        rm -f '${APPS_DIR}/share/]'
+        rm -f '${APPS_DIR}/share/]' &&\
+        rm '${APPS_DIR}/bin/['
