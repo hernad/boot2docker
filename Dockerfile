@@ -56,7 +56,7 @@ COPY kernel_config $LINUX_KERNEL_SOURCE/.config
 RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.config && \
     jobs=$(nproc) && \
     cd $LINUX_KERNEL_SOURCE && \
-    make -j ${jobs} oldconfig && \
+    make -j ${jobs} olddefconfig && \
     make -j ${jobs} bzImage && \
     make -j ${jobs} modules
 
