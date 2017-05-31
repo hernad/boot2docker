@@ -90,7 +90,10 @@ do
 	 rm ${app}_${APP_VERSION}.tar.xz
 	 rm -rf ${app}
          docker rmi -f greenbox_app_${app}:$APP_VERSION
-         docker build $DOCKER_BUILD_OPTS --build-arg DOCKER_PROXY=$DOCKER_PROXY -t greenbox_app_${app}:$APP_VERSION -f apps/${app}/Dockerfile . &&\
+         docker build $DOCKER_BUILD_OPTS \
+               --build-arg DOCKER_PROXY=$DOCKER_PROXY \
+               --build-arg KERNEL_VERSION=$KERNEL_VERSION \
+               -t greenbox_app_${app}:$APP_VERSION -f apps/${app}/Dockerfile . &&\
          docker tag greenbox_app_${app}:$APP_VERSION greenbox_app_${app}:latest
          docker images greenbox_app_${app} | awk '{ print  $2 } ' | grep $APP_VERSION
          ret=$?

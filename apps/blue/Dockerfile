@@ -1,6 +1,7 @@
 FROM greenbox:for_apps
 
 ARG DOCKER_PROXY=172.17.0.4
+ARG KERNEL_VERSION=4.11.3
 
 RUN echo "docker proxy: $DOCKER_PROXY" \
  && echo "Acquire::HTTP::Proxy \"http://$DOCKER_PROXY:3142\";" > /etc/apt/apt.conf.d/01proxy \
@@ -173,7 +174,7 @@ RUN for dep in $TCZ_DEPS_BLUE ; do \
             fi ;\
     done
 
-ENV KERNELDIR=/usr/src/linux KERNEL_VERSION=$(cat KERNEL_VERSION)
+ENV KERNELDIR=/usr/src/linux
 
 ENV PATH="/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin"
 RUN apt-get -y install cmake &&\
