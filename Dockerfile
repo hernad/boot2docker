@@ -51,6 +51,7 @@ RUN mkdir -p /usr/src && \
     curl $CURL_OPTS -s https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
     mv /linux-$KERNEL_VERSION_DOWNLOAD $LINUX_KERNEL_SOURCE
 
+# https://stackoverflow.com/questions/28949109/make-oldconfig-overwriting-value-in-config
 # kernel_config.xz - kernel compress xz, .lzo4 - lzo4 compress
 COPY kernel_config.lzo4 $LINUX_KERNEL_SOURCE/.config
 
