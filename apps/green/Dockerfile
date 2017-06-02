@@ -168,7 +168,7 @@ RUN  curl $CURL_OPTS -sLO https://github.com/ncw/rclone/releases/download/v1.36/
 RUN  curl $CURL_OPTS -sLO https://dl.minio.io/client/mc/release/linux-amd64/mc &&\
      chmod +x mc && mv mc ${APPS_DIR}/bin/
 
-ENV FRP_VER 0.9.3
+ENV FRP_VER 0.11.0
 RUN  curl $CURL_OPTS -sLO https://github.com/fatedier/frp/releases/download/v${FRP_VER}/frp_${FRP_VER}_linux_amd64.tar.gz &&\
      tar xf frp*.tar.gz &&\
      cd frp_*linux_amd64/ &&\
