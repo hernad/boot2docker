@@ -6,7 +6,7 @@
 
 log_msg "syslog-ng service start 514 tcp/udp" B
 
-. /etc/green_service_common
+. /etc/green_docker_service_common
 
 docker rm -f syslog
 
@@ -24,7 +24,7 @@ docker run -d \
 [ -e /var/log/syslog ] || ln -s $BOOT_DIR/syslog /var/log/syslog
 
 echo forwarding  /dev/log -> 127.0.0.1:514
-rm /dev/log
+[ -e /dev/log ] && rm /dev/log
 
 SOCAT_PID=`ps ax | grep "socat.*/dev/log" | grep -v grep | awk '{print $1}'`
 
