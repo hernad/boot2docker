@@ -1,11 +1,13 @@
 #!/bin/bash
 . /etc/green_common
 
+COREFILE=/etc/dns/Corefile
+
 if [ ! -f /opt/apps/green/bin/coredns ] ; then
   log_msg "no coredns execute" R
   exit 0
 fi
-if [ ! -f /etc/Corefile ] ; then
+if [ ! -f $COREFILE ] ; then
   log_msg "no coredns config" R
   exit 0
 fi
@@ -16,12 +18,12 @@ fi
 
 if ! touch $BOOT_DIR/log/coredns.log ; then
   # $BOOT_DIR/log not writeable
-  sed -i -e 's/ log / #log /' /etc/Corefile
-  sed -i -e 's/ errors / #errors /' /etc/Corefile
+  sed -i -e 's/ log / #log /' $COREFILE
+  sed -i -e 's/ errors / #errors /' $COREFILE
 else
-  sed -i -e 's/ #log / log /' /etc/Corefile
-  sed -i -e 's/ #errors / errors /' /etc/Corefile
+  sed -i -e 's/ #log / log /' $COREFILE
+  sed -i -e 's/ #errors / errors /' $COREFILE
 fi
 
 log_msg "start coredns /etc/Corefile" M
-/opt/apps/green/bin/coredns -conf /etc/Corefile &
+/opt/apps/green/bin/coredns -conf $COREFILE &

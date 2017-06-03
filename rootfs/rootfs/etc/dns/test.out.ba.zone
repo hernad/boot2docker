@@ -13,16 +13,17 @@ $TTL 600
                         4H        ; retry
                         4W        ; expire
                         1D )      ; minimum
-; start.test.out.ba serves this domain as both the
+; test.out.ba serves this domain as both the
 ; name server (NS) and mail exchange (MX)
-                NS      start
-                MX      10 start
+                A       127.0.0.1
+                NS      @
+                MX      10 @
 ; define domain functions with CNAMEs
-www             CNAME   start
+www             CNAME   @
 
 ; just in case someone asks for localhost.test.out.ba
 localhost       A       127.0.0.1
 
 ; our hostnames, in alphabetical order
-start           A       127.0.0.1
+greenbox        A       127.0.0.1
 *               A       127.0.0.1
