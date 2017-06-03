@@ -3,6 +3,7 @@
 DOWNLOAD_URL=http://download.bring.out.ba
 
 GREENBOX_VERSION=${1:-4.6.3}
+BRIDGE_ADAPTER=${BRIDGE_ADAPTER:-en0}
 
 GREENBOX_ISO=greenbox-${GREENBOX_VERSION}.iso
 VBOX_NAME=greenbox-test
@@ -55,6 +56,16 @@ then
         --nictype1 virtio \
         --cableconnected1 on
 
+  VBoxManage modifyvm $VBOX_NAME \
+	--nic2 bridged \
+        --nictype2 virtio \
+        --bridgeadapter2 $BRIDGE_ADAPTER \
+        --nicpromisc2 allow-all \
+        --cableconnected2 on
+
+  #VBoxManage modifyvm foo1 --nic2 bridged --nictype2 82540EM --bridgeadapter1 'eth0' 
+
+ 
   VBoxManage storagectl $VBOX_NAME \
 	--name  SATA \
 	--add sata \

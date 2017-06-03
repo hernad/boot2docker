@@ -6,8 +6,6 @@ if [ -z "$FIREWALL" ] ; then
    exit 0
 fi
 
-INTERFACE=bond0
-
 # https://strongarm.io/blog/linux-stateless-firewall/
 
 iptables -F INPUT
@@ -75,6 +73,8 @@ if ! which fwknop || [ -z "$FIREWALL_FWKNOP" ] ; then
    exit 0
 fi
 
+INTERFACE=$FIREWALL_FWKNOP
+
 killall fwknopd
 killall fwknopd
 
@@ -98,6 +98,8 @@ REQUIRE_USERNAME           greenbox
 FW_ACCESS_TIMEOUT          30
 EOF
 fwknop -k -s >> $FILE
+
+chmod 0600 $BOOT_DIR/etc/fwknop/*.conf
 
 fi
 
