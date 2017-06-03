@@ -27,8 +27,9 @@ iptables -A INPUT  -i lo -j ACCEPT
 iptables -A OUTPUT -o lo -j ACCEPT
 
 iptables -A INPUT -p icmp --icmp-type destination-unreachable -j ACCEPT # icmp routing messages
-iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
-iptables -A OUTPUT -p icmp --icmp-type echo-reply -j ACCEPT
+#iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
+iptables -A OUTPUT -p icmp -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
 
 # Allow remote ssh and http access
 iptables -I INPUT -p tcp --dport 22 -j ACCEPT # ssh
@@ -81,7 +82,7 @@ killall fwknopd
 
 FILE=$BOOT_DIR/etc/fwknop/fwknopd.conf
 
-if [ -f $FILE ] ; then
+if [ ! -f $FILE ] ; then
 
 cat > $FILE <<EOF
 FWKNOP_CONF_DIR    $BOOT_DIR/etc/fwknop;
@@ -91,7 +92,7 @@ EOF
 FILE=$BOOT_DIR/etc/fwknop/access.conf
 cat > $FILE <<EOF
 SOURCE                     ANY
-OPEN_PORTS                 tcp/22, tcp/80, udp/53, tcp/53
+OPEN_PORTS                 tcp/22,tcp/80,udp/53,tcp/53
 REQUIRE_SOURCE_ADDRESS     Y
 REQUIRE_USERNAME           greenbox
 FW_ACCESS_TIMEOUT          30
@@ -100,4 +101,6 @@ fwknop -k -s >> $FILE
 
 fi
 
-fwknopd -i $INTERFACE --config-file $BOOT_DIR/etc/fwknop/fwknopd.conf
+fwknopd -i $INTERFACE \
+   --config-file $BOOT_DIR/etc/fwknop/fwknopd.conf \
+   --access-file $BOOT_DIR/etc/fwknop/access.conf
