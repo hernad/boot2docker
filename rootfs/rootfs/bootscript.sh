@@ -181,7 +181,7 @@ echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 /etc/rc.d/vbox_kernel
 /etc/rc.d/tce_postinstall
 /etc/rc.d/firewall
-/etc/rc.d/syslog
+/etc/rc.d/syslog &
 
 
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
