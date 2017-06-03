@@ -213,7 +213,8 @@ ENV TCZ_DEPS_GREEN  \
                     parted liblvm2 \
                     procps \
                     bind-utilities libxml2 \
-                    fuse libffi
+                    fuse libffi \
+                    socat readline
                     #fwknop
                     #libpcap
 

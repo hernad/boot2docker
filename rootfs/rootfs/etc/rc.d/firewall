@@ -75,8 +75,8 @@ fi
 
 INTERFACE=$FIREWALL_FWKNOP
 
-killall fwknopd
-killall fwknopd
+fwknopd --kill
+
 
 [ -d $BOOT_DIR/etc/fwknop ] || mkdir $BOOT_DIR/etc/fwknop
 
