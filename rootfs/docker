@@ -45,13 +45,6 @@ fi
 
 DOCKER_PID=/var/run/docker.pid
 
-#PATH=:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/docker/bin
-
-if [ ! -e $BOOT_DIR/etc/profile ]
-then
-  echo "# put envars  e.g. GREEN_APPS, HTTP_PROXY, HTTPS_PROXY, DOCKER_OPTS, DOCKER_STORAGE, DOCKER_LOGFILE, CERT_INTERFACES, CERT_DIR" > $BOOT_DIR/etc/profile
-fi
-
 . $BOOT_DIR/etc/profile
 
 : ${DOCKER_HOST:='-H tcp://0.0.0.0:2376'}

@@ -1,0 +1,35 @@
+#!/bin/bash
+
+. /etc/green_common
+
+[ -z "PROXY" ] && exit 0
+
+log_msg "start squid/squidGuard proxy"
+
+[ -d $BOOT_DIR/proxy ] || mkdir $BOOT_DIR/proxy
+
+cd $BOOT_DIR/proxy
+
+if [ ! -f shallalist.tar.gz ] ; then
+   curl $CURL_OPTS -LO http://www.shallalist.de/Downloads/shallalist.tar.gz
+   tar xf shallalist.tar.gz
+fi
+
+docker rm -f proxy
+
+#-e UPDATE_BLACKLIST_URL=http://www.shallalist.de/Downloads/shallalist.tar.gz \
+#	-e WPAD_IP=192.168.168.101 \
+#	-e WPAD_NOPROXY_NET=192.168.168.0 \
+# -e WPAD_NOPROXY_MASK=255.255.255.0 \
+
+#--publish 80:80 \
+docker run --name proxy \
+    -d \
+	  --restart=always \
+    -e SQUID_CONFIG_SOURCE=/custom-config \
+    --volume /etc/proxy:/custom-config \
+    --volume $BOOT_DIR/proxy/cache:/var/spool/squid3 \
+    --volume $BOOT_DIR/proxy/BL:/var/lib/squidguard/db/BL \
+    --volume $BOOT_DIR/proxy/squid.conf:/etc/squid3/squid.conf \
+    --publish 3128:3128 \
+    muenchhausen/docker-squidguard:latest

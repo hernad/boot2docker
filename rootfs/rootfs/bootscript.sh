@@ -181,8 +181,6 @@ echo "${GREEN}KERNEL cmdline:${NORMAL}  `cat /proc/cmdline`"
 /etc/rc.d/vbox_kernel
 /etc/rc.d/tce_postinstall
 /etc/rc.d/firewall
-/etc/rc.d/syslog &
-
 
 if [ ! -f $BOOT_DIR/locale/locale-archive ] ; then
    # http://manpages.ubuntu.com/manpages/trusty/man1/localedef.1.html
@@ -211,6 +209,18 @@ fi
 [ -L /usr/lib/locale ] || ln -s $BOOT_DIR/locale /usr/lib/locale
 [ -L /usr/share/i18n ] || ln -s $BOOT_DIR/locale/i18n /usr/share/i18n
 
+if [ ! -e $BOOT_DIR/etc/profile ] ; then
+  cat > $BOOT_DIR/etc/profile <<EOF
+# put envars  e.g. GREEN_APPS, HTTP_PROXY, HTTPS_PROXY, DOCKER_OPTS, DOCKER_STORAGE, DOCKER_LOGFILE, CERT_INTERFACES, CERT_DIR
+# DOCKER_STORAGE=zfs
+# DOCKER_DIR=green/docker
+# SYSLOG=1
+# FIREWALL=1
+# FIREWALL_FWKNOP=bond0  # fwknop listen interface
+# PROXY=1
+EOF
+fi
+
 mount_all_apps
 ldcache_update
 vbox_fix_permissions
@@ -222,6 +232,8 @@ if [ -d /opt/apps ] && [ ! -f /opt/apps/docker/VERSION ] ; then
 fi
 
 /etc/init.d/docker start
+/etc/rc.d/syslog &
+/etc/rc.d/proxy &
 /etc/rc.d/opt_boot_init_d_scripts &
 
 log_msg "$BOOT_DIR/bootlocal.sh - run local customization commands"
@@ -246,6 +258,7 @@ sed -i  's/^\(tc.*\)\/bin\/sh$/\1\/bin\/false/'  $BOOT_DIR/etc/passwd # disable_
 #[ -f $BOOT_DIR/etc/sysconfig/docker ] || mv /etc/sysconfig/docker $BOOT_DIR/etc/sysconfig/ # permanent docker version
 #[ -f /etc/sysconfig/docker ] && rm /etc/sysconfig/docker
 #ln -s $BOOT_DIR/etc/sysconfig/docker /etc/sysconfig/docker
+
 
 # setup logrotate.conf
 [ -f $BOOT_DIR/etc/logrotate.conf ] || cat > $BOOT_DIR/etc/logrotate.conf <<- EOF

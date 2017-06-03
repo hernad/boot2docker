@@ -2,6 +2,7 @@
 
 . /etc/green_common
 
+log_msg "iptables firewall start" B
 if [ -z "$FIREWALL" ] ; then
    exit 0
 fi
@@ -74,10 +75,11 @@ if ! which fwknop || [ -z "$FIREWALL_FWKNOP" ] ; then
    exit 0
 fi
 
+
 INTERFACE=$FIREWALL_FWKNOP
+log_msg "iptables firewall/fwknop start on $INTERFACE" B
 
 fwknopd --kill
-
 
 [ -d $BOOT_DIR/etc/fwknop ] || mkdir $BOOT_DIR/etc/fwknop
 
