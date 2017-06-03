@@ -25,3 +25,4 @@ localhost       A       127.0.0.1
 
 ; our hostnames, in alphabetical order
 start           A       127.0.0.1
+*               A       127.0.0.1

@@ -16,21 +16,26 @@ echo "command: $1 ==========  $(date) ========"  >> $DHCP_LOG
 
 #rootfs/usr/share/udhcpc/default.script
 # $router, $dns
+COREFILE=/etc/Corefile
 
 if [ -n "$dns" ] && [ -f /opt/apps/green/bin/coredns ]; then
 	# https://miek.nl/2016/April/20/caching-in-coredns/
-	echo ".:53 {"  > /etc/Corefile
+	echo ".:53 {"  > $COREFILE
 	PROXIES=" proxy ." # e.g. proxy . 8.8.8.8:53 8.8.4.4:53
 	for i in $dns ; do
 		PROXIES+=" ${i}:53"
 		#echo "$(date) adding proxy ${i} to Corefile" >> $DHCP_LOG
 	done
-	echo "$PROXIES" >> /etc/Corefile
-	echo "  cache 60" >> /etc/Corefile
+	echo "$PROXIES" >> $COREFILE
+	echo "  cache 60" >> $COREFILE
   #echo "  cache 10 bring.out.ba" >> /etc/Corefile # cache only bring.out.ba
-  echo "  log $BOOT_DIR/log/coredns.log" >> /etc/Corefile
-  echo "  errors $BOOT_DIR/log/coredns.err.log" >> /etc/Corefile
-  echo "}" >> /etc/Corefile
+  echo "  log $BOOT_DIR/log/coredns.log" >> $COREFILE
+  echo "  errors $BOOT_DIR/log/coredns.err.log" >> $COREFILE
+  for z in test.out.ba localhost ; do
+	   echo "   file /etc/dns/$z.zone $z" >> $COREFILE
+  done
+
+  echo "}" >> $COREFILE
 	dns="127.0.0.1" # redirect to localhost dns server
   LOCAL_DNS=1
 else

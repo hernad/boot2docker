@@ -9,4 +9,5 @@ $ORIGIN localhost.
 			      3h ; minimum
 			     )
 @  1D  IN  NS @
+   1D  IN  MX 10 127.0.0.1
    1D  IN  A  127.0.0.1
