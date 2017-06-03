@@ -1,0 +1,88 @@
+#!/bin/bash
+
+. /etc/green_common
+
+if [ -z "$FIREWALL" ] ; then
+   exit 0
+fi
+
+INTERFACE=bond0
+
+# https://strongarm.io/blog/linux-stateless-firewall/
+
+# Stateless firewall!
+iptables -t raw -I PREROUTING -j NOTRACK
+iptables -t raw -I OUTPUT -j NOTRACK
+
+# Allow any established connections, dropping everything else
+iptables -A INPUT -p tcp \! --syn -j ACCEPT
+iptables -A OUTPUT -p tcp \! --syn -j ACCEPT
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+
+iptables -A INPUT -p icmp --icmp-type destination-unreachable -j ACCEPT # icmp routing messages
+
+# Allow remote ssh and http access
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT # ssh
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT # http
+
+# Allow DNS lookups to be initiated from this server
+iptables -A OUTPUT -p udp --dport 53 -j ACCEPT # dns
+iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT # dns
+iptables -A INPUT -p udp --sport 53 -j ACCEPT # dns responses
+
+
+#iptables -F
+
+#iptables -F INPUT
+#iptables --policy INPUT ACCEPT
+#iptables -I INPUT 1 -i $INTERFACE -p tcp --dport 22 -j DROP
+#iptables -I INPUT 1 -i $INTERFACE -p tcp --dport 22 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+#iptables -I INPUT 1 -i $INTERFACE -p udp --dport 53 -j DROP
+#iptables -I INPUT 1 -i $INTERFACE -p udp --dport 53 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+#iptables -I INPUT 1 -i $INTERFACE -p tcp --dport 53 -j DROP
+#iptables -I INPUT 1 -i $INTERFACE -p tcp --dport 53 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+#iptables -I INPUT 1 -i $INTERFACE -p tcp --dport 80 -j DROP
+#iptables -I INPUT 1 -i $INTERFACE -p tcp --dport 80 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+#iptables -F FORWARD
+#iptables --policy FORWARD ACCEPT
+
+#iptables --policy FORWARD DROP
+#iptables --policy FORWARD DROP
+#iptables -F DOCKER
+#iptables -I DOCKER 1 -i $INTERFACE -p tcp --dport 80 -j DROP
+#iptables -I DOCKER 1 -i $INTERFACE -p tcp --dport 80 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+if ! which fwknop || [ -z "FIREWALL_FWKNOP" ] ; then
+   exit 0
+fi
+
+
+killall fwknopd
+killall fwknopd
+
+[ -d $BOOT_DIR/etc/fwknop ] || mkdir $BOOT_DIR/etc/fwknop
+
+cat > $BOOTDIR/etc/fwknop/fwknopd.conf <<EOF
+FWKNOP_CONF_DIR    $BOOT_DIR/etc/fwknop;
+FIREWALL_EXE   /usr/local/sbin/iptables;
+EOF
+
+
+cat > $BOOT_DIR/etc/fwknop/access.conf <<EOF
+SOURCE                     ANY
+OPEN_PORTS                 tcp/22, tcp/80, udp/53, tcp/53
+REQUIRE_SOURCE_ADDRESS     Y
+REQUIRE_USERNAME           greenbox
+FW_ACCESS_TIMEOUT          30
+EOF
+#fwknop  -k
+#KEY_BASE64: QsdK51g2LFsxoLWVAVlp5wQ7mI/4SLjgK9ue9MKMUEk=
+#HMAC_KEY_BASE64: lap2FFxm8M+nZq8Hd5Va6Or+pkjAqFSuIpBcJiS4PUpi2e0MF5/E3DOcW028BqTrHh2XO3judJWmoqs2RusRig==
+fwknop -k >> $BOOT_DIR/etc/fwknop/access.conf
+
+fwknopd -i $INTERFACE --config-file $BOOT_DIR/etc/fwknop/fwknopd.conf
