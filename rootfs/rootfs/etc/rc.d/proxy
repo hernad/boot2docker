@@ -27,6 +27,7 @@ docker rm -f proxy
 
 docker run --name proxy \
     -d \
+    --network=net \
 	  --restart=always \
     -e SQUID_CONFIG_SOURCE=/custom-config \
     --volume /etc/proxy:/custom-config \

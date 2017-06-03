@@ -53,7 +53,7 @@ RUN mkdir -p /usr/src && \
 
 # https://stackoverflow.com/questions/28949109/make-oldconfig-overwriting-value-in-config
 # kernel_config.xz - kernel compress xz, .lzo4 - lzo4 compress
-COPY kernel_config.lzo4 $LINUX_KERNEL_SOURCE/.config
+COPY kernel_config.xz $LINUX_KERNEL_SOURCE/.config
 
 RUN sed -i 's/-LOCAL_LINUX_BRAND/'-"$LINUX_BRAND"'/' $LINUX_KERNEL_SOURCE/.config && \
     jobs=$(nproc) && \
