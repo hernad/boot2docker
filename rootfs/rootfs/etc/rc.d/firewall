@@ -100,7 +100,8 @@ REQUIRE_SOURCE_ADDRESS     N
 REQUIRE_USERNAME           greenbox
 FW_ACCESS_TIMEOUT          86400
 EOF
-fwknop -k -s >> $FILE
+fwknop # generate sample ~/.fwknoprc
+fwknop -k >> $FILE
 
 chmod 0600 $BOOT_DIR/etc/fwknop/*.conf
 
