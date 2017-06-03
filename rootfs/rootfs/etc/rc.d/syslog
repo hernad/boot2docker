@@ -1,0 +1,36 @@
+#!/bin/bash
+
+. /etc/green_common
+
+[ -z "$SYSLOG" ] && exit 0
+
+log_msg "syslog-ng service start 514 tcp/udp" B
+
+. /etc/green_service_common
+
+docker rm -f syslog
+
+docker run -d \
+  --restart=always \
+  --net=host \
+  --privileged \
+	--name syslog \
+  -p 514:514    \
+  -p 514:514/udp \
+	-v /etc/syslog-ng.conf:/etc/syslog-ng/syslog-ng.conf \
+	-v $BOOT_DIR/syslog:/var/log \
+  balabit/syslog-ng:latest
+
+[ -e /var/log/syslog ] || ln -s $BOOT_DIR/syslog /var/log/syslog
+
+echo forwarding  /dev/log -> 127.0.0.1:514
+rm /dev/log
+
+SOCAT_PID=`ps ax | grep "socat.*/dev/log" | grep -v grep | awk '{print $1}'`
+
+if [ -n "$SOCAT_PID" ] ; then
+   echo "killing socat: $SOCAT_PID"
+   kill $SOCAT_PID
+fi
+
+socat UNIX-LISTEN:/dev/log,reuseaddr,fork UDP:127.0.0.1:514 &

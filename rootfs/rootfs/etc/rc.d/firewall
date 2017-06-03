@@ -29,10 +29,11 @@ iptables -A INPUT -p icmp --icmp-type destination-unreachable -j ACCEPT # icmp r
 iptables -A OUTPUT -p icmp -j ACCEPT
 iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
 
-# Allow remote ssh and http access
-iptables -I INPUT -p tcp --dport 22 -j ACCEPT # ssh
-iptables -I INPUT -p tcp --dport 80 -j ACCEPT # http
-iptables -I INPUT -p tcp --dport 443 -j ACCEPT # https
+if [ -z "$FIREWALL_FWKNOP" ] ; then
+  iptables -I INPUT -p tcp --dport 22 -j ACCEPT # ssh
+  iptables -I INPUT -p tcp --dport 80 -j ACCEPT # http
+  iptables -I INPUT -p tcp --dport 443 -j ACCEPT # https
+fi
 
 iptables -I OUTPUT -p tcp --dport 22 -j ACCEPT # ssh
 iptables -I OUTPUT -p tcp --dport 80 -j ACCEPT # http
@@ -93,9 +94,9 @@ FILE=$BOOT_DIR/etc/fwknop/access.conf
 cat > $FILE <<EOF
 SOURCE                     ANY
 OPEN_PORTS                 tcp/22,tcp/80,udp/53,tcp/53
-REQUIRE_SOURCE_ADDRESS     Y
+REQUIRE_SOURCE_ADDRESS     N
 REQUIRE_USERNAME           greenbox
-FW_ACCESS_TIMEOUT          30
+FW_ACCESS_TIMEOUT          86400
 EOF
 fwknop -k -s >> $FILE
 
@@ -104,5 +105,6 @@ chmod 0600 $BOOT_DIR/etc/fwknop/*.conf
 fi
 
 fwknopd -i $INTERFACE \
+   --syslog-enable \
    --config-file $BOOT_DIR/etc/fwknop/fwknopd.conf \
    --access-file $BOOT_DIR/etc/fwknop/access.conf
