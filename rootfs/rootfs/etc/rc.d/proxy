@@ -15,6 +15,17 @@ if [ ! -f shallalist.tar.gz ] ; then
    tar xf shallalist.tar.gz
 fi
 
+if ! -f additionalBlackDomains ; then
+cat > additionalBlackDomains <<EOF
+jwpltx.com
+camsareonline.com
+click.hookupcams.com
+trcktm.net
+toppharm.biz
+EOF
+fi
+
+
 . /etc/green_docker_service_common
 
 docker rm -f proxy
@@ -27,12 +38,13 @@ docker rm -f proxy
 
 docker run --name proxy \
     -d \
-    --network=net \
-	  --restart=always \
-    -e SQUID_CONFIG_SOURCE=/custom-config \
-    --volume /etc/proxy:/custom-config \
-    --volume /etc/proxy/squid.conf:/etc/squid3/squid.conf \
-    --volume $BOOT_DIR/proxy/cache:/var/spool/squid3 \
-    --volume $BOOT_DIR/proxy/BL:/var/lib/squidguard/db/BL \
+    --network=host \
+    --restart=always \
+    -e SQUID_CONFIG_SOURCE=/etc/proxy \
+    --volume /etc/proxy:/etc/proxy \
+    -v /etc/proxy/squid.conf:/etc/squid3/squid.conf \
+    -v $BOOT_DIR/proxy/additionalBlackDomains:/etc/proxy/additionalBlackDomains \
+    -v $BOOT_DIR/proxy/cache:/var/spool/squid3 \
+    -v $BOOT_DIR/proxy/BL:/var/lib/squidguard/db/BL \
     --publish 3128:3128 \
     muenchhausen/docker-squidguard:latest

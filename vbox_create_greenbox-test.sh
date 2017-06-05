@@ -60,7 +60,7 @@ then
 	--nic2 bridged \
         --nictype2 virtio \
         --bridgeadapter2 $BRIDGE_ADAPTER \
-        --nicpromisc2 allow-all \
+        --nicpromisc2 allow-vm \
         --cableconnected2 on
 
   #VBoxManage modifyvm foo1 --nic2 bridged --nictype2 82540EM --bridgeadapter1 'eth0' 
