@@ -10,18 +10,30 @@ log_msg "start squid/squidGuard proxy"
 
 cd $BOOT_DIR/proxy
 
+#if [ ! -f shallalist.tar.gz ] ; then
+#   curl $CURL_OPTS -LO http://www.shallalist.de/Downloads/shallalist.tar.gz
+#   tar xf shallalist.tar.gz
+#fi
+
 if [ ! -f shallalist.tar.gz ] ; then
-   curl $CURL_OPTS -LO http://www.shallalist.de/Downloads/shallalist.tar.gz
+   curl $CURL_OPTS -LO http://download.bring.out.ba/blacklist.tar.bz2
    tar xf shallalist.tar.gz
 fi
 
-if ! -f additionalBlackDomains ; then
+if [ ! -f additionalBlackDomains ] ; then
 cat > additionalBlackDomains <<EOF
 jwpltx.com
 camsareonline.com
 click.hookupcams.com
 trcktm.net
 toppharm.biz
+diane-with-victoria.us
+andrea-with-debra.us
+dating510.com
+selfsend.ru
+verifiedtrader.co
+l0tt0crusher.com
+fast4diets.com
 EOF
 fi
 
