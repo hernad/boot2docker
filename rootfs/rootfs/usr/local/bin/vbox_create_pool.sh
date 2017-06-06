@@ -60,11 +60,11 @@ fdisk -l /dev/$DISK >> $LOG_FILE
 
 if ( ! fdisk_exist ${DISK}1 )
 then
-  log_msg "vbox zpool fdisk create $DISK partition 1"
+  #log_msg "vbox zpool fdisk create $DISK partition 1"
   #n p 1 1 <enter> w
   #(echo n; echo p; echo 1; echo 1; echo ; echo w) | fdisk /dev/${DISK}
-  log_msg "zpool create $POOL na /dev/${DISK}1"
-  zpool create -f $POOL /dev/${DISK}
+  log_msg "zpool create $POOL na /dev/${DISK}"
+  zpool create -o ashift=12 -f $POOL /dev/${DISK}
   zpool list >> $LOG_FILE
 else
   log_msg "${DISK} partition 1 already exists"
