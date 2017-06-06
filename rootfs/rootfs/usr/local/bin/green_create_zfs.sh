@@ -143,9 +143,18 @@ fi
 
 if ( ! zfs list $POOL/swap )
 then
+   # https://github.com/zfsonlinux/zfs/wiki/FAQ#performance-considerations
+
    log_msg "zfs create swap /dev/zvol"
    zfs create  -V $SWAP_VOL_SIZE \
-      -b $(getconf PAGESIZE) -o primarycache=metadata -o com.sun:auto-snapshot=false -o sync=disabled -s $POOL/swap
+           -b $(getconf PAGESIZE)  \
+           -o logbias=throughput \
+           -o sync=always \
+           -o primarycache=metadata \
+           -o com.sun:auto-snapshot=false \
+           $POOL/swap
+
+
    wait_zvol_up $POOL swap
 
    cat /proc/swaps | grep zd
