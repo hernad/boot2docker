@@ -161,7 +161,9 @@ ENV TCZ_DEPS_0      iptables \
                     libgpg-error libgcrypt libssh2 \
                     curl acl attr ntpclient \
                     bash readline ncurses \
-                    udev-lib
+                    udev-lib \
+                    # btrfs
+                    lzo
 
 
 # Install the base tiny linux dependencies
@@ -419,7 +421,7 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/drivers/xen &&\
     rm -rf ./kernel/drivers/input/joystick
 
-#    rm -rf ./kernel/fs/btrfs
+#  rm -rf ./kernel/fs/btrfs
 #  rm -rf ./kernel/lib/raid6 &&\
 
 
