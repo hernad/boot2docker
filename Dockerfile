@@ -299,7 +299,7 @@ RUN  apt-get -y build-dep btrfs-tools &&\
      cd btrfs-progs-${BTRFS_VER} &&\
      ./autogen.sh &&\
      ./configure &&\
-     make install
+     make DESTDIR=$ROOTFS install
 
 # ========== /opt/apps/docker ==================================
 
@@ -414,13 +414,14 @@ RUN  cd /opt/VirtualBox && rm -rf ExtensionPacks/Oracle_VM_VirtualBox_Extension_
 
 RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/fs/reiserfs &&\
-    rm -rf ./kernel/lib/raid6 &&\
     rm -rf ./kernel/fs/hfsplus &&\
     rm -rf ./kernel/drivers/firewire &&\
     rm -rf ./kernel/drivers/xen &&\
     rm -rf ./kernel/drivers/input/joystick
 
 #    rm -rf ./kernel/fs/btrfs
+#  rm -rf ./kernel/lib/raid6 &&\
+
 
 RUN rm $ROOTFS/usr/local/lib/*.a &&\
     rm $ROOTFS/usr/local/lib/*.la &&\
