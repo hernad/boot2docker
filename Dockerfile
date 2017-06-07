@@ -296,7 +296,7 @@ RUN for dep in $TCZ_DEPS_1 ; do \
 ENV BTRFS_VER=4.11
 RUN  apt-get install -y asciidoc xmlto --no-install-recommends &&\
      curl $CURL_OPTS -LO https://github.com/kdave/btrfs-progs/archive/v4.11.tar.gz && tar xf v${BTRFS_VER}.tar.gz &&\
-     cd btfrs-progs-${BTRFS_VER} &&\
+     cd btrfs-progs-${BTRFS_VER} &&\
      ./autogen.sh &&\
      ./configure &&\
      make install
