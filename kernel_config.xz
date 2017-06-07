@@ -384,6 +384,8 @@ CONFIG_BLK_MQ_VIRTIO=y
 #
 # IO Schedulers
 #
+# http://wiki.linuxquestions.org/wiki/Noop
+# https://www.thomas-krenn.com/de/wiki/Linux_I/O_Scheduler
 CONFIG_IOSCHED_NOOP=y
 CONFIG_IOSCHED_DEADLINE=y
 # CONFIG_IOSCHED_CFQ is not set

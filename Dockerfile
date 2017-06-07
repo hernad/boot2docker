@@ -235,8 +235,8 @@ RUN curl $CURL_OPTS -sLO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-${WI
 
 # http://zfsonlinux.org/
 # https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.8/spl-0.6.5.8.tar.gz
-#ENV ZFS_VER 0.7.0-rc4
-ENV ZFS_VER 0.6.5.9
+ENV ZFS_VER 0.7.0-rc4
+#ENV ZFS_VER 0.6.5.9
 RUN mkdir /zfs && cd /zfs && curl $CURL_OPTS -sLO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/spl-$ZFS_VER.tar.gz &&\
     cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-* &&\
     ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install
@@ -291,6 +291,15 @@ RUN for dep in $TCZ_DEPS_1 ; do \
         fi ;\
     done
 
+
+
+ENV BTRFS_VER=4.11
+RUN  apt-get install -y asciidoc xmlto --no-install-recommends &&\
+     curl $CURL_OPTS -LO https://github.com/kdave/btrfs-progs/archive/v4.11.tar.gz && tar xf v${BTRFS_VER}.tar.gz &&\
+     cd btfrs-progs-${BTRFS_VER} &&\
+     ./autogen.sh &&\
+     ./configure &&\
+     make install
 
 # ========== /opt/apps/docker ==================================
 
@@ -409,8 +418,9 @@ RUN cd $ROOTFS/lib/modules/*$LINUX_BRAND && rm -rf ./kernel/arch/x86/kvm &&\
     rm -rf ./kernel/fs/hfsplus &&\
     rm -rf ./kernel/drivers/firewire &&\
     rm -rf ./kernel/drivers/xen &&\
-    rm -rf ./kernel/drivers/input/joystick &&\
-    rm -rf ./kernel/fs/btrfs
+    rm -rf ./kernel/drivers/input/joystick
+
+#    rm -rf ./kernel/fs/btrfs
 
 RUN rm $ROOTFS/usr/local/lib/*.a &&\
     rm $ROOTFS/usr/local/lib/*.la &&\
