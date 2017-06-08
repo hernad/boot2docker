@@ -1,0 +1,16 @@
+#!/bin/sh
+
+. /etc/green_common
+
+log_msg "btrfs automounting START" B
+
+if ! ( /sbin/lsmod | grep -q btrfs )
+then
+   /sbin/modprobe btrfs >> $LOG_FILE 2>&1
+fi
+
+mkdir -p /home
+mkdir -p /opt
+
+
+log_msg "zfs_automount END" G

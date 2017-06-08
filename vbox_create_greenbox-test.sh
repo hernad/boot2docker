@@ -3,6 +3,11 @@
 DOWNLOAD_URL=http://download.bring.out.ba
 
 GREENBOX_VERSION=${1:-4.6.3}
+if [ "$2" == "--no-delete-vdi" ] ; then
+  echo "no delete vdi"
+  NO_DELETE_VDI=1
+fi
+
 BRIDGE_ADAPTER=${BRIDGE_ADAPTER:-en0}
 
 GREENBOX_ISO=greenbox-${GREENBOX_VERSION}.iso
@@ -85,6 +90,8 @@ VBoxManage storageattach $VBOX_NAME \
 		--type dvddrive \
 		--medium  $(pwd)/$GREENBOX_ISO
 
+
+[ -n "$NO_DELETE_VDI" ] && echo "leaving existing VDI" && VBoxManage startvm ${VBOX_NAME} && exit 0
 
 echo " $VBOX_NAME 4) storage detach $VBOX_NAME.vdi"
 VBoxManage storageattach $VBOX_NAME \

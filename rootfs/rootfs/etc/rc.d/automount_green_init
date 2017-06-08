@@ -2,11 +2,9 @@
 
 . /etc/green_common
 
-log_msg "automount start"
-
 if [ -e /dev/disk/by-label/GREEN_INIT ]
 then
-  log_msg "automount GREEN_INIT"
+  log_msg "automount GREEN_INIT" B
   mkdir /media/GREEN_INIT
   /bin/mount /dev/disk/by-label/GREEN_INIT /media/GREEN_INIT
   echo "GREEN_INIT mounted"
