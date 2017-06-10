@@ -22,8 +22,8 @@ echo_line " Application versions: "
 echo -e
 echo_line "    Kernel info:   "
 uname -a
-echo "ZFS `modinfo zfs | grep "version.*[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]-]\+$"`"
-echo -e
+#echo "ZFS `modinfo zfs | grep "version.*[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]-]\+$"`"
+#echo -e
 echo_line
 echo "PATH: $PATH"
 echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"

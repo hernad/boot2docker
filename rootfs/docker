@@ -70,6 +70,9 @@ fi
 
 : ${CERT_DIR:=$BOOT_DIR/tls/}
 
+[ ! -f $DOCKER_LOGFILE ] && log_msg "no log file $DOCKER_LOGFILE ?!" R && exit 1
+
+
 if [ -z $CERT_INTERFACES ] ; then
  CERT_INTERFACES="lo"
  IFACES=`ifconfig | grep " Link" | grep eth | awk '{print $1}'`

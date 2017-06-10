@@ -1,8 +1,5 @@
 #!/bin/sh
 
-DISK=sda
-POOL=green
-
 . /etc/green_common
 
 if ( ! is_vbox )
@@ -10,6 +7,8 @@ then
    log_msg "automatsko kreiranje btrfs: mora biti vbox"
    exit 1
 fi
+
+DISK=/dev/sda
 
 zfs_partition_sda_exists() {
    /sbin/fdisk $DISK -l | grep -q 0700
