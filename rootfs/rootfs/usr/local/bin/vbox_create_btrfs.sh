@@ -33,5 +33,5 @@ vbox_extract_userdata_tar  # extract before initializing disk with zpool
 mkfs.btrfs -f -L "green-btrfs" $DISK
 btrfs inspect-internal dump-super ${DISK}  >> $LOG_FILE
 
-mkdir /green-btrfs
+mkdir -p /green-btrfs
 mount -o $BTRFS_MOUNT_OPTIONS $DISK /green-btrfs
