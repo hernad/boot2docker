@@ -97,23 +97,23 @@ DIR=/green-btrfs/__current/build
 DIR=/opt/boot
 BTRFS_SUBVOL=__current/opt_boot
 mkdir -p $DIR
-mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $DIR
+mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/opt/apps
 BTRFS_SUBVOL=__current/opt_apps
 mkdir -p $DIR
-mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $DIR
+mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/home/docker
 BTRFS_SUBVOL=__current/docker_home
 [ -f $DIR/.profile ] && rm $MOUNT_DIR/.ash* $MOUNT_DIR/.profile
 mkdir -p $DIR
-mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $DIR
+mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/build
 BTRFS_SUBVOL=__current/build
 mkdir -p $DIR
-mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $DIR
+mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/var/lib/docker
 BTRFS_SUBVOL=__current/docker

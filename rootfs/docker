@@ -93,7 +93,7 @@ pre_start() {
   /etc/rc.d/cgroupfs-mount   # see https://github.com/tianon/cgroupfs-mount
 
   CNT=1
-  while [ ! -f $DOCKER_APP_DIR/VERSION  ] && [ $CNT -lt 20 ]; do
+  while [ ! -f $DOCKER_APP_DIR/VERSION  ] && [ $CNT -lt 3 ]; do
     log_msg "waiting install $DOCKER_APP_DIR/VERSION $CNT ..." M
     sleep 30
     let CNT=$CNT+1
@@ -107,7 +107,6 @@ pre_start() {
     #fi
   done
   . /etc/green_common # refresh PATH
-
 
 }
 

@@ -335,10 +335,12 @@ GREEN_DEBUG=${GREEN_DEBUG:-1}
 
 FILESYSTEM=btrfs
 BTRFS_MOUNT_O=defaults,relatime,discard,ssd,nodev,nosuid
+BTRFS_DEV=/dev/sda
+
 
 if zfs_partition_exists ; then
   log_msg "zfs partition exists mounting zfs !" R
-  FILESYSTEM=zfs
+  #FILESYSTEM=zfs
 fi
 set_log_file
 set_path_ld_library
