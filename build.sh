@@ -30,7 +30,7 @@ sed -e "s/___GREEN_APPS_VER___/$(cat apps/green/VERSION)/"  \
     -e "s/___K8S_VER___/$(cat apps/k8s/VERSION)/"  \
     -e "s/___X11_APPS_VER___/$(cat apps/x11/VERSION)/"  \
     -e "s/___PYTHON2_VER___/$(cat apps/python2/VERSION)/"  \
-     green_common.template > rootfs/green_common
+     green_common.template.sh > rootfs/green_common
 
 cat ./rootfs/rootfs/usr/local/etc/motd && \
 cp  ./rootfs/rootfs/usr/local/etc/motd  ./rootfs/isolinux/boot.msg || ( echo error && exit 1)
