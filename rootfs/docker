@@ -70,7 +70,7 @@ fi
 
 : ${CERT_DIR:=$BOOT_DIR/tls/}
 
-[ ! -f $DOCKER_LOGFILE ] && log_msg "no log file $DOCKER_LOGFILE ?!" R && exit 1
+[ ! -d $BOOT_DIR/log ] && log_msg "no log dir ?!" R && exit 1
 
 
 if [ -z $CERT_INTERFACES ] ; then
