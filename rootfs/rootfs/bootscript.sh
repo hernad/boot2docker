@@ -64,7 +64,7 @@ fi
 
 if [ $FILESYSTEM == "btrfs" ] ; then
   /etc/rc.d/automount_btrfs
-  vbox_create_pool.sh
+  vbox_create_btrfs.sh
   cloud_vda_create_pool.sh
   green_create_btrfs_subvols.sh
 fi

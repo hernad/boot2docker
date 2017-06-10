@@ -120,7 +120,7 @@ mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 DIR=/var/lib/docker
 BTRFS_SUBVOL=__current/docker
 mkdir -p $DIR
-mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $DIR
+mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 [ -d $BOOT_DIR/etc ] || mkdir -p $BOOT_DIR/etc
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
