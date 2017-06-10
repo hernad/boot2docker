@@ -26,6 +26,8 @@ MEMKB=`cat /proc/meminfo | grep MemTotal.*kB | awk '{print $2}'`
 
 echo "Memory in kB: $MEMKB"
 
+ZRAM_SIZE=256
+
 if [ -n "$MEMKB" ] ; then
   if [ $MEMKB -ge 2000000 ]; then
       ZRAM_SIZE=512
@@ -70,7 +72,7 @@ swapon /dev/zram0
 #	Total devices 1 FS bytes used 192.00KiB
 #	devid    1 size 8.00GiB used 843.12MiB path /dev/sdb
 
-if ( ! brtfs filesystem show /green-btrfs )
+if ( ! btrfs filesystem show /green-btrfs )
 then
    log_msg "green-btrfs does not exists!" R
    exit 1
@@ -80,45 +82,45 @@ mkdir -p /green-btrfs/__snapshot
 mkdir -p /green-btrfs/__current
 
 DIR=/green-btrfs/__current/opt_boot
-[  -d $DIR ] && btrfs subvolume create $DIR
+[  -d $DIR ] || btrfs subvolume create $DIR
 
 DIR=/green-btrfs/__current/opt_apps
-[  -d $DIR ] && btrfs subvolume create $DIR
+[  -d $DIR ] || btrfs subvolume create $DIR
 
 DIR=/green-btrfs/__current/docker_home
-[  -d $DIR ] && btrfs subvolume create $DIR
+[  -d $DIR ] || btrfs subvolume create $DIR
 
 DIR=/green-btrfs/__current/docker
-[  -d $DIR ] && btrfs subvolume create $DIR
+[  -d $DIR ] || btrfs subvolume create $DIR
 
 DIR=/green-btrfs/__current/build
-[  -d $DIR ] && btrfs subvolume create $DIR
+[  -d $DIR ] || btrfs subvolume create $DIR
 
 DIR=/opt/boot
 BTRFS_SUBVOL=__current/opt_boot
 mkdir -p $DIR
-mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
+mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/opt/apps
 BTRFS_SUBVOL=__current/opt_apps
 mkdir -p $DIR
-mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
+mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/home/docker
 BTRFS_SUBVOL=__current/docker_home
 [ -f $DIR/.profile ] && rm $MOUNT_DIR/.ash* $MOUNT_DIR/.profile
 mkdir -p $DIR
-mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
+mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/build
 BTRFS_SUBVOL=__current/build
 mkdir -p $DIR
-mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
+mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/var/lib/docker
 BTRFS_SUBVOL=__current/docker
 mkdir -p $DIR
-mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $DIR
+mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $DIR
 
 [ -d $BOOT_DIR/etc ] || mkdir -p $BOOT_DIR/etc
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log

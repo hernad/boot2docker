@@ -20,18 +20,17 @@ then
   exit 1
 fi
 
+vbox_extract_userdata_tar  # extract before initializing disk with btrfs
+
+#fdisk -l /dev/$DISK >> $LOG_FILE
 if btrfs inspect-internal dump-super ${DISK} | grep -q num_devices
 then
   echo "${DISK} btrfs signature already exists"
-  exit 0
+else
+  mkfs.btrfs -f -L "green-btrfs" $DISK
 fi
 
-vbox_extract_userdata_tar  # extract before initializing disk with zpool
-
-#fdisk -l /dev/$DISK >> $LOG_FILE
-
-mkfs.btrfs -f -L "green-btrfs" $DISK
 btrfs inspect-internal dump-super ${DISK}  >> $LOG_FILE
 
 mkdir -p /green-btrfs
-mount -o $BTRFS_MOUNT_OPTIONS $DISK /green-btrfs
+mount $DISK /green-btrfs
