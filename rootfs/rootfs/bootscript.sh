@@ -50,7 +50,6 @@ download_etc_ssl() {
   fi
 }
 
-
 log_msg "== bootscript.sh: $(date) ====" G
 
 /etc/rc.d/automount_green_init
@@ -63,12 +62,11 @@ if [ $FILESYSTEM == "zfs" ] ; then
   mount_zfs_opt_boot_docker_home.sh
 fi
 
-if [ $FILESYSTEM == "zfs" ] ; then
+if [ $FILESYSTEM == "btrfs" ] ; then
   /etc/rc.d/automount_btrfs
   vbox_create_pool.sh
   cloud_vda_create_pool.sh
-  green_create_zfs.sh
-  mount_zfs_opt_boot_docker_home.sh
+  green_create_btrfs_subvols.sh
 fi
 
 for f in `ls /opt/apps/*.xz*` ; do

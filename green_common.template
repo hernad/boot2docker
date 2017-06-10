@@ -277,7 +277,7 @@ fdisk /dev/vda -l | grep -q sectors
 
 }
 
-zfs_partitions_exists() {
+zfs_partition_exists() {
    /sbin/fdisk -l | grep -q 0700
 }
 
@@ -333,8 +333,12 @@ fi
 
 GREEN_DEBUG=${GREEN_DEBUG:-1}
 
-FILESYSTEM=zfs # kada se pripremi btrfs prebaciti na btrfs
-zfs_partitions_exists && FILESYSTEM=zfs
+FILESYSTEM=btrfs
+BTRFS_MOUNT_O=defaults,relatime,discard,ssd,nodev,nosuid
 
+if zfs_partition_exists ; then
+  log_msg "zfs partition exists mounting zfs !" R
+  FILESYSTEM=zfs
+fi
 set_log_file
 set_path_ld_library
