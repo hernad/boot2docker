@@ -398,7 +398,8 @@ RUN cd $ROOTFS/usr/local/bin &&\
 #    rm -r -f git-gui gitk gitweb &&\
     rm -r -f applications pixmaps &&\
     ( [ -d /opt/apps/green/sbin ] || mkdir -p /opt/apps/green/sbin ) &&\
-    cd $ROOTFS/usr/local/sbin && mv zdb zed ztest /opt/apps/green/sbin &&\
+    cd $ROOTFS/usr/local/sbin &&\
+    # mv zdb zed ztest /opt/apps/green/sbin &&\
     rm -r -f $ROOTFS/usr/local/sbin/tce*
 
 
