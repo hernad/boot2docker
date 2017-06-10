@@ -237,16 +237,16 @@ RUN curl $CURL_OPTS -sLO https://git.zx2c4.com/WireGuard/snapshot/WireGuard-${WI
 
 # http://zfsonlinux.org/
 # https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.8/spl-0.6.5.8.tar.gz
-ENV ZFS_VER 0.7.0-rc4
+#ENV ZFS_VER 0.7.0-rc4
 #ENV ZFS_VER 0.6.5.9
-RUN mkdir /zfs && cd /zfs && curl $CURL_OPTS -sLO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/spl-$ZFS_VER.tar.gz &&\
-    cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-* &&\
-    ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install
+#RUN mkdir /zfs && cd /zfs && curl $CURL_OPTS -sLO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/spl-$ZFS_VER.tar.gz &&\
+#    cd /zfs && tar xf spl-$ZFS_VER.tar.gz && cd spl-* &&\
+#    ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && make install
 
 # hernad: zfs build demands librt from debian
-RUN cd /lib/x86_64-linux-gnu && ls librt-2*.so && cp librt-2.19.so $ROOTFS/lib/ &&\
-    rm $ROOTFS/lib/librt.so.1 &&\
-    cd $ROOTFS/lib && ln -s librt-2.19.so librt.so.1
+# RUN cd /lib/x86_64-linux-gnu && ls librt-2*.so && cp librt-2.19.so $ROOTFS/lib/ &&\
+#    rm $ROOTFS/lib/librt.so.1 &&\
+#    cd $ROOTFS/lib && ln -s librt-2.19.so librt.so.1
 
 # build zfs from git
 # ENV ZFS_GIT_BRANCH zfs-0.6.4-release
@@ -254,13 +254,13 @@ RUN cd /lib/x86_64-linux-gnu && ls librt-2*.so && cp librt-2.19.so $ROOTFS/lib/ 
 # RUN cd /zfs/zfs-git && sh autogen.sh && ./configure --with-linux=$LINUX_KERNEL_SOURCE && make && DESTDIR=$ROOTFS make install
 
 
-RUN apt-get install -y libblkid-dev libattr1-dev
+#RUN apt-get install -y libblkid-dev libattr1-dev
 
 # build zfs from tar
-RUN cd /zfs && curl $CURL_OPTS -sLO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/zfs-$ZFS_VER.tar.gz &&\
-    cd /zfs && tar xf zfs-$ZFS_VER.tar.gz && cd zfs-* &&\
-    ./configure --with-linux=$LINUX_KERNEL_SOURCE && make &&\
-    DESTDIR=$ROOTFS make install
+#RUN cd /zfs && curl $CURL_OPTS -sLO https://github.com/zfsonlinux/zfs/releases/download/zfs-$ZFS_VER/zfs-$ZFS_VER.tar.gz &&\
+#    cd /zfs && tar xf zfs-$ZFS_VER.tar.gz && cd zfs-* &&\
+#    ./configure --with-linux=$LINUX_KERNEL_SOURCE && make &&\
+#    DESTDIR=$ROOTFS make install
 
 # Install the kernel modules in $ROOTFS
 RUN cd $LINUX_KERNEL_SOURCE &&\
