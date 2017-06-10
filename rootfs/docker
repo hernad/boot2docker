@@ -51,18 +51,18 @@ DOCKER_PID=/var/run/docker.pid
 : ${DOCKER_TLS:=auto}
 
 if [ -z "$DOCKER_STORAGE" ] ; then
-  if ( is_vbox ) ; then
-     DOCKER_STORAGE=zfs
-     DOCKER_DIR=/green/docker
-  else
-     if [ -e /dev/zvol/green/docker_vol ] ; then
-        if [ ! -d /var/lib/docker/overlay ] ; then
-          DOCKER_STORAGE=overlay2 # best choice!
-        else
-          DOCKER_STORAGE=overlay # legacy
-        fi
-     fi
-  fi
+  #if ( is_vbox ) ; then
+     DOCKER_STORAGE=btrfs
+     DOCKER_DIR=/var/lib/docker
+  #else
+  #   if [ -e /dev/zvol/green/docker_vol ] ; then
+  #      if [ ! -d /var/lib/docker/overlay ] ; then
+  #        DOCKER_STORAGE=overlay2 # best choice!
+  #      else
+  #        DOCKER_STORAGE=overlay # legacy
+  #      fi
+  #   fi
+  #fi
 fi
 
 : ${DOCKER_DIR:=/var/lib/docker}

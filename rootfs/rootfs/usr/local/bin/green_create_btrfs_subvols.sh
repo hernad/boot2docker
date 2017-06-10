@@ -105,7 +105,7 @@ mkdir -p $DIR
 mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $DIR
 
 DIR=/home/docker
-BTRFS_SUBVOL=__current/opt_apps
+BTRFS_SUBVOL=__current/docker_home
 [ -f $DIR/.profile ] && rm $MOUNT_DIR/.ash* $MOUNT_DIR/.profile
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $DIR
@@ -115,6 +115,10 @@ BTRFS_SUBVOL=__current/build
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $DIR
 
+DIR=/var/lib/docker
+BTRFS_SUBVOL=__current/docker
+mkdir -p $DIR
+mount -o $BTRFS_MOUNT_OPTIONS,subvol=$BTRFS_SUBVOL $DIR
 
 [ -d $BOOT_DIR/etc ] || mkdir -p $BOOT_DIR/etc
 [ -d $BOOT_DIR/log ] || mkdir -p $BOOT_DIR/log
