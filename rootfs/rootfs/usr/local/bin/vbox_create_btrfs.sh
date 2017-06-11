@@ -33,4 +33,6 @@ fi
 btrfs inspect-internal dump-super ${DISK}  >> $LOG_FILE
 
 mkdir -p /green-btrfs
+# btrfs device scan is used to scan all of the block devices under /dev and probe for Btrfs volumes. This is required after loading the btrfs module if you're running with more than one device in a filesystem.
+btrfs device scan
 mount $DISK /green-btrfs
