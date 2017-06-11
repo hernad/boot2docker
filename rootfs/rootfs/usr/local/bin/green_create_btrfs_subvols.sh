@@ -26,11 +26,13 @@ MEMKB=`cat /proc/meminfo | grep MemTotal.*kB | awk '{print $2}'`
 
 echo "Memory in kB: $MEMKB"
 
-ZRAM_SIZE=256
+# green htop 1024 RAM vbox, ZRAM_SIZE=256, 159 MB used after start
+# let's try with ZRAM 512
+ZRAM_SIZE=512
 
 if [ -n "$MEMKB" ] ; then
   if [ $MEMKB -ge 2000000 ]; then
-      ZRAM_SIZE=512
+      ZRAM_SIZE=768
   fi
   if [ $MEMKB -ge 4000000 ]; then
       ZRAM_SIZE=1024
