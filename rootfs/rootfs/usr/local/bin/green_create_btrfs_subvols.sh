@@ -80,47 +80,47 @@ then
    exit 1
 fi
 
-mkdir -p /green-btrfs/__snapshot
-mkdir -p /green-btrfs/__current
+mkdir -p /green-btrfs/.snapshots
+mkdir -p /green-btrfs/mnt
 
-DIR=/green-btrfs/__current/opt_boot
+DIR=/green-btrfs/mnt/opt_boot
 [  -d $DIR ] || btrfs subvolume create $DIR
 
-DIR=/green-btrfs/__current/opt_apps
+DIR=/green-btrfs/mnt/opt_apps
 [  -d $DIR ] || btrfs subvolume create $DIR
 
-DIR=/green-btrfs/__current/docker_home
+DIR=/green-btrfs/mnt/docker_home
 [  -d $DIR ] || btrfs subvolume create $DIR
 
-DIR=/green-btrfs/__current/docker
+DIR=/green-btrfs/mnt/docker
 [  -d $DIR ] || btrfs subvolume create $DIR
 
-DIR=/green-btrfs/__current/build
+DIR=/green-btrfs/mnt/build
 [  -d $DIR ] || btrfs subvolume create $DIR
 
 DIR=/opt/boot
-BTRFS_SUBVOL=__current/opt_boot
+BTRFS_SUBVOL=mount/opt_boot
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/opt/apps
-BTRFS_SUBVOL=__current/opt_apps
+BTRFS_SUBVOL=mount/opt_apps
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/home/docker
-BTRFS_SUBVOL=__current/docker_home
+BTRFS_SUBVOL=mount/docker_home
 [ -f $DIR/.profile ] && rm $MOUNT_DIR/.ash* $MOUNT_DIR/.profile
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/build
-BTRFS_SUBVOL=__current/build
+BTRFS_SUBVOL=mount/build
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/var/lib/docker
-BTRFS_SUBVOL=__current/docker
+BTRFS_SUBVOL=mount/docker
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
