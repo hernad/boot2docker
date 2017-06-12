@@ -60,3 +60,15 @@ https://wiki.gentoo.org/wiki/Zram
 
 
 http://blog.fabio.mancinelli.me/data/arch_linux_on_btrfs_installation.txt
+
+
+# coreos btrfs - ext4
+
+https://lwn.net/Articles/627232/
+
+
+# noatime
+
+https://btrfs.wiki.kernel.org/index.php/Mount_options
+
+https://www.postgresql.org/message-id/3F5DCB35.3090809@potentialtech.com

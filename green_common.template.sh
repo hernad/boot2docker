@@ -334,7 +334,7 @@ fi
 GREEN_DEBUG=${GREEN_DEBUG:-1}
 
 FILESYSTEM=btrfs
-BTRFS_MOUNT_O=defaults,relatime,discard,ssd,nodev,nosuid
+BTRFS_MOUNT_O=defaults,noatime,discard,ssd,nodev,nosuid
 BTRFS_DEV=/dev/sda
 
 
