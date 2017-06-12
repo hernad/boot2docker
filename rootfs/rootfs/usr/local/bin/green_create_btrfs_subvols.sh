@@ -99,28 +99,28 @@ DIR=/green-btrfs/mnt/build
 [  -d $DIR ] || btrfs subvolume create $DIR
 
 DIR=/opt/boot
-BTRFS_SUBVOL=mount/opt_boot
+BTRFS_SUBVOL=mnt/opt_boot
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/opt/apps
-BTRFS_SUBVOL=mount/opt_apps
+BTRFS_SUBVOL=mnt/opt_apps
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/home/docker
-BTRFS_SUBVOL=mount/docker_home
+BTRFS_SUBVOL=mnt/docker_home
 [ -f $DIR/.profile ] && rm $MOUNT_DIR/.ash* $MOUNT_DIR/.profile
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/build
-BTRFS_SUBVOL=mount/build
+BTRFS_SUBVOL=mnt/build
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
 DIR=/var/lib/docker
-BTRFS_SUBVOL=mount/docker
+BTRFS_SUBVOL=mnt/docker
 mkdir -p $DIR
 mount -o $BTRFS_MOUNT_O,subvol=$BTRFS_SUBVOL $BTRFS_DEV $DIR
 
