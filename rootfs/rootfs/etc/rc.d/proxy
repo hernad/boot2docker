@@ -16,7 +16,8 @@ cd $BOOT_DIR/proxy
 #fi
 
 if [ ! -f shallalist.tar.gz ] ; then
-   curl $CURL_OPTS -LO http://download.bring.out.ba/blacklist.tar.bz2
+   curl $CURL_OPTS -LO http://www.shallalist.de/Downloads/shallalist.tar.gz
+   # http://download.bring.out.ba/blacklist.tar.bz2
    tar xf shallalist.tar.gz
 fi
 
