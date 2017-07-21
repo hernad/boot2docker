@@ -295,9 +295,9 @@ RUN for dep in $TCZ_DEPS_1 ; do \
 
 
 
-ENV BTRFS_VER=4.11
+ENV BTRFS_VER=4.12
 RUN  apt-get -y build-dep btrfs-tools &&\
-     curl $CURL_OPTS -LO https://github.com/kdave/btrfs-progs/archive/v4.11.tar.gz && tar xf v${BTRFS_VER}.tar.gz &&\
+     curl $CURL_OPTS -LO https://github.com/kdave/btrfs-progs/archive/v${BTRFS_VER}.tar.gz && tar xf v${BTRFS_VER}.tar.gz &&\
      cd btrfs-progs-${BTRFS_VER} &&\
      ./autogen.sh &&\
      ./configure &&\
