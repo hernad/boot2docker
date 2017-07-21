@@ -313,7 +313,7 @@ ENV GENERATE_CERT_VER=0.3
 RUN mkdir -p /opt/apps/docker/bin &&\
       curl $CURL_OPTS -fsL -o /opt/apps/docker/bin/generate_cert https://github.com/SvenDowideit/generate_cert/releases/download/${GENERATE_CERT_VER}/generate_cert-${GENERATE_CERT_VER}-linux-amd64
 
-RUN curl $CURL_OPTS -sL  https://get.docker.com/builds/Linux/x86_64/docker-$(cat $ROOTFS/etc/sysconfig/docker).tgz | tar -C / -xz && \
+RUN curl $CURL_OPTS -sL  https://download.docker.com/linux/static/stable/x86_64/docker-$(cat $ROOTFS/etc/sysconfig/docker).tgz | tar -C / -xz && \
     mv /docker/* /opt/apps/docker/bin/ &&\
     chmod +x /opt/apps/docker/bin/*
 
