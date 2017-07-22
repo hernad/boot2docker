@@ -80,13 +80,12 @@ if [ $FILESYSTEM == "btrfs" ] ; then
   green_create_btrfs_subvols.sh
 fi
 
+mkdir -p /home/tc # da se mozemo logirati kao tc user
 if  [  ! -d $BOOT_DIR ] ; then
-   log_msg "ERROR >>> $BOOT_DIR not exists, fix this - login as tc user" R
-   mkdir -p /home/tc # da se mozemo logirati kao tc user
+   log_msg "ERROR >>> $BOOT_DIR not exists, login as tc user" R
    setup_network
    exit 1
 fi
-
 
 for f in `ls /opt/apps/*.xz*` ; do
    log_msg "remove broken downloads: rm $f" Y
