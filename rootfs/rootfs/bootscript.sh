@@ -218,7 +218,8 @@ for f in passwd shadow shadow- ; do
  chown root:root $BOOT_DIR/etc/$f # permanent passwd
 done
 
-sed -i  's/^\(tc.*\)\/bin\/sh$/\1\/bin\/false/'  $BOOT_DIR/etc/passwd # disable_tc_login
+# ne, ovo zatreba kod inicijalizacije sistema
+#sed -i  's/^\(tc.*\)\/bin\/sh$/\1\/bin\/false/'  $BOOT_DIR/etc/passwd # disable_tc_login
 
 [ -d $BOOT_DIR/etc/sysconfig ] || mkdir -p $BOOT_DIR/etc/sysconfig
 #[ -f $BOOT_DIR/etc/sysconfig/docker ] || mv /etc/sysconfig/docker $BOOT_DIR/etc/sysconfig/ # permanent docker version
