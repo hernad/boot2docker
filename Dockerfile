@@ -72,7 +72,7 @@ ENV VBOX_ISO_SHA256 01a77500df9127d8d6aa27c7d784af8f773d8e84b2b252c9e866b9038ed8
 RUN curl $CURL_OPTS -s -LO http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VirtualBox-$VBOX_VERSION-$VBOX_BUILD-Linux_amd64.run &&\
         mkdir -p /lib ;\
         ln -s $ROOTFS/lib/modules /lib/modules ;\
-        bash VirtualBox-$VBOX_VERSION-$VBOX_BUILD-Linux_amd64.run
+        bash VirtualBox-$VBOX_VERSION-$VBOX_BUILD-Linux_amd64.run || exit 0
 
 RUN cp -av /opt/VirtualBox $ROOTFS/opt/ ;\
         cd / && curl $CURL_OPTS -sLO http://download.virtualbox.org/virtualbox/$VBOX_VERSION/Oracle_VM_VirtualBox_Extension_Pack-$VBOX_VERSION.vbox-extpack &&\
