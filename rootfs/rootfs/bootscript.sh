@@ -50,6 +50,17 @@ download_etc_ssl() {
   fi
 }
 
+setup_network() {
+
+if [ -n "$STATICIP" ]; then
+  	log_msg "Skipping DHCP broadcast/network detection" B
+else
+  	/etc/init.d/dhcp.sh &
+  	/etc/init.d/settime.sh &
+fi
+
+}
+
 log_msg "== bootscript.sh: $(date) ====" G
 
 /etc/rc.d/automount_green_init
@@ -69,6 +80,14 @@ if [ $FILESYSTEM == "btrfs" ] ; then
   green_create_btrfs_subvols.sh
 fi
 
+if  [  ! -d $BOOT_DIR ] ; then
+   log_msg "ERROR >>> $BOOT_DIR not exists, fix this - login as tc user" R
+   mkdir -p /home/tc # da se mozemo logirati kao tc user
+   setup_network
+   exit 1
+fi
+
+
 for f in `ls /opt/apps/*.xz*` ; do
    log_msg "remove broken downloads: rm $f" Y
    rm $f
@@ -82,12 +101,7 @@ test -f $BOOT_DIR/profile && . $BOOT_DIR/profile
 set_log_file
 STATICIP="$(getbootparam staticip 2>/dev/null)"
 
-if [ -n "$STATICIP" ]; then
-	log_msg "Skipping DHCP broadcast/network detection" B
-else
-	/etc/init.d/dhcp.sh &
-	/etc/init.d/settime.sh &
-fi
+setup_network
 
 wait4internet
 
