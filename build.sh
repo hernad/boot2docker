@@ -1,8 +1,8 @@
 #!/bin/bash
 
 DOCKER_BUILD_OPTS=${DOCKER_BUILD_OPTS:-}
-PROXY_DETECTED=`docker inspect --format '{{ .NetworkSettings.IPAddress }}' apt-cacher-ng`
-DOCKER_PROXY=${DOCKER_PROXY:-$PROXY_DETECTED}
+#PROXY_DETECTED=`docker inspect --format '{{ .NetworkSettings.IPAddress }}' apt-cacher-ng`
+#DOCKER_PROXY=${DOCKER_PROXY:-$PROXY_DETECTED}
 
 if [ $# -lt 1 ] ; then
    echo "usage: $0 greenbox apps green x11 ruby"
@@ -35,7 +35,7 @@ sed -e "s/___GREEN_APPS_VER___/$(cat apps/green/VERSION)/"  \
 cat ./rootfs/rootfs/usr/local/etc/motd && \
 cp  ./rootfs/rootfs/usr/local/etc/motd  ./rootfs/isolinux/boot.msg || ( echo error && exit 1)
 
-docker exec apt-cacher-ng ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}'
+#docker exec apt-cacher-ng ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}'
 
 GREEN_PRODUCTION=${GREEN_PRODUCTION:-rack}
 

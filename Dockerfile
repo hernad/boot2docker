@@ -4,14 +4,14 @@ MAINTAINER Ernad Husremovic "hernad@bring.out.ba"
 ARG KERNEL_VERSION=4.4.30
 ARG DOCKER_PROXY=172.17.0.4
 
-RUN echo "docker proxy: $DOCKER_PROXY" \
- && echo "Acquire::HTTP::Proxy \"http://$DOCKER_PROXY:3142\";" > /etc/apt/apt.conf.d/01proxy \
- && echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
+#RUN echo "docker proxy: $DOCKER_PROXY" \
+# && echo "Acquire::HTTP::Proxy \"http://$DOCKER_PROXY:3142\";" > /etc/apt/apt.conf.d/01proxy \
+# && echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
 
 RUN echo "deb-src http://deb.debian.org/debian jessie main" >> /etc/apt/sources.list
 RUN apt-get update -y
 
-ENV TINYCORE_VER=8.x CURL_OPTS="--retry 4 --speed-limit 500 --speed-time 30"
+ENV TINYCORE_VER=8.x CURL_OPTS="--retry 4 --speed-limit 500 --speed-time 30 --insecure"
 RUN  apt-get update && apt-get --fix-missing -y install wget unzip \
                         xz-utils \
                         curl \
@@ -48,7 +48,7 @@ ENV LINUX_BRAND=greenbox LINUX_KERNEL_SOURCE=/usr/src/linux
 # Fetch the kernel sources
 RUN mkdir -p /usr/src && \
     echo "https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz" &&\
-    curl $CURL_OPTS -s https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
+    curl $CURL_OPTS -s -L https://www.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR}.x/linux-$KERNEL_VERSION_DOWNLOAD.tar.xz | tar -C / -xJ && \
     mv /linux-$KERNEL_VERSION_DOWNLOAD $LINUX_KERNEL_SOURCE
 
 # https://stackoverflow.com/questions/28949109/make-oldconfig-overwriting-value-in-config
@@ -131,8 +131,8 @@ RUN cd $ROOTFS/lib/modules && \
     rm -rf ./*/kernel/net/wireless/*
 
 # Install libcap
-RUN curl $CURL_OPTS -sL http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.22.orig.tar.gz | tar -C / -xz && \
-    cd /libcap-2.22 && \
+RUN curl $CURL_OPTS -sL http://http.debian.net/debian/pool/main/libc/libcap2/libcap2_2.24.orig.tar.xz | tar -C / -xJ && \
+    cd /libcap2-2.24 && \
     sed -i 's/LIBATTR := yes/LIBATTR := no/' Make.Rules && \
     sed -i 's/\(^CFLAGS := .*\)/\1 '"$GCC_M"'/' Make.Rules && \
     make && \
@@ -197,7 +197,7 @@ RUN export SYSLINUX_VER=6.04 && export SYSLINUX_PRE=pre1 &&\
 # uses bootscript to detect VirtualBox session - has to be firmware!
 RUN  apt-get build-dep -y lshw &&\
      cd / && git clone https://github.com/lyonel/lshw.git && cd lshw &&\
-     make && make DESTDIR=$ROOTFS install
+     git checkout B.02.18 && make && make DESTDIR=$ROOTFS install
 
 
 ENV KERNELDIR=/usr/src/linux
